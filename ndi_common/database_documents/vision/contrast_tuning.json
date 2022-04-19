@@ -1,9 +1,9 @@
 {
 	"document_class": {
-		"definition":						"$NDIDOCUMENTPATH\/stimulus\/vision\/contrast\/contrast_tuning.json",
-		"validation":						"$NDISCHEMAPATH\/stimulus\/vision\/contrast\/contrast_tuning_schema.json",
-		"class_name":						"ndi_document_stimulus_vision_contrast_tuning",
-                "property_list_name":                                   "contrast_tuning",
+		"definition":						"$NDICALCDOCUMENTPATH\/vision\/contrast_tuning.json",
+		"validation":						"$NDICALCSCHEMAPATH\/vision\/contrast_tuning_schema.json",
+		"class_name":						"contrast_tuning",
+        "property_list_name":                                   "contrast_tuning",
 		"class_version":					1,
 		"superclasses": [
 			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"}

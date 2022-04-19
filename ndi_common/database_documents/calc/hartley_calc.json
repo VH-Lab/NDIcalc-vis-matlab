@@ -1,14 +1,14 @@
 {
 	"document_class": {
-		"definition":                       "$NDIDOCUMENTPATH\/apps\/calculations\/hartley_calc.json",
-		"validation":                       "$NDISCHEMAPATH\/apps\/calculations\/hartley_calc.json",
-		"class_name":                       "ndi_calculation_hartley",
+		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/hartley_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/hartley_calc.json",
+		"class_name":                       "hartley_calc",
 		"property_list_name":                   "hartley_calc", 
 		"class_version":                    1,
 		"superclasses": [
 			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
 			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document_app.json" },
-			{ "definition":                 "$NDIDOCUMENTPATH\/stimulus\/neuro\/hartley_reverse_correlation.json" }
+			{ "definition":                 "$NDICALCDOCUMENTPATH\/neuro\/hartley_reverse_correlation.json" }
 		]
 	},
 	"hartley_calc": {

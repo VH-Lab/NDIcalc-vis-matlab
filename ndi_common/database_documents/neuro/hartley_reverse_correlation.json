@@ -1,13 +1,13 @@
 {
 	"document_class": {
-		"definition":						"$NDIDOCUMENTPATH\/stimulus\/neuro\/hartley_reverse_correlation.json",
-		"validation":						"$NDISCHEMAPATH\/stimulus\/neuro\/hartley_reverse_correlation.json",
-		"class_name":						"ndi_document_stimulus_neuro_hartley_reverse_correlation",
-		"property_list_name":                                   "hartley_reverse_correlation",
+		"definition":						"$NDICALCDOCUMENTPATH\/neuro\/hartley_reverse_correlation.json",
+		"validation":						"$NDICALCSCHEMAPATH\/neuro\/hartley_reverse_correlation.json",
+		"class_name":						"hartley_reverse_correlation",
+		"property_list_name":               "hartley_reverse_correlation",
 		"class_version":					1,
 		"superclasses": [
 			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"},
-			{ "definition":                                 "$NDIDOCUMENTPATH\/stimulus\/neuro\/reverse_correlation.json"}
+			{ "definition":                                 "$NDICALCDOCUMENTPATH\/neuro\/reverse_correlation.json"}
 		]
 	},
 	"hartley_reverse_correlation":  {

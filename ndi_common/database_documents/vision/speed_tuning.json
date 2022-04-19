@@ -1,8 +1,8 @@
 {
 	"document_class": {
-		"definition":						"$NDIDOCUMENTPATH\/stimulus\/vision\/speed\/speed_tuning.json",
-		"validation":						"$NDISCHEMAPATH\/stimulus\/vision\/speed\/speed_tuning_schema.json",
-		"class_name":						"ndi_document_stimulus_vision_speed_tuning",
+		"definition":						"$NDICALCDOCUMENTPATH\/vision\/speed_tuning.json",
+		"validation":						"$NDICALCSCHEMAPATH\/vision\/speed_tuning_schema.json",
+		"class_name":						"speed_tuning",
                 "property_list_name":                                   "speed_tuning",
 		"class_version":					1,
 		"superclasses": [

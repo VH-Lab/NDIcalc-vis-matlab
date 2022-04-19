@@ -1,14 +1,14 @@
 {
 	"document_class": {
-		"definition":                       "$NDIDOCUMENTPATH\/apps\/calculations\/contrasttuning_calc.json",
-		"validation":                       "$NDISCHEMAPATH\/apps\/calculations\/contrasttuning_calc.json",
-		"class_name":                       "ndi_calculation_contrasttuning",
+		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/contrasttuning_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/contrasttuning_calc.json",
+		"class_name":                       "contrasttuning_calc",
 		"property_list_name":                   "contrasttuning_calc", 
 		"class_version":                    1,
 		"superclasses": [
 			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
 			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document_app.json" },
-			{ "definition":                 "$NDIDOCUMENTPATH\/stimulus\/vision\/contrast\/contrast_tuning.json"}
+			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/contrast_tuning.json"}
 		]
 	},
 	"contrasttuning_calc": {
