@@ -9,8 +9,10 @@ classdef hartley_calc < ndi.calculator
 			% Creates a HARTLEY_CALC ndi.calculator object
 			%
 				ndi.globals;
+				w = which('ndi.calc.vis.contrast_tuning');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','hartley_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','hartley_calc.json'));
 		end; % hartley_calc()
 
 		function doc = calculate(ndi_calculator_obj, parameters)

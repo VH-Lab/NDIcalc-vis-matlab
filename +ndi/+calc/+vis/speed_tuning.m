@@ -9,8 +9,10 @@ classdef speed_tuning < ndi.calculator
 			% Creates a SPEED_TUNING ndi.calculator object
 			%
 				ndi.globals;
+				w = which('ndi.calc.vis.contrast_tuning');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				speed_tuning_obj = speed_tuning_obj@ndi.calculator(session,'speedtuning_calc',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','speedtuning_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','speedtuning_calc.json'));
 		end; % speed_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -273,7 +275,7 @@ classdef speed_tuning < ndi.calculator
 				speed_tuning.significance = significance;
 				speed_tuning.fit = fit;
 
-				speed_props_doc = ndi.document('stimulus/vision/speed/speed_tuning',...
+				speed_props_doc = ndi.document('speed_tuning',...
 					'speed_tuning',speed_tuning);
 				speed_props_doc = speed_props_doc.set_dependency_value('element_id', ...
 					tuning_doc.dependency_value('element_id'));

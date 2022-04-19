@@ -9,8 +9,10 @@ classdef contrast_tuning < ndi.calculator
 			% Creates a CONTRAST_TUNING ndi.calculator object
 			%
 				ndi.globals;
+				w = which('ndi.calc.vis.contrast_tuning');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				contrast_tuning_obj = contrast_tuning_obj@ndi.calculator(session,'contrasttuning_calc',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','contrasttuning_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','contrasttuning_calc.json'));
 		end; % contrast_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)

@@ -11,8 +11,10 @@ classdef oridir_tuning < ndi.calculator
 			% Creates a oridir_tuning ndi.calculator object
 			%
 				ndi.globals;
+				w = which('ndi.calc.vis.contrast_tuning');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','oridirtuning_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','oridirtuning_calc.json'));
 		end; % oridir_tuning() creator
 
 		function doc = calculate(ndi_calculator_obj, parameters)
