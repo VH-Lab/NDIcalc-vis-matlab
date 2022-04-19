@@ -1,0 +1,12 @@
+    - calc:
+      - contrastsensitivity_calc : 'documents/calc/contrastsensitivity_calc.md'
+      - contrasttuning_calc : 'documents/calc/contrasttuning_calc.md'
+      - hartley_calc : 'documents/calc/hartley_calc.md'
+      - oridirtuning_calc : 'documents/calc/oridirtuning_calc.md'
+      - speedtuning_calc : 'documents/calc/speedtuning_calc.md'
+    - neuro:
+      - hartley_reverse_correlation : 'documents/neuro/hartley_reverse_correlation.md'
+      - reverse_correlation : 'documents/neuro/reverse_correlation.md'
+    - vision:
+      - contrast_tuning : 'documents/vision/contrast_tuning.md'
+      - speed_tuning : 'documents/vision/speed_tuning.md'
