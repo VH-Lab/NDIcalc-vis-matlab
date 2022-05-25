@@ -1,0 +1,17 @@
+This calculator object computes several index values and fits of orientation and/or direction tuning given a set of stimulus responses at a range of stimulus angles as described in Mazurek et al. (2014)
+
+There are two major types of indexes returned. One set are "fitless" index values that use vector methods to identify the preferred orientation and direction and the degree of tuning (such as circular variance and circular variance in direction space).
+
+The data are also fit to a double Gaussian function of the form:
+
+ ** edit this to have correct form **
+R(theta) = 
+
+where the fit parameters are 
+   Rsp       - the untuned responseof the neuron
+   Rp        - 
+   thetaPref -
+   sigma     - 
+   Rn        - 
+   
+   
