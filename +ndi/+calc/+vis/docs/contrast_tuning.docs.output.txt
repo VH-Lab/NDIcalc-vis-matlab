@@ -26,30 +26,30 @@ fitless:
                                             
 		
 fit: 
-			naka_rushton_RB_parameters:             The 12 fit parameters (defined in the general document) used in the Naka-Rushton function to fit a contrast tuning curve 
+			naka_rushton_RB_parameters:             The 12 fit parameters (defined in the general document) used in the Naka-Rushton function 								  to fit a contrast tuning curve 
 			naka_rushton_RB_contrast:               The range of contrast values 	
 			naka_rushton_RB_values:                 The range of response values 
 			naka_rushton_RB_pref:                   
-			naka_rushton_RB_empirical_c50:          The empirical fit contrast that gives 50% of response to 100% contrast (max differs from C50 of the fit because max response is not usually at 100% contrast) 
+			naka_rushton_RB_empirical_c50:          The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast) 
 			naka_rushton_RB_r2:                     The fit r^2 value 
 			naka_rushton_RB_relative_max_gain:      The relative max gain     
 			naka_rushton_RB_saturation_index:       The saturation index         
-			naka_rushton_RB_sensitivity:			The 1x10 vector of contrast sensitivity 
-			naka_rushton_RBN_parameters:            The 12 fit parameters (defined in the general document) used in the Naka-Rushton function to fit a contrast tuning curve         
+			naka_rushton_RB_sensitivity:		The 1x10 vector of contrast sensitivity 
+			naka_rushton_RBN_parameters:            The 12 fit parameters (defined in the general document) used in the Naka-Rushton function 								  to fit a contrast tuning curve         
 			naka_rushton_RBN_contrast:              The range of contrast values     
 			naka_rushton_RBN_values:                The range of response values 
 			naka_rushton_RBN_pref:                  
-			naka_rushton_RBN_empirical_c50:			The empirical fit contrast that gives 50% of response to 100% contrast (max differs from C50 of the fit because max response is not usually at 100% contrast) 
-			naka_rushton_RBN_r2:					The fit r^2 value 
-			naka_rushton_RBN_relative_max_gain:		The relative max gain  
-			naka_rushton_RBN_saturation_index:		The saturation index         	
-			naka_rushton_RBN_sensitivity:			The 1x10 vector of contrast sensitivity 
-			naka_rushton_RBNS_parameters:			The 12 fit parameters (defined in the general document) used in the Naka-Rushton function to fit a contrast tuning curve 	
+			naka_rushton_RBN_empirical_c50:		The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast) 
+			naka_rushton_RBN_r2:			The fit r^2 value 
+			naka_rushton_RBN_relative_max_gain:	The relative max gain  
+			naka_rushton_RBN_saturation_index:	The saturation index         	
+			naka_rushton_RBN_sensitivity:		The 1x10 vector of contrast sensitivity 
+			naka_rushton_RBNS_parameters:		The 12 fit parameters (defined in the general document) used in the Naka-Rushton function 								  to fit a contrast tuning curve 	
 			naka_rushton_RBNS_contrast:             The range of contrast values   
 			naka_rushton_RBNS_values:               The range of response values 
 			naka_rushton_RBNS_pref:                 
-			naka_rushton_RBNS_empirical_c50:        The empirical fit contrast that gives 50% of response to 100% contrast (max differs from C50 of the fit because max response is not usually at 100% contrast)     	
+			naka_rushton_RBNS_empirical_c50:        The empirical fit contrast that gives 50% of response to 100% contrast (max differs from 								 C50 of the fit because max response is not usually at 100% contrast)     	
 			naka_rushton_RBNS_r2:                   The fit r^2 value 
 			naka_rushton_RBNS_relative_max_gain:	The relative max gain  		
-			naka_rushton_RBNS_saturation_index:		The saturation index       	
-			naka_rushton_RBNS_sensitivity:			The 1x10 vector of contrast sensitivity 
+			naka_rushton_RBNS_saturation_index:	The saturation index       	
+			naka_rushton_RBNS_sensitivity:		The 1x10 vector of contrast sensitivity 
