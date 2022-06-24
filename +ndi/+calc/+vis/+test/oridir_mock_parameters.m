@@ -1,1 +1,5 @@
-
+Rsp = randi([0 10])
+Rp = randi([0 30])
+Rn = randi([0 Rp])
+sig = randi([10 90])
+op = randi([0 360])
