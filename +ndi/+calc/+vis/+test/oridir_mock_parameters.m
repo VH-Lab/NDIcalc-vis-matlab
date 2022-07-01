@@ -3,20 +3,25 @@ function P = oridir_mock_parameters()
 %
 % P = ndi.calc.vis.test.oridir_mock_parameters()
 %
-% Generate a set of parameters P = [Rsp Rp Rn sig op] that describe a
-% direction tuning curve.
+% Generate a set of parameters P = [Rsp Rp Rn sig op] that describe a direction tuning curve.
 %
-% %(Ray, describe how the parameters are chosen here
+% The parameters are variables from the double Gaussian function provided in the work by Mazurek et al. (2014). The function was used to extract 
+% parameters of orientation and direction tuning curves with fits. Below is the list of parameters and how they are chosen:
+% - Rsp: the untuned responseof the neuron, chosen as a real-value between 0 and 10. 
+% - Rp: the above-offset response to the preferred orientation, chosen as a real-value between 0 and 30.
+% - Rn: the above-offset response to the null direction, chosen as a real-value between 0 and Rp since its response would not be higher than the preferred response. 
+% - Sig: the tuning width parameter, chosen as a real-value between 10 and 90. 
+% - op: the preferred angle, chosen as a real-value between between 0 and 360. 
 %
 % See: Mazurek et al. (2014)
 
   % Step 1, generate random values
 
-Rsp = randi([0 10]) % Ray, this will only choose integer values, use 0 + (10-0)*rand to generate a real-valued number between 0 and 10
-Rp = randi([0 30]) % change to real-valued
-Rn = randi([0 Rp]) % change to real-valued
-sig = randi([10 90]) % change to real-valued
-op = randi([0 360]) % change to real-valued
+Rsp = 0 + (10-0)*rand
+Rp = 0 + (30-0)*rand
+Rn = 0 + (Rp-0)*rand
+sig = 10 + (90-10)*rand
+op = 0 + (360-0)*rand
 
   % Step 2, assemble them as an array
   
