@@ -17,11 +17,11 @@ function P = oridir_mock_parameters()
 
   % Step 1, generate random values
 
-Rsp = 0 + (10-0)*rand
-Rp = 0 + (30-0)*rand
-Rn = 0 + (Rp-0)*rand
-sig = 10 + (90-10)*rand
-op = 0 + (360-0)*rand
+Rsp = 0 + (10-0)*rand;
+Rp = 0 + (30-0)*rand;
+Rn = 0 + (Rp-0)*rand;
+sig = 10 + (90-10)*rand;
+op = 0 + (360-0)*rand;
 
   % Step 2, assemble them as an array
   
