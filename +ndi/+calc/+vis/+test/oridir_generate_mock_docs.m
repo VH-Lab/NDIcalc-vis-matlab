@@ -7,8 +7,18 @@ function docs = oridir_generate_mock_docs(type, number)
 % NUMBER specifies the number of documents to generate
 switch type
     case standard
+        % standard should be a set list, it can be sampled over and over again to make a list more than 10
+        % parameters are [Rsp Rp Rn sig op] as described in Mazurek et al.
+        P_(1,:) = [ 0 20 10 30 45] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
+        P_(2,:) = [ 0 20 10 45 45] ; % broader tuning
+        P_(3,:) = [ 0 20 10 90 45] ; % really broad tuning 
+        P_(4,:) = [ 0 20 10 90 45] ; % really broad tuning 
+        P_(5,:) = [ 10 20 10 30 45] ; % large offset
+        P_(6,:) = [ 10 20 19 30 45] ; % really low direction index offset
+        % try to increase to 10-15 cases, using Mazurek et al. figure to pick good variation
         for x = 1.0:+1.0:number
-            P(x,:)= [x mod(x*10.0,40) 0.5*mod(x*10.0,40) 90-mod(x,2)*45 x*30]; % This is the standard preset value
+            index = 1 + mod(x-1,size(P_,2));
+            P(x,:)= P_(index,:);
         end
    
     case random_noisy
