@@ -369,11 +369,11 @@ classdef oridir_tuning < ndi.calculator
 							error(['Unknown scope ' scope '.']);
 					end; % switch
 
-					mockitems = ndi.mock.fun.subject_stimulator_neuron(ori_calc_obj.session);
-					% need extra: actually make the stimulator and a neuron
-				
-					[stim_pres_doc,spiketimes] = ndi.mock.fun.stimulus_presentation(stimulator_id,...
-						param_struct,independent_variable,X,R,noise,reps);
+					docs = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
+						param_struct, independent_variable, x, r, noise, reps);
+
+					keyboard
+					% working from here
 
 					% write parameter code here to search for these documents
 
@@ -407,7 +407,7 @@ classdef oridir_tuning < ndi.calculator
 
 		end;
 
-		function [P, total] = generate_mock_parameters(scope, index)
+		function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
 			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
 			%
 			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
