@@ -23,8 +23,8 @@ switch type
    
     case random_noisy
         for x = 1.0:+1.0:number
-            P(x,:)= ndi.calc.vis.test.oridir_mock_parameters; % This is the parameters with noise, I used the model 10% of response + 2. I'm not quite sure is this the 
-            P(x,1) = P(x,1)*1.1 + 2;                            % right way to call a function in MATLAB
+            P(x,:)= ndi.calc.vis.test.oridir_mock_parameters; % This is the parameters with noise, I used the model 10% of response + 2. 
+            P(x,1) = P(x,1)*1.1 + 2;                          
             P(x,2) = P(x,2)*1.1 + 2;
             P(x,3) = P(x,3)*1.1 + 2;
         end
