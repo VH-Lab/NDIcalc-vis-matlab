@@ -1,0 +1,45 @@
+function [b, errormsg] = oridir_compare_docs(document_expected, document_actual, scope)
+% ORIDIR_COMPARE_DOCS
+%
+% [B, ERRORMSG] = ndi.calc.vis.test.oridir_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
+%
+% Given an expected calculation answer in DOC_EXPECTED and an actual 
+% calculation in DOC_ACTUAL and given the scope ('standard','low_noise','high_noise')
+% determine whether the information in the two documents is close enough to be considered
+% a match. If the documents match, then B is 1. If it does not match, then B is 0 and
+% errormsg contains a description of at least one way in which the documents failed
+% to match.
+%
+
+b = 1;
+errormsg = '';
+
+  % start comparison
+
+doc_e = document_expected.document_properties;
+doc_a = document_actual.document_properties;
+
+% first, properties should be the same
+
+properties_match = strcmpi(doc_e.properties.coordinates, doc_a.properties.coordinates);
+if ~properties_match,
+   b = 0;
+   errormsg = ['Expected properties.coordinates field of ' doc_e.properties.coordinates ' but observed ' doc_a.properties.coordinates];
+   return;
+end;
+
+% direction angles should match exactly within 1e-6
+
+tol = 1e-6;
+
+direction_match = vlt.data.sizeeq(doc_e.direction,doc_a.direction);
+if direction_match,
+   direction_match = max(abs(doc_e.direction - doc_a.direction))) < tol;
+end;
+
+if ~direction_match,
+   b = 0;
+   errormsg = ['Direction angles differed by greater than ' num2str(tol) '.'];
+end;
+
+
