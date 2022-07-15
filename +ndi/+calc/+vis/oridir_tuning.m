@@ -369,8 +369,9 @@ classdef oridir_tuning < ndi.calculator
 							error(['Unknown scope ' scope '.']);
 					end; % switch
 
-					stimulator_id = '12345';
+					mockitems = ndi.mock.fun.subject_stimulator_neuron(ori_calc_obj.session);
 					% need extra: actually make the stimulator and a neuron
+				
 					[stim_pres_doc,spiketimes] = ndi.mock.fun.stimulus_presentation(stimulator_id,...
 						param_struct,independent_variable,X,R,noise,reps);
 
