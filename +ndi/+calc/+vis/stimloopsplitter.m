@@ -113,7 +113,7 @@ classdef stimloopsplitter < ndi.calculator
                         %add to pres_order in correct order (old then new, alternating based on number of loops)
                         
                         new_stim_pres_struct.presentation_order(end+1,1) = stimInd; %stimulus index of stimulus that already existed
-                        for loop = 1:length(numLoops) %only add one more stimulus if loop = 1 (assumes no loops means loops = 0)
+                        for loop = 1:numLoops %only add one more stimulus if loop = 1 (assumes no loops means loops = 0)
                             if mod(loop,2)==1 %if it's the 1st,3rd,etc. loop 
                                 new_stimInd = stimulus_pairs(stimInd);
                                 new_stim_pres_struct.presentation_order(end+1,1) = new_stimInd; %stimulus index of newly created stimulus
@@ -122,7 +122,35 @@ classdef stimloopsplitter < ndi.calculator
                             end
                         end
                         %add to pres_time
-                        
+                        %stimopen starts as previous stimulus' stimclose
+                        %(except first stimopen, then old stimclose)
+                        %onset is:
+                        %onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1)
+                        %offset is:
+                        %onset_old + loopInd*(offset_old-onset_old)/(numLoops+1)
+                        %stimclose is the same as offset, except the last: 
+                        %the last one is the old stimclose
+                        %clocktype is clocktype_old
+                        for loopInd = 1:numLoops+1
+                            %stimopen
+                            numPresentations = numel(new_stim_pres_struct.presentation_time);
+                            if (loopInd>1)
+                                new_stim_pres_struct.presentation_time(end+1,1).stimopen = new_stim_pres_struct.presentation_time(numPresentations,1).stimclose;
+                            else
+                                new_stim_pres_struct.presentation_time(end+1,1).stimopen = old_pres_time(pres_orderInd).stimopen;
+                            end
+                            %clocktype
+                            new_stim_pres_struct.presentation_time(end,1).clocktype = old_pres_time(pres_orderInd).clocktype;
+                            %onset
+                            onset_old = old_pres_time(pres_orderInd).onset;
+                            offset_old = old_pres_time(pres_orderInd).offset;
+                            new_stim_pres_struct.presentation_time(end,1).onset = onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1);
+                            %offset
+                            new_stim_pres_struct.presentation_time(end,1).offset = onset_old + (loopInd)*(offset_old-onset_old)/(numLoops+1);
+                            %stimclose
+                            new_stim_pres_struct.presentation_time(end,1).stimclose = new_stim_pres_struct.presentation_time(end,1).offset;
+                        end
+                        new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%last substimulus has same stimclose as old stimulus
                     else
                         error(['number of loops not valid']);
                     end
@@ -144,7 +172,7 @@ classdef stimloopsplitter < ndi.calculator
 				doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'stimloopsplitter_calc',stimloopsplitter_calc,...
                    'stimulus_presentation',new_stim_pres_struct);
 
-				if numel(doc)==1,
+				if numel(doc)~=1,
 					doc = doc{1};
 				end;
 
