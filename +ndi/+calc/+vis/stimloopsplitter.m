@@ -269,7 +269,7 @@ classdef stimloopsplitter < ndi.calculator
                         %
                         % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
                         %
-                        % Produce a plot of the tuning curve.
+                        % Produce a plot of the angles of stimuli in the order in which they're presented.
 			%
                         % Handles to the figure, the axes, and any objects created are returned in H.
                         %
@@ -284,67 +284,54 @@ classdef stimloopsplitter < ndi.calculator
 				else,
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
-
-				tc = doc.document_properties.tuning_curve; % shorten our typing
-
-				% if more than 2-d, complain
-				
-				if numel(tc.independent_variable_label)>2,
-					a = axis;
-					h.objects(end+1) = text(mean(a(1:2)),mean(a(3:4)),['Do not know how to plot with more than 2 independent axes.']);
-					return;
-				end;
-
-				if numel(tc.independent_variable_label)==1,
-					hold on;
-					h_baseline = plot([min(tc.independent_variable_value) max(tc.independent_variable_value)],...
-						[0 0],'k--','linewidth',1.0001);
-					h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
-					h.objects(end+1) = h_baseline;
-					net_responses = tc.response_mean - tc.control_response_mean;
-					[v,sortorder] = sort(tc.independent_variable_value);
-					h_errorbar = errorbar(tc.independent_variable_value(sortorder(:)),...
-						tc.response_mean(sortorder(:)),tc.response_stderr(sortorder(:)),tc.response_stderr(sortorder(:)));
-					set(h_errorbar,'color',[0 0 0],'linewidth',1);
-					h.objects = cat(2,h.objects,h_errorbar);
-					if ~h.params.suppress_x_label,
-						h.xlabel = xlabel(tc.independent_variable_label);
-					end;
-					if ~h.params.suppress_y_label,
-						h.ylabel = ylabel(['Response (' tc.response_units ')']);
-					end;
-					box off;
-				end;
-
-				if numel(tc.independent_variable_label)==2,
-					net_responses = tc.response_mean - tc.control_response_mean;
-					first_dim = unique(tc.independent_variable_value(:,1));
-					colormap = spring(numel(first_dim));
-					h_baseline = plot([min(tc.independent_variable_value(:,2)) max(tc.independent_variable_value(:,2))],...
-						[0 0],'k--','linewidth',1.0001);
-					h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
-					h.objects(end+1) = h_baseline;
-					hold on;
-					for i=1:numel(first_dim),
-						indexes = find(tc.independent_variable_value(:,1)==first_dim(i));
-						[v,sortorder] = sort(tc.independent_variable_value(indexes,2));
-						h_errorbar = errorbar(tc.independent_variable_value(indexes(sortorder),2),...
-							tc.response_mean(indexes(sortorder)),...
-							tc.response_stderr(indexes(sortorder)), tc.response_stderr(indexes(sortorder)));
-						set(h_errorbar,'color',colormap(i,:),'linewidth',1,...
-							'DisplayName',...
-							[tc.independent_variable_label{1} '=' num2str(tc.independent_variable_value(indexes(1),1))]);
-						h.objects = cat(2,h.objects,h_errorbar);
-					end;
-					if ~h.params.suppress_x_label,
-						h.xlabel = xlabel(tc.independent_variable_label{2});
-					end;
-					if ~h.params.suppress_y_label,
-						h.ylabel = ylabel(['Response (' tc.response_units ')']);
-					end;
-					legend;
-					box off;
-				end;
+                sp = doc.document_properties.stimulus_presentation; % shorten our typing
+                option = 'combined';
+                switch option
+                    case 'noarrow'
+                        %option 1: using time as x-axis no arrows
+                        for presInd = 1:numel(sp.presentation_order)
+                            stimInd = sp.presentation_order(presInd);
+                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
+                                onset = sp.presentation_time(presInd).onset;
+                                offset = sp.presentation_time(presInd).offset;
+                                angle = sp.stimuli(stimInd).parameters.angle;
+                                X = onset:.001:offset;
+                                Y = angle*ones(1,numel(X));
+                                hold on;plot(X,Y,'k');
+                            end
+                        end
+                    case 'order'
+                        %option 2: using order as x-axis with arrows
+                        y_fixed = 0;
+                        x_length = .1;
+                        axis([-1*x_length/2 numel(sp.presentation_order)+x_length/2 -1*numel(sp.presentation_order)/2 numel(sp.presentation_order)/2])
+                        for presInd = 1:numel(sp.presentation_order)
+                            stimInd = sp.presentation_order(presInd);
+                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
+                                angle = sp.stimuli(stimInd).parameters.angle;
+                                arrowplot(presInd,y_fixed,angle,x_length, 'linecolor',[rand rand rand],'headlength',1);
+                                hold on
+                            end
+                        end
+                    case 'time'
+                        %option 3: using time as x-axis with arrows
+                    case 'combined'
+                        %option 4: using arrows and angle degrees
+                        x_length = .1;
+                        cmap = colormap(parula(360));
+                        for presInd = 1:numel(sp.presentation_order)
+                            stimInd = sp.presentation_order(presInd);
+                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
+                                onset = sp.presentation_time(presInd).onset;
+                                offset = sp.presentation_time(presInd).offset;
+                                angle = sp.stimuli(stimInd).parameters.angle;
+                                X = mean([onset offset]);
+                                Y = angle;
+                                color = cmap(floor(angle)+1,:);
+                                hold on;arrowplot(X,Y,angle,x_length,'linecolor',color);
+                            end
+                        end
+                end 
 		end; % plot()
 
 
