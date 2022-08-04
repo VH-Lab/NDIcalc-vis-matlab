@@ -23,6 +23,13 @@
 				"value":			[]
 			}
 		]
-	}
+	},
+    "depends_on": [
+        {
+            "name":				"stimulus_presentation_id",
+            "value":			[]
+        }
+    ]
 }
+
 

@@ -9,8 +9,10 @@ classdef stimloopsplitter < ndi.calculator
 			% Creates a stimloopsplitter ndi.calculator object
 			%
 				ndi.globals;
+                w = which('ndi.calc.vis.stimloopsplitter');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				stimloopsplitter_obj = stimloopsplitter_obj@ndi.calculator(session,'stimloopsplitter_calc',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','stimloopsplitter_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','stimloopsplitter_calc.json'));
 		end; % stimloopsplitter()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -171,7 +173,12 @@ classdef stimloopsplitter < ndi.calculator
 %                 end
 				doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'stimloopsplitter_calc',stimloopsplitter_calc,...
                    'stimulus_presentation',new_stim_pres_struct);
-
+                
+                % set dependency value to the dependency value of parameters
+                for i=1:numel(parameters.depends_on),
+                    % this doesn't work because doc is read-only: % doc.document_properties.depends_on(i) = parameters.depends_on(i)
+                    doc = doc.set_dependency_value(parameters.depends_on(i).name,parameters.depends_on(i).value);
+                end;
 				if numel(doc)~=1,
 					doc = doc{1};
 				end;
@@ -214,8 +221,7 @@ classdef stimloopsplitter < ndi.calculator
 			% |-----------------------|-----------------------------------------------
 			%
 			% For the ndi.calc.stimulus.stimloopsplitter_calc class, this looks for 
-			% documents of type 'stimulus_response_scalar.json' with 'response_type' fields
-			% the contain 'mean' or 'F1'.
+			% documents of type 'stimulus_presentation.json'. 
 			%
 			%
 				q1 = ndi.query('','isa','stimulus_presentation.json','');
@@ -237,13 +243,15 @@ classdef stimloopsplitter < ndi.calculator
 			% can be overriden if additional criteria beyond an ndi.query are needed to
 			% assess if a document is an appropriate input for the calculator.
 			%
-				b = 1;
+                %check whether the dependency is a stimulus presentation:
+                % do a database search to make sure the dependency value
+                % is an id for a stimulus presentation doc
+                q1 = ndi.query('ndi_document.id','exact_string',value,'');
+				q2 = ndi.query('','isa','stimulus_presentation.json','');
+                %if there is a document that satisfies both queries, then
+                %the dependency is valid
+                b = ~isempty(ndi_calculator_obj.session.database_search(q1&q2));
 				return;
-				% the below is wrong..this function does not take stimloopsplitters or stimloopsplitter_calc objects as inputs
-				q1 = ndi.query('ndi_document.id','exact_string',value,'');
-				q2 = ndi.query('','isa','stimloopsplitter_calc.json','');
-				% can't also be a stimloopsplitter_calc document or we could have infinite recursion
-				b = isempty(ndi_calculator_obj.session.database_search(q1&q2));
 		end; % is_valid_dependency_input()
 
 		function doc_about(ndi_calculator_obj)
@@ -255,26 +263,28 @@ classdef stimloopsplitter < ndi.calculator
 			%   | stimloopsplitter_CALC -- ABOUT |
 			%   ------------------------
 			%
-			%   stimloopsplitter_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each stimloopsplitter_CALC document 'depends_on' an
-			%   NDI daq system.
+			%   stimloopsplitter_CALC is a calculation document. It
+			%   converts a set of stimuli into a new set of
+			%   stimulus where a certain stimulus is split into multiple
+			%   substimuli. This enriches the data by allowing more
+			%   properties' effects to be considered.
 			%
-			%   Definition: apps/stimloopsplitter_calc.json
+			%   Definition: stimloopsplitter_calc.json
 			%
 				eval(['help ndi.calc.example.stimloopsplitter.doc_about']);
 		end; %doc_about()
 
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
-                        % PLOT - provide a diagnostic plot to show the results of the calculator
-                        %
-                        % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
-                        %
-                        % Produce a plot of the angles of stimuli in the order in which they're presented.
-			%
-                        % Handles to the figure, the axes, and any objects created are returned in H.
-                        %
-                        % This function takes additional input arguments as name/value pairs.
-                        % See ndi.calculator.plot_parameters for a description of those parameters.
+            % PLOT - provide a diagnostic plot to show the results of the calculator
+            %
+            % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
+            %
+            % Produce a plot of the angles of stimuli in the order in which they're presented.
+            %
+            % Handles to the figure, the axes, and any objects created are returned in H.
+            %
+            % This function takes additional input arguments as name/value pairs.
+            % See ndi.calculator.plot_parameters for a description of those parameters.
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
@@ -336,10 +346,10 @@ classdef stimloopsplitter < ndi.calculator
 
 
 
-		function [pva] = property_value_array(ndi_calculator_obj, stim_response_doc, property)
+		function [pva] = property_value_array(ndi_calculator_obj, stimloopsplitter_calc_doc, property)
 			% PROPERTY_VALUE_ARRAY - find all values of a stimulus property
 			%
-			% [PVA] = ndi.calc.stimulus.stimloopsplitter.property_value_array(NDI_CALC_STIMULUS_stimloopsplitter_OBJ, STIM_RESPONSE_DOC, PROPERTY)
+			% [PVA] = ndi.calc.stimulus.stimloopsplitter.property_value_array(NDI_CALCULATOR_OBJ, STIMLOOPSPLITTER_CALC_DOC, PROPERTY)
 			%
 			% Given an ndi.document of type STIMULUS_RESPONSE_SCALAR, return all values of the parameter PROPERTY that were
 			% used in the stimulus.
@@ -349,11 +359,11 @@ classdef stimloopsplitter < ndi.calculator
 			% If this function cannot find a stimulus presentation document for the STIM_RESPONSE_DOC, it produces
 			% an error.
 			%
-				stim_pres_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id', 'exact_string', ...
-                                        stim_response_doc.dependency_value('stimulus_presentation_id'),''));
-
+				
+                stim_pres_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id', 'exact_string', ...
+                                        stimloopsplitter_calc_doc.dependency_value('stimulus_presentation_id'),''));
 				if numel(stim_pres_doc)~=1, 
-					error(['Could not find stimulus presentation doc for document ' stim_response_doc.id() '.']);
+					error(['Could not find stimulus presentation doc for document ' stimloopsplitter_calc_doc.id() '.']);
 				end;
 				stim_pres_doc = stim_pres_doc{1};
 
