@@ -203,7 +203,7 @@ classdef stimloopsplitter < ndi.calculator
 					
 		end; % default_search_for_input_parameters
 
-                function query = default_parameters_query(ndi_calculator_obj, parameters_specification)
+        function query = default_parameters_query(ndi_calculator_obj, parameters_specification)
 			% DEFAULT_PARAMETERS_QUERY - what queries should be used to search for input parameters if none are provided?
 			%
 			% QUERY = DEFAULT_PARAMETERS_QUERY(NDI_CALCULATOR_OBJ, PARAMETERS_SPECIFICATION)
@@ -248,9 +248,11 @@ classdef stimloopsplitter < ndi.calculator
                 % is an id for a stimulus presentation doc
                 q1 = ndi.query('ndi_document.id','exact_string',value,'');
 				q2 = ndi.query('','isa','stimulus_presentation.json','');
-                %if there is a document that satisfies both queries, then
-                %the dependency is valid
-                b = ~isempty(ndi_calculator_obj.session.database_search(q1&q2));
+                %if there is a document that satisfies both queries and the
+                %name is 'stimulus_presentation_id', the dependency is
+                %valid
+                b = ~isempty(ndi_calculator_obj.session.database_search(q1&q2))...
+                    &strcmp(name,'stimulus_presentation_id');
 				return;
 		end; % is_valid_dependency_input()
 
@@ -271,6 +273,8 @@ classdef stimloopsplitter < ndi.calculator
 			%
 			%   Definition: stimloopsplitter_calc.json
 			%
+            %   Doesn't work right now - may need to change it to static
+            
 				eval(['help ndi.calc.example.stimloopsplitter.doc_about']);
 		end; %doc_about()
 
@@ -288,59 +292,100 @@ classdef stimloopsplitter < ndi.calculator
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
-
+                
 				if isa(doc_or_parameters,'ndi.document'),
 					doc = doc_or_parameters;
 				else,
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
-                sp = doc.document_properties.stimulus_presentation; % shorten our typing
-                option = 'combined';
+                stim_pres = doc.document_properties.stimulus_presentation; % shorten our typing
+                split_param_string = doc.document_properties.stimloopsplitter_calc.input_parameters.parameter_to_split;
+                option = 'time';
                 switch option
                     case 'noarrow'
                         %option 1: using time as x-axis no arrows
-                        for presInd = 1:numel(sp.presentation_order)
-                            stimInd = sp.presentation_order(presInd);
-                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
-                                onset = sp.presentation_time(presInd).onset;
-                                offset = sp.presentation_time(presInd).offset;
-                                angle = sp.stimuli(stimInd).parameters.angle;
+                        xlabel('time (s)')
+                        ylabel([stim_param_string ' (\circ)'])
+                        axis([-inf-10 inf+10 -10 370])
+                        for presInd = 1:numel(stim_pres.presentation_order)
+                            stimInd = stim_pres.presentation_order(presInd);
+                            if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
+                                onset = stim_pres.presentation_time(presInd).onset;
+                                offset = stim_pres.presentation_time(presInd).offset;
+                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,stim_param_string);%should use split parameter instead
                                 X = onset:.001:offset;
-                                Y = angle*ones(1,numel(X));
+                                Y = split_param*ones(1,numel(X));
                                 hold on;plot(X,Y,'k');
                             end
                         end
                     case 'order'
                         %option 2: using order as x-axis with arrows
                         y_fixed = 0;
-                        x_length = .1;
-                        axis([-1*x_length/2 numel(sp.presentation_order)+x_length/2 -1*numel(sp.presentation_order)/2 numel(sp.presentation_order)/2])
-                        for presInd = 1:numel(sp.presentation_order)
-                            stimInd = sp.presentation_order(presInd);
-                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
-                                angle = sp.stimuli(stimInd).parameters.angle;
-                                arrowplot(presInd,y_fixed,angle,x_length, 'linecolor',[rand rand rand],'headlength',1);
+                        x_length = 1;
+                        axis([-1*x_length/2 numel(stim_pres.presentation_order)+x_length/2 -1*numel(stim_pres.presentation_order)/2 numel(stim_pres.presentation_order)/2])
+                        for presInd = 1:numel(stim_pres.presentation_order)
+                            stimInd = stim_pres.presentation_order(presInd);
+                            if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
+                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,stim_param_string);%should use parameter_to_split field
+                                arrowplot(presInd,y_fixed,split_param,x_length, 'linecolor',[rand rand rand],'headlength',.3);
                                 hold on
                             end
                         end
                     case 'time'
                         %option 3: using time as x-axis with arrows
-                    case 'combined'
-                        %option 4: using arrows and angle degrees
-                        x_length = .1;
-                        cmap = colormap(parula(360));
-                        for presInd = 1:numel(sp.presentation_order)
-                            stimInd = sp.presentation_order(presInd);
-                            if (~isfield(sp.stimuli(stimInd).parameters,'isblank'))
-                                onset = sp.presentation_time(presInd).onset;
-                                offset = sp.presentation_time(presInd).offset;
-                                angle = sp.stimuli(stimInd).parameters.angle;
+                        y_fixed = 0;
+                        x_length = 1;
+                        linethickness = 1;
+                        for presInd = 1:numel(stim_pres.presentation_order)
+                            stimInd = stim_pres.presentation_order(presInd);
+                            if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
+                                onset = stim_pres.presentation_time(presInd).onset;
+                                offset = stim_pres.presentation_time(presInd).offset;
+                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
                                 X = mean([onset offset]);
-                                Y = angle;
-                                color = cmap(floor(angle)+1,:);
-                                hold on;arrowplot(X,Y,angle,x_length,'linecolor',color);
+                                
+                                hold on;
+                                arrowplot(X,y_fixed,split_param,x_length,'linethickness',linethickness);
                             end
                         end
+                        ylim(xlim - diff(xlim)/2);
+                    case 'combined'
+                        %option 4: using arrows and angle degrees with time
+                        xlabel('time (s)')
+                        ylabel([stim_param_string ' (\circ)'])
+                        axis([-inf-10 inf+10 -10 370])
+                        x_length = 3;
+                        linethickness = 1;
+                        cmap = colormap(parula(360));
+                        
+                        for presInd = 1:numel(stim_pres.presentation_order)
+                            stimInd = stim_pres.presentation_order(presInd);
+                            if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
+                                onset = stim_pres.presentation_time(presInd).onset;
+                                offset = stim_pres.presentation_time(presInd).offset;
+                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                X = mean([onset offset]);
+                                Y = split_param;
+                                color = cmap(floor(split_param)+1,:);
+                                hold on;
+                                arrowplot(X,Y,split_param,x_length,'linecolor',color,...
+                                    'linethickness',linethickness);
+                            end
+                        end
+                    case 'stimuli'
+                        %option 5: show each stimulus' split parameter in
+                        %order of index
+                        
+                        split_param_vals = property_value_array(ndi_calculator_obj,doc,split_param_string);
+                        y_fixed = 0;
+                        x_length = 1;
+                        headangle = 15;
+                        for valInd = 1:numel(split_param_vals)
+                            split_param = split_param_vals{valInd};
+                            hold on;
+                            arrowplot(valInd,y_fixed,split_param,x_length,'headangle',headangle);
+                        end
+                        ylim(xlim - diff(xlim)/2);
                 end 
 		end; % plot()
 
@@ -351,7 +396,7 @@ classdef stimloopsplitter < ndi.calculator
 			%
 			% [PVA] = ndi.calc.stimulus.stimloopsplitter.property_value_array(NDI_CALCULATOR_OBJ, STIMLOOPSPLITTER_CALC_DOC, PROPERTY)
 			%
-			% Given an ndi.document of type STIMULUS_RESPONSE_SCALAR, return all values of the parameter PROPERTY that were
+			% Given an ndi.document of type STIMLOOPSPLITTER_CALC, return all values of the parameter PROPERTY that were
 			% used in the stimulus.
 			%
 			% Values will be returned in a cell array.
