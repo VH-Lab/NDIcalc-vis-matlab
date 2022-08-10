@@ -193,13 +193,15 @@ classdef stimloopsplitter < ndi.calculator
 			% Returns a list of the default search parameters for finding appropriate inputs
 			% to the calculator. For stimloopsplitter_calc, there is no appropriate default parameters
 			% so this search will yield empty.
+            % 
+            % Needs to be plugged into the superclass search for input
+            % parameters
 			%
-				parameters.input_parameters = struct('independent_label','','independent_parameter','','best_algorithm','empirical_maximum');
-				parameters.input_parameters.selection = vlt.data.emptystruct('property','operation','value');
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.input_parameters = struct('parameter_adjustment',0,'division_parameter','loops','parameter_to_split','angle');
+				parameters.depends_on = struct('name','stimulus_presentation_id','value','');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
-				parameters.query(end+1) = struct('name','will_fail','query',...
-					ndi.query('ndi_document.id','exact_string','123',''));
+% 				parameters.query(end+1) = struct('name','will_fail','query',...
+% 					ndi.query('ndi_document.id','exact_string','123',''));
 					
 		end; % default_search_for_input_parameters
 
@@ -267,15 +269,15 @@ classdef stimloopsplitter < ndi.calculator
 			%
 			%   stimloopsplitter_CALC is a calculation document. It
 			%   converts a set of stimuli into a new set of
-			%   stimulus where a certain stimulus is split into multiple
+			%   stimuli where a certain stimulus is split into multiple
 			%   substimuli. This enriches the data by allowing more
 			%   properties' effects to be considered.
 			%
 			%   Definition: stimloopsplitter_calc.json
 			%
-            %   Doesn't work right now - may need to change it to static
+
             
-				eval(['help ndi.calc.example.stimloopsplitter.doc_about']);
+				eval(['help ndi.calc.vis.stimloopsplitter.doc_about']);
 		end; %doc_about()
 
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
@@ -284,6 +286,7 @@ classdef stimloopsplitter < ndi.calculator
             % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
             %
             % Produce a plot of the angles of stimuli in the order in which they're presented.
+            % To edit: consider using drawshape (see help) to fill in times where stimuli are being presented 
             %
             % Handles to the figure, the axes, and any objects created are returned in H.
             %
@@ -346,9 +349,12 @@ classdef stimloopsplitter < ndi.calculator
                                 
                                 hold on;
                                 arrowplot(X,y_fixed,split_param,x_length,'linethickness',linethickness);
+                                %consider using drawshape (see help) to fill in times where stimuli are being presented 
                             end
                         end
                         ylim(xlim - diff(xlim)/2);
+                        h.xlabel = xlabel('time (s)');
+                        
                     case 'combined'
                         %option 4: using arrows and angle degrees with time
                         xlabel('time (s)')
