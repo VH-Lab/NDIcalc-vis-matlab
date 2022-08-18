@@ -315,11 +315,11 @@ classdef oridir_tuning < ndi.calculator
 				box off;
 		end; % plot()
 
-		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests)
+		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, varargin)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(ORIDIR_CALC_OBJ, ...
-			%    SCOPE, NUMBER_OF_TESTS)
+			%    SCOPE, NUMBER_OF_TESTS, ...)
 			%
 			% Creates a set of documents to test ndi.calc.vis.oridir_tuning.
 			%
@@ -336,6 +336,17 @@ classdef oridir_tuning < ndi.calculator
 			% The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
 			% as part of the TEST function for ndi.calculator objects.
 			%
+			% This function's behavior can be modified by name/value pairs.
+			% --------------------------------------------------------------------------------
+			% | Parameter (default):     | Description:                                      |
+			% |--------------------------|---------------------------------------------------|
+			% | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
+			% |                          |   generate the "right answer"?) Use carefully.    |
+			% |--------------------------|---------------------------------------------------|
+			%
+
+				generate_expected_docs = 0;
+				vlt.data.assign(varargin{:});
 
 				docs = {};
 				doc_output = {};
@@ -354,10 +365,12 @@ classdef oridir_tuning < ndi.calculator
 					independent_variable = {'angle'};
 					x = angles(:); % column
 					r = r(:); % column
+					x(end+1,1) = NaN;
+					r(end+1,1) = 0;
 					
 					switch (scope),
 						case 'standard',
-							reps = 1;
+							reps = 5; % need reps to test significance measures
 							noise = 0;
 						case 'low_noise',
 							reps = 10;
@@ -369,18 +382,23 @@ classdef oridir_tuning < ndi.calculator
 							error(['Unknown scope ' scope '.']);
 					end; % switch
 
-					docs = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
+					docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 
-					keyboard
-					% working from here
+					calcparameters = oridir_calc_obj.default_search_for_input_parameters();
+					calcparameters.query.query = calcparameters.query.query & ...
+						ndi.query('','depends_on','element_id',docs{i}{3}.id());
+					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
+					if numel(doc_output{i})>1,
+						error(['Generated more than one output doc when one was expected.']);
+					end;
+					doc_output{i} = doc_output{i}{1};
 
-					% write parameter code here to search for these documents
+					if generate_expected_docs,
+						oridir_calc_obj.write_mock_expected_output(i,doc_output{i}{1});
+					end;
 
-					calcparameters = [];
-					doc_output{i} = calculate(calcparameters);
-
-					doc_expected{i} = ori_calc_obj.load_mock_expected_output(i);
+					doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
 
 				end; % for
 
@@ -402,6 +420,9 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
 			%
+
+				
+
 				b = 1;
 				errormsg = '';
 
