@@ -198,7 +198,8 @@ classdef stimloopsplitter < ndi.calculator
             % parameters
 			%
 				parameters.input_parameters = struct('parameter_adjustment',0,'division_parameter','loops','parameter_to_split','angle');
-				parameters.depends_on = struct('name','stimulus_presentation_id','value','');
+				parameters.input_paramters.depends_on = struct('name','stimulus_presentation_id','value','');
+				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 % 				parameters.query(end+1) = struct('name','will_fail','query',...
 % 					ndi.query('ndi_document.id','exact_string','123',''));
