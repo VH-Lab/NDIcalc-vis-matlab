@@ -133,6 +133,8 @@ classdef stimloopsplitter < ndi.calculator
                         %stimclose is the same as offset, except the last: 
                         %the last one is the old stimclose
                         %clocktype is clocktype_old
+                        %stimevents is split by the timing
+                        lowerBoundInd = 1;%initialize splitInd for use inside the loop
                         for loopInd = 1:numLoops+1
                             %stimopen
                             numPresentations = numel(new_stim_pres_struct.presentation_time);
@@ -151,6 +153,17 @@ classdef stimloopsplitter < ndi.calculator
                             new_stim_pres_struct.presentation_time(end,1).offset = onset_old + (loopInd)*(offset_old-onset_old)/(numLoops+1);
                             %stimclose
                             new_stim_pres_struct.presentation_time(end,1).stimclose = new_stim_pres_struct.presentation_time(end,1).offset;
+                            %stimevents
+                            if isfield(old_pres_time,'stimevents')%checks if this field is even needed
+                                stimevents_old = old_pres_time(pres_orderInd).stimevents;
+                                stimevents_toSplit = stimevents_old(:,1);%only use the time column
+                                timeOfSplit = new_stim_pres_struct.presentation_time(end,1).stimclose;
+                                startInd = lowerBoundInd;
+                                endInd = numel(stimevents_toSplit);%the last index of stimevents_toSplit
+                                upperBoundInd = split_stimevents(ndi_calculator_obj,stimevents_toSplit,timeOfSplit,startInd,endInd);%gives the index at which to split the stimevents array
+                                new_stim_pres_struct.presentation_time(end,1).stimevents = stimevents_old(lowerBoundInd:upperBoundInd,:);
+                                lowerBoundInd = upperBoundInd+1;%for the next round of splitting
+                            end
                         end
                         new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%last substimulus has same stimclose as old stimulus
                     else
@@ -184,7 +197,9 @@ classdef stimloopsplitter < ndi.calculator
 				end;
 
 		end; % calculate
-
+        
+       
+        
 		function parameters = default_search_for_input_parameters(ndi_calculator_obj)
 			% DEFAULT_SEARCH_FOR_INPUT_PARAMETERS - default parameters for searching for inputs
 			%
@@ -198,7 +213,7 @@ classdef stimloopsplitter < ndi.calculator
             % parameters
 			%
 				parameters.input_parameters = struct('parameter_adjustment',0,'division_parameter','loops','parameter_to_split','angle');
-				parameters.input_paramters.depends_on = struct('name','stimulus_presentation_id','value','');
+				parameters.input_parameters.depends_on = struct('name','stimulus_presentation_id','value','');
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 % 				parameters.query(end+1) = struct('name','will_fail','query',...
@@ -396,7 +411,36 @@ classdef stimloopsplitter < ndi.calculator
                 end 
 		end; % plot()
 
-
+         % NEW functions in tuningcurve_calc that are not overriding any superclass functions
+        function [upperBoundInd] = split_stimevents(ndi_calculator_obj,stimEventTimes, timeMarker, lowerInd, upperInd)
+            % SPLIT_STIMEVENTS - get the upper bound index with which to
+            % split the stimEventTimes array, a field found in a stimulus presentation
+            % presentation_times field
+			%
+			% [UPPERBOUNDIND] =
+			% splitStimEvents(stimEventTimes,timeMarker,lowerInd,upperInd)
+			%
+			% take the stimEventTimes array and find the index within lowerInd and upperInd 
+			% with the closest time less than the time in timeMarker. This will be the upper
+            % bound index of the newly split stimulus stimEvents array
+			%
+			%
+                if upperInd==lowerInd %base case
+                    if timeMarker>= stimEventTimes(lowerInd) 
+                        upperBoundInd = lowerInd;
+                        return;
+                    else
+                        upperBoundInd = lowerInd-1;%the array upper bound should be lower than the given time of split
+                        return;
+                    end
+                end
+                meanInd = floor(mean([lowerInd,upperInd+1]));
+                if timeMarker>=stimEventTimes(meanInd)
+                    upperBoundInd = split_stimevents(ndi_calculator_obj,stimEventTimes,timeMarker,meanInd,upperInd);%keep the same upperInd but switch the lowerInd to the mean index calculated earlier
+                else
+                    upperBoundInd = split_stimevents(ndi_calculator_obj,stimEventTimes,timeMarker,lowerInd,meanInd);%keep the same lowerInd but switch upperInd to the mean index
+                end
+        end %splitStimEvents
 
 		function [pva] = property_value_array(ndi_calculator_obj, stimloopsplitter_calc_doc, property)
 			% PROPERTY_VALUE_ARRAY - find all values of a stimulus property
@@ -439,5 +483,6 @@ classdef stimloopsplitter < ndi.calculator
 				end;
 
 		end; % property_value_array
+        
 	end; % methods()
 end % stimloopsplitter
