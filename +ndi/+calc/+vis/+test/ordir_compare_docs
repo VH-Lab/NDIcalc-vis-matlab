@@ -42,4 +42,11 @@ if ~direction_match,
    errormsg = ['Direction angles differed by greater than ' num2str(tol) '.'];
 end;
 
+%tuning_docs{1}
+%tuning_docs{1}.document_properties
+%ndi.vhlab.org
+%follow installation instructions
+%http://ndi.vhlab.org
+
+
 
