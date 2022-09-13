@@ -131,8 +131,9 @@ classdef stimloopsplitter < ndi.calculator
                             %divide stimevents first
                             %use stimevents to set onset, offset,
                             % stimclose, stimopen
+                        frameTriggerMarker = 1;
                         stimevents_old = old_pres_time(pres_orderInd).stimevents;%old stimevents field    
-                        frame_events = find(stimevents_old(:,2)==2);%get indices of 2s in the stimevents second column - the 2's are the frame events
+                        frame_events = find(stimevents_old(:,2)==frameTriggerMarker);%get indices of whatever number marks the frame being triggered in the stimevents second column - the 2's are the frame events
                         total_frame_count = numel(frame_events);%get the number of frame events
                          
                         perLoop_frame_count = round(total_frame_count/(numLoops+1));%get the number of frame events per loop, round it in case not an integer
