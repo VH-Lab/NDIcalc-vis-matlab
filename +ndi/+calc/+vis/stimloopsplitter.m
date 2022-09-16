@@ -98,7 +98,7 @@ classdef stimloopsplitter < ndi.calculator
                         %check for pairing
                         if (stimulus_pairs(stimInd)==0)%0 means no pairing since no stimulus has ID 0
                             %create new stimulus by adjusting the current
-                            %stimulus
+                            %stimulus using the parameter_adjustment field
                             eval(['stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'=',...
                             'stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'+',...
                             char(num2str(stimloopsplitter_calc.input_parameters.parameter_adjustment))]);
@@ -131,7 +131,13 @@ classdef stimloopsplitter < ndi.calculator
                             %divide stimevents first
                             %use stimevents to set onset, offset,
                             % stimclose, stimopen
-                        frameTriggerMarker = 1;
+%                         if isfield(old_pres_time,'stimevents')
+%                             frameTriggerMarker = 1;
+%                             new_stim_pres_struct = add_to_pres_time_with_stimevents(old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct,frameTriggerMarker);
+%                         else
+%                             new_stim_pres_struct = add_to_pres_time_without_stimevents(old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct);
+%                         end
+                        
                         stimevents_old = old_pres_time(pres_orderInd).stimevents;%old stimevents field    
                         frame_events = find(stimevents_old(:,2)==frameTriggerMarker);%get indices of whatever number marks the frame being triggered in the stimevents second column - the 2's are the frame events
                         total_frame_count = numel(frame_events);%get the number of frame events
@@ -145,8 +151,9 @@ classdef stimloopsplitter < ndi.calculator
                             loop_stop = loopInd*perLoop_frame_count;%alternatively: loop_stop = loop_start + perLoop_frame_count - 1
                             if loop_stop>total_frame_count
                                 stopInd = total_frame_count;%in case there's a rounding error, avoid having an index out of the array bounds
+                            else
+                                stopInd = frame_events(loop_stop);
                             end
-                            stopInd = frame_events(loop_stop);
                             %how to use startInd and stopInd?
                             %to get each new stimevents, stimopen,
                             %stimclose, onset, offset fields
@@ -185,7 +192,8 @@ classdef stimloopsplitter < ndi.calculator
                             %the last one is the old stimclose
                             %clocktype is clocktype_old
                             %stimevents is split by the timing
-                            lowerBoundInd = 1;%initialize splitInd for use inside the loop
+                            
+                            %lowerBoundInd = 1;%initialize splitInd for use inside the loop
                         for loopInd = 1:numLoops+1
                             %stimopen
                             numPresentations = numel(new_stim_pres_struct.presentation_time);
@@ -263,7 +271,7 @@ classdef stimloopsplitter < ndi.calculator
             % Needs to be plugged into the superclass search for input
             % parameters
 			%
-				parameters.input_parameters = struct('parameter_adjustment',0,'division_parameter','loops','parameter_to_split','angle');
+				parameters.input_parameters = struct('parameter_adjustment',180,'division_parameter','loops','parameter_to_split','angle');
 				parameters.input_parameters.depends_on = struct('name','stimulus_presentation_id','value','');
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
@@ -403,6 +411,13 @@ classdef stimloopsplitter < ndi.calculator
                         end
                     case 'time'
                         %option 3: using time as x-axis with arrows
+                        cmap(1:60,:) = [ones(60,1) zeros(60,1) (linspace(0,1,60))'];
+                        cmap(61:120,:) = [(linspace(1,0,60))' zeros(60,1) ones(60,1)];
+                        cmap(121:180,:) = [zeros(60,1) (linspace(0,1,60))' ones(60,1)];
+                        cmap(181:240,:) = [zeros(60,1) ones(60,1) (linspace(1,0,60))'];
+                        cmap(241:300,:) = [(linspace(0,1,60))' ones(60,1) zeros(60,1)];
+                        cmap(301:360,:) = [ones(60,1) (linspace(1,0,60))' zeros(60,1)];
+                        colormap(cmap);cbar = colorbar;cbar.Label.String = [split_param_string ' (degrees)'];
                         y_fixed = 0;
                         x_length = 1;
                         linethickness = 1;
@@ -411,26 +426,38 @@ classdef stimloopsplitter < ndi.calculator
                             if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
                                 onset = stim_pres.presentation_time(presInd).onset;
                                 offset = stim_pres.presentation_time(presInd).offset;
-                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                split_param_actual = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                split_param_compass = vlt.math.cartesian2compass(split_param_actual,0);
                                 X = mean([onset offset]);
                                 
                                 hold on;
-                                arrowplot(X,y_fixed,split_param,x_length,'linethickness',linethickness);
+                                if (split_param_actual == 0)
+                                    split_param_actual = 360;%cmap doesn't take 0 as an array index
+                                end
+                                arrowplot(X,y_fixed,split_param_compass,x_length,'linethickness',linethickness,'linecolor',cmap(split_param_actual,:));
                                 %consider using drawshape (see help) to fill in times where stimuli are being presented 
                             end
                         end
                         ylim(xlim - diff(xlim)/2);
                         h.xlabel = xlabel('time (s)');
+                        yticks([]);%y axis doesn't have any meaning, so ticks should be hidden
                         
                     case 'combined'
                         %option 4: using arrows and angle degrees with time
                         xlabel('time (s)')
-                        ylabel([stim_param_string ' (\circ)'])
+                        ylabel([split_param_string ' (degrees)'])
                         axis([-inf-10 inf+10 -10 370])
                         x_length = 3;
                         linethickness = 1;
-                        cmap = colormap(parula(360));
-                        
+                        %set cmap to a 360 degree wheel
+                        %old code: %cmap = colormap(parula(360));
+                        cmap(1:60,:) = [ones(60,1) zeros(60,1) (linspace(0,1,60))'];
+                        cmap(61:120,:) = [(linspace(1,0,60))' zeros(60,1) ones(60,1)];
+                        cmap(121:180,:) = [zeros(60,1) (linspace(0,1,60))' ones(60,1)];
+                        cmap(181:240,:) = [zeros(60,1) ones(60,1) (linspace(1,0,60))'];
+                        cmap(241:300,:) = [(linspace(0,1,60))' ones(60,1) zeros(60,1)];
+                        cmap(301:360,:) = [ones(60,1) (linspace(1,0,60))' zeros(60,1)];
+                        colormap(cmap);colorbar;
                         for presInd = 1:numel(stim_pres.presentation_order)
                             stimInd = stim_pres.presentation_order(presInd);
                             if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
