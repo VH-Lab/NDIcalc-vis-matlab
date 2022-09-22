@@ -15,16 +15,12 @@ switch type
         P_(4,:) = [ 0 20 10 90 45] ; % really broad tuning 
         P_(5,:) = [ 10 20 10 30 45] ; % large offset
         P_(6,:) = [ 10 20 19 30 45] ; % really low direction index offset
-        P_(7,:) = []
-        P_(8,:) = []
-        P_(9,:) = []
-        P_(10,:) = []
-        P_(11,:) = []
-        P_(12,:) = []
-        P_(13,:) = []
-        P_(14,:) = []
-        P_(15,:) = []
-        % try to increase to 10-15 cases, using Mazurek et al. figure to pick good variation
+        P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
+        P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
+        P_(9,:) = [0 0 0 10 45] ;  %No response narrow tuning
+        P_(10,:) = [0 0 0 90 45] ; %No response broad tuning
+        P_(11,:) = [0 20 20 45 45] %Equal response Rp and Rn
+
         for x = 1.0:+1.0:number
             index = 1 + mod(x-1,size(P_,2));
             P(x,:)= P_(index,:);
