@@ -36,8 +36,10 @@ classdef stimloopsplitter < ndi.calculator
                 %   parameters
                 %   2) search for the specified stimulus_presentation
                 %   document
+                tic
 				stim_presentation_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_presentation_id'),''));
+                toc
 				if numel(stim_presentation_doc)~=1, 
 					error(['Could not find stimulus presentation doc..']);
 				end;
@@ -50,9 +52,9 @@ classdef stimloopsplitter < ndi.calculator
                 %   document
 
                 % loop through fields of stimulus presentation
-                
+                keyboard
                 new_stim_pres_struct.presentation_order = [];
-                new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose');%will be 0x0 struct array initially
+                new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');%will be 0x0 struct array initially
                 new_stim_pres_struct.stimuli = vlt.data.emptystruct('parameters');%will also be a 0x0 struct array initially 
 
                 % here use information in the old stim_presentation_doc to
@@ -96,7 +98,7 @@ classdef stimloopsplitter < ndi.calculator
                         %check for pairing
                         if (stimulus_pairs(stimInd)==0)%0 means no pairing since no stimulus has ID 0
                             %create new stimulus by adjusting the current
-                            %stimulus
+                            %stimulus using the parameter_adjustment field
                             eval(['stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'=',...
                             'stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'+',...
                             char(num2str(stimloopsplitter_calc.input_parameters.parameter_adjustment))]);
@@ -124,35 +126,105 @@ classdef stimloopsplitter < ndi.calculator
                             end
                         end
                         %add to pres_time
-                        %stimopen starts as previous stimulus' stimclose
-                        %(except first stimopen, then old stimclose)
-                        %onset is:
-                        %onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1)
-                        %offset is:
-                        %onset_old + loopInd*(offset_old-onset_old)/(numLoops+1)
-                        %stimclose is the same as offset, except the last: 
-                        %the last one is the old stimclose
-                        %clocktype is clocktype_old
-                        for loopInd = 1:numLoops+1
-                            %stimopen
-                            numPresentations = numel(new_stim_pres_struct.presentation_time);
-                            if (loopInd>1)
-                                new_stim_pres_struct.presentation_time(end+1,1).stimopen = new_stim_pres_struct.presentation_time(numPresentations,1).stimclose;
-                            else
-                                new_stim_pres_struct.presentation_time(end+1,1).stimopen = old_pres_time(pres_orderInd).stimopen;
-                            end
-                            %clocktype
-                            new_stim_pres_struct.presentation_time(end,1).clocktype = old_pres_time(pres_orderInd).clocktype;
-                            %onset
-                            onset_old = old_pres_time(pres_orderInd).onset;
-                            offset_old = old_pres_time(pres_orderInd).offset;
-                            new_stim_pres_struct.presentation_time(end,1).onset = onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1);
-                            %offset
-                            new_stim_pres_struct.presentation_time(end,1).offset = onset_old + (loopInd)*(offset_old-onset_old)/(numLoops+1);
-                            %stimclose
-                            new_stim_pres_struct.presentation_time(end,1).stimclose = new_stim_pres_struct.presentation_time(end,1).offset;
+                        
+                        %option 1 (stimevents is a field):
+                            %divide stimevents first
+                            %use stimevents to set onset, offset,
+                            % stimclose, stimopen
+                        if isfield(old_pres_time,'stimevents')
+                            frameTriggerMarker = 1;
+                            new_stim_pres_struct = add_to_pres_time_with_stimevents(ndi_calculator_obj,old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct,frameTriggerMarker);
+                        else
+                            new_stim_pres_struct = add_to_pres_time_without_stimevents(ndi_calculator_obj,old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct);
                         end
-                        new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%last substimulus has same stimclose as old stimulus
+                        
+%                         stimevents_old = old_pres_time(pres_orderInd).stimevents;%old stimevents field    
+%                         frame_events = find(stimevents_old(:,2)==frameTriggerMarker);%get indices of whatever number marks the frame being triggered in the stimevents second column - the 2's are the frame events
+%                         total_frame_count = numel(frame_events);%get the number of frame events
+%                          
+%                         perLoop_frame_count = round(total_frame_count/(numLoops+1));%get the number of frame events per loop, round it in case not an integer
+%                         for loopInd = 1:numLoops+1
+%                             %go from the first frame in the loop to the
+%                             %last:
+%                             loop_start = (loopInd-1)*(perLoop_frame_count)+1;%the index of frame_events that is chosen as the first step of the individual loop
+%                             startInd = frame_events(loop_start);
+%                             loop_stop = loopInd*perLoop_frame_count;%alternatively: loop_stop = loop_start + perLoop_frame_count - 1
+%                             if loop_stop>total_frame_count
+%                                 stopInd = total_frame_count;%in case there's a rounding error, avoid having an index out of the array bounds
+%                             else
+%                                 stopInd = frame_events(loop_stop);
+%                             end
+%                             %how to use startInd and stopInd?
+%                             %to get each new stimevents, stimopen,
+%                             %stimclose, onset, offset fields
+%                             
+%                             %clocktype (doesn't use startInd or stopInd)
+%                             new_stim_pres_struct.presentation_time(end+1,1).clocktype = old_pres_time(pres_orderInd).clocktype;
+%                             %stimevents
+%                             new_stim_pres_struct.presentation_time(end,1).stimevents = stimevents_old(startInd:stopInd,:);%new stimevents is subset of old stimevents
+%                             %stimopen
+%                             if (loopInd>1)
+%                                 new_stim_pres_struct.presentation_time(end,1).stimopen = stimevents_old(startInd,1);%stimopen is the same time as onset if it's not the first substimulus
+%                             else
+%                                 new_stim_pres_struct.presentation_time(end,1).stimopen = old_pres_time(pres_orderInd).stimopen;%if it's the first substimulus, keep the same stimopen
+%                             end
+%                             %onset
+%                             new_stim_pres_struct.presentation_time(end,1).onset = stimevents_old(startInd,1);%the time that the first frame is presented in each substimulus
+%                             %offset
+%                             new_stim_pres_struct.presentation_time(end,1).offset = stimevents_old(stopInd,1);%the time that the last frame is presented in each substimulus
+%                             %stimclose
+%                             if (loopInd==(numLoops+1))
+%                                 new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%if it's the last substimulus, keep the same stimclose
+%                             else
+%                                 new_stim_pres_struct.presentation_time(end,1).stimclose = stimevents_old(stopInd,1);%if not last substimulus, stimclose is same as offset
+%                             end
+%                         end
+                        
+                        
+                        %option 2 (stimevents is not a field):
+                            %stimopen starts as previous stimulus' stimclose
+                            %(except first stimopen, then old stimclose)
+                            %onset is:
+                            %onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1)
+                            %offset is:
+                            %onset_old + loopInd*(offset_old-onset_old)/(numLoops+1)
+                            %stimclose is the same as offset, except the last: 
+                            %the last one is the old stimclose
+                            %clocktype is clocktype_old
+                            %stimevents is split by the timing
+                            
+                            %lowerBoundInd = 1;%initialize splitInd for use inside the loop
+%                         for loopInd = 1:numLoops+1
+%                             %stimopen
+%                             numPresentations = numel(new_stim_pres_struct.presentation_time);
+%                             if (loopInd>1)
+%                                 new_stim_pres_struct.presentation_time(end+1,1).stimopen = new_stim_pres_struct.presentation_time(numPresentations,1).stimclose;
+%                             else
+%                                 new_stim_pres_struct.presentation_time(end+1,1).stimopen = old_pres_time(pres_orderInd).stimopen;
+%                             end
+%                             %clocktype
+%                             new_stim_pres_struct.presentation_time(end,1).clocktype = old_pres_time(pres_orderInd).clocktype;
+%                             %onset
+%                             onset_old = old_pres_time(pres_orderInd).onset;
+%                             offset_old = old_pres_time(pres_orderInd).offset;
+%                             new_stim_pres_struct.presentation_time(end,1).onset = onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1);
+%                             %offset
+%                             new_stim_pres_struct.presentation_time(end,1).offset = onset_old + (loopInd)*(offset_old-onset_old)/(numLoops+1);
+%                             %stimclose
+%                             new_stim_pres_struct.presentation_time(end,1).stimclose = new_stim_pres_struct.presentation_time(end,1).offset;
+%                             %stimevents
+% %                             if isfield(old_pres_time,'stimevents')%checks if this field is even needed
+% %                                 stimevents_old = old_pres_time(pres_orderInd).stimevents;
+% %                                 stimevents_toSplit = stimevents_old(:,1);%only use the time column
+% %                                 timeOfSplit = new_stim_pres_struct.presentation_time(end,1).stimclose;
+% %                                 startInd = lowerBoundInd;
+% %                                 endInd = numel(stimevents_toSplit);%the last index of stimevents_toSplit
+% %                                 upperBoundInd = split_stimevents(ndi_calculator_obj,stimevents_toSplit,timeOfSplit,startInd,endInd);%gives the index at which to split the stimevents array
+% %                                 new_stim_pres_struct.presentation_time(end,1).stimevents = stimevents_old(lowerBoundInd:upperBoundInd,:);
+% %                                 lowerBoundInd = upperBoundInd+1;%for the next round of splitting
+% %                             end
+%                         end
+%                         new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%last substimulus has same stimclose as old stimulus
                     else
                         error(['number of loops not valid']);
                     end
@@ -184,7 +256,9 @@ classdef stimloopsplitter < ndi.calculator
 				end;
 
 		end; % calculate
-
+        
+       
+        
 		function parameters = default_search_for_input_parameters(ndi_calculator_obj)
 			% DEFAULT_SEARCH_FOR_INPUT_PARAMETERS - default parameters for searching for inputs
 			%
@@ -197,8 +271,8 @@ classdef stimloopsplitter < ndi.calculator
             % Needs to be plugged into the superclass search for input
             % parameters
 			%
-				parameters.input_parameters = struct('parameter_adjustment',0,'division_parameter','loops','parameter_to_split','angle');
-				parameters.input_paramters.depends_on = struct('name','stimulus_presentation_id','value','');
+				parameters.input_parameters = struct('parameter_adjustment',180,'division_parameter','loops','parameter_to_split','angle');
+				parameters.input_parameters.depends_on = struct('name','stimulus_presentation_id','value','');
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 % 				parameters.query(end+1) = struct('name','will_fail','query',...
@@ -337,6 +411,15 @@ classdef stimloopsplitter < ndi.calculator
                         end
                     case 'time'
                         %option 3: using time as x-axis with arrows
+                        cmap(1:60,:) = [ones(60,1) zeros(60,1) (linspace(0,1,60))'];
+                        cmap(61:120,:) = [(linspace(1,0,60))' zeros(60,1) ones(60,1)];
+                        cmap(121:180,:) = [zeros(60,1) (linspace(0,1,60))' ones(60,1)];
+                        cmap(181:240,:) = [zeros(60,1) ones(60,1) (linspace(1,0,60))'];
+                        cmap(241:300,:) = [(linspace(0,1,60))' ones(60,1) zeros(60,1)];
+                        cmap(301:360,:) = [ones(60,1) (linspace(1,0,60))' zeros(60,1)];
+                        colormap(cmap);
+                        cbar = colorbar;cbar.Label.String = [split_param_string ' (degrees)'];
+                        cbar.TickLabels = num2cell(linspace(0,360,11));
                         y_fixed = 0;
                         x_length = 1;
                         linethickness = 1;
@@ -345,26 +428,38 @@ classdef stimloopsplitter < ndi.calculator
                             if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
                                 onset = stim_pres.presentation_time(presInd).onset;
                                 offset = stim_pres.presentation_time(presInd).offset;
-                                split_param = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                split_param_actual = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                split_param_compass = vlt.math.cartesian2compass(split_param_actual,0);
                                 X = mean([onset offset]);
                                 
                                 hold on;
-                                arrowplot(X,y_fixed,split_param,x_length,'linethickness',linethickness);
+                                if (split_param_actual == 0)
+                                    split_param_actual = 360;%cmap doesn't take 0 as an array index
+                                end
+                                arrowplot(X,y_fixed,split_param_compass,x_length,'linethickness',linethickness,'linecolor',cmap(split_param_actual,:));
                                 %consider using drawshape (see help) to fill in times where stimuli are being presented 
                             end
                         end
                         ylim(xlim - diff(xlim)/2);
                         h.xlabel = xlabel('time (s)');
+                        yticks([]);%y axis doesn't have any meaning, so ticks should be hidden
                         
                     case 'combined'
                         %option 4: using arrows and angle degrees with time
                         xlabel('time (s)')
-                        ylabel([stim_param_string ' (\circ)'])
+                        ylabel([split_param_string ' (degrees)'])
                         axis([-inf-10 inf+10 -10 370])
                         x_length = 3;
                         linethickness = 1;
-                        cmap = colormap(parula(360));
-                        
+                        %set cmap to a 360 degree wheel
+                        %old code: %cmap = colormap(parula(360));
+                        cmap(1:60,:) = [ones(60,1) zeros(60,1) (linspace(0,1,60))'];
+                        cmap(61:120,:) = [(linspace(1,0,60))' zeros(60,1) ones(60,1)];
+                        cmap(121:180,:) = [zeros(60,1) (linspace(0,1,60))' ones(60,1)];
+                        cmap(181:240,:) = [zeros(60,1) ones(60,1) (linspace(1,0,60))'];
+                        cmap(241:300,:) = [(linspace(0,1,60))' ones(60,1) zeros(60,1)];
+                        cmap(301:360,:) = [ones(60,1) (linspace(1,0,60))' zeros(60,1)];
+                        colormap(cmap);colorbar;
                         for presInd = 1:numel(stim_pres.presentation_order)
                             stimInd = stim_pres.presentation_order(presInd);
                             if (~isfield(stim_pres.stimuli(stimInd).parameters,'isblank'))
@@ -396,7 +491,139 @@ classdef stimloopsplitter < ndi.calculator
                 end 
 		end; % plot()
 
+         % NEW functions in tuningcurve_calc that are not overriding any superclass functions
+        function [new_stim_pres_struct] = add_to_pres_time_with_stimevents(ndi_calculator_obj,old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct,frameTriggerMarker)
+            % ADD_TO_PRES_TIME_WITH_STIMEVENTS - add a new row or set of
+            % rows to the presentation time field in the new stimulus presentation struct, calculated from
+            % a single row in the presentation time field of the old
+            % stimulus presentation, assuming that field contains the
+            % subfield "stimevents"
+			%
+			% [NEW_STIM_PRES_STRUCT] = 
+			% add_to_pres_time_with_stimevents(old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct,frameTriggerMarker)
+			%
+			% identify the starting index and ending index for each loop in the current presentation by using the
+			% specified frameTriggerMarker and dividing stimevents into
+			% substimuli by the number of loops.
+			%
+			% 
+            stimevents_old = old_pres_time(pres_orderInd).stimevents;%old stimevents field    
+            frame_events = find(stimevents_old(:,2)==frameTriggerMarker);%get indices of whatever number marks the frame being triggered in the stimevents second column - the 2's are the frame events
+            total_frame_count = numel(frame_events);%get the number of frame events
 
+            perLoop_frame_count = round(total_frame_count/(numLoops+1));%get the number of frame events per loop, round it in case not an integer
+            for loopInd = 1:numLoops+1
+                %go from the first frame in the loop to the
+                %last:
+                loop_start = (loopInd-1)*(perLoop_frame_count)+1;%the index of frame_events that is chosen as the first step of the individual loop
+                startInd = frame_events(loop_start);
+                loop_stop = loopInd*perLoop_frame_count;%alternatively: loop_stop = loop_start + perLoop_frame_count - 1
+                if loop_stop>total_frame_count
+                    stopInd = total_frame_count;%in case there's a rounding error, avoid having an index out of the array bounds
+                else
+                    stopInd = frame_events(loop_stop);
+                end
+                %how to use startInd and stopInd?
+                %to get each new stimevents, stimopen,
+                %stimclose, onset, offset fields
+
+                %clocktype (doesn't use startInd or stopInd)
+                new_stim_pres_struct.presentation_time(end+1,1).clocktype = old_pres_time(pres_orderInd).clocktype;
+                %stimevents
+                new_stim_pres_struct.presentation_time(end,1).stimevents = stimevents_old(startInd:stopInd,:);%new stimevents is subset of old stimevents
+                %stimopen
+                if (loopInd>1)
+                    new_stim_pres_struct.presentation_time(end,1).stimopen = stimevents_old(startInd,1);%stimopen is the same time as onset if it's not the first substimulus
+                else
+                    new_stim_pres_struct.presentation_time(end,1).stimopen = old_pres_time(pres_orderInd).stimopen;%if it's the first substimulus, keep the same stimopen
+                end
+                %onset
+                new_stim_pres_struct.presentation_time(end,1).onset = stimevents_old(startInd,1);%the time that the first frame is presented in each substimulus
+                %offset
+                new_stim_pres_struct.presentation_time(end,1).offset = stimevents_old(stopInd,1);%the time that the last frame is presented in each substimulus
+                %stimclose
+                if (loopInd==(numLoops+1))
+                    new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%if it's the last substimulus, keep the same stimclose
+                else
+                    new_stim_pres_struct.presentation_time(end,1).stimclose = stimevents_old(stopInd,1);%if not last substimulus, stimclose is same as offset
+                end
+            end
+        end % add_to_pres_time_with_stimevents
+        function new_stim_pres_struct = add_to_pres_time_without_stimevents(ndi_calculator_obj,old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct)
+            % ADD_TO_PRES_TIME_WITHOUT_STIMEVENTS - add a new row or set of
+            % rows to the presentation time field in the new stimulus presentation struct, calculated from
+            % a single row in the presentation time field of the old
+            % stimulus presentation, assuming that field does NOT contain the
+            % subfield "stimevents"
+			%
+			% [NEW_STIM_PRES_STRUCT] = 
+			% add_to_pres_time_without_stimevents(old_pres_time,pres_orderInd,numLoops,new_stim_pres_struct,frameTriggerMarker)
+			%
+			% use the stimopen, stimclose, onset, and offset fields in old_pres_time, as well as numLoops, to
+			% calculate new stimopen, stimclose, onset, and offset fields
+			% that are set in a new row or set of rows in
+			% new_stim_pres_struct
+			% 
+                %stimopen starts as previous stimulus' stimclose
+                %(except first stimopen, then old stimclose)
+                %onset is:
+                %onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1)
+                %offset is:
+                %onset_old + loopInd*(offset_old-onset_old)/(numLoops+1)
+                %stimclose is the same as offset, except the last: 
+                %the last one is the old stimclose
+                %clocktype is clocktype_old
+
+                for loopInd = 1:numLoops+1
+                    %stimopen
+                    numPresentations = numel(new_stim_pres_struct.presentation_time);
+                    if (loopInd>1)
+                        new_stim_pres_struct.presentation_time(end+1,1).stimopen = new_stim_pres_struct.presentation_time(numPresentations,1).stimclose;
+                    else
+                        new_stim_pres_struct.presentation_time(end+1,1).stimopen = old_pres_time(pres_orderInd).stimopen;
+                    end
+                    %clocktype
+                    new_stim_pres_struct.presentation_time(end,1).clocktype = old_pres_time(pres_orderInd).clocktype;
+                    %onset
+                    onset_old = old_pres_time(pres_orderInd).onset;
+                    offset_old = old_pres_time(pres_orderInd).offset;
+                    new_stim_pres_struct.presentation_time(end,1).onset = onset_old + (loopInd-1)*(offset_old-onset_old)/(numLoops+1);
+                    %offset
+                    new_stim_pres_struct.presentation_time(end,1).offset = onset_old + (loopInd)*(offset_old-onset_old)/(numLoops+1);
+                    %stimclose
+                    new_stim_pres_struct.presentation_time(end,1).stimclose = new_stim_pres_struct.presentation_time(end,1).offset;
+                end
+                new_stim_pres_struct.presentation_time(end,1).stimclose = old_pres_time(pres_orderInd).stimclose;%last substimulus has same stimclose as old stimulus
+        end % add_to_pres_time_without_stimevents
+        function [upperBoundInd] = split_stimevents(ndi_calculator_obj,stimEventTimes, timeMarker, lowerInd, upperInd)
+            % SPLIT_STIMEVENTS - get the upper bound index with which to
+            % split the stimEventTimes array, a field found in a stimulus presentation
+            % presentation_times field
+			%
+			% [UPPERBOUNDIND] =
+			% splitStimEvents(stimEventTimes,timeMarker,lowerInd,upperInd)
+			%
+			% take the stimEventTimes array and find the index within lowerInd and upperInd 
+			% with the closest time less than the time in timeMarker. This will be the upper
+            % bound index of the newly split stimulus stimEvents array
+			%
+			%
+                if upperInd==lowerInd %base case
+                    if timeMarker>= stimEventTimes(lowerInd) 
+                        upperBoundInd = lowerInd;
+                        return;
+                    else
+                        upperBoundInd = lowerInd-1;%the array upper bound should be lower than the given time of split
+                        return;
+                    end
+                end
+                meanInd = floor(mean([lowerInd,upperInd+1]));
+                if timeMarker>=stimEventTimes(meanInd)
+                    upperBoundInd = split_stimevents(ndi_calculator_obj,stimEventTimes,timeMarker,meanInd,upperInd);%keep the same upperInd but switch the lowerInd to the mean index calculated earlier
+                else
+                    upperBoundInd = split_stimevents(ndi_calculator_obj,stimEventTimes,timeMarker,lowerInd,meanInd);%keep the same lowerInd but switch upperInd to the mean index
+                end
+        end %splitStimEvents
 
 		function [pva] = property_value_array(ndi_calculator_obj, stimloopsplitter_calc_doc, property)
 			% PROPERTY_VALUE_ARRAY - find all values of a stimulus property
@@ -439,5 +666,6 @@ classdef stimloopsplitter < ndi.calculator
 				end;
 
 		end; % property_value_array
+        
 	end; % methods()
 end % stimloopsplitter
