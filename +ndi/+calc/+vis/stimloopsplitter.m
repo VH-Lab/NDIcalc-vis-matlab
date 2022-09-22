@@ -52,7 +52,6 @@ classdef stimloopsplitter < ndi.calculator
                 %   document
 
                 % loop through fields of stimulus presentation
-                keyboard
                 new_stim_pres_struct.presentation_order = [];
                 new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');%will be 0x0 struct array initially
                 new_stim_pres_struct.stimuli = vlt.data.emptystruct('parameters');%will also be a 0x0 struct array initially 
