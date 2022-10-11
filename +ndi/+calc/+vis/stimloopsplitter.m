@@ -47,27 +47,60 @@ classdef stimloopsplitter < ndi.calculator
 			
 				% Step 2: perform the calculator
                 %   1) create new stimulus presentation struct with empty fields
-                %   2) fill out fields based on old stimulus presentation
-                %   3) turn new stimulus presentation struct into a
+                %   2) check if there are any loops in the stimulus
+                %   presentation doc
+                %   3) fill out fields based on old stimulus presentation
+                %   4) turn new stimulus presentation struct into a
                 %   document
-
-                % loop through fields of stimulus presentation
-                new_stim_pres_struct.presentation_order = [];
-                new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');%will be 0x0 struct array initially
-                new_stim_pres_struct.stimuli = vlt.data.emptystruct('parameters');%will also be a 0x0 struct array initially 
 
                 % here use information in the old stim_presentation_doc to
                 % build the new one
-                
-                % go through each stimulus to check if it has loops
-                % if it does, need to add stimuli, presentation_time, and
-                % presentation_order (not the same amount necessarily)
                 
                 old_stim_pres_struct = stim_presentation_doc.document_properties.stimulus_presentation;%use stim_presentation_doc
                 old_stimuli = old_stim_pres_struct.stimuli;
                 old_pres_order = old_stim_pres_struct.presentation_order;
                 old_pres_time = old_stim_pres_struct.presentation_time;
+            
+                
+                % initialize new stimulus presentation structure 
+                new_stim_pres_struct.presentation_order = [];
+                if isfield(old_pres_time,'stimevents')
+                    new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');%will be 0x0 struct array initially
+                else
+                    new_stim_pres_struct.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose');%will be 0x0 struct array initially, w/o stimevents                    
+                end
+                new_stim_pres_struct.stimuli = vlt.data.emptystruct('parameters');%will also be a 0x0 struct array initially 
                 new_stim_pres_struct.stimuli = old_stimuli;%initially will have the same number of stimuli
+
+                
+                % go through all stimuli to see if the stimulus presentation
+                % document has loops. If it doesn't, return an empty array
+                division_param_not_zero = false;
+                pres_orderInd = 0;%initialize as 0 so indexing starts at 1
+                while (division_param_not_zero==false) && pres_orderInd<numel(old_pres_order)
+                    pres_orderInd = pres_orderInd+1;%increment until it reaches the size of old_pres_order
+                    stimInd = old_pres_order(pres_orderInd);%presentation_order holds stimulus index
+                    %get number of division parameters for current stimulus
+                    stimulus = old_stimuli(stimInd);
+                    if(isfield(stimulus.parameters,char(stimloopsplitter_calc.input_parameters.division_parameter))); %division parameter used in case we want to divide by something other than loops
+                        numLoops = eval(['stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.division_parameter)]);%division parameter used in case we want to divide by something other than loops                        
+                        division_param_not_zero = (numLoops~=0);
+                    end
+                end
+                %if the whole loop was traversed and division_param_not_zero
+                %is still false, then there's no loops in the stimulus
+                %presentation doc, and a stimloopsplitter doc should NOT be
+                %created - this will stop the calculate method early
+                if (pres_orderInd==numel(old_pres_order)&&division_param_not_zero==false)
+                    doc = [];
+                    return;
+                end
+                
+                % go through each stimulus to check if it has loops
+                % if it does, need to add stimuli, presentation_time, and
+                % presentation_order (not the same amount necessarily)
+                
+                
                 
                 stimulus_pairs = zeros(length(old_stimuli),1);%populated with either zero or the stimulus ID of the new stimulus created. Index corresponds to old_stim_pres_struct index
                 for pres_orderInd = 1:numel(old_pres_order)%loop through presentation order
@@ -100,7 +133,7 @@ classdef stimloopsplitter < ndi.calculator
                             %stimulus using the parameter_adjustment field
                             eval(['stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'=',...
                             'stimulus.parameters.',char(stimloopsplitter_calc.input_parameters.parameter_to_split),'+',...
-                            char(num2str(stimloopsplitter_calc.input_parameters.parameter_adjustment))]);
+                            char(num2str(stimloopsplitter_calc.input_parameters.parameter_adjustment)),';']);
                             stimulus_adjusted = stimulus;
                             new_stim_pres_struct.stimuli(end+1)= stimulus_adjusted;%newly formed stimulus added to list of stimuli
                             %add it to pairing
@@ -108,8 +141,8 @@ classdef stimloopsplitter < ndi.calculator
                             stimulus_pairs(stimInd)=new_stimInd;
                             %set loops to 0 for both stimuli in
                             %new stim pres struct
-                            eval(['new_stim_pres_struct.stimuli(stimInd).parameters.',char(stimloopsplitter_calc.input_parameters.division_parameter),'=0']);
-                            eval(['new_stim_pres_struct.stimuli(new_stimInd).parameters.',char(stimloopsplitter_calc.input_parameters.division_parameter),'=0']);
+                            eval(['new_stim_pres_struct.stimuli(stimInd).parameters.',char(stimloopsplitter_calc.input_parameters.division_parameter),'=0;']);
+                            eval(['new_stim_pres_struct.stimuli(new_stimInd).parameters.',char(stimloopsplitter_calc.input_parameters.division_parameter),'=0;']);
                         else %there is a pairing that's already been added - not sure there's anything to do 
                         end
                         %now set new presentation order and time fields:
@@ -246,10 +279,19 @@ classdef stimloopsplitter < ndi.calculator
                    'stimulus_presentation',new_stim_pres_struct);
                 
                 % set dependency value to the dependency value of parameters
+                
                 for i=1:numel(parameters.depends_on),
-                    % this doesn't work because doc is read-only: % doc.document_properties.depends_on(i) = parameters.depends_on(i)
                     doc = doc.set_dependency_value(parameters.depends_on(i).name,parameters.depends_on(i).value);
                 end;
+                % set another dependency value to the dependency value of
+                % the stim_presentation_doc
+                for i = 1:numel(stim_presentation_doc.document_properties.depends_on)
+                    doc = doc.set_dependency_value(stim_presentation_doc.document_properties.depends_on(i).name,stim_presentation_doc.document_properties.depends_on(i).value);
+                end
+                
+                %make sure doc properties align to those of stim_presentation_doc
+                doc = doc.setproperties('epochid',stim_presentation_doc.document_properties.epochid,'ndi_document.session_id',stim_presentation_doc.document_properties.ndi_document.session_id);
+                
 				if numel(doc)~=1,
 					doc = doc{1};
 				end;
@@ -406,14 +448,15 @@ classdef stimloopsplitter < ndi.calculator
                                 onset = stim_pres.presentation_time(presInd).onset;
                                 offset = stim_pres.presentation_time(presInd).offset;
                                 split_param_actual = getfield(stim_pres.stimuli(stimInd).parameters,split_param_string);
+                                split_param_actual_rounded = round(split_param_actual);%to use as a valid index for cmap
                                 split_param_compass = vlt.math.cartesian2compass(split_param_actual,0);
                                 X = mean([onset offset]);
                                 
                                 hold on;
-                                if (split_param_actual == 0)
-                                    split_param_actual = 360;%cmap doesn't take 0 as an array index
+                                if (split_param_actual_rounded == 0)
+                                    split_param_actual_rounded = 360;%cmap doesn't take 0 as an array index
                                 end
-                                arrowplot(X,y_fixed,split_param_compass,x_length,'linethickness',linethickness,'linecolor',cmap(split_param_actual,:));
+                                arrowplot(X,y_fixed,split_param_compass,x_length,'linethickness',linethickness,'linecolor',cmap(split_param_actual_rounded,:));
                                 %consider using drawshape (see help) to fill in times where stimuli are being presented 
                             end
                         end
