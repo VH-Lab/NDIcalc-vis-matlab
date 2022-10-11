@@ -179,24 +179,6 @@ classdef hartley_calc < ndi.calculator
 				query = struct('name','element_id','query',q_total);
 		end; % default_parameters_query()
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: HARTLEY_CALC
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | HARTLEY_CALC -- ABOUT |
-			%   ------------------------
-			%
-			%   HARTLEY_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each HARTLEY_CALC document 'depends_on' an
-			%   NDI daq system.
-			%
-			%   Definition: apps/hartley_calc_calc.json
-			%
-				eval(['help ndi.calc.example.hartley_calc.doc_about']);
-		end; %doc_about()
-
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
                         % PLOT - provide a diagnostic plot to show the results of the calculator
                         %

@@ -332,28 +332,6 @@ classdef stimloopsplitter < ndi.calculator
 				return;
 		end; % is_valid_dependency_input()
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: stimloopsplitter_CALC
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | stimloopsplitter_CALC -- ABOUT |
-			%   ------------------------
-			%
-			%   stimloopsplitter_CALC is a calculation document. It
-			%   converts a set of stimuli into a new set of
-			%   stimuli where a certain stimulus is split into multiple
-			%   substimuli. This enriches the data by allowing more
-			%   properties' effects to be considered.
-			%
-			%   Definition: stimloopsplitter_calc.json
-			%
-
-            
-				eval(['help ndi.calc.vis.stimloopsplitter.doc_about']);
-		end; %doc_about()
-
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
             % PLOT - provide a diagnostic plot to show the results of the calculator
             %

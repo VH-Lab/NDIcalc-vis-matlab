@@ -121,24 +121,6 @@ classdef contrast_tuning < ndi.calculator
 				end;
 		end; % is_valid_dependency_input()
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: CONTRAST_TUNING_CALC
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | CONTRAST_TUNING_CALC -- ABOUT |
-			%   ------------------------
-			%
-			%   CONTRAST_TUNING_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each CONTRAST_TUNING_CALC document 'depends_on' an
-			%   NDI daq system.
-			%
-			%   Definition: apps/contrast_tuning_calc.json
-			%
-				eval(['help ndi.calc.example.contrast_tuning.doc_about']);
-		end; %doc_about()
-
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
                         % PLOT - provide a diagnostic plot to show the results of the calculator
                         %

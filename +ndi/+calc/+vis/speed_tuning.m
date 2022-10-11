@@ -123,24 +123,6 @@ classdef speed_tuning < ndi.calculator
 				end;
 		end; % is_valid_dependency_input()
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: SPEED_TUNING_CALC
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | SPEED_TUNING_CALC -- ABOUT |
-			%   ------------------------
-			%
-			%   SPEED_TUNING_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each SPEED_TUNING_CALC document 'depends_on' an
-			%   NDI daq system.
-			%
-			%   Definition: apps/speed_tuning_calc.json
-			%
-				eval(['help ndi.calc.example.speed_tuning.doc_about']);
-		end; %doc_about()
-
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
                         % PLOT - provide a diagnostic plot to show the results of the calculator
                         %

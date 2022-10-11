@@ -218,24 +218,6 @@ classdef contrast_sensitivity < ndi.calculator
 				query = struct('name','element_id','query',q_total);
 		end; % default_parameters_query()
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: CONTRAST_SENSITIVITY_CALC
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | CONTRAST_TUNING_CALC -- ABOUT |
-			%   ------------------------
-			%
-			%   CONTRAST_TUNING_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each CONTRAST_TUNING_CALC document 'depends_on' an
-			%   NDI daq system.
-			%
-			%   Definition: apps/contrast_sensitivity_calc.json
-			%
-				eval(['help ndi.calc.example.contrast_sensitivity.doc_about']);
-		end; %doc_about()
-
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
                         % PLOT - provide a diagnostic plot to show the results of the calculator
                         %

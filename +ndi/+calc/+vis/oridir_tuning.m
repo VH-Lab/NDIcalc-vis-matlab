@@ -68,10 +68,6 @@ classdef oridir_tuning < ndi.calculator
 			%
 				% search for stimulus_tuningcurve_id
 				parameters.input_parameters = struct([]);
-			
-				% parameters.input_parameters = struct('independent_label','','independent_parameter','','best_algorithm','empirical_maximum');
-				% parameters.input_parameters.selection = vlt.data.emptystruct('property','operation','value');
-
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 		end; % default_search_for_input_parameters
@@ -315,6 +311,8 @@ classdef oridir_tuning < ndi.calculator
 				box off;
 		end; % plot()
 
+		% TESTING METHODS
+
 		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, varargin)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
@@ -401,7 +399,6 @@ classdef oridir_tuning < ndi.calculator
 					doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
 
 				end; % for
-
 		end; % generate_mock_docs()
 
 		function [b,errormsg] = compare_mock_docs(oridir_calc_obj, expected_doc, actual_doc, scope)
@@ -456,26 +453,6 @@ classdef oridir_tuning < ndi.calculator
 				P = P_(actual_index,:);
 
 		end; % generate_mock_parameters
-
-		
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATION: ORIDIRTUNING
-			% ----------------------------------------------------------------------------------------------
-			%
-			%   ------------------------
-			%   | ORIDIRTUNING -- ABOUT |
-			%   ------------------------
-			%
-			%   ORIDIRTUNING is an ndi.calculator object that calculates the oridir_tuning and direction tuning
-			%   curves from spike elements.
-			%   
-			%   Each  document 'depends_on' an NDI daq system.
-			%
-			%   Definition: apps/calc/oridir_tuning.json
-			%
-				eval(['help ndi.calc.vision.oridir_tuning.doc_about']);
-		end; %doc_about()
 
     end; % methods()
 			
