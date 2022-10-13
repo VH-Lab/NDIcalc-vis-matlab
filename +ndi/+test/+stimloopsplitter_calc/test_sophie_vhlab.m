@@ -5,7 +5,7 @@ function test_sophie_vhlab(S)
 
  % open a new object
 
-c = ndi.calc.vis.stimloopsplitter(S);
+c = ndi.calc.vis.stimloopsplitter_calc(S);
 
  % define our parameters
 tic
