@@ -1,0 +1,43 @@
+{
+	"document_class": {
+		"definition":                       "$$NDICALCDOCUMENTPATH\/calc\/bootstrapping_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/bootstrapping_calc.json",
+		"class_name":                       "ndi_calculation_bootstrapping_calc",
+		"property_list_name":                   "bootstrapping_calc", 
+		"class_version":                    1,
+		"superclasses": [
+			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document_app.json" }
+             ]
+	},
+	"bootstrapping_calc": {
+		"input_parameters": {
+            "iterations": 100
+		},
+		"depends_on": [
+			{
+				"name":				"orientation_direction_tuning_id",
+				"value":			[]
+			}
+            
+		],
+
+        "direction_fit_parameters": [],
+        "bootstrapping_fits": [],
+        "orientation_direction_tuning": []
+
+
+    },
+
+    
+        "depends_on": [
+        {
+            "name":				"orientation_direction_tuning_id",
+            "value":			[]
+        }
+    ]
+}
+
+
+
+
