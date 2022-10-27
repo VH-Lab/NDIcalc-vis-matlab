@@ -8,7 +8,7 @@ function [b, errormsg] = oridir_compare_docs(document_expected, document_actual,
 b = 1;
 errormsg = '';
 
-  % start comparison
+% start comparison
 
 doc_e = document_expected.document_properties.orientation_direction_tuning;
 doc_a = document_actual.document_properties.orientation_direction_tuning;
