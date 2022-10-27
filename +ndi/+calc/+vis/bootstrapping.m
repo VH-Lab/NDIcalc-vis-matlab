@@ -44,7 +44,7 @@ classdef bootstrapping < ndi.calculator
                 orientation_direction_tuning_id = parameters.depends_on(index).value;
 
 				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_string',orientation_direction_tuning_id,''));
-keyboard
+
  				if numel(stim_response_doc)~=1 
  					error('Could not find stimulus response doc..');
  				end
@@ -224,8 +224,7 @@ keyboard
                         % See ndi.calculator.plot_parameters for a description of those parameters.
 
                         %Rsp+Rp*EXP(-(X-Op)^2)/(2*sig^2))+Rn*EXP(-(X-Op+180)^2/(2*sig^2))
-                        %plot gaussian for each iteration
-keyboard
+                        %plot gaussian for each iteratio
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
@@ -238,14 +237,24 @@ keyboard
 
 				bsc = doc_or_parameters.document_properties.bootstrapping_calc; % shorten our typing
                 
+                ha = plot(bsc.bootstrapping_fits','Color',[0,0,0]+0.7);
+                
+                for i = 1:(size(ha,1))
+                h.objects(end+1) = ha(i,1);
+                end
 
-                h.xlabel = 'Direction';
+                if ~h.params.suppress_x_label,
+					h.xlabel = xlabel('Direction (\circ)');
+				end;
+				if ~h.params.suppress_y_label,
+					h.ylabel = ylabel('Response (Hz)');
+				end;
 
-
-
-
-
-
+				if ~h.params.suppress_title,
+						h.title = title(doc_or_parameters.document_properties.ndi_document.id);
+			    end;
+                
+                h.axes.XLim =[0 360];
 		end % plot()
 
 		

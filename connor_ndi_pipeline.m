@@ -187,5 +187,5 @@ end;
 if BOOTSTRAPPING
     bs = ndi.calc.vis.bootstrapping(S);
     parameters = bs.default_search_for_input_parameters();
-    doc = bs.run(vlt.data.conditional(BOOTSTRAP_FORCE,'NoAction','Replace'),parameters);
+%     doc = bs.run(vlt.data.conditional(1,'NoAction','Replace'),parameters);
 end;
