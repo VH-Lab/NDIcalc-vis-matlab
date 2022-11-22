@@ -418,7 +418,7 @@ classdef oridir_tuning < ndi.calculator
 			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
 			%
 
-				
+				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);			
 
 				b = 1;
 				errormsg = '';
@@ -431,10 +431,13 @@ classdef oridir_tuning < ndi.calculator
 			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
 			%
 			% Generates a parameter set for generating a mock document with a given index value.
-			% P will be a row vector of parameters [Rsp Rp Rn theta sigma]
+			% P will be a row vector of parameters [Rsp Rp Rn theta sigma].
+			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
-			% There  mock input documents depending upon the type called for. TYPE can be 'standard', 'random_nonoise', or 'random_noisy'.
-			% NUMBER specifies the number of documents to generate
+			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
+			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
+			% using MOD).
+			% 
 
 				P_(1,:) = [ 0 20 10 45 30] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
 				P_(2,:) = [ 0 20 10 45 45] ; % broader tuning
@@ -442,6 +445,10 @@ classdef oridir_tuning < ndi.calculator
 				P_(4,:) = [ 0 20 10 45 90] ; % really broad tuning 
 				P_(5,:) = [ 10 20 10 45 30] ; % large offset
 				P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
+				P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
+				P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
+				P_(9,:) = [0 20 20 45 45] %Equal response Rp and Rn
+
 					% we should add more
 
 				total = size(P_,1);
@@ -454,6 +461,6 @@ classdef oridir_tuning < ndi.calculator
 
 		end; % generate_mock_parameters
 
-    end; % methods()
+	end; % methods()
 			
 end % oridir_tuning

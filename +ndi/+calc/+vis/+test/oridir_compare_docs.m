@@ -178,6 +178,10 @@ end
 
 % vector.direction_preference match within 10 degrees
 
+ % check to make sure not NaN
+
+if 0,
+
 dptol = 10;
 
 dp_match = vlt.data.sizeeq(doc_e.vector.direction_preference,doc_a.vector.direction_preference);
@@ -186,14 +190,18 @@ if dp_match
 end
 
 if ~dp_match
-   b = 0;
-   errormsg = ['Direction preference differed by greater than ' num2str(dptol) '.'];
+	b = 0;
+	errormsg = ['Direction preference differed by greater than ' num2str(dptol) '.'];
+	return;
 end
+
+end;
 
 % vector.direction_circular_variance match within 0.1
 
 dcvtol = 0.1;
 
+if 0,
 dcv_match = vlt.data.sizeeq(doc_e.vector.direction_circular_variance,doc_a.vector.direction_circular_variance);
 if dcv_match 
    dcv_match = max(abs(doc_e.vector.direction_circular_variance - doc_a.vector.direction_circular_variance)) < dcvtol;
@@ -203,6 +211,8 @@ if ~dcv_match
    b = 0;
    errormsg = ['Direction circular variance differed by greater than ' num2str(dcvtol) '.'];
 end
+
+end;
 
 % Comparing fit
 % fit.orientation_angle_preference match within 10 degrees
@@ -293,9 +303,9 @@ end
 
 dpnrrtol = 0.1;
 
-dpnrr_match = vlt.data.sizeeq(doc_e.fit.directional_preferred_null_ratio_rectified,doc_a.fit.directional_preferred_null_ratio_rectified);
+dpnrr_match = vlt.data.sizeeq(doc_e.fit.direction_preferred_null_ratio_rectified,doc_a.fit.direction_preferred_null_ratio_rectified);
 if dpnrr_match 
-   dpnrr_match = max(abs(doc_e.fit.directional_preferred_null_ratio_rectified - doc_a.fit.directional_preferred_null_ratio_rectified)) < dpnrrtol;
+   dpnrr_match = max(abs(doc_e.fit.direction_preferred_null_ratio_rectified - doc_a.fit.direction_preferred_null_ratio_rectified)) < dpnrrtol;
 end
 
 if ~dpnrr_match
@@ -342,19 +352,21 @@ if ~dbpt_match
    errormsg = ['Parameter #3 of the double guassian parameters differed by greater than ' num2str(dbptf) '.'];
 end
 
+dgpf_pref = 20;
+
 dbpf_match = vlt.data.sizeeq(doc_e.fit.double_guassian_parameters(4),doc_a.fit.double_guassian_parameters(4));
 if dbpf_match 
-   dbpf_match = max(abs(doc_e.fit.double_guassian_parameters(4) - doc_a.fit.double_guassian_parameters(4))) < dgptf;
+   dbpf_match = max(abs(doc_e.fit.double_guassian_parameters(4) - doc_a.fit.double_guassian_parameters(4))) < dgpf_pref;
 end
 
 if ~dbpf_match
    b = 0;
-   errormsg = ['Parameter #2 of the double guassian parameters differed by greater than ' num2str(dgptf) '.'];
+   errormsg = ['Preferred direction parameter of the double guassian fit differed by greater than ' num2str(dgpf_pref) '.'];
 end
 
-% Last parameter match within 5
+% Last parameter match within 10
 
-dbpfi = 5;
+dbpfi = 10;
 
 dbpfi_match = vlt.data.sizeeq(doc_e.fit.double_guassian_parameters(5),doc_a.fit.double_guassian_parameters(5));
 if dbpfi_match 
@@ -363,7 +375,7 @@ end
 
 if ~dbpfi_match
    b = 0;
-   errormsg = ['Parameter #5 of the double guassian parameters differed by greater than ' num2str(dbpfi) '.'];
+   errormsg = ['Tuning width parameter (#5) of the double guassian parameters differed by greater than ' num2str(dbpfi) '.'];
 end
 
 % fit.double_gaussian_fit_angles match exactly
