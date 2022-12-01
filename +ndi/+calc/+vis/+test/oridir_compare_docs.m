@@ -36,6 +36,7 @@ end
 if ~direction_match
    b = 0;
    errormsg = ['Direction angles differed by greater than ' num2str(diretol) '.'];
+   return;
 end
 
 % Tuning_curve.mean match within 3
@@ -50,6 +51,7 @@ end
 if ~mean_match
    b = 0;
    errormsg = ['Mean angles differed by greater than ' num2str(meantol) '.'];
+   return;
 end
 
 % Tuning_curve.stddev match exactly
@@ -62,6 +64,7 @@ end
 if ~stddev_match
    b = 0;
    errormsg = 'Stddev are different.';
+   return;
 end
 
 % Tuning_curve.stderr match exactly
@@ -74,6 +77,7 @@ end
 if ~stderr_match
    b = 0;
    errormsg = 'Stderr are different.';
+   return;
 end
 
 % Comparing Significance
@@ -89,6 +93,7 @@ end
 if ~vra_match
    b = 0;
    errormsg = ['Visual Response Anova P differed by greater than ' num2str(vratol) '.'];
+   return;
 end
 
 % Significance.across_stimuli_anova_p match within 0.1
@@ -103,6 +108,7 @@ end
 if ~asa_match
    b = 0;
    errormsg = ['Across Stimuli Anova P differed by greater than ' num2str(asatol) '.'];
+   return;
 end
 
 % Comparing vector
@@ -118,6 +124,7 @@ end
 if ~dht_match
    b = 0;
    errormsg = ['Direction Hotelling 2 Test differed by greater than ' num2str(dhttol) '.'];
+   return;
 end
 
 % vector.Hotelling2Test match within 0.1
@@ -132,6 +139,7 @@ end
 if ~ht_match
    b = 0;
    errormsg = ['Hotelling 2 Test differed by greater than ' num2str(httol) '.'];
+   return;
 end
 
 % vector.dot_direction_significance match within 0.1
@@ -146,6 +154,7 @@ end
 if ~dds_match
    b = 0;
    errormsg = ['Dot direction significance differed by greater than ' num2str(ddstol) '.'];
+   return;
 end
 
 % vector.circular_variance match within 0.1
@@ -160,6 +169,7 @@ end
 if ~cv_match
    b = 0;
    errormsg = ['Circular variance differed by greater than ' num2str(cvtol) '.'];
+   return;
 end
 
 % vector.orientation_preference match within 10 degrees
@@ -174,6 +184,7 @@ end
 if ~op_match
    b = 0;
    errormsg = ['Orientation preference differed by greater than ' num2str(optol) '.'];
+   return;
 end
 
 % vector.direction_preference match within 10 degrees
@@ -210,6 +221,7 @@ end
 if ~dcv_match
    b = 0;
    errormsg = ['Direction circular variance differed by greater than ' num2str(dcvtol) '.'];
+   return;
 end
 
 end;
@@ -227,6 +239,7 @@ end
 if ~oap_match
    b = 0;
    errormsg = ['Orientation angle preference differed by greater than ' num2str(oaptol) '.'];
+   return;
 end
 
 % fit.direction_angle_preference match within 10 degrees
@@ -241,6 +254,7 @@ end
 if ~dap_match
    b = 0;
    errormsg = ['Direction angle preference differed by greater than ' num2str(daptol) '.'];
+   return;
 end
 
 % fit.hwhh match within 10 degrees
@@ -255,6 +269,7 @@ end
 if ~hwhh_match
    b = 0;
    errormsg = ['Half width half height differed by greater than ' num2str(hwhhtol) '.'];
+   return;
 end
 
 % fit.direction_preferred_null_ratio match within 0.1
@@ -269,6 +284,7 @@ end
 if ~dpnr_match
    b = 0;
    errormsg = ['Direction preferred null ratio differed by greater than ' num2str(dpnrtol) '.'];
+   return;
 end
 
 % fit.orientation_preferred_orthogonal_ratio match within 0.1
@@ -283,6 +299,7 @@ end
 if ~opor_match
    b = 0;
    errormsg = ['Orientation preferred orthogonal ratio differed by greater than ' num2str(oportol) '.'];
+   return;
 end
 
 % fit.orientation_preferred_orthogonal_ratio_rectified match within 0.1
@@ -297,6 +314,7 @@ end
 if ~oporr_match
    b = 0;
    errormsg = ['Orientation preferred orthogonal ratio rectified differed by greater than ' num2str(oporrtol) '.'];
+   return;
 end
 
 % fit.directional_preferred_null_ratio_rectified match within 0.1
@@ -311,6 +329,7 @@ end
 if ~dpnrr_match
    b = 0;
    errormsg = ['Directional preferred null ratio rectified differed by greater than ' num2str(dpnrrtol) '.'];
+   return;
 end
 
 % Comparing fit.double_guassian_parameters
@@ -326,6 +345,7 @@ end
 if ~dbpo_match
    b = 0;
    errormsg = ['Parameter #1 of the double guassian parameters differed by greater than ' num2str(dgpon) '.'];
+   return;
 end
 
 dbpt_match = vlt.data.sizeeq(doc_e.fit.double_guassian_parameters(2),doc_a.fit.double_guassian_parameters(2));
@@ -336,6 +356,7 @@ end
 if ~dbpt_match
    b = 0;
    errormsg = ['Parameter #2 of the double guassian parameters differed by greater than ' num2str(dgpon) '.'];
+   return;
 end
 
 % Second two parameters match within 10
@@ -350,6 +371,7 @@ end
 if ~dbpt_match
    b = 0;
    errormsg = ['Parameter #3 of the double guassian parameters differed by greater than ' num2str(dbptf) '.'];
+   return;
 end
 
 dgpf_pref = 20;
@@ -362,6 +384,7 @@ end
 if ~dbpf_match
    b = 0;
    errormsg = ['Preferred direction parameter of the double guassian fit differed by greater than ' num2str(dgpf_pref) '.'];
+   return;
 end
 
 % Last parameter match within 10
@@ -376,6 +399,7 @@ end
 if ~dbpfi_match
    b = 0;
    errormsg = ['Tuning width parameter (#5) of the double guassian parameters differed by greater than ' num2str(dbpfi) '.'];
+   return;
 end
 
 % fit.double_gaussian_fit_angles match exactly
@@ -388,6 +412,7 @@ end
 if ~dgfa_match
    b = 0;
    errormsg = 'Double gaussian fit angles are different.';
+   return;
 end
 
 % fit.double_gaussian_fit_values match within 5
