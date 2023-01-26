@@ -189,13 +189,16 @@ end
 
 % vector.direction_preference match within 10 degrees
 
- % check to make sure not NaN
+% check to make sure not NaN
 
-if 0,
+if isnan(doc_a.vector.direction_preference)
+    disp('vector direction preference of actual output is not a number')
+end
 
+if ~isnan(doc_a.vector.direction_preference)
 dptol = 10;
-
 dp_match = vlt.data.sizeeq(doc_e.vector.direction_preference,doc_a.vector.direction_preference);
+
 if dp_match 
    dp_match = max(abs(doc_e.vector.direction_preference - doc_a.vector.direction_preference)) < dptol;
 end
@@ -206,14 +209,17 @@ if ~dp_match
 	return;
 end
 
-end;
+end
 
 % vector.direction_circular_variance match within 0.1
+if isnan(doc_a.vector.direction_circular_variance)
+    disp('vector direction circular variance of actual output is not a number')
+end
 
+if ~isnan(doc_a.vector.direction_circular_variance)
 dcvtol = 0.1;
-
-if 0,
 dcv_match = vlt.data.sizeeq(doc_e.vector.direction_circular_variance,doc_a.vector.direction_circular_variance);
+
 if dcv_match 
    dcv_match = max(abs(doc_e.vector.direction_circular_variance - doc_a.vector.direction_circular_variance)) < dcvtol;
 end
@@ -224,7 +230,7 @@ if ~dcv_match
    return;
 end
 
-end;
+end
 
 % Comparing fit
 % fit.orientation_angle_preference match within 10 degrees
