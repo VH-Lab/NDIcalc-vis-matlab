@@ -3,27 +3,8 @@ function [b, errormsg] = contrast_tuning_compare_docs(document_expected, documen
 %
 % [B, ERRORMSG] = ndi.calc.vis.test.contrast_tuning_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
 %
+%
 
-
-  
-	
-
-
-			
-			
-		
-
-		
-			
-		
-		
-	
-		
-	
-
-	
-			
-			"naka_rushton_RBNS_sensitivity":			[0]
 
 b = 1;
 errormsg = '';
