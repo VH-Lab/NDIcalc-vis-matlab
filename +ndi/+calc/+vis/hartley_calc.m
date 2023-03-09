@@ -108,44 +108,58 @@ classdef hartley_calc < ndi.calculator
 						% write JSON file here for now
 
 						mystring = vlt.data.jsonencodenan(hartley_reverse_correlation);
-						myfile = fullfile(ndi_calculator_obj.session.path,...
+						mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+						if ~isfolder(mypath),
+							mkdir(mypath);
+						end;
+						myfile = fullfile(mypath,...
 							[stimulus_presentation_docs{i}.document_properties.epochid '_' ...
 								element.elementstring() '_hartley.json']);
 						mystring = char(vlt.data.prettyjson(mystring));
 						vlt.file.str2text(myfile,mystring);
 
-                        [sta,p_val, rescale, cmap] = revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers,...
-                            hartley_reverse_correlation.hartley_numbers.KXV, ...
-                            hartley_reverse_correlation.hartley_numbers.KYV, ...
-                            hartley_reverse_correlation.frameTimes, ...
-                            hartley_reverse_correlation.spiketimes, ...
-                            hartley_reverse_correlation.reconstruction_properties.T_coords, ...
-                            hartley_reverse_correlation.reconstruction_properties.X_coords, ...
-                            hartley_reverse_correlation.reconstruction_properties.Y_coords);
+						[sta,p_val, rescale, cmap] = revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers.S,...
+							hartley_reverse_correlation.hartley_numbers.KXV, ...
+							hartley_reverse_correlation.hartley_numbers.KYV, ...
+							hartley_reverse_correlation.frameTimes, ...
+							hartley_reverse_correlation.spiketimes, ...
+							hartley_reverse_correlation.reconstruction_properties.T_coords, ...
+							hartley_reverse_correlation.reconstruction_properties.X_coords, ...
+							hartley_reverse_correlation.reconstruction_properties.Y_coords);
+
+						sta = sta(:,:,end:-1:1); % make it match T
+						p_val = p_val(:,:,end:-1:1); % make it match T
 
 						% Step 3c: actually make the document
-						if 0, % not doing this yet
+						if 1, % 
+							ngridp.data_size = 8;
+							ngridp.data_type = 'double';
+							ngridp.data_dim = [size(sta) 2];
+							ngridp.coordinates = [hartley_reverse_correlation.reconstruction_properties.T_coords(:); ...
+								hartley_reverse_correlation.reconstruction_properties.X_coords(:); ...
+								hartley_reverse_correlation.reconstruction_properties.Y_coords(:)];
 
-                            ngrid.data_size = 8;
-                            ngrid.data_type = 'double';
-                            ngrid.data_dim = size(sta);
-                            ngrid.coordinates = [hartley_reverse_correlation.reconstruction_properties.T_coords(:); hartley_reverse_correlation.reconstruction_properties.X_coords(:); hartley_reverse_correlation.reconstruction_properties.Y_coords(:)];
-
-							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'hartley_calc',parameters_here,...
-								'hartley_reverse_correlation',hartley_reverse_correlation,'reverse_correlation',reverse_correlation);
+							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'hartley_calc',parameters,...
+								'hartley_reverse_correlation',hartley_reverse_correlation,'reverse_correlation',reverse_correlation,'ngrid',ngridp);
 							doc{end} = doc{end}.set_dependency_value('element_id',element_doc.id());
-							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stim_pres_id{i});
-							doc{end} = doc{end}.set_dependency_value('stimulus_response_scalar_id',...
-								stim_resp_scalar{stim_resp_index_value});
+							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i});
 
 							% open the ngrid file
-								
+							 % TODO: update when new database available
+							 % this is one problem that needs to be fixed, we need to be able to specify binary
+							 % data before adding to the database; we will use this temporary workaround of writing
+							 % to the hartley directory
+							myfile = fullfile(mypath,[doc{end}.id() '.ngrid']);
+							fid = fopen(myfile,'w','ieee-le');
+							if fid<0,
+								error(['Could not open file ' myfile '.']);
+							end;
 							% write the ngrid file
-
+							fwrite(fid,cat(4,sta,p_val),'double');
+							fclose(fid);
 						end;
 					end;
 				end;
-				
 		end; % calculate
 
 		function parameters = default_search_for_input_parameters(ndi_calculator_obj)
@@ -158,7 +172,7 @@ classdef hartley_calc < ndi.calculator
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct(...
-					'T', 0:0.05:0.250, ...
+					'T', 0:0.010:0.200, ...
 					'X_sample', 1, ...
 					'Y_sample', 1);
 				parameters.depends_on = vlt.data.emptystruct('name','value');
@@ -214,9 +228,65 @@ classdef hartley_calc < ndi.calculator
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
 
-				box off;
+				[sta,pval] = read_sta(ndi_calculator_obj, doc);
+				clim = [-1 1] * max(abs([min(sta(:)) max(sta(:))]));
+				significance_plot = revcorr.rescale_p_image(pval);
+				cmap = revcorr.get_cmap();
+
+				H = reshape(sta,size(sta,1),size(sta,2)*size(sta,3));
+				Hp = reshape(significance_plot,size(significance_plot,1),...
+					size(significance_plot,2)*size(significance_plot,3));
+				ax(1)=subplot(2,1,1);
+				imshow(H,clim);
+
+				ax(2)=subplot(2,1,2);
+				image(Hp);
+				colormap(ax(2),cmap);
+				axis equal off;
+
+				linkaxes([ax]);
+				
+				h.objects = cat(1,h.objects,ax);
 
 		end; % plot()
+
+		function [sta,pval] = read_sta(ndi_calculator_obj, doc_or_id)
+			% READ_STA - read the spike-triggered-average file from disk
+			% 
+			% [STA, PVAL] = READ_STA(NDI_CALCULATOR_OBJ, DOC_OR_ID)
+			%
+			% Reads the spike-triggered average and p-values from disk.
+			% NDI_CALCULATOR_OBJ should be an ndi.calc.vis.hartley_calc object and
+			% DOC_OR_ID should either be an ndi.document or the id of the hartley
+			% document object to be read.
+			%
+			
+				if ischar(doc_or_id),
+					doc = ndi_calculator_obj.database_search(ndi.query('ndi_document.id','exact_string',doc_or_id,''));
+					if numel(doc)~=1,
+						% there cannot be two documents with same id
+						error(['No document with id ' doc_or_id ' found.']);
+					end;
+					doc = doc{1};
+				else,
+					doc = doc_or_id;
+				end;
+
+				mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+
+				myfile = fullfile(mypath,[doc.id() '.ngrid']);
+				fid = fopen(myfile,'r','ieee-le');
+				if fid<0,
+					error(['Could not open file ' myfile '.']);
+				end;
+				% write the ngrid file
+				fulldata = fread(fid,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
+				fclose(fid);
+				fulldata = reshape(fulldata,doc.document_properties.ngrid.data_dim);
+				sta = fulldata(:,:,:,1);
+				pval = fulldata(:,:,:,2);
+		end; % read_sta()
+
 	end; % methods()
 
 	methods (Static)
