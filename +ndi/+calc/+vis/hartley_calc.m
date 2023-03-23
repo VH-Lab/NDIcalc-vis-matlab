@@ -9,7 +9,7 @@ classdef hartley_calc < ndi.calculator
 			% Creates a HARTLEY_CALC ndi.calculator object
 			%
 				ndi.globals;
-				w = which('ndi.calc.vis.contrast_tuning');
+				w = which('ndi.calc.vis.hartley_calc');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','hartley_calc.json'));
@@ -172,7 +172,7 @@ classdef hartley_calc < ndi.calculator
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct(...
-					'T', 0:0.010:0.200, ...
+					'T', -0.100:0.010:0.250, ...
 					'X_sample', 1, ...
 					'Y_sample', 1);
 				parameters.depends_on = vlt.data.emptystruct('name','value');
@@ -228,24 +228,28 @@ classdef hartley_calc < ndi.calculator
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
 
+				plotrows = 6;
+				plotcols = 6;
+
 				[sta,pval] = read_sta(ndi_calculator_obj, doc);
 				clim = [-1 1] * max(abs([min(sta(:)) max(sta(:))]));
 				significance_plot = revcorr.rescale_p_image(pval);
 				cmap = revcorr.get_cmap();
 
-				H = reshape(sta,size(sta,1),size(sta,2)*size(sta,3));
-				Hp = reshape(significance_plot,size(significance_plot,1),...
-					size(significance_plot,2)*size(significance_plot,3));
-				ax(1)=subplot(2,1,1);
-				imshow(H,clim);
+				size_param = min(20,size(sta,3));
+				H = vlt.image.stack2tile(sta(:,:,1:size_param),plotrows,plotcols);
+				Hp = vlt.image.stack2tile(significance_plot(:,:,1:size_param),plotrows,plotcols);
 
-				ax(2)=subplot(2,1,2);
-				image(Hp);
+				ax(1) = subplot(2,2,1);
+				imshow(H{1},clim);
+
+				ax(2)=subplot(2,2,3);
+				image(Hp{1});
 				colormap(ax(2),cmap);
 				axis equal off;
 
 				linkaxes([ax]);
-				
+
 				h.objects = cat(1,h.objects,ax);
 
 		end; % plot()
@@ -279,10 +283,10 @@ classdef hartley_calc < ndi.calculator
 				if fid<0,
 					error(['Could not open file ' myfile '.']);
 				end;
-				% write the ngrid file
+				% read the ngrid file
 				fulldata = fread(fid,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
 				fclose(fid);
-				fulldata = reshape(fulldata,doc.document_properties.ngrid.data_dim);
+				fulldata = reshape(fulldata,vlt.data.rowvec(doc.document_properties.ngrid.data_dim));
 				sta = fulldata(:,:,:,1);
 				pval = fulldata(:,:,:,2);
 		end; % read_sta()
