@@ -44,7 +44,6 @@ classdef hartley_calc < ndi.calculator
 				stimulus_presentation_docs = ndi_calculator_obj.session.database_search(q1);
 
 				for i=1:numel(stimulus_presentation_docs),
-
 					[b,stimids] = ndi.calc.vis.hartley_calc.ishartleystim(stimulus_presentation_docs{i});
 
 					if ~b, continue; end;
