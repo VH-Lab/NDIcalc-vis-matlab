@@ -235,7 +235,7 @@ classdef hartley_calc < ndi.calculator
 				significance_plot = revcorr.rescale_p_image(pval);
 				cmap = revcorr.get_cmap();
 
-				size_param = min(20,size(sta,3));
+				size_param = min(36,size(sta,3));
 				H = vlt.image.stack2tile(sta(:,:,1:size_param),plotrows,plotcols);
 				Hp = vlt.image.stack2tile(significance_plot(:,:,1:size_param),plotrows,plotcols);
 
@@ -247,7 +247,24 @@ classdef hartley_calc < ndi.calculator
 				colormap(ax(2),cmap);
 				axis equal off;
 
-				linkaxes([ax]);
+				linkaxes([ax(1) ax(2)]);
+
+				rp = doc.document_properties.hartley_reverse_correlation.reconstruction_properties;
+				[theta,sta_r,pval_r] = revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
+				[t_profile,t_profile_pval] = revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
+				
+				ax(3) = subplot(2,2,2);
+				imshow(t_profile,clim,'XData',rp.T_coords,'YData',rp.Y_coords);
+				axis normal on;
+				grid on;
+
+				ax(4) = subplot(2,2,4);
+				image(t_profile_pval,'XData',rp.T_coords,'YData',rp.Y_coords);
+				colormap(ax(4),cmap);
+				axis normal on;
+				grid on;
+
+				linkaxes([ax(3) ax(4)]);
 
 				h.objects = cat(1,h.objects,ax);
 
