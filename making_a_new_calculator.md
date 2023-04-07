@@ -2,7 +2,7 @@
 
 My calculator is going to be named 'spike_shape'. It computes the mean spike shape for a neuron_extracellular object in all of its recorded epochs, and at regular intervals within epochs.
 
-# Thinking before coding
+# 1. Thinking before coding
 
 The first thing I did was to think carefully about its input and output.
 
@@ -14,7 +14,7 @@ I am doing this while we still haven't updated to the database version with mult
 
 For the binary file format, I am going to choose `vhlspikewaveformfile` from our vhlab-toolbox-matlab library (see [vlt.file.custom_file_formats.readvhlspikewaveformfile](https://github.com/VH-Lab/vhlab-toolbox-matlab/blob/master/%2Bvlt/%2Bfile/%2Bcustom_file_formats/readvhlspikewaveformfile.m), for example). It is made to store spike waveforms and has nice reader/writer functions that we wrote previously.
 
-# Setting things up
+# 2. Setting things up
 
 I know I need a `spike_shape_calc` document type and a `spike_shape.m` file with the code.
 
@@ -23,9 +23,10 @@ I am going to design in NDIcalc-vis-matlab. Really, we ought to make a new NDIca
 I make copies of the `simple` calculator so I have templates to start from.  
 
 1. I copy `[...]/NDI-matlab/+ndi/+calc/+example/simple.m` to `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/spike_shape.m`
-2. I copy `[...]/NDI-matlab/ndi_common/ 
+2. I copy `[...]/NDI-matlab/+ndi/+calc/+example/docs/simple.docs*.txt .m` to a new directory that I made `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/docs`
+3. I copy `[...]/NDI-matlab/ndi_common/database_documents/apps/calculators/simple_calc.json` to `[...]/NDIcalc-vis-matlab/ndi_common/database_documents/calc/spike_shape_calc.json` 
 
-# Designing the output document type
+# 3. Designing the output document type
 
-
+I want to start with the output document. I want to have fields for selecting how much time around each spike should be selected (I'll call spike_window_time_before, spike_window_time_after), and the time interval over which spikes should be averaged (averaging_interval).
 
