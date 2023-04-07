@@ -63,4 +63,42 @@ I want to start with the output document. I want to have fields for selecting ho
 }
 ```
 
+# 4. Writing the code
+
+1. First, I start with my template, and I just do a find and replace on "simple" to change it to "spike_shape".
+2. Next, I update the creator with some documentation and add code that adds the database document type to the object by calling the superclass creator:
+```matlab
+                function spike_shape_obj = spike_shape(session)
+                        % SPIKE_SHAPE_CALC - calculator that produces spike waveform shapes in an epoch 
+                        %
+                        % SPIKE_SHAPE_CALC_OBJ = SPIKE_SHAPE_CALC(SESSION)
+                        %
+                        % Creates a SPIKE_SHAPE_CALC ndi.calculator object
+                        %
+                                w = which('ndi.calc.vis.spike_shape');
+                                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
+                                spike_shape_obj = spike_shape_obj@ndi.calculator(session,'spike_shape_calc',...
+                                        fullfile(parparparpar,'ndi_common','database_documents','calc','spike_shape_calc.json'));
+                end; % spike_shape()
+```
+3. The next function I edit is the function that searches for input parameters. Here I want it to find all spiking neurons as input:
+```matlab
+                function parameters = default_search_for_input_parameters(ndi_calculator_obj)
+                        % DEFAULT_SEARCH_FOR_INPUT_PARAMETERS - default parameters for searching for inputs
+                        %
+                        % PARAMETERS = DEFAULT_SEARCH_FOR_INPUT_PARAMETERS(NDI_CALCULATOR_OBJ)
+                        %
+                        % Returns a list of the default search parameters for finding appropriate inputs
+                        % to the calculator.
+                        %
+                                parameters.input_parameters = struct('spike_window_before_time',-0.001,...
+                                        'spike_window_after_time', 0.002, 'averaging_interval', 60);
+                                parameters.depends_on = vlt.data.emptystruct('name','value');
+                                parameters.query = struct('name','element_epoch_id','query',ndi.query('element.type','exact_string','spikes',''));
+                end; % default_search_for_input_parameters
+```
+
+
+
+
 
