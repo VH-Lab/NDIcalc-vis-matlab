@@ -1,0 +1,35 @@
+{
+	"document_class": {
+		"definition":                       "$$NDICALCDOCUMENTPATH\/calc\/oridir_bootstrap_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridir_bootstrap_calc.json",
+		"class_name":                       "ndi_calculation_oridir_bootstrap_calc",
+		"property_list_name":                   "oridir_bootstrap_calc", 
+		"class_version":                    1,
+		"superclasses": [
+			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document_app.json" }
+             ]
+	},
+        "depends_on": [
+		{
+			"name":				"orientation_direction_tuning_id",
+			"value":			[]
+		}
+	],
+	"oridir_bootstrap_calc": {
+		"input_parameters": {
+			"iterations": 100
+		},
+		"depends_on": [
+			{
+				"name":				"orientation_direction_tuning_id",
+				"value":			[]
+			}
+            
+		],
+
+		"direction_fit_parameters": [],
+		"bootstrap_fits": [],
+	}
+}
+

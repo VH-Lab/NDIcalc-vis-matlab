@@ -1,0 +1,20 @@
+This calculator object creates bootstrap simulations of orientation and/or direction tuning curves in order to establish the certainty of the best-fit parameters values in the face of trial-to-trial variation. Any least-squares fit of an orientation or direction tuning curve produces a single value of each parameter, and does not indicate the uncertainty in these parameters. This calculator creates several surrogate tuning curves and performs fits in order to produce a set of likely fit parameters for the true, unknowable underlying response of the cell. Described in Mazurek et al. (2014).
+
+There are two major types of indexes returned. One set are "fitless" index values that use vector methods to identify the preferred orientation and direction and the degree of tuning (such as circular variance and circular variance in direction space).
+
+After each bootstrap simulation, the data are fit to a double Gaussian function of the form:
+
+R(theta) = C + Rp * exp(-(ang_dir(theta - theta_pref)^2) / (2*sigma^2)) + ...
+    Rn * exp(-(ang_dir(theta + 180 - theta_pref)^2) / (2*sigma^2))
+
+where the fit parameters are 
+         Rsp       - the untuned responseof the neuron
+         Rp        - the above-offset response to the preferred orientation
+         thetaPref - the stimulus angle that evokes the maximum response
+         sigma     - the tuning width parameter
+         Rn        - the above-offset response to the null direction
+         C         - the offset constant
+	 exp(x)    - the exponential function exp(x) = e^x
+         ang_dir(x)- the angular difference function ang_dir(x) = min(x, x-360, x+360)
+
+

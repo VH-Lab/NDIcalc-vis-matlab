@@ -1,0 +1,10 @@
+By default, this ndi.calc.vis.oridir_bootstarp object looks for orientation_direction_tuning documents 
+
+If one wished to restrict this further, one might add an additional condition to the default query.
+
+Example:
+% Only perform the operation on the element called myelement
+
+DQ = c.default_search_for_input_parameters();
+DQ.query = DQ.query & ndi.query('','depends_on','element_id',myelement);
+c.run('Replace',DQ);
