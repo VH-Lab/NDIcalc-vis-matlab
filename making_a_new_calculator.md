@@ -23,7 +23,7 @@ I am going to design in NDIcalc-vis-matlab. Really, we ought to make a new NDIca
 I make copies of the `simple` calculator so I have templates to start from.  
 
 1. I copy `[...]/NDI-matlab/+ndi/+calc/+example/simple.m` to `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/spike_shape.m`
-2. I copy `[...]/NDI-matlab/+ndi/+calc/+example/docs/simple.docs*.txt .m` to a new directory that I made `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/docs`
+2. I copy `[...]/NDI-matlab/+ndi/+calc/+example/docs/simple.docs*.txt .m` to a new directory that I made `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/docs`. Then I rename them all so that instead of simple.docs._something_ it says spike_shape.docs._something_.
 3. I copy `[...]/NDI-matlab/ndi_common/database_documents/apps/calculators/simple_calc.json` to `[...]/NDIcalc-vis-matlab/ndi_common/database_documents/calc/spike_shape_calc.json` 
 
 # 3. Designing the output document type
