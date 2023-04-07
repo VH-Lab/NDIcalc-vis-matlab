@@ -28,5 +28,39 @@ I make copies of the `simple` calculator so I have templates to start from.
 
 # 3. Designing the output document type
 
-I want to start with the output document. I want to have fields for selecting how much time around each spike should be selected (I'll call spike_window_time_before, spike_window_time_after), and the time interval over which spikes should be averaged (averaging_interval).
+I want to start with the output document. I want to have fields for selecting how much time around each spike should be selected (I'll call `spike_window_time_before`, `spike_window_time_after`), and the time interval over which spikes should be averaged (`averaging_interval`). The spike waves will be stored in our binary file of type .vsw, but we want to store some metadata to tell the user the center time of each time bin (`interval_center_times` and the number of spikes that were found in each time bin `number_of_spikes_per_interval`.
+
+```json
+{
+        "document_class": {
+                "definition":                                           "$NDICALCDOCUMENTPATH\/calc\/spike_shape_calc.json",
+                "validation":                                           "$NDICALCSCHEMAPATH\/calc\/spike_shape_calc_shema.json",
+                "class_name":                                           "spike_shape_calc",
+                "property_list_name":                                   "spike_shape_calc",
+                "class_version":                                        1,
+                "superclasses": [
+                        { "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+                        { "definition":                                 "$NDIDOCUMENTPATH\/ndi_document_app.json" }
+                ]
+        },
+        "depends_on": [
+                {       "name": "element_epoch_id",
+                        "value": 0
+                },
+                {       "name": "element_id",
+                        "value": 0,
+                }
+        ],
+        "spike_shape_calc": {
+                "input_parameters": {
+                        "spike_window_before_time":                                     -0.001,
+                        "spike_window_after_time":                                      0.002,
+                        "averaging_interval":                                           60
+                }
+                "interval_center_times":                                                [  ]
+                "number_of_spikes_per_interval":                                        [ ]
+        }
+}
+```
+
 
