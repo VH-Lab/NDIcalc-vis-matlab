@@ -8,7 +8,6 @@
 		"superclasses": [
 			{ "definition":					"$NDIDOCUMENTPATH\/ndi_document.json" },
 			{ "definition":					"$NDIDOCUMENTPATH\/ndi_document_app.json" }
-			{ "definition":					"$NDIDOCUMENTPATH\/ndi_document_app.json" }
 		]
 	},
 	"depends_on": [
@@ -16,16 +15,23 @@
 			"value": 0 
 		},
 		{	"name": "element_id",
-			"value": 0,
+			"value": 0
 		}
 	],
 	"spike_shape_calc": {
 		"input_parameters": {
 			"spike_window_before_time":					-0.001,
 			"spike_window_after_time":					0.002,
-			"averaging_interval":						60
+			"averaging_window":						60,
+			"averaging_window_step":					300,
+			"filter_padding":						0.100,
+			"cheby_order":							4,
+			"cheby_R":							0.5,
+			"cheby_cutoff":							300
 		},
-		"answer":						0
+		"interval_center_times":						[  ],
+		"number_of_spikes_per_interval":					[ ],
+		"sample_times":								[]
 	}
 }
 

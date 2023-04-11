@@ -1,43 +1,97 @@
-classdef simple < ndi.calculator
+classdef spike_shape < ndi.calculator
 
 	methods
 
-		function simple_obj = simple(session)
-			% SIMPLE - a simple demonstration of an ndi.calculator object
+		function spike_shape_obj = spike_shape(session)
+			% SPIKE_SHAPE_CALC - calculator that produces spike waveform shapes in an epoch
 			%
-			% SIMPLE_OBJ = SIMPLE(SESSION)
+			% SPIKE_SHAPE_CALC_OBJ = SPIKE_SHAPE_CALC(SESSION)
 			%
-			% Creates a SIMPLE ndi.calculator object
+			% Creates a SPIKE_SHAPE_CALC ndi.calculator object
 			%
-				ndi.globals;
-				simple_obj = simple_obj@ndi.calculator(session,'simple_calc',...
-					fullfile(ndi_globals.path.documentpath,'apps','calculators','simple_calc.json'));
-		end; % simple()
+                                w = which('ndi.calc.vis.spike_shape');
+                                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
+				spike_shape_obj = spike_shape_obj@ndi.calculator(session,'spike_shape_calc',...
+                                        fullfile(parparparpar,'ndi_common','database_documents','calc','spike_shape_calc.json'));
+		end; % spike_shape()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
-			% CALCULATE - perform the calculator for ndi.calc.example.simple
+			% CALCULATE - perform the calculator for ndi.calc.example.spike_shape
 			%
 			% DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)
 			%
-			% Creates a simple_calc document given input parameters.
+			% Creates a spike_shape_calc document given input parameters.
 			%
-			% The document that is created simple has an 'answer' that is given
+			% The document that is created spike_shape has an 'answer' that is given
 			% by the input parameters.
 				% check inputs
 				if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters.''']); end;
 				if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on.''']); end;
 				
-				% Step 1: set up the output structure
-				simple = parameters;
-				
-				% Step 2: perform the calculator, which here is a simple one-line statement
-				simple.answer = parameters.input_parameters.answer;
-				
-				% Step 3: place the results of the calculator into an NDI document
-				doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'simple',simple);
-				for i=1:numel(parameters.depends_on),
-					doc = doc.set_dependency_value(parameters.depends_on(i).name,parameters.depends_on(i).value);
+				% Step 1: set up 
+				element_id = vlt.db.struct_name_value_search(parameters.depends_on,'element_id');
+				spiking_element = ndi.database.fun.ndi_document2ndi_object(element_id, ndi_calculator_obj.session);
+
+				% Step 2: perform the calculator for each recording epoch of the element
+
+				dirpath = [ndi_calculator_obj.session.path filesep 'ndiobjects'];
+				if ~isfolder(dirpath), 
+					mkdir(dirpath);
 				end;
+
+				doc = {};
+
+				et = spiking_element.epochtable(); % find all the epochs for this element
+				for i=1:numel(et),
+					spike_shape = parameters;
+					q1 = ndi.query('','depends_on','element_id',element_id);
+					q2 = ndi.query('epochid','exact_string',et(i).epoch_id,'');
+					epoch_id_doc = ndi_calculator_obj.session.database_search(q1&q2);
+					if numel(epoch_id_doc)~=1,
+						error(['Could not find exactly 1 epoch id doc for ' et(i).epoch_id '.']);
+					end;
+					epoch_id_doc = epoch_id_doc{1};
+
+					[mean_waves,std_waves,output_parameters] = ndi.fun.spiketrains.mean_spike_waveforms(spiking_element, et(i).epoch_id,...
+						'spike_window_before_time',parameters.input_parameters.spike_window_before_time,...
+						'spike_window_beforeafter_time',parameters.input_parameters.spike_window_after_time,...
+						'averaging_window', parameters.input_parameters.averaging_window,...
+						'averaging_window_step', parameters.input_parameters.averaging_window_step,...
+						'filter_padding', parameters.input_parameters.filter_padding',...
+						'cheby_order', parameters.input_parameters.cheby_order,...
+						'cheby_R', parameters.input_parameters.cheby_R,...
+						'cheby_cutoff', parameters.input_parameters.cheby_cutoff');
+					
+					spike_shape.interval_center_times = output_parameters.interval_center_times;
+					spike_shape.number_of_spikes_per_interval = output_parameters.number_of_spikes_per_interval;
+					spike_shape.sample_times = output_parameters.sample_times;
+					
+					% Step 3: place the results of the calculator into an NDI document
+					doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'spike_shape',spike_shape);
+					for k=1:numel(parameters.depends_on),
+						doc{end} = doc{end}.set_dependency_value(parameters.depends_on(k).name,parameters.depends_on(k).value);
+					end;
+					doc{end} = doc{end}.set_dependency_value('element_epoch_id', epoch_id_doc.document_properties.ndi_document.id);
+
+					% TODO UPDATE
+					% now we will use a kludge to deal with the fact that the current database doesn't allow you to specify 
+					% files
+					fileparameters.numchannels = size(mean_waves,2);
+					fileparameters.S0 = output_parameters.s0;
+					fileparameters.S1 = output_parameters.s1;
+					fileparameters.name = '';
+					fileparameters.ref = 0;
+					fileparameters.comment = '';
+					fileparameters.samplingrate = output_parameters.sample_rate;
+					
+					fname = [dirpath filesep doc{end}.document_properties.ndi_document.id '.vsw'];
+					fid = vlt.file.custom_file_formats.newvhlspikewaveformfile(fname,fileparameters);
+					for j=1:size(mean_waves,3),
+						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, mean_waves(:,:,j));
+						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, std_waves(:,:,j));
+					end;
+				end;
+
 		end; % calculate
 
 		function parameters = default_search_for_input_parameters(ndi_calculator_obj)
@@ -48,28 +102,77 @@ classdef simple < ndi.calculator
 			% Returns a list of the default search parameters for finding appropriate inputs
 			% to the calculator.
 			%
-				parameters.input_parameters = struct('answer',5);
+				parameters.input_parameters = struct('spike_window_before_time',-0.001,...
+					'spike_window_after_time', 0.002, ...
+					'averaging_window', 60, ...
+					'averaging_window_step', 300, ...
+					'filter_padding', 0.100, ...
+					'cheby_order', 4,...
+					'cheby_R', 0.5,...
+					'cheby_cutoff', 300);
 				parameters.depends_on = vlt.data.emptystruct('name','value');
-				parameters.query = struct('name','probe_id','query',ndi.query('element.ndi_element_class','contains_string','ndi.probe',''));
+				parameters.query = struct('name','element_id','query',ndi.query('element.type','exact_string','spikes',''));
 		end; % default_search_for_input_parameters
 
-		function doc_about(ndi_calculator_obj)
-			% ----------------------------------------------------------------------------------------------
-			% NDI_CALCULATOR: SIMPLE_CALC
-			% ----------------------------------------------------------------------------------------------
+		function [mean_waves,std_waves,sample_times] = load(ndi_calculator_obj, doc)
+			% LOAD - load binary data from spike_shape_calc document
 			%
-			%   ------------------------
-			%   | SIMPLE_CALC -- ABOUT |
-			%   ------------------------
+			% [MEAN_WAVES, STD_WAVES, SAMPLE_TIMES] = LOAD(NDI_CALCULATOR_OBJ, DOC_ID)
 			%
-			%   SIMPLE_CALC is a demonstration document. It simply produces the 'answer' that
-			%   is provided in the input parameters. Each SIMPLE_CALC document 'depends_on' an
-			%   NDI daq system.
+			% Loads the mean waveforms MEAN_WAVES and standard deviation waveforms STD_WAVES
+			% from document with id DOC_ID. 
 			%
-			%   Definition: apps/simple_calc.json
+			% MEAN_WAVES has the form MxCxT, where M is the number of samples per mean spike waveform,
+			%   C is the number of channels, and T is the time measurement.
+			% STD_WAVES has the form MxCxT, where M is the number of samples per standard deviation spike waveform,
+			%   C is the number of channels, and T is the time measurement.
+			% SAMPLES_TIMES is an Mx1 vector with the sample times of each spike waveform.
+			% 
+				dirpath = [ndi_calculator_obj.session.path filesep 'ndiobjects'];
+				fname = [dirpath filesep doc.document_properties.ndi_document.id '.vsw'];
+
+				[waveforms, header] = vlt.file.custom_file_formats.readvhlspikewaveformfile(fname);
+				mean_waves = NaN(size(waveforms,1),size(waveforms,2),size(waveforms,3)/2);
+				std_waves = NaN(size(waveforms,1),size(waveforms,2),size(waveforms,3)/2);
+				for i=1:size(waveforms,3)/2,
+					mean_waves(:,:,i) = waveforms(:,:,1+2*(i-1));
+					std_waves(:,:,i) = waveforms(:,:,2+2*(i-1));
+				end;
+				sample_times = (header.S0:header.S1)/header.samplingrate;
+				
+		end;  % load()
+
+		function h = plot(ndi_calculator_obj, doc_or_parameters, varargin)
+			% PLOT - provide a diagnostic plot to show the results of the calculator
 			%
-				eval(['help ndi.calc.example.simple.doc_about']);
-		end; %doc_about()
+			% H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
+			%
+			% Produce a plot of the tuning curve.
+			%
+			% Handles to the figure, the axes, and any objects created are returned in H.
+			%
+			% This function takes additional input arguments as name/value pairs.
+			% See ndi.calculator.plot_parameters for a description of those parameters.
+
+				% call superclass plot method to set up axes
+				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
+
+				if isa(doc_or_parameters,'ndi.document'),
+					doc = doc_or_parameters;
+				else,
+					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+				end;
+
+				[mean_waves,std_waves,sample_times] = ndi_calculator_obj.load(doc);
+
+				delta = 1.3*(sample_times(end)-sample_times(1));
+
+				for i=1:size(mean_waves,3),
+					hnew = ndi.fun.plot.multichan(mean_waves,(i-1)*delta+sample_times,30);
+					h.objects = cat(1,h.objects,hnew);
+				end;
+		end; % plot()
+
 	end; % methods()
 			
-end % simple
+end % spike_shape

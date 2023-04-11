@@ -2,7 +2,7 @@
 	"document_class": {
 		"definition":                       "$$NDICALCDOCUMENTPATH\/calc\/oridir_bootstrap_calc.json",
 		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridir_bootstrap_calc.json",
-		"class_name":                       "ndi_calculation_oridir_bootstrap_calc",
+		"class_name":                       "oridir_bootstrap_calc",
 		"property_list_name":                   "oridir_bootstrap_calc", 
 		"class_version":                    1,
 		"superclasses": [
@@ -25,11 +25,9 @@
 				"name":				"orientation_direction_tuning_id",
 				"value":			[]
 			}
-            
 		],
-
 		"direction_fit_parameters": [],
-		"bootstrap_fits": [],
+		"bootstrap_fits": []
 	}
 }
 
