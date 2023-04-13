@@ -48,6 +48,8 @@ classdef oridir_bootstrap < ndi.calculator
 					error('Could not find stimulus response doc..');
 				end
 				stim_response_doc = stim_response_doc{1};
+
+				ndi.globals
 			
 				% Step 2: perform the calculator, which here creates a tuning curve from instructions
 
@@ -75,18 +77,23 @@ classdef oridir_bootstrap < ndi.calculator
 				dp = zeros(niter,5); % [Rsp Rp Op sigm Rn] x niter
 				fits = zeros(niter,360); %save fits for plotting
 				%perform fits for each bootstrap
-				for i = 1:niter
+				% make a local store of our global variables
+				logger = ndi_globals.log;
+
+				parfor i = 1:niter
+					logger.msg('debug',5,['oridir_bootstrap: Analyzing simulation ' int2str(i) ' of ' int2str(niter) '.']);
 					%prepare the inputs for the fitting function
 					bootstrap_res = data2fit(:,:,i)'; %isolate a single bootstrap iteration
 					response_mean = mean(bootstrap_res); %get the mean response at each stimuli
 					response_stddev = std(bootstrap_res); %std 
 					response_stderr = response_stddev/sqrt(ntrials); %SEM
 					%build the input struct
+					response = [];
 					response.curve = [stimuli'; ...
 						response_mean; ...
 						response_stddev; ...
 						response_stderr];
-						response.ind = bootstrap_res;
+					response.ind = bootstrap_res;
 					%run the fit
 					fi = vlt.neuro.vision.oridir.index.oridir_fitindexes(response);
 					%extract [Rsp Rp Op sigm Rn] to add to NDI doc
@@ -128,12 +135,8 @@ classdef oridir_bootstrap < ndi.calculator
 				parameters.input_parameters.iterations = 100;
 				parameters.input_parameters.depends_on = vlt.data.emptystruct('name','value');
             
-				% parameters.input_parameters = struct('independent_label','','independent_parameter','','best_algorithm','empirical_maximum');
-				% parameters.input_parameters.selection = vlt.data.emptystruct('property','operation','value');
-            
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
-					
 		end % default_search_for_input_parameters
 
 		function query = default_parameters_query(ndi_calculator_obj, parameters_specification)
@@ -159,32 +162,14 @@ classdef oridir_bootstrap < ndi.calculator
 			%
 			%
 				q1 = ndi.query('','isa','orientation_direction_tuning','');
-				q2 = ndi.query('orientation_direction_tuning.properties.response_type','contains_string','mean','');
-				q_total = q1 & q2;
+				q2_a = ndi.query('orientation_direction_tuning.properties.response_type','contains_string','mean','');
+				q2_b = ndi.query('orientation_direction_tuning.properties.response_type','contains_string','F1','');
+				q3 = ndi.query('orientation_direction_tuning.tuning_curve.direction','hasmember',270,'');
+				q4 = ndi.query('orientation_direction_tuning.significance.visual_response_anova_p','lessthan',0.05,'');
+				q_total = q1 & (q2_a | q2_b) & q3 & q4;
 
 				query = struct('name','orientation_direction_tuning_id','query',q_total);
 		end % default_parameters_query()
-
-		function b = is_valid_dependency_input(ndi_calculator_obj, name, value)
-			% IS_VALID_DEPENDENCY_INPUT - is a potential dependency input actually valid for this calculator?
-			%
-			% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)
-			%
-			% Tests whether a potential input to a calculator is valid.
-			% The potential dependency name is provided in NAME and its ndi_document id is
-			% provided in VALUE.
-			%
-			% The base class behavior of this function is simply to return true, but it
-			% can be overriden if additional criteria beyond an ndi.query are needed to
-			% assess if a document is an appropriate input for the calculator.
-			%
-				b = 1;
-				return;
-				%look for oridirtuning_calc documents
-				q1 = ndi.query('ndi_document.id','exact_string',value,'');
-				q2 = ndi.query('','isa','oridirtuning_calc.json','');
-				b = isempty(ndi_calculator_obj.session.database_search(q1&q2));
-		end % is_valid_dependency_input()
 
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
                         % PLOT - provide a diagnostic plot to show the results of the calculator
