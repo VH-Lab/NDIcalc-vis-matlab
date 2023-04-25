@@ -1,20 +1,23 @@
 {
 	"document_class": {
 		"definition":                       "$$NDICALCDOCUMENTPATH\/calc\/stimloopsplitter_calc.json",
-		"validation":                       "$NDICALCSCHEMAPATH\/calc\/stimloopsplitter_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/stimloopsplitter_calc_schema.json",
 		"class_name":                       "ndi_calculation_stimloopsplitter_calc",
 		"property_list_name":                   "stimloopsplitter_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
 			{ "definition":                 "$NDIDOCUMENTPATH\/stimulus/stimulus_presentation.json"}
 		]
 	},
+	"depends_on": [
+		        { "name": "stimulus_presentation_id", "value": [] }
+	],
 	"stimloopsplitter_calc": {
 		"input_parameters": {
 			"parameter_to_split":			"angle",
-			"division_parameter":		"loops",
-            "parameter_adjustment":     180
+			"division_parameter":			"loops",
+			"parameter_adjustment":			180
 		},
 		"depends_on": [
 			{
@@ -22,13 +25,7 @@
 				"value":			[]
 			}
 		]
-	},
-    "depends_on": [
-        {
-            "name":				"stimulus_presentation_id",
-            "value":			[]
-        }
-    ]
+	}
 }
 
 

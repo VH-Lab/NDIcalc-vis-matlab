@@ -90,6 +90,8 @@ classdef spike_shape < ndi.calculator
 						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, mean_waves(:,:,j));
 						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, std_waves(:,:,j));
 					end;
+
+					doc{end} = doc{end}.add_file("spikewaves.vsw",fname);
 				end;
 
 		end; % calculate
@@ -128,10 +130,16 @@ classdef spike_shape < ndi.calculator
 			%   C is the number of channels, and T is the time measurement.
 			% SAMPLES_TIMES is an Mx1 vector with the sample times of each spike waveform.
 			% 
-				dirpath = [ndi_calculator_obj.session.path filesep 'ndiobjects'];
-				fname = [dirpath filesep doc.document_properties.ndi_document.id '.vsw'];
+				%dirpath = [ndi_calculator_obj.session.path filesep 'ndiobjects'];
+				%fname = [dirpath filesep doc.document_properties.ndi_document.id '.vsw'];
 
-				[waveforms, header] = vlt.file.custom_file_formats.readvhlspikewaveformfile(fname);
+				if ~isa(doc,'ndi.document'),
+					doc = ndi_calculator_obj.session.database_search(ndi.query('base.id,'exactstring',doc,''));
+				end;
+
+				myfile = ndi_calculator_obj.session.database_openbinary_doc(doc, 'spikewaves.vsw');
+
+				[waveforms, header] = vlt.file.custom_file_formats.readvhlspikewaveformfile(myfile);
 				mean_waves = NaN(size(waveforms,1),size(waveforms,2),size(waveforms,3)/2);
 				std_waves = NaN(size(waveforms,1),size(waveforms,2),size(waveforms,3)/2);
 				for i=1:size(waveforms,3)/2,
@@ -139,7 +147,8 @@ classdef spike_shape < ndi.calculator
 					std_waves(:,:,i) = waveforms(:,:,2+2*(i-1));
 				end;
 				sample_times = (header.S0:header.S1)/header.samplingrate;
-				
+
+				ndi_calculator_obj.session.database_closebinary_doc(myfile);
 		end;  % load()
 
 		function h = plot(ndi_calculator_obj, doc_or_parameters, varargin)

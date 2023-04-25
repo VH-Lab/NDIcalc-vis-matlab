@@ -1,12 +1,12 @@
 {
 	"document_class": {
-		"definition":						"$NDICALCDOCUMENTPATH\/vision\/speed_tuning.json",
-		"validation":						"$NDICALCSCHEMAPATH\/vision\/speed_tuning_schema.json",
+		"definition":	"$NDICALCDOCUMENTPATH\/vision\/speed_tuning.json",
+		"validation":	"$NDICALCSCHEMAPATH\/vision\/speed_tuning_schema.json",
 		"class_name":						"speed_tuning",
                 "property_list_name":                                   "speed_tuning",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"}
+			{ "definition":       "$NDIDOCUMENTPATH\/base.json"}
 		]
 	},
 	"depends_on": [
@@ -14,8 +14,8 @@
 			"name":		"element_id",
 			"value":	"" 
 		},
-	        {	"name":     "stimulus_tuningcurve_id",
-			"value":    ""
+	        {	"name":     	"stimulus_tuningcurve_id",
+			"value":   	""
 		}
 	],
 	"speed_tuning":  {

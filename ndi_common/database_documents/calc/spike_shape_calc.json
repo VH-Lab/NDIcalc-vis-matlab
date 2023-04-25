@@ -6,8 +6,8 @@
 		"property_list_name":					"spike_shape_calc",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":					"$NDIDOCUMENTPATH\/ndi_document.json" },
-			{ "definition":					"$NDIDOCUMENTPATH\/ndi_document_app.json" }
+			{ "definition":					"$NDIDOCUMENTPATH\/base.json" },
+			{ "definition":					"$NDIDOCUMENTPATH\/app.json" }
 		]
 	},
 	"depends_on": [
@@ -18,6 +18,9 @@
 			"value": 0
 		}
 	],
+	"files": {
+		"file_list": [ "spikewaves.vsw" ]
+	},
 	"spike_shape_calc": {
 		"input_parameters": {
 			"spike_window_before_time":					-0.001,

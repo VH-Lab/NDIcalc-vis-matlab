@@ -1,0 +1,47 @@
+{
+	"classname": "spike_shape_calc",
+	"superclasses":  [ "base", "app"],
+	"depends_on": [ 
+			{"name": element_epoch_id", "mustbenotempty": 1},
+			{"name": element_id", "mustbenotempty": 1}
+	],
+	"file": [ 
+                {"name": "spikewaves.vsw", "mustbenotempty": 1}
+	],
+	"spike_shape_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input structure."
+		},
+		{
+			"name": "interval_center_times",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The center of each time bin when the spike shape is calculated, in epoch local coordinates"
+		},
+		{
+			"name": "number_of_spikes_per_interval",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The number of spikes that were averaged per interval"
+		},
+		{
+			"name": "sample_times",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The time of each sample, relative to the peak of the spike"
+		}
+	]
+}
+
+

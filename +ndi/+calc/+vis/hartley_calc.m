@@ -156,6 +156,8 @@ classdef hartley_calc < ndi.calculator
 							% write the ngrid file
 							fwrite(fid,cat(4,sta,p_val),'double');
 							fclose(fid);
+
+							doc{end} = doc{end}.add_file('hartley_results.ngrid',myfile);
 						end;
 					end;
 				end;
@@ -292,16 +294,19 @@ classdef hartley_calc < ndi.calculator
 					doc = doc_or_id;
 				end;
 
-				mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+				myfile = ndi_calculator_obj.session.database_openbinary_doc(doc,'hartley_data.ngrid');
 
-				myfile = fullfile(mypath,[doc.id() '.ngrid']);
-				fid = fopen(myfile,'r','ieee-le');
-				if fid<0,
-					error(['Could not open file ' myfile '.']);
-				end;
+				%mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+
+				%myfile = fullfile(mypath,[doc.id() '.ngrid']);
+				%fid = fopen(myfile,'r','ieee-le');
+				%if fid<0,
+				%	error(['Could not open file ' myfile '.']);
+				%end;
 				% read the ngrid file
-				fulldata = fread(fid,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
-				fclose(fid);
+				fulldata = fread(myfile,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
+				ndi_calculator_obj.session.database_closebinary_doc(myfile);
+
 				fulldata = reshape(fulldata,vlt.data.rowvec(doc.document_properties.ngrid.data_dim));
 				sta = fulldata(:,:,:,1);
 				pval = fulldata(:,:,:,2);

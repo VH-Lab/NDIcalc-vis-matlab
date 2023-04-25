@@ -1,0 +1,24 @@
+{
+	"classname": "hartley_reverse_correlation",
+	"superclasses":  [ "base", "reverse_correlation"],
+	"depends_on": [ ],
+	"file": [ ],
+	"hartley_reverse_correlation": [
+		{
+			"name": "stimulus_properties",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The stimulus property input structure"
+		},
+		{
+			"name": "reconstruction_properties",
+			"type": "structure",
+			"default_value": [],
+			"parameters": [],
+			"queryable": 1,
+			"documentation": "The reconstruction resolution in T_coords, X_coords, and Y_coords"
+		}
+	]
+}

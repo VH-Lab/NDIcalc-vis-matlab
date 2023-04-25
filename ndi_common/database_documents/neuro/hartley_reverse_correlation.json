@@ -6,7 +6,7 @@
 		"property_list_name":               "hartley_reverse_correlation",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"},
+			{ "definition":                                 "$NDIDOCUMENTPATH\/base.json"},
 			{ "definition":                                 "$NDICALCDOCUMENTPATH\/neuro\/reverse_correlation.json"}
 		]
 	},

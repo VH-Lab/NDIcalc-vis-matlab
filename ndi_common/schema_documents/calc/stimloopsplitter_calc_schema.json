@@ -1,0 +1,28 @@
+{
+	"classname": "stimloopsplitter_calc",
+	"superclasses":  [ "base", "stimulus_presentation"],
+	"depends_on": [ 
+			{"name": stimulus_presentation_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"stimloopsplitter_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The dependencies for the input"
+		}
+	]
+}
+
+

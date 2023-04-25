@@ -1,12 +1,12 @@
 {
 	"document_class": {
 		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/contrastsensitivity_calc.json",
-		"validation":                       "$NDICALCSCHEMAPATH\/calc\/contrastsensitivity_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/contrastsensitivity_calc_schema.json",
 		"class_name":                       "contrastsensitivity_calc",
 		"property_list_name":                   "contrastsensitivity_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" }
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" }
 		]
 	},
 	"depends_on": [

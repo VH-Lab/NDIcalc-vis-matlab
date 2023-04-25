@@ -6,7 +6,7 @@
 		"property_list_name":                   "contrasttuning_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
 			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/contrast_tuning.json"}
 		]
 	},

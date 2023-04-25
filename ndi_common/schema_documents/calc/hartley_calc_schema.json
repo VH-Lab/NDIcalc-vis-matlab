@@ -1,0 +1,28 @@
+{
+	"classname": "hartley_calc",
+	"superclasses":  [ "base", "hartley_reverse_correlation"],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1}
+	],
+	"file": [
+                {"name": "hartley_results.ngrid", "mustbenotempty": 1}
+	],
+	"hartley_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input parameters structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": [],
+			"queryable": 1,
+			"documentation": "The dependencies for calculation"
+		}
+	]
+}
