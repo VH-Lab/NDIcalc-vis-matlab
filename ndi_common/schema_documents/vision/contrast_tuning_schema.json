@@ -6,7 +6,7 @@
 		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
 	],
 	"file": [ ],
-	"element_epoch": [
+	"contrast_tuning": [
 		{
 			"name": "properties",
 			"type": "structure",

@@ -6,13 +6,11 @@
 		{ "name": "stimulus_presentation_id", "mustbenotempty": 1},
 		{ "name": "stimulus_response_scalar_id", "mustbenotempty": 1}
 	],
-	"file": [
-		{"name": "epoch_binary_data.vhsb", "mustbenotempty": 1}
-	],
+	"file": [ ],
 	"contrastsensitivity_calc": [
 		{
 			"name": "input_parameters",
-			"type": "struct",
+			"type": "structure",
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
@@ -67,18 +65,10 @@
 			"documentation": "0/1 Is this a modulated or mean response? 0=not modulated, 1=modulated"
 		},
 		{
-			"name": "across_stimuli_varies_p_bonferroni",
-			"type": "matrix",
-			"default_value": [],
-			"parameters": [NaN,NaN],
-			"queryable": 1,
-			"documentation": "Did the contrast responses for that spatial frequency vary across stimuli?"
-		},
-		{
 			"name": "visual_response_p_bonferroni",
 			"type": "double",
 			"default_value": [],
-			"parameters": [0,1,1,0],
+			"parameters": [0,10,1,0],
 			"queryable": 1,
 			"documentation": "Did responses vary across visual stimuli and blank?"
 		},
@@ -86,7 +76,7 @@
 			"name": "response_varies_p_bonferroni",
 			"type": "double",
 			"default_value": [],
-			"parameters": [0,1,1,0],
+			"parameters": [0,10,1,0],
 			"queryable": 1,
 			"documentation": "Did the response vary across stimuli? p-value"
 		},

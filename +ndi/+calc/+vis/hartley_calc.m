@@ -284,27 +284,30 @@ classdef hartley_calc < ndi.calculator
 			% document object to be read.
 			%
 			
-				if ischar(doc_or_id),
-					doc = ndi_calculator_obj.database_search(ndi.query('ndi_document.id','exact_string',doc_or_id,''));
-					if numel(doc)~=1,
-						% there cannot be two documents with same id
-						error(['No document with id ' doc_or_id ' found.']);
+				if 0,
+					if ischar(doc_or_id),
+						doc = ndi_calculator_obj.database_search(ndi.query('base.id','exact_string',doc_or_id,''));
+						if numel(doc)~=1,
+							% there cannot be two documents with same id
+							error(['No document with id ' doc_or_id ' found.']);
+						end;
+						doc = doc{1};
+					else,
+						doc = doc_or_id;
 					end;
-					doc = doc{1};
-				else,
-					doc = doc_or_id;
+
+					mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+
+					myfile = fullfile(mypath,[doc.id() '.ngrid']);
+					fid = fopen(myfile,'r','ieee-le');
+					if fid<0,
+						error(['Could not open file ' myfile '.']);
+					end;
+					read the ngrid file
+
 				end;
 
 				myfile = ndi_calculator_obj.session.database_openbinarydoc(doc,'hartley_data.ngrid');
-
-				%mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
-
-				%myfile = fullfile(mypath,[doc.id() '.ngrid']);
-				%fid = fopen(myfile,'r','ieee-le');
-				%if fid<0,
-				%	error(['Could not open file ' myfile '.']);
-				%end;
-				% read the ngrid file
 				fulldata = fread(myfile,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
 				ndi_calculator_obj.session.database_closebinary_doc(myfile);
 

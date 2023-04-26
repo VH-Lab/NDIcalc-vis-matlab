@@ -31,7 +31,7 @@ classdef contrast_sensitivity < ndi.calculator
 				% Step 1: set up the output structure
 				contrastsensitivity_calc = parameters;
 
-				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_number',...
+				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
@@ -85,7 +85,7 @@ classdef contrast_sensitivity < ndi.calculator
 						if numel(stim_resp_doc_indexes)==1, % we're okay, just use the one choice
 							stim_resp_index_value = 1;
 						else,
-							[b,r,dummy1,dummy2,mean_i,mod_i] = ndi.app.stimulus.tuning_response.modulated_or_mean(stim_resp_scalar(stim_resp_doc_indexes));
+							[b,r,dummy,dummy,mean_i,mod_i] = ndi.app.stimulus.tuning_response.modulated_or_mean(stim_resp_scalar(stim_resp_doc_indexes));
 							if b==-1,
 								warning(['Skipping responses to stimulus presentation ' stim_pres_id{i} ' because we found more than one response and could not identify mean and modulated response.']);
 								stim_resp_index_value = [];
@@ -98,9 +98,9 @@ classdef contrast_sensitivity < ndi.calculator
 						
 						if ~isempty(stim_resp_index_value),
 							% Step 3: Search for contrast tuning curve objects that depend on this stimulus response document
-							q3 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Contrast','');
+							q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Contrast','');
 							q4 = ndi.query('','depends_on','stimulus_response_scalar_id',stim_resp_scalar{stim_resp_index_value}.id());
-							q5 = ndi.query('','isa','stimulus_tuningcurve.json','');
+							q5 = ndi.query('','isa','stimulus_tuningcurve','');
 							tuning_curves = ndi_calculator_obj.session.database_search(q3 & q4 & q5);
 
 							spatial_frequencies = [];
@@ -129,7 +129,7 @@ classdef contrast_sensitivity < ndi.calculator
 								end;
 								all_contrast_tuning_curves_ids{end+1} = contrast_tuning_props.id();
                                 
-								stimid = tuning_curves{k}.document_properties.tuning_curve.stimid(1);
+								stimid = tuning_curves{k}.document_properties.stimulus_tuningcurve.stimid(1);
 								params_here = stim_pres_doc.document_properties.stimulus_presentation.stimuli(stimid).parameters;
 								if isfield(params_here,'sFrequency'),
 									spatial_frequencies(end+1) = getfield(params_here,'sFrequency');
@@ -159,6 +159,8 @@ classdef contrast_sensitivity < ndi.calculator
 							% could actually do 2-factor ANOVA on responses; would be better
 							parameters_here.visual_response_p_bonferroni = nanmin(visual_response_p)*numel(visual_response_p);
 							parameters_here.response_varies_p_bonferroni = nanmin(across_stims_p)*numel(across_stims_p);
+                            parameters_here.depends_on = vlt.data.emptystruct('name','value');
+                            parameters_here.response_type = ''; % punt for now
 						
 							if numel(tuning_curves)>0,	
 								doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'contrastsensitivity_calc',parameters_here);
@@ -209,7 +211,7 @@ classdef contrast_sensitivity < ndi.calculator
 			% |-----------------------|-----------------------------------------------
 			%
 			% For the ndi.calc.stimulus.contrast_sensitivity_calc class, this looks for 
-			% documents of type 'stimulus_response_scalar.json' with 'response_type' fields
+			% documents of type 'stimulus_response_scalar' with 'response_type' fields
 			% the contain 'mean' or 'F1'.
 			%
 			%

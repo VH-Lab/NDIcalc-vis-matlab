@@ -1,6 +1,6 @@
 {
 	"classname": "contrasttuning_calc",
-	"superclasses":  [ "base" "contrast_tuning"],
+	"superclasses":  [ "base", "contrast_tuning"],
 	"depends_on": [ ],
 	"file": [ ],
 	"contrasttuning_calc": [

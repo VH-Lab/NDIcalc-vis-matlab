@@ -31,7 +31,7 @@ classdef contrast_tuning < ndi.calculator
 				% Step 1: set up the output structure
 				contrast_tuning_calc = parameters;
 
-				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_number',...
+				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
@@ -79,14 +79,14 @@ classdef contrast_tuning < ndi.calculator
 			% |-----------------------|-----------------------------------------------
 			%
 			% For the ndi.calc.stimulus.contrast_tuning_calc class, this looks for 
-			% documents of type 'stimulus_response_scalar.json' with 'response_type' fields
+			% documents of type 'stimulus_response_scalar' with 'response_type' fields
 			% the contain 'mean' or 'F1'.
 			%
 			%
-				q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
-				q2 = ndi.query('tuning_curve.independent_variable_label','exact_string','contrast','');
-				q3 = ndi.query('tuning_curve.independent_variable_label','exact_string','Contrast','');
-				q4 = ndi.query('tuning_curve.independent_variable_label','exact_string','CONTRAST','');
+				q1 = ndi.query('','isa','stimulus_tuningcurve','');
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','contrast','');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Contrast','');
+				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','CONTRAST','');
 				q234 = q2 | q3 | q4;
 				q_total = q1 & q234;
 
@@ -193,7 +193,7 @@ classdef contrast_tuning < ndi.calculator
 			% parameters and stores them in CONTRAST_TUNING document CONTRAST_PROPS_DOC.
 			%
 			%
-				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
+				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 				
 				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
@@ -212,7 +212,7 @@ classdef contrast_tuning < ndi.calculator
 
 				tuning_curve = struct(...
 					'contrast', ...
-						vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value), ...
+						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
 					'mean', resp.curve(2,:), ...
 					'stddev', resp.curve(3,:), ...
 					'stderr', resp.curve(4,:), ...
@@ -254,7 +254,7 @@ classdef contrast_tuning < ndi.calculator
 				contrast_tuning.fitless = fitless;
 				contrast_tuning.fit = fit;
 
-				contrast_props_doc = ndi.document('stimulus/vision/contrast/contrast_tuning',...
+				contrast_props_doc = ndi.document('contrast_tuning',...
 					'contrast_tuning',contrast_tuning);
 				contrast_props_doc = contrast_props_doc.set_dependency_value('element_id', ...
 					tuning_doc.dependency_value('element_id'));
