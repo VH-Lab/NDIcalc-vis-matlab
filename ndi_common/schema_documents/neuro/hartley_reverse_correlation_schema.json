@@ -19,6 +19,30 @@
 			"parameters": [],
 			"queryable": 1,
 			"documentation": "The reconstruction resolution in T_coords, X_coords, and Y_coords"
+		},
+		{
+			"name": "hartley_numbers",
+			"type": "structure",
+			"default_value": [],
+			"parameters": [],
+			"queryable": 1,
+			"documentation": "The properties of the Hartley stimuli"
+		},
+		{
+			"name": "spiketimes",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The spike times"
+		},
+		{
+			"name": "frameTimes",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "The properties of the Hartley stimuli"
 		}
 	]
 }

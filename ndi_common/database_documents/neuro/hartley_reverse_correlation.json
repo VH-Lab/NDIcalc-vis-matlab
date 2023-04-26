@@ -25,7 +25,10 @@
 			"T_coords":				[0, 0.1, 0.2],
 			"X_coords":				[0, 0.1, 0.2],
 			"Y_coords":				[0, 0.1, 0.2]
-		}
+		},
+		"spiketimes": [],
+		"frameTimes": [],
+		"hartley_numbers": []
 	}
 }
 

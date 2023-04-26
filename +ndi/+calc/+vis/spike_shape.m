@@ -71,7 +71,7 @@ classdef spike_shape < ndi.calculator
 					for k=1:numel(parameters.depends_on),
 						doc{end} = doc{end}.set_dependency_value(parameters.depends_on(k).name,parameters.depends_on(k).value);
 					end;
-					doc{end} = doc{end}.set_dependency_value('element_epoch_id', epoch_id_doc.document_properties.ndi_document.id);
+					doc{end} = doc{end}.set_dependency_value('element_epoch_id', epoch_id_doc.document_properties.base.id);
 
 					% TODO UPDATE
 					% now we will use a kludge to deal with the fact that the current database doesn't allow you to specify 
@@ -84,7 +84,7 @@ classdef spike_shape < ndi.calculator
 					fileparameters.comment = '';
 					fileparameters.samplingrate = output_parameters.sample_rate;
 					
-					fname = [dirpath filesep doc{end}.document_properties.ndi_document.id '.vsw'];
+					fname = [dirpath filesep doc{end}.document_properties.base.id '.vsw'];
 					fid = vlt.file.custom_file_formats.newvhlspikewaveformfile(fname,fileparameters);
 					for j=1:size(mean_waves,3),
 						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, mean_waves(:,:,j));
@@ -131,7 +131,7 @@ classdef spike_shape < ndi.calculator
 			% SAMPLES_TIMES is an Mx1 vector with the sample times of each spike waveform.
 			% 
 				%dirpath = [ndi_calculator_obj.session.path filesep 'ndiobjects'];
-				%fname = [dirpath filesep doc.document_properties.ndi_document.id '.vsw'];
+				%fname = [dirpath filesep doc.document_properties.base.id '.vsw'];
 
 				if ~isa(doc,'ndi.document'),
 					doc = ndi_calculator_obj.session.database_search(ndi.query('base.id,'exactstring',doc,''));

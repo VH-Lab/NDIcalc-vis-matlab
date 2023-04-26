@@ -1,6 +1,6 @@
 {
 	"classname": "hartley_calc",
-	"superclasses":  [ "base", "hartley_reverse_correlation"],
+	"superclasses":  [ "base", "hartley_reverse_correlation", "ngrid", "reverse_correlation"],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1}
 	],

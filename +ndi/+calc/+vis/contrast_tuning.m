@@ -31,7 +31,7 @@ classdef contrast_tuning < ndi.calculator
 				% Step 1: set up the output structure
 				contrast_tuning_calc = parameters;
 
-				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
+				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_number',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
@@ -99,7 +99,7 @@ classdef contrast_tuning < ndi.calculator
 			% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)
 			%
 			% Tests whether a potential input to a calculator is valid.
-			% The potential dependency name is provided in NAME and its ndi_document id is
+			% The potential dependency name is provided in NAME and its base id is
 			% provided in VALUE.
 			%
 			% The base class behavior of this function is simply to return true, but it
@@ -113,7 +113,7 @@ classdef contrast_tuning < ndi.calculator
 	
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
-						q = ndi.query('ndi_document.id','exact_string',value,'');
+						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
 						b = (numel(d.document_properties.independent_variable_label) ==1);
 					case lower('element_id'),
@@ -195,7 +195,7 @@ classdef contrast_tuning < ndi.calculator
 			%
 				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
 				
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
 				if numel(stim_response_doc)~=1,
 					error(['Could not find stimulus response scalar document.']);

@@ -36,7 +36,7 @@ classdef stimloopsplitter_calc < ndi.calculator
 				%   parameters
 				%   2) search for the specified stimulus_presentation
 				%   document
-				stim_presentation_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
+				stim_presentation_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_number',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_presentation_id'),''));
 				if numel(stim_presentation_doc)~=1, 
 					error(['Could not find stimulus presentation doc..']);
@@ -184,7 +184,7 @@ classdef stimloopsplitter_calc < ndi.calculator
 			end
                 
 			%make sure doc properties align to those of stim_presentation_doc
-			doc = doc.setproperties('epochid',stim_presentation_doc.document_properties.epochid,'ndi_document.session_id',stim_presentation_doc.document_properties.ndi_document.session_id);
+			doc = doc.setproperties('epochid.epochid',stim_presentation_doc.document_properties.epochid,'ndi_document.session_id',stim_presentation_doc.document_properties.ndi_document.session_id);
                 
 			if numel(doc)~=1,
 				doc = doc{1};
@@ -241,7 +241,7 @@ classdef stimloopsplitter_calc < ndi.calculator
 			% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)
 			%
 			% Tests whether a potential input to a calculator is valid.
-			% The potential dependency name is provided in NAME and its ndi_document id is
+			% The potential dependency name is provided in NAME and its base id is
 			% provided in VALUE.
 			%
 			% The base class behavior of this function is simply to return true, but it
@@ -251,7 +251,7 @@ classdef stimloopsplitter_calc < ndi.calculator
                 %check whether the dependency is a stimulus presentation:
                 % do a database search to make sure the dependency value
                 % is an id for a stimulus presentation doc
-                q1 = ndi.query('ndi_document.id','exact_string',value,'');
+                q1 = ndi.query('base.id','exact_string',value,'');
 				q2 = ndi.query('','isa','stimulus_presentation.json','');
                 %if there is a document that satisfies both queries and the
                 %name is 'stimulus_presentation_id', the dependency is
@@ -545,7 +545,7 @@ classdef stimloopsplitter_calc < ndi.calculator
 			% an error.
 			%
 				
-		                stim_pres_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id', 'exact_string', ...
+		                stim_pres_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id', 'exact_string', ...
                                         stimloopsplitter_calc_doc.dependency_value('stimulus_presentation_id'),''));
 				if numel(stim_pres_doc)~=1, 
 					error(['Could not find stimulus presentation doc for document ' stimloopsplitter_calc_doc.id() '.']);

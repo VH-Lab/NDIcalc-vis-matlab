@@ -42,7 +42,7 @@ classdef oridir_bootstrap < ndi.calculator
 
 				orientation_direction_tuning_id = parameters.depends_on(index).value;
 
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_string',orientation_direction_tuning_id,''));
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',orientation_direction_tuning_id,''));
 
 				if numel(stim_response_doc)~=1 
 					error('Could not find stimulus response doc..');
@@ -211,7 +211,7 @@ classdef oridir_bootstrap < ndi.calculator
 				end;
 
 				if ~h.params.suppress_title,
-					h.title = title(doc_or_parameters.document_properties.ndi_document.id);
+					h.title = title(doc_or_parameters.document_properties.base.id);
 				end;
                 
 				h.axes.XLim =[0 360];

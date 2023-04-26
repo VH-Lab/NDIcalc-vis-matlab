@@ -6,7 +6,7 @@
 		{ "name": "stimulus_presentation_id", "mustbenotempty": 1}
 	],
 	"file": [ ],
-	"element_epoch": [
+	"reverse_correlation": [
 		{
 			"name": "method",
 			"type": "string",

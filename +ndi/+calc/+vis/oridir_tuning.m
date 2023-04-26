@@ -36,8 +36,8 @@ classdef oridir_tuning < ndi.calculator
 				% Step 2. Set up output structure
 				oridir_tuning = parameters;
 						
-				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
-					'exact_number',...
+				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
+					'exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_doc)~=1, 
 					error(['Could not find stimulus tuning curve doc..']);
@@ -119,7 +119,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% Tests whether a potential input to a calculator is valid.
 			% NAME - potential dependency name
-			% VALUE - ndi_document id of the potential dependency name
+			% VALUE - base id of the potential dependency name
 			%
 			% The base class behavior of this function will return true.
 			% This is overridden if additional criteria beyond an ndi.query
@@ -133,7 +133,7 @@ classdef oridir_tuning < ndi.calculator
 
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
-						q = ndi.query('ndi_document.id','exact_string',value,'');
+						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
 						b = (numel(d.document_properties.independent_variable_label) ==2);
 					end;
@@ -159,7 +159,7 @@ classdef oridir_tuning < ndi.calculator
 				response_stderr = [];
                 
 				% stim_response_doc
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
 				if numel(stim_response_doc)~=1,
 					error(['Could not find stimulus response scalar document.']);

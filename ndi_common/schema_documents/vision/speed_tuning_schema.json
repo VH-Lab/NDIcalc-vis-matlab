@@ -1,12 +1,12 @@
 {
-	"classname": "contrast_tuning",
+	"classname": "speed_tuning",
 	"superclasses":  [ "base" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1},
 		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
 	],
 	"file": [ ],
-	"element_epoch": [
+	"speed_tuning": [
 		{
 			"name": "properties",
 			"type": "structure",

@@ -32,7 +32,7 @@ classdef hartley_calc < ndi.calculator
 				% Step 1: set up the output structure, and load the element_id and stimulus_presentation_doc
 				hartley_calc = parameters;
 
-				element_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
+				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
@@ -58,7 +58,7 @@ classdef hartley_calc < ndi.calculator
 					% ASSUMPTION: each stimulus epoch will overlap a single element epoch
 					stim_timeref = ndi.time.timereference(stimulus_element,...
 						ndi.time.clocktype(stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).clocktype),...
-						stimulus_presentation_docs{i}.document_properties.epochid,...
+						stimulus_presentation_docs{i}.document_properties.epochid.epochid,...
 						stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).onset);
 					[ts_epoch_t0_out, ts_epoch_timeref, msg] = ndi_calculator_obj.session.syncgraph.time_convert(stim_timeref,...
 						0, element, ndi.time.clocktype('dev_local_time'));
@@ -77,7 +77,8 @@ classdef hartley_calc < ndi.calculator
 							'T_coords', parameters.input_parameters.T,...
 							'X_coords', 1:parameters.input_parameters.X_sample:hartley_reverse_correlation.stimulus_properties.M,...
 							'Y_coords', 1:parameters.input_parameters.Y_sample:hartley_reverse_correlation.stimulus_properties.M);
-						reverse_correlation.method = "Hartley";
+						reverse_correlation.method = 'Hartley';
+						reverse_correlation.dimension_labels = '';
 
 						% Step 3b: load the spike times and spike parameters
 
@@ -112,7 +113,7 @@ classdef hartley_calc < ndi.calculator
 							mkdir(mypath);
 						end;
 						myfile = fullfile(mypath,...
-							[stimulus_presentation_docs{i}.document_properties.epochid '_' ...
+							[stimulus_presentation_docs{i}.document_properties.epochid.epochid '_' ...
 								element.elementstring() '_hartley.json']);
 						mystring = char(vlt.data.prettyjson(mystring));
 						vlt.file.str2text(myfile,mystring);
@@ -141,7 +142,7 @@ classdef hartley_calc < ndi.calculator
 							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'hartley_calc',parameters,...
 								'hartley_reverse_correlation',hartley_reverse_correlation,'reverse_correlation',reverse_correlation,'ngrid',ngridp);
 							doc{end} = doc{end}.set_dependency_value('element_id',element_doc.id());
-							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i});
+							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i}.id());
 
 							% open the ngrid file
 							 % TODO: update when new database available
@@ -294,7 +295,7 @@ classdef hartley_calc < ndi.calculator
 					doc = doc_or_id;
 				end;
 
-				myfile = ndi_calculator_obj.session.database_openbinary_doc(doc,'hartley_data.ngrid');
+				myfile = ndi_calculator_obj.session.database_openbinarydoc(doc,'hartley_data.ngrid');
 
 				%mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
 

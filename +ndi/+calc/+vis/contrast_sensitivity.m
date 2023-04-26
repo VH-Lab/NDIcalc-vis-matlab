@@ -31,7 +31,7 @@ classdef contrast_sensitivity < ndi.calculator
 				% Step 1: set up the output structure
 				contrastsensitivity_calc = parameters;
 
-				element_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
+				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_number',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
@@ -61,7 +61,7 @@ classdef contrast_sensitivity < ndi.calculator
 
 				for i=1:numel(stim_pres_id),
 					% now see if the stimulus presentations vary in contrast and spatial frequency
-					q2 = ndi.query('ndi_document.id','exact_string',stim_pres_id{i},'');
+					q2 = ndi.query('base.id','exact_string',stim_pres_id{i},'');
 					stim_pres_doc = ndi_calculator_obj.session.database_search(q2);
 					if numel(stim_pres_doc) ~=1,
 						error(['Missing stimulus presentation document for ' stim_pres_id{i} '. (Should not happen).']);
@@ -213,7 +213,7 @@ classdef contrast_sensitivity < ndi.calculator
 			% the contain 'mean' or 'F1'.
 			%
 			%
-				q_total = ndi.query('','isa','ndi_document_element','');
+				q_total = ndi.query('','isa','base','');
 
 				query = struct('name','element_id','query',q_total);
 		end; % default_parameters_query()

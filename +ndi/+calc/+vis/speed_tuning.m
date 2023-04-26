@@ -31,7 +31,7 @@ classdef speed_tuning < ndi.calculator
 				% Step 1: set up the output structure
 				speed_tuning_calc = parameters;
 
-				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
+				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
@@ -85,11 +85,11 @@ classdef speed_tuning < ndi.calculator
 			% the contain 'mean' or 'F1'.
 			%
 			%
-				q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
-				q2 = ndi.query('tuning_curve.independent_variable_label','hasmember','spatial_frequency','');
-				q3 = ndi.query('tuning_curve.independent_variable_label','hasmember','temporal_frequency','');
-				q4 = ndi.query('tuning_curve.independent_variable_label','hassize',[2 1],'');
-				q_total = q1 & q2 & q3 & q4;
+				q1 = ndi.query('','isa','stimulus_tuningcurve','');
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
+				%q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','hassize',[2 1],'');
+				q_total = q1 & q2 & q3; % & q4;
 
 				query = struct('name','stimulus_tuningcurve_id','query',q_total);
 		end; % default_parameters_query()
@@ -100,7 +100,7 @@ classdef speed_tuning < ndi.calculator
 			% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)
 			%
 			% Tests whether a potential input to a calculator is valid.
-			% The potential dependency name is provided in NAME and its ndi_document id is
+			% The potential dependency name is provided in NAME and its base id is
 			% provided in VALUE.
 			%
 			% The base class behavior of this function is simply to return true, but it
@@ -115,7 +115,7 @@ classdef speed_tuning < ndi.calculator
 	
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
-						q = ndi.query('ndi_document.id','exact_string',value,'');
+						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
 						b = (numel(d.document_properties.independent_variable_label) ==2);
 					case lower('element_id'),
@@ -145,7 +145,7 @@ classdef speed_tuning < ndi.calculator
 				end;
 
 				sp = doc.document_properties.speed_tuning; % shorten our typing
-				tc = sp.tuning_curve; % shorten our typing
+				tc = sp.stimulus_tuningcurve; % shorten our typing
 				ft = sp.fit;
 
 				% First plot fit
@@ -199,9 +199,9 @@ classdef speed_tuning < ndi.calculator
 			% parameters and stores them in SPEED_TUNING document SPEED_PROPS_DOC.
 			%
 			%
-				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
+				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 				
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
 				if numel(stim_response_doc)~=1,
 					error(['Could not find stimulus response scalar document.']);
@@ -214,7 +214,7 @@ classdef speed_tuning < ndi.calculator
 
 				sf_coord = 1;
 				tf_coord = 2;
-				if contains(tuning_doc.document_properties.tuning_curve.independent_variable_label{1},'temporal','IgnoreCase',true),
+				if contains(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_label{1},'temporal','IgnoreCase',true),
 					sf_coord = 2;
 					tf_coord = 1;
 				end;
@@ -225,9 +225,9 @@ classdef speed_tuning < ndi.calculator
 
 				tuning_curve = struct(...
 					'spatial_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value(:,1)), ...
+						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,1)), ...
 					'temporal_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value(:,2)), ...
+						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,2)), ...
 					'mean', resp.curve(2,:), ...
 					'stddev', resp.curve(3,:), ...
 					'stderr', resp.curve(4,:), ...
