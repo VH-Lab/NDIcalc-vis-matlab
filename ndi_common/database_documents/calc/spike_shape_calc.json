@@ -1,7 +1,7 @@
 {
 	"document_class": {
 		"definition":						"$NDICALCDOCUMENTPATH\/calc\/spike_shape_calc.json",
-		"validation":						"$NDICALCSCHEMAPATH\/calc\/spike_shape_calc_shema.json",
+		"validation":						"$NDICALCSCHEMAPATH\/calc\/spike_shape_calc_schema.json",
 		"class_name":						"spike_shape_calc",
 		"property_list_name":					"spike_shape_calc",
 		"class_version":					1,

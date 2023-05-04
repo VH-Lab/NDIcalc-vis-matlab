@@ -43,9 +43,10 @@ classdef spike_shape < ndi.calculator
 
 				et = spiking_element.epochtable(); % find all the epochs for this element
 				for i=1:numel(et),
+					disp(['Now processing epoch ' int2str(i) ' of ' int2str(numel(et)) '.']);
 					spike_shape = parameters;
 					q1 = ndi.query('','depends_on','element_id',element_id);
-					q2 = ndi.query('epochid','exact_string',et(i).epoch_id,'');
+					q2 = ndi.query('epochid.epochid','exact_string',et(i).epoch_id,'');
 					epoch_id_doc = ndi_calculator_obj.session.database_search(q1&q2);
 					if numel(epoch_id_doc)~=1,
 						error(['Could not find exactly 1 epoch id doc for ' et(i).epoch_id '.']);
@@ -67,14 +68,12 @@ classdef spike_shape < ndi.calculator
 					spike_shape.sample_times = output_parameters.sample_times;
 					
 					% Step 3: place the results of the calculator into an NDI document
-					doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'spike_shape',spike_shape);
+					doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'spike_shape_calc',spike_shape);
 					for k=1:numel(parameters.depends_on),
 						doc{end} = doc{end}.set_dependency_value(parameters.depends_on(k).name,parameters.depends_on(k).value);
 					end;
 					doc{end} = doc{end}.set_dependency_value('element_epoch_id', epoch_id_doc.document_properties.base.id);
 
-					% TODO UPDATE
-					% now we will use a kludge to deal with the fact that the current database doesn't allow you to specify 
 					% files
 					fileparameters.numchannels = size(mean_waves,2);
 					fileparameters.S0 = output_parameters.s0;
@@ -85,13 +84,17 @@ classdef spike_shape < ndi.calculator
 					fileparameters.samplingrate = output_parameters.sample_rate;
 					
 					fname = [dirpath filesep doc{end}.document_properties.base.id '.vsw'];
-					fid = vlt.file.custom_file_formats.newvhlspikewaveformfile(fname,fileparameters);
+					file_obj = vlt.file.fileobj('fullpathfilename',fname,'permission','w','machineformat','ieee-le');
+					file_obj = file_obj.fopen();
+					
+					fid = vlt.file.custom_file_formats.newvhlspikewaveformfile(file_obj,fileparameters);
 					for j=1:size(mean_waves,3),
-						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, mean_waves(:,:,j));
-						vlt.file.custom_file_formats.addvhlspikewaveformfile(fname, std_waves(:,:,j));
+						vlt.file.custom_file_formats.addvhlspikewaveformfile(file_obj, mean_waves(:,:,j));
+						vlt.file.custom_file_formats.addvhlspikewaveformfile(file_obj, std_waves(:,:,j));
 					end;
+					file_obj.fclose();
 
-					doc{end} = doc{end}.add_file("spikewaves.vsw",fname);
+					doc{end} = doc{end}.add_file('spikewaves.vsw',fname);
 				end;
 
 		end; % calculate
@@ -134,10 +137,10 @@ classdef spike_shape < ndi.calculator
 				%fname = [dirpath filesep doc.document_properties.base.id '.vsw'];
 
 				if ~isa(doc,'ndi.document'),
-					doc = ndi_calculator_obj.session.database_search(ndi.query('base.id,'exactstring',doc,''));
+					doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc));
 				end;
 
-				myfile = ndi_calculator_obj.session.database_openbinary_doc(doc, 'spikewaves.vsw');
+				myfile = ndi_calculator_obj.session.database_openbinarydoc(doc, 'spikewaves.vsw');
 
 				[waveforms, header] = vlt.file.custom_file_formats.readvhlspikewaveformfile(myfile);
 				mean_waves = NaN(size(waveforms,1),size(waveforms,2),size(waveforms,3)/2);
@@ -148,7 +151,7 @@ classdef spike_shape < ndi.calculator
 				end;
 				sample_times = (header.S0:header.S1)/header.samplingrate;
 
-				ndi_calculator_obj.session.database_closebinary_doc(myfile);
+				ndi_calculator_obj.session.database_closebinarydoc(myfile);
 		end;  % load()
 
 		function h = plot(ndi_calculator_obj, doc_or_parameters, varargin)
@@ -177,7 +180,7 @@ classdef spike_shape < ndi.calculator
 				delta = 1.3*(sample_times(end)-sample_times(1));
 
 				for i=1:size(mean_waves,3),
-					hnew = ndi.fun.plot.multichan(mean_waves,(i-1)*delta+sample_times,30);
+					hnew = ndi.fun.plot.multichan(mean_waves(:,:,i),(i-1)*delta+sample_times,30);
 					h.objects = cat(1,h.objects,hnew);
 				end;
 		end; % plot()

@@ -2,8 +2,8 @@
 	"classname": "spike_shape_calc",
 	"superclasses":  [ "base", "app"],
 	"depends_on": [ 
-			{"name": element_epoch_id", "mustbenotempty": 1},
-			{"name": element_id", "mustbenotempty": 1}
+			{"name": "element_epoch_id", "mustbenotempty": 1},
+			{"name": "element_id", "mustbenotempty": 1}
 	],
 	"file": [ 
                 {"name": "spikewaves.vsw", "mustbenotempty": 1}
@@ -16,6 +16,14 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "The input structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The depends_on inputs."
 		},
 		{
 			"name": "interval_center_times",
