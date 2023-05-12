@@ -1,35 +1,35 @@
-classdef speed_tuning < ndi.calculator
+classdef temporal_frequency_tuning < ndi.calculator
 
 	methods
-		function speed_tuning_obj = speed_tuning(session)
-			% SPEED_TUNING - a speed_tuning demonstration of an ndi.calculator object
+		function temporal_frequency_tuning_obj = temporal_frequency_tuning(session)
+			% TEMPORAL_FREQUENCY_TUNING - a temporal_frequency_tuning demonstration of an ndi.calculator object
 			%
-			% SPEED_TUNING_OBJ = SPEED_TUNING(SESSION)
+			% TEMPORAL_FREQUENCY_TUNING_OBJ = TEMPORAL_FREQUENCY_TUNING(SESSION)
 			%
-			% Creates a SPEED_TUNING ndi.calculator object
+			% Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
 			%
 				ndi.globals;
-				w = which('ndi.calc.vis.contrast_tuning');
-				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
-				speed_tuning_obj = speed_tuning_obj@ndi.calculator(session,'speedtuning_calc',...
-					fullfile(parparparpar,'ndi_common','database_documents','calc','speedtuning_calc.json'));
-		end; % speed_tuning()
+				w = which('ndi.calc.vis.temporal_frequency_tuning');
+				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
+				temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
+					fullfile(parparparpar,'ndi_common','database_documents','calc','temporal_frequency_tuning_calc.json'));
+		end; % temporal_frequency_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
-			% CALCULATE - perform the calculator for ndi.calc.example.speed_tuning
+			% CALCULATE - perform the calculator for ndi.calc.example.temporal_frequency_tuning
 			%
 			% DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)
 			%
-			% Creates a speed_tuning_calc document given input parameters.
+			% Creates a temporal_frequency_tuning_calc document given input parameters.
 			%
-			% The document that is created speed_tuning
+			% The document that is created temporal_frequency_tuning
 			% by the input parameters.
 				% check inputs
 				if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters''.']); end;
 				if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on''.']); end;
 				
 				% Step 1: set up the output structure
-				speed_tuning_calc = parameters;
+				temporal_frequency_tuning_calc = parameters;
 
 				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
@@ -38,13 +38,11 @@ classdef speed_tuning < ndi.calculator
 				end;
 				tuning_response_doc = tuning_response_doc{1};
 
-				% Step 2: perform the calculator, which here creates a speed_tuning doc
-				doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc);
+				% Step 2: perform the calculator, which here creates a temporal_frequency_tuning doc
+				doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc);
 				
 				if ~isempty(doc), 
-					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'speedtuning_calc',speed_tuning_calc) + doc;
-					doc = doc.set_dependency_value('stimulus_tuningcurve_id',tuning_response_doc.id());
-					doc = doc.set_dependency_value('element_id',tuning_response_doc.dependency_value('element_id'));
+					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'temporal_frequency_tuning_calc',temporal_frequency_tuning_calc) + doc;
 				end;
 		end; % calculate
 
@@ -54,7 +52,7 @@ classdef speed_tuning < ndi.calculator
 			% PARAMETERS = DEFAULT_SEARCH_FOR_INPUT_PARAMETERS(NDI_CALCULATOR_OBJ)
 			%
 			% Returns a list of the default search parameters for finding appropriate inputs
-			% to the calculator. For speed_tuning_calc, there is no appropriate default parameters
+			% to the calculator. For temporal_frequency_tuning_calc, there is no appropriate default parameters
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct([]);
@@ -80,16 +78,20 @@ classdef speed_tuning < ndi.calculator
 			% |                       |   in the PARAMETERS output.                  |
 			% |-----------------------|-----------------------------------------------
 			%
-			% For the ndi.calc.stimulus.speed_tuning_calc class, this looks for 
-			% documents of type 'stimulus_response_scalar.json' with 'response_type' fields
+			% For the ndi.calc.stimulus.temporal_frequency_tuning_calc class, this looks for 
+			% documents of type 'stimulus_response_scalar' with 'response_type' fields
 			% the contain 'mean' or 'F1'.
 			%
 			%
 				q1 = ndi.query('','isa','stimulus_tuningcurve','');
-				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal_Frequency','');
 				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
-				%q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','hassize',[2 1],'');
-				q_total = q1 & q2 & q3; % & q4;
+				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL_FREQUENCY','');
+				q22 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal Frequency','');
+				q32 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal frequency','');
+				q42 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL FREQUENCY','');
+				q234 = q2 | q3 | q4 | q22 | q32 | q42;
+				q_total = q1 & q234;
 
 				query = struct('name','stimulus_tuningcurve_id','query',q_total);
 		end; % default_parameters_query()
@@ -111,13 +113,12 @@ classdef speed_tuning < ndi.calculator
 				return;
 
 				% could also use the below, but will require an extra query operation
-				% and updating for speed
 	
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
 						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
-						b = (numel(d.document_properties.independent_variable_label) ==2);
+						b = (numel(d.document_properties.independent_variable_label) ==1);
 					case lower('element_id'),
 						b = 1;
 				end;
@@ -144,59 +145,49 @@ classdef speed_tuning < ndi.calculator
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
 
-				sp = doc.document_properties.speed_tuning; % shorten our typing
-				tc = sp.tuning_curve; % shorten our typing
-				ft = sp.fit;
+				tft = doc.document_properties.temporal_frequency_tuning; % shorten our typing
+				tc = tft.tuning_curve; % shorten our typing
+				ft = tft.fit;
 
-				% First plot fit
+				% First plot responses
 				hold on;
+				h_baseline = plot([min(tc.temporal_frequency) max(tc.temporal_frequency)],...
+					[0 0],'k--','linewidth',1.0001);
+				h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
+				h.objects(end+1) = h_baseline;
+				[v,sortorder] = sort(tc.temporal_frequency);
+				h_errorbar = errorbar(tc.temporal_frequency(sortorder(:)),...
+					tc.mean(sortorder(:)),tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
+				set(h_errorbar,'color',[0 0 0],'linewidth',1,'linestyle','none');
+				set(gca,'xscale','log');
+				h.objects = cat(2,h.objects,h_errorbar);
+				
+				% Second plot all fits
 
-				%h_baseline = plot([min(tc.speed) max(tc.speed)],...
-				%	[0 0],'k--','linewidth',1.0001);
-				%h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
-
-				% now call the plot routine
-
-				[SF,TF,MNs] = vlt.math.vector2mesh(tc.spatial_frequency,tc.temporal_frequency,tc.mean);
-				MNs_fit = vlt.neuro.vision.speed.tuningfunc(SF,TF,ft.Priebe_fit_parameters);
-
-				significant = 0;
-				linestyle = '--';
-				if sp.significance.visual_response_anova_p<0.05,
-					significant = 1;
-					linestyle = '-';
-				end;
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs_fit,'marker','none','linestyle',linestyle);
-
-				% now plot raw responses
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs);
-
-                ch = get(gcf,'children');
-                currentaxes = gca;
-                axes(ch(1));
-                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3))]);				
-
-				if 0, % plot function already does this
 				if ~h.params.suppress_x_label,
-					h.xlabel = xlabel('Speed (deg/sec)');
+					h.xlabel = xlabel('Temporal frequency');
 				end;
 				if ~h.params.suppress_y_label,
-					h.ylabel = ylabel(['Response (' sp.properties.response_type ', ' sp.properties.response_units ')']);
-				end;
-				box off;
+					h.ylabel = ylabel(['Response (' tft.properties.response_type ', ' tft.properties.response_units ')']);
 				end;
 
+				if 0, % when database is faster :-/
+					if ~h.params.suppress_title,
+						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
+						h.title = title(element.elementstring(), 'interp','none');
+					end;
+				end;
+				box off;
 
 		end; % plot()
 
-		function speed_props_doc = calculate_speed_indexes(ndi_calculator_obj, tuning_doc)
-			% CALCULATE_SPEED_INDEXES - calculate speed index values from a tuning curve
+		function temporal_frequency_props_doc = calculate_temporal_frequency_indexes(ndi_calculator_obj, tuning_doc)
+			% CALCULATE_TEMPORAL_FREQUENCY_INDEXES - calculate contrast index values from a tuning curve
 			%
-			% SPEED_PROPS_DOC = CALCULATE_SPEED_INDEXES(NDI_SPEED_TUNING_CALC_OBJ, TUNING_DOC)
+			% TEMPORAL_FREQUENCY_PROPS_DOC = CALCULATE_TEMPORAL_FREQUENCY_INDEXES(NDI_TEMPORAL_FREQUENCY_TUNING_CALC_OBJ, TUNING_DOC)
 			%
-			% Given a 2-dimensional tuning curve document with measurements at many spatial and
-			% and temporal frequencies, this function calculates speed response
-			% parameters and stores them in SPEED_TUNING document SPEED_PROPS_DOC.
+			% Given a 1-dimensional tuning curve document, this function calculates contrast response
+			% parameters and stores them in TEMPORAL_FREQUENCY_TUNING document TEMPORAL_FREQUENCY_PROPS_DOC.
 			%
 			%
 				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
@@ -212,22 +203,13 @@ classdef speed_tuning < ndi.calculator
 
 				properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
 
-				sf_coord = 1;
-				tf_coord = 2;
-				if contains(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_label{1},'temporal','IgnoreCase',true),
-					sf_coord = 2;
-					tf_coord = 1;
-				end;
-
 				resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
 
 				[anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
 
 				tuning_curve = struct(...
-					'spatial_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,1)), ...
 					'temporal_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,2)), ...
+						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
 					'mean', resp.curve(2,:), ...
 					'stddev', resp.curve(3,:), ...
 					'stderr', resp.curve(4,:), ...
@@ -238,30 +220,26 @@ classdef speed_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				f = vlt.neuro.vision.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
-				sfs = logspace(0.01,60,200);
-				tfs = logspace(0.01,120,200);
-				[SFs,TFs] = meshgrid(sfs,tfs);
-				fit_values = vlt.neuro.vision.speed.tuningfunc(SFs(:),TFs(:),f);
+				% EDIT HERE
 
-				fit.Priebe_fit_parameters = f;
-				fit.Priebe_fit_spatial_frequencies = SFs(:);
-				fit.Priebe_fit_temporal_frequencies = TFs(:);
-				fit.Priebe_fit_values = fit_values;
-				fit.Priebe_fit_speed_tuning_index = fit.Priebe_fit_parameters(3);
-				fit.Priebe_fit_spatial_frequency_preference = fit.Priebe_fit_parameters(6);
-				fit.Priebe_fit_temporal_frequency_preference = fit.Priebe_fit_parameters(7);
+				fitless.interpolated_c50 = vlt.neuro.vision.contrast.indexes.c50interpolated(tuning_curve.contrast,...
+					tuning_curve.mean);
 
-				speed_tuning.properties = properties;
-				speed_tuning.tuning_curve = tuning_curve;
-				speed_tuning.significance = significance;
-				speed_tuning.fit = fit;
+				temporal_frequency_tuning.properties = properties;
+				temporal_frequency_tuning.tuning_curve = tuning_curve;
+				temporal_frequency_tuning.significance = significance;
+				temporal_frequency_tuning.fitless = fitless;
+				temporal_frequency_tuning.fit = fit;
 
-				speed_props_doc = ndi.document('speed_tuning',...
-					'speed_tuning',speed_tuning);
-				speed_props_doc = speed_props_doc.set_dependency_value('element_id', ...
+				% FINISH EDITING HERE
+
+				temporal_frequency_props_doc = ndi.document('temporal_frequency_tuning',...
+					'temporal_frequency_tuning',temporal_frequency_tuning);
+				temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('element_id', ...
 					tuning_doc.dependency_value('element_id'));
-				speed_props_doc = speed_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
-		end; % calculate_speed_indexes()
+				temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
+
+		end; % calculate_temporal_frequency_indexes()
+
 	end; % methods()
-end % speed_tuning
+end % temporal_frequency_tuning

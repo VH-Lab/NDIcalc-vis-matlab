@@ -13,19 +13,25 @@ function hartley_plot_demo(S, epoch_id, elements, varargin)
 % ---------------------------------------------------------------------------
 % | Parameter (default)       | Description                                 |
 % |---------------------------|---------------------------------------------|
-% | latency_xy (0.050)        | Latency (in seconds) to show in the XY      |
+% | latency_xy (0.025)        | Latency (in seconds) to show in the XY      |
 % |                           |   panel.                                    |
 % | Y_axis (1/2 of height)    | Y axis plotting location                    |
 % | X_axis (1/2 of width)     | X axis plotting location                    |
 % | axis_color ([1 1 0])      | Color to use to plot axis                   |
+% | plot_individual_hartley(0)| Plot a separate figure with full XYT display|
+% | write_files (0)           | Write files to current directory            |
+% | site_map (1:N)            | Site map of electrode (1..numchannels)      |
 % ---------------------------------------------------------------------------
 %  
 %  
 
-latency_xy = 0.050;
+latency_xy = 0.025;
 Y_axis = [];
 X_axis = [];
 axis_color = [1 1 0];
+plot_individual_hartley = 0;
+write_files = 0;
+site_map = [];
 
 vlt.data.assign(varargin{:});
 
@@ -50,6 +56,16 @@ p_obj = p_obj{1};
 xy_axes = {};
 rt_axes = {};
 sp_axes = {};
+
+if write_files,
+	ts = ndi.fun.timestamp;
+	ts(find(ts==':')) = '';
+	write_directory = [pwd filesep ts];
+	if ~isfolder(write_directory),
+		mkdir(write_directory);
+	end;
+
+end;
 
 for i=1:numel(elements),
 	h_q1 = ndi.query('','depends_on','element_id',elements{i}.id());
@@ -91,11 +107,21 @@ for i=1:numel(elements),
 		X_axis_here = XY_axis;
 	end;
 
+	fig = gcf;
+
+	if plot_individual_hartley,
+		figure;
+		hc.plot(h);
+		drawnow();
+	end;
+
+	figure(fig);
 	xy_axes{i} = subplot(numel(elements), 3, 1+(i-1)*3);
 	
 	image(significance_plot(:,:,frame_index));
 	colormap(xy_axes{i},cmap);
 	axis equal off;
+	title([elements{i}.elementstring ' | ' epoch_id],'interp','none');
 
 	hold on;
 	plot(X_axis_here*[1 1],[0 size(sta,2)],'-','color',axis_color);
@@ -106,20 +132,41 @@ for i=1:numel(elements),
 	colormap(rt_axes{i},cmap);
 	axis normal on
 	grid on;
+	hold on;
+	dt = median(diff(rp.T_coords));
+	plot(rp.T_coords(frame_index)*[1 1],[0 numel(rp.Y_coords)],'-','color',axis_color);
 
 	sp_axes{i} = subplot(numel(elements), 3, 3+(i-1)*3);
 	[mean_waves,std_waves,sample_times] = shc.load(sh);
 
-	if 0,
-		ndi.fun.plot.multichan(mean_waves(:,:,1),sample_times,30);
+	if isempty(site_map),
+		site_map = 1:size(mean_waves,2);
+	end;
+
+	if 1,
+		ndi.fun.plot.multichan(mean_waves(:,site_map,1),sample_times,30);
 	else,
 		plot(sample_times,mean_waves(:,:,1));
+	end;
+
+	if write_files,
+		fname1 = [write_directory filesep elements{i}.elementstring '_' epoch_id '_xy.tiff'];
+		fname2 = [write_directory filesep elements{i}.elementstring '_' epoch_id '_rt.tiff'];
+		imwrite(significance_plot(:,:,frame_index),cmap,fname1,'tiff');
+		imwrite(t_profile_pval,cmap,fname2,'tiff');
 	end;
  
 end;
 
-linkaxes(xy_axes{:});
+linkaxes([xy_axes{:}]);
+linkaxes([rt_axes{:}]);
 
-linkaxes(rt_axes{:});
-
+if write_files,
+	fname = [write_directory filesep 'overall_' epoch_id ];
+	formats = {'.pdf','.eps','.tiff', '.fig'};
+	set(gcf,'renderer','painters');
+	for j=1:numel(formats),
+		saveas(gcf,[fname formats{j}]);
+	end;
+end;
 
