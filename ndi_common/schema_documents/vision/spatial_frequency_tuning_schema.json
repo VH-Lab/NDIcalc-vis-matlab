@@ -1,12 +1,12 @@
 {
-	"classname": "temporal_frequency_tuning",
+	"classname": "spatial_frequency_tuning",
 	"superclasses":  [ "base" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1},
 		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
 	],
 	"file": [ ],
-	"temporal_frequency_tuning": [
+	"spatial_frequency_tuning": [
 		{
 			"name": "properties",
 			"type": "structure",

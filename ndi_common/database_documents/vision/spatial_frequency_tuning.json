@@ -1,9 +1,9 @@
 {
 	"document_class": {
-		"definition":		"$NDICALCDOCUMENTPATH\/vision\/temporal_frequency_tuning.json",
-		"validation":		"$NDICALCSCHEMAPATH\/vision\/temporal_frequency_tuning_schema.json",
-		"class_name":						"temporal_frequency_tuning",
-        "property_list_name":                                   "temporal_frequency_tuning",
+		"definition":		"$NDICALCDOCUMENTPATH\/vision\/spatial_frequency_tuning.json",
+		"validation":		"$NDICALCSCHEMAPATH\/vision\/spatial_frequency_tuning_schema.json",
+		"class_name":						"spatial_frequency_tuning",
+        "property_list_name":                                   "spatial_frequency_tuning",
 		"class_version":					1,
 		"superclasses": [
 			{ "definition":  "$NDIDOCUMENTPATH\/base.json"}
@@ -17,13 +17,13 @@
 			"value":    ""
 		}
 	],
-	"temporal_frequency_tuning":  {
+	"spatial_frequency_tuning":  {
 		"properties": {
 			"response_units":					0,
 			"response_type":					"mean"
 		},
 		"tuning_curve": {
-			"temporal_frequency":						0,
+			"spatial_frequency":						0,
 			"mean":							0,
 			"stddev":						0,
 			"stderr":						0,

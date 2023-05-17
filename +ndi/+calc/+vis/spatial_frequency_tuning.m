@@ -1,35 +1,35 @@
-classdef temporal_frequency_tuning < ndi.calculator
+classdef spatial_frequency_tuning < ndi.calculator
 
 	methods
-		function temporal_frequency_tuning_obj = temporal_frequency_tuning(session)
-			% TEMPORAL_FREQUENCY_TUNING - a temporal_frequency_tuning demonstration of an ndi.calculator object
+		function spatial_frequency_tuning_obj = spatial_frequency_tuning(session)
+			% SPATIAL_FREQUENCY_TUNING - a spatial_frequency_tuning demonstration of an ndi.calculator object
 			%
-			% TEMPORAL_FREQUENCY_TUNING_OBJ = TEMPORAL_FREQUENCY_TUNING(SESSION)
+			% SPATIAL_FREQUENCY_TUNING_OBJ = SPATIAL_FREQUENCY_TUNING(SESSION)
 			%
-			% Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
+			% Creates a SPATIAL_FREQUENCY_TUNING ndi.calculator object
 			%
 				ndi.globals;
-				w = which('ndi.calc.vis.temporal_frequency_tuning');
+				w = which('ndi.calc.vis.spatial_frequency_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
-				temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
-					fullfile(parparparpar,'ndi_common','database_documents','calc','temporal_frequency_tuning_calc.json'));
-		end; % temporal_frequency_tuning()
+				spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calculator(session,'spatial_frequency_tuning_calc',...
+					fullfile(parparparpar,'ndi_common','database_documents','calc','spatial_frequency_tuning_calc.json'));
+		end; % spatial_frequency_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
-			% CALCULATE - perform the calculator for ndi.calc.example.temporal_frequency_tuning
+			% CALCULATE - perform the calculator for ndi.calc.example.spatial_frequency_tuning
 			%
 			% DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)
 			%
-			% Creates a temporal_frequency_tuning_calc document given input parameters.
+			% Creates a spatial_frequency_tuning_calc document given input parameters.
 			%
-			% The document that is created temporal_frequency_tuning
+			% The document that is created spatial_frequency_tuning
 			% by the input parameters.
 				% check inputs
 				if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters''.']); end;
 				if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on''.']); end;
 				
 				% Step 1: set up the output structure
-				temporal_frequency_tuning_calc = parameters;
+				spatial_frequency_tuning_calc = parameters;
 
 				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
 					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
@@ -38,11 +38,11 @@ classdef temporal_frequency_tuning < ndi.calculator
 				end;
 				tuning_response_doc = tuning_response_doc{1};
 
-				% Step 2: perform the calculator, which here creates a temporal_frequency_tuning doc
-				doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc);
+				% Step 2: perform the calculator, which here creates a spatial_frequency_tuning doc
+				doc = ndi_calculator_obj.calculate_spatial_frequency_indexes(tuning_response_doc);
 				
 				if ~isempty(doc), 
-					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'temporal_frequency_tuning_calc',temporal_frequency_tuning_calc) + doc;
+					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'spatial_frequency_tuning_calc',spatial_frequency_tuning_calc) + doc;
 				end;
 		end; % calculate
 
@@ -52,7 +52,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% PARAMETERS = DEFAULT_SEARCH_FOR_INPUT_PARAMETERS(NDI_CALCULATOR_OBJ)
 			%
 			% Returns a list of the default search parameters for finding appropriate inputs
-			% to the calculator. For temporal_frequency_tuning_calc, there is no appropriate default parameters
+			% to the calculator. For spatial_frequency_tuning_calc, there is no appropriate default parameters
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct([]);
@@ -78,18 +78,18 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% |                       |   in the PARAMETERS output.                  |
 			% |-----------------------|-----------------------------------------------
 			%
-			% For the ndi.calc.stimulus.temporal_frequency_tuning_calc class, this looks for 
+			% For the ndi.calc.stimulus.spatial_frequency_tuning_calc class, this looks for 
 			% documents of type 'stimulus_response_scalar' with 'response_type' fields
 			% the contain 'mean' or 'F1'.
 			%
 			%
 				q1 = ndi.query('','isa','stimulus_tuningcurve','');
-				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal_Frequency','');
-				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
-				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL_FREQUENCY','');
-				q22 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal Frequency','');
-				q32 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal frequency','');
-				q42 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL FREQUENCY','');
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Spatial_Frequency','');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
+				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','SPATIAL_FREQUENCY','');
+				q22 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Spatial Frequency','');
+				q32 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial frequency','');
+				q42 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','SPATIAL FREQUENCY','');
 				q234 = q2 | q3 | q4 | q22 | q32 | q42;
 				q_total = q1 & q234;
 
@@ -145,17 +145,17 @@ classdef temporal_frequency_tuning < ndi.calculator
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
 
-				tft = doc.document_properties.temporal_frequency_tuning; % shorten our typing
-				tc = tft.tuning_curve; % shorten our typing
+				sft = doc.document_properties.spatial_frequency_tuning; % shorten our typing
+				tc = sft.tuning_curve; % shorten our typing
 
 				% First plot responses
 				hold on;
-				h_baseline = plot([min(tft.fit_spline.values) max(tft.fit_spline.values)],...
+				h_baseline = plot([min(sft.fit_spline.values) max(sft.fit_spline.values)],...
 					[0 0],'k--','linewidth',1.0001);
 				h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
 				h.objects(end+1) = h_baseline;
-				[v,sortorder] = sort(tc.temporal_frequency);
-				h_errorbar = errorbar(tc.temporal_frequency(sortorder(:)),...
+				[v,sortorder] = sort(tc.spatial_frequency);
+				h_errorbar = errorbar(tc.spatial_frequency(sortorder(:)),...
 					tc.mean(sortorder(:)),tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
 				set(h_errorbar,'color',[0 0 0],'linewidth',1,'linestyle','none');
 				set(gca,'xscale','log');
@@ -164,22 +164,22 @@ classdef temporal_frequency_tuning < ndi.calculator
 				% Second plot all fits
 
 				linestyle = '--';
-				if tft.significance.visual_response_anova_p<0.05,
+				if sft.significance.visual_response_anova_p<0.05,
 					linestyle = '-';
 				end;
 
-				h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
+				h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
 				h.objects = cat(2,h.objects,h_fit);
-				h_fit = plot(tft.fit_dog.values,tft.fit_dog.fit,['m' linestyle]);
+				h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
-				h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
+				h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
 
 				if ~h.params.suppress_x_label,
-					h.xlabel = xlabel('Temporal frequency');
+					h.xlabel = xlabel('Spatial frequency');
 				end;
 				if ~h.params.suppress_y_label,
-					h.ylabel = ylabel(['Response (' tft.properties.response_type ', ' tft.properties.response_units ')']);
+					h.ylabel = ylabel(['Response (' sft.properties.response_type ', ' sft.properties.response_units ')']);
 				end;
 
 				if 0, % when database is faster :-/
@@ -192,13 +192,13 @@ classdef temporal_frequency_tuning < ndi.calculator
 
 		end; % plot()
 
-		function temporal_frequency_props_doc = calculate_temporal_frequency_indexes(ndi_calculator_obj, tuning_doc)
-			% CALCULATE_TEMPORAL_FREQUENCY_INDEXES - calculate contrast index values from a tuning curve
+		function spatial_frequency_props_doc = calculate_spatial_frequency_indexes(ndi_calculator_obj, tuning_doc)
+			% CALCULATE_SPATIAL_FREQUENCY_INDEXES - calculate contrast index values from a tuning curve
 			%
-			% TEMPORAL_FREQUENCY_PROPS_DOC = CALCULATE_TEMPORAL_FREQUENCY_INDEXES(NDI_TEMPORAL_FREQUENCY_TUNING_CALC_OBJ, TUNING_DOC)
+			% SPATIAL_FREQUENCY_PROPS_DOC = CALCULATE_SPATIAL_FREQUENCY_INDEXES(NDI_SPATIAL_FREQUENCY_TUNING_CALC_OBJ, TUNING_DOC)
 			%
 			% Given a 1-dimensional tuning curve document, this function calculates contrast response
-			% parameters and stores them in TEMPORAL_FREQUENCY_TUNING document TEMPORAL_FREQUENCY_PROPS_DOC.
+			% parameters and stores them in SPATIAL_FREQUENCY_TUNING document SPATIAL_FREQUENCY_PROPS_DOC.
 			%
 			%
 				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
@@ -217,7 +217,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 				resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
 
 				tuning_curve = struct(...
-					'temporal_frequency', ...
+					'spatial_frequency', ...
 						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
 					'mean', resp.curve(2,:), ...
 					'stddev', resp.curve(3,:), ...
@@ -231,23 +231,23 @@ classdef temporal_frequency_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				tf_props = ndi.fun.vis.temporal_frequency_analysis(resp);
+				tf_props = ndi.fun.vis.spatial_frequency_analysis(resp);
 
-				temporal_frequency_tuning.properties = properties;
-				temporal_frequency_tuning.tuning_curve = tuning_curve;
-				temporal_frequency_tuning.significance = significance;
-				temporal_frequency_tuning.fitless = tf_props.fitless;
-				temporal_frequency_tuning.fit_dog = tf_props.fit_dog;
-				temporal_frequency_tuning.fit_spline = tf_props.fit_spline;
-				temporal_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
+				spatial_frequency_tuning.properties = properties;
+				spatial_frequency_tuning.tuning_curve = tuning_curve;
+				spatial_frequency_tuning.significance = significance;
+				spatial_frequency_tuning.fitless = tf_props.fitless;
+				spatial_frequency_tuning.fit_dog = tf_props.fit_dog;
+				spatial_frequency_tuning.fit_spline = tf_props.fit_spline;
+				spatial_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
 
-				temporal_frequency_props_doc = ndi.document('temporal_frequency_tuning',...
-					'temporal_frequency_tuning',temporal_frequency_tuning);
-				temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('element_id', ...
+				spatial_frequency_props_doc = ndi.document('spatial_frequency_tuning',...
+					'spatial_frequency_tuning',spatial_frequency_tuning);
+				spatial_frequency_props_doc = spatial_frequency_props_doc.set_dependency_value('element_id', ...
 					tuning_doc.dependency_value('element_id'));
-				temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
+				spatial_frequency_props_doc = spatial_frequency_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 
-		end; % calculate_temporal_frequency_indexes()
+		end; % calculate_spatial_frequency_indexes()
 
 	end; % methods()
-end % temporal_frequency_tuning
+end % spatial_frequency_tuning

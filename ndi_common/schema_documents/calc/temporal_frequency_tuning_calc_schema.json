@@ -1,0 +1,24 @@
+{
+	"classname": "temporal_frequency_tuning_calc",
+	"superclasses":  [ "base", "temporal_frequency_tuning"],
+	"depends_on": [ ],
+	"file": [ ],
+	"temporal_frequency_tuning_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input parameters."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The dependent-inputs for temporal_frequency_tuning_calc."
+		}
+	]
+}
