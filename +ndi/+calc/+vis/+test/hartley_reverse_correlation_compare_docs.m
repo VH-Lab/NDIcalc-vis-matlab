@@ -1,4 +1,4 @@
-function [b, errormsg] = oridir_compare_docs(document_expected, document_actual, scope)
+function [b, errormsg] = hartley_reverse_correlation_compare_docs(document_expected, document_actual, scope)
 % hartley_reverse_correlation_compare_docs
 %
 % [B, ERRORMSG] = ndi.calc.vis.test.hartley_reverse_correlation_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
