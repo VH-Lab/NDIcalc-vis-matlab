@@ -1,4 +1,4 @@
-function [b, errormsg] = contrast_tuning_compare_docs(document_expected, document_actual, scope)
+function [b, errormsg] = speed_tuning_compare_docs(document_expected, document_actual, scope)
 % Comparing Speed_tuning
 %
 % [B, ERRORMSG] = ndi.calc.vis.test.speed_tuning_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
