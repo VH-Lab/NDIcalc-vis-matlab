@@ -136,6 +136,9 @@ classdef temporal_frequency_tuning < ndi.calculator
                         % This function takes additional input arguments as name/value pairs.
                         % See ndi.calculator.plot_parameters for a description of those parameters.
 
+				x_axis = [0.01 120];
+				vlt.data.assign(varargin{:});
+
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
 
@@ -181,6 +184,8 @@ classdef temporal_frequency_tuning < ndi.calculator
 				if ~h.params.suppress_y_label,
 					h.ylabel = ylabel(['Response (' tft.properties.response_type ', ' tft.properties.response_units ')']);
 				end;
+
+				set(gca,'xlim',x_axis);
 
 				if 0, % when database is faster :-/
 					if ~h.params.suppress_title,

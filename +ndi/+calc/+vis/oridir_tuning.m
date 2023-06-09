@@ -264,6 +264,10 @@ classdef oridir_tuning < ndi.calculator
 			% This function takes additional input arguments as name/value pairs.
 			% See ndi.calculator.plot_parameters for a description of those parameters.
 
+				plot_tuning_curve_log = 0;
+
+				vlt.data.assign(varargin{:});
+
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
 				
@@ -302,10 +306,16 @@ classdef oridir_tuning < ndi.calculator
 					h.ylabel = ylabel(ot.properties.response_units);
 				end;
 
-				if 0, % when database is faster :-/
+				if 1, % when database is faster :-/ it is faster
 					if ~h.params.suppress_title,
-						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('stimulus_tuningcurve_id'),ndi_calculator_obj.session);
-						h.title = title([element.elementstring() '.' element.type '; ' ot.properties.response_type]);
+						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
+						title_str = [element.elementstring() '.' element.type '; ' ot.properties.response_type];
+
+						if plot_tuning_curve_log,
+							log_str = ndi.fun.calc.stimulus_tuningcurve_log(ndi_calculator_obj.session,doc);
+							title_str = {title_str, log_str};
+						end;
+						h.title = title(title_str,'interp','none');
 					end;
 				end;
 				box off;

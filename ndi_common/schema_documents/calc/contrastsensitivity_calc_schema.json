@@ -57,6 +57,126 @@
 			"documentation": "Sensitivity using Naka Rushton Model with N and saturation in equation"
 		},
 		{
+			"name": "relative_max_gain_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model"
+		},
+		{
+			"name": "relative_max_gain_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "relative_max_gain_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "empirical_c50_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model"
+		},
+		{
+			"name": "empirical_c50_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "empirical_c50_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "saturation_index_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model"
+		},
+		{
+			"name": "saturation_index_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "saturation_index_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "parameters_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model vs. spatial frequency"
+		},
+		{
+			"name": "parameters_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model with N in equation vs. spatial frequency"
+		},
+		{
+			"name": "parameters_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model with N and saturation in equation vs. spatial frequency"
+		},
+		{
+			"name": "fitless_interpolated_c50_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "fitless_interpolated_c50 of Naka Rushton Model vs. spatial frequency"
+		},
+		{
+			"name": "fitless_interpolated_c50_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "fitless_interpolated_c50 of Naka Rushton Model with N in equation vs. spatial frequency"
+		},
+		{
+			"name": "fitless_interpolated_c50_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "fitless_interpolated_c50 of Naka Rushton Model with N and saturation in equation vs. spatial frequency"
+		},
+		{
 			"name": "is_modulated_response",
 			"type": "integer",
 			"default_value": [],

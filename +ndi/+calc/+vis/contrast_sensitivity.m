@@ -91,8 +91,10 @@ classdef contrast_sensitivity < ndi.calculator
 								stim_resp_index_value = [];
 							elseif b==0,
 								stim_resp_index_value = mean_i;
+								response_type_here = 'mean';
 							elseif b==1,
 								stim_resp_index_value = mod_i;
+								response_type_here = 'F1';
 							end;
 						end;
 						
@@ -108,6 +110,24 @@ classdef contrast_sensitivity < ndi.calculator
 							sensitivity_RBN = [];
 							sensitivity_RBNS = [];
 							response_type = stim_resp_scalar{stim_resp_index_value}.document_properties.stimulus_response_scalar.response_type;
+
+							relative_max_gain_RB = [];
+							relative_max_gain_RBN = [];
+							relative_max_gain_RBNS = [];
+
+							empirical_c50_RB = [];
+							empirical_c50_RBN = [];
+							empirical_c50_RBNS = [];
+
+							saturation_index_RB = [];
+							saturation_index_RBN = [];
+							saturation_index_RBNS = [];
+
+							parameters_RB = [];
+							parameters_RBN = [];
+							parameters_RBNS = [];
+
+							fitless_interpolated_c50 = [];
 
 							visual_response_p = [];
 							across_stims_p = [];
@@ -136,9 +156,29 @@ classdef contrast_sensitivity < ndi.calculator
 								else,
 									error(['Expected spatial frequency information.']); % should this be an error or just a skip?
 								end;
-								sensitivity_RB = [ sensitivity_RB vlt.data.colvec(contrast_tuning_props.document_properties.contrast_tuning.fit.naka_rushton_RB_sensitivity) ];
-								sensitivity_RBN = [ sensitivity_RBN vlt.data.colvec(contrast_tuning_props.document_properties.contrast_tuning.fit.naka_rushton_RBN_sensitivity) ];
-								sensitivity_RBNS = [ sensitivity_RBNS vlt.data.colvec(contrast_tuning_props.document_properties.contrast_tuning.fit.naka_rushton_RBNS_sensitivity) ];
+
+								sensitivity_RB = [ sensitivity_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_sensitivity) ];
+								sensitivity_RBN = [ sensitivity_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_sensitivity) ];
+								sensitivity_RBNS = [ sensitivity_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_sensitivity) ];
+
+								relative_max_gain_RB = [ relative_max_gain_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_relative_max_gain)];
+								relative_max_gain_RBN = [ relative_max_gain_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_relative_max_gain)];
+								relative_max_gain_RBNS = [ relative_max_gain_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_relative_max_gain)];
+
+								empirical_c50_RB = [ empirical_c50_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_empirical_c50)];
+								empirical_c50_RBN = [ empirical_c50_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_empirical_c50)];
+								empirical_c50_RBNS = [ empirical_c50_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_empirical_c50)];
+
+								saturation_index_RB = [ saturation_index_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_empirical_c50)];
+								saturation_index_RBN = [ saturation_index_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_empirical_c50)];
+								saturation_index_RBNS = [ saturation_index_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_empirical_c50)];
+
+								fitless_interpolated_c50 = [ fitless_interpolated_c50 vlt.data.colvec(ctp.fitless.interpolated_c50)];
+
+								parameters_RB = [ parameters_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_parameters)];
+								parameters_RBN = [ parameters_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_parameters)];
+								parameters_RBNS = [ parameters_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_parameters)];
+
 								visual_response_p(end+1) = contrast_tuning_props.document_properties.contrast_tuning.significance.visual_response_anova_p;
 								across_stims_p(end+1) = contrast_tuning_props.document_properties.contrast_tuning.significance.across_stimuli_anova_p;
 							end;
@@ -147,6 +187,19 @@ classdef contrast_sensitivity < ndi.calculator
 							sensitivity_RB = sensitivity_RB(:,order);
 							sensitivity_RBN = sensitivity_RBN(:,order);
 							sensitivity_RBNS = sensitivity_RBNS(:,order);
+							relative_max_gain_RB = relative_max_gain_RB(:,order);
+							relative_max_gain_RBN = relative_max_gain_RBN(:,order);
+							relative_max_gain_RBNS = relative_max_gain_RBNS(:,order);
+							empirical_c50_RB = empirical_c50_RB(:,order);
+							empirical_c50_RBN = empirical_c50_RBN(:,order);
+							empirical_c50_RBNS = empirical_c50_RBNS(:,order);
+							saturation_index_RB = saturation_index_RB(:,order);
+							saturation_index_RBN = saturation_index_RBN(:,order);
+							saturation_index_RBNS = saturation_index_RBNS(:,order);
+							fitless_interpolated_c50 = fitless_interpolated_c50(:,order);
+							parameters_RB = parameters_RB(:,order);
+							parameters_RBN = parameters_RBN(:,order);
+							parameters_RBNS = parameters_RBNS(:,order);
 
 							% make the doc
 
@@ -155,12 +208,25 @@ classdef contrast_sensitivity < ndi.calculator
 							parameters_here.sensitivity_RB = sensitivity_RB;
 							parameters_here.sensitivity_RBN = sensitivity_RBN;
 							parameters_here.sensitivity_RBNS = sensitivity_RBNS;
+							parameters_here.relative_max_gain_RB = relative_max_gain_RB;
+							parameters_here.relative_max_gain_RBN = relative_max_gain_RBN;
+							parameters_here.relative_max_gain_RBNS = relative_max_gain_RBNS;
+							parameters_here.empirical_c50_RB = empirical_c50_RB;
+							parameters_here.empirical_c50_RBN = empirical_c50_RBN;
+							parameters_here.empirical_c50_RBNS = empirical_c50_RBNS;
+							parameters_here.saturation_index_RB = saturation_index_RB;
+							parameters_here.saturation_index_RBN = saturation_index_RBN;
+							parameters_here.saturation_index_RBNS = saturation_index_RBNS;
+							parameters_here.fitless_interpolated_c50 = fitless_interpolated_c50;
+							parameters_here.parameters_RB = parameters_RB;
+							parameters_here.parameters_RBN = parameters_RBN;
+							parameters_here.parameters_RBNS = parameters_RBNS;
 							parameters_here.is_modulated_response = b;
 							% could actually do 2-factor ANOVA on responses; would be better
 							parameters_here.visual_response_p_bonferroni = nanmin(visual_response_p)*numel(visual_response_p);
 							parameters_here.response_varies_p_bonferroni = nanmin(across_stims_p)*numel(across_stims_p);
-                            parameters_here.depends_on = vlt.data.emptystruct('name','value');
-                            parameters_here.response_type = ''; % punt for now
+							parameters_here.depends_on = vlt.data.emptystruct('name','value');
+							parameters_here.response_type = response_type_here;
 						
 							if numel(tuning_curves)>0,	
 								doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'contrastsensitivity_calc',parameters_here);
