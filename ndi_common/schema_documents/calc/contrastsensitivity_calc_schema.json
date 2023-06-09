@@ -153,28 +153,12 @@
 			"documentation": "Full parameters of Naka Rushton Model with N and saturation in equation vs. spatial frequency"
 		},
 		{
-			"name": "fitless_interpolated_c50_RB",
+			"name": "fitless_interpolated_c50",
 			"type": "matrix",
 			"default_value": [],
 			"parameters": [NaN,NaN],
 			"queryable": 1,
 			"documentation": "fitless_interpolated_c50 of Naka Rushton Model vs. spatial frequency"
-		},
-		{
-			"name": "fitless_interpolated_c50_RBN",
-			"type": "matrix",
-			"default_value": [],
-			"parameters": [NaN,NaN],
-			"queryable": 1,
-			"documentation": "fitless_interpolated_c50 of Naka Rushton Model with N in equation vs. spatial frequency"
-		},
-		{
-			"name": "fitless_interpolated_c50_RBNS",
-			"type": "matrix",
-			"default_value": [],
-			"parameters": [NaN,NaN],
-			"queryable": 1,
-			"documentation": "fitless_interpolated_c50 of Naka Rushton Model with N and saturation in equation vs. spatial frequency"
 		},
 		{
 			"name": "is_modulated_response",

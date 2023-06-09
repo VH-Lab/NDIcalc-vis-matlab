@@ -157,6 +157,8 @@ classdef contrast_sensitivity < ndi.calculator
 									error(['Expected spatial frequency information.']); % should this be an error or just a skip?
 								end;
 
+								ctp = contrast_tuning_props.document_properties.contrast_tuning;
+
 								sensitivity_RB = [ sensitivity_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_sensitivity) ];
 								sensitivity_RBN = [ sensitivity_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_sensitivity) ];
 								sensitivity_RBNS = [ sensitivity_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_sensitivity) ];
