@@ -21,7 +21,7 @@ function [b,msg] = values_within_tolerance(v1, v2, tolerance, fieldname)
 %  % b1 is 1, msg1 is ''
 % [b2,msg2] = ndi.test.values_within_tolerance(v1, v3, 0, 'myfield')
 %  % b2 is 0, msg2 is 'Arrays of myfield are not the same size'
-% [b3,msg3] = ndi.test.values_within_tolerance(v1, v2, 0, 'myfield')
+% [b3,msg3] = ndi.test.values_within_tolerance(v1, v4, 0, 'myfield')
 %  % b3 is 0, msg3 is 'Differences in arrays of myfield exceed the tolerance provided (0)'];
 
 b = 1;
