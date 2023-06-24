@@ -9,413 +9,114 @@ function [b, errormsg] = contrast_tuning_compare_docs(document_expected, documen
 b = 1;
 errormsg = '';
 
-% start comparison for fit
+% start comparison
 
-doc_e = document_expected.document_properties.contrast_tuning.fit;
-doc_a = document_actual.document_properties.contrast_tuning.fit;
+doc_e = document_expected.document_properties.contrast_tuning;
+doc_a = document_actual.document_properties.contrast_tuning;
 
-% Comparing naka_rushton_RB_parameters
+% Comparing properties
+%   Response Units
 
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_parameters_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_parameters(:),doc_a.naka_rushton_RB_parameters(:));
-if naka_rushton_RB_parameters_match
-   naka_rushton_RB_parameters_match = max(abs(doc_e.naka_rushton_RB_parameters(:) - doc_a.naka_rushton_RB_parameters(:))) < tol;
-end
-
-if ~naka_rushton_RB_parameters_match
+properties_match = strcmpi(doc_e.properties.response_units, doc_a.properties.response_units);
+if ~properties_match
    b = 0;
-   errormsg = ['Naka Rushton RB parameters differed by greater than ' num2str(tol) '.'];
+   errormsg = ['Expected response units in ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
    return;
 end
 
-% Comparing naka_rushton_RB_contrast
+%   Response Type
 
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_contrast_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_contrast(:),doc_a.naka_rushton_RB_contrast(:));
-if naka_rushton_RB_contrast_match
-   naka_rushton_RB_contrast_match = max(abs(doc_e.naka_rushton_RB_contrast(:) - doc_a.naka_rushton_RB_contrast(:))) < tol;
-end
-
-if ~naka_rushton_RB_contrast_match
+properties_match = strcmpi(doc_e.properties.response_type, doc_a.properties.response_type);
+if ~properties_match
    b = 0;
-   errormsg = ['Naka Rushton RB comtrast differed by greater than ' num2str(tol) '.'];
+   errormsg = ['Expected response type of ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
    return;
 end
 
-% Comparing naka_rushton_RB_values
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_values_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_values(:),doc_a.naka_rushton_RB_values(:));
-if naka_rushton_RB_values_match
-   naka_rushton_RB_values_match = max(abs(doc_e.naka_rushton_RB_values(:) - doc_a.naka_rushton_RB_values(:))) < tol;
-end
-
-if ~naka_rushton_RB_values_match
-   b = 0;
-   errormsg = ['Naka Rushton RB values differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_pref
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_pref_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_pref(:),doc_a.naka_rushton_RB_pref(:));
-if naka_rushton_RB_pref_match
-   naka_rushton_RB_pref_match = max(abs(doc_e.naka_rushton_RB_pref(:) - doc_a.naka_rushton_RB_pref(:))) < tol;
-end
-
-if ~naka_rushton_RB_pref_match
-   b = 0;
-   errormsg = ['Naka Rushton RB pref differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_empirical_c50
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_empirical_c50_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_empirical_c50(:),doc_a.naka_rushton_RB_empirical_c50(:));
-if naka_rushton_RB_empirical_c50_match
-   naka_rushton_RB_empirical_c50_match = max(abs(doc_e.naka_rushton_RB_empirical_c50(:) - doc_a.naka_rushton_RB_empirical_c50(:))) < tol;
-end
-
-if ~naka_rushton_RB_empirical_c50_match
-   b = 0;
-   errormsg = ['Naka Rushton RB empirical c50 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_r2
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_r2_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_r2(:),doc_a.naka_rushton_RB_r2(:));
-if naka_rushton_RB_r2_match
-   naka_rushton_RB_r2_match = max(abs(doc_e.naka_rushton_RB_r2(:) - doc_a.naka_rushton_RB_r2(:))) < tol;
-end
-
-if ~naka_rushton_RB_r2_match
-   b = 0;
-   errormsg = ['Naka Rushton RB r2 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_relative_max_gain
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_relative_max_gain_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_relative_max_gain(:),doc_a.naka_rushton_RB_relative_max_gain(:));
-if naka_rushton_RB_relative_max_gain_match
-   naka_rushton_RB_relative_max_gain_match = max(abs(doc_e.naka_rushton_RB_relative_max_gain(:) - doc_a.naka_rushton_RB_relative_max_gain(:))) < tol;
-end
-
-if ~naka_rushton_RB_relative_max_gain_match
-   b = 0;
-   errormsg = ['Naka Rushton RB relative max gain differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_saturation_index
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_saturation_index_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_saturation_index(:),doc_a.naka_rushton_RB_saturation_index(:));
-if naka_rushton_RB_saturation_index_match
-   naka_rushton_RB_saturation_index_match = max(abs(doc_e.naka_rushton_RB_saturation_index(:) - doc_a.naka_rushton_RB_saturation_index(:))) < tol;
-end
-
-if ~naka_rushton_RB_saturation_index_match
-   b = 0;
-   errormsg = ['Naka Rushton RB saturation index differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RB_sensitivity
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RB_sensitivity_match = vlt.data.sizeeq(doc_e.naka_rushton_RB_sensitivity(:),doc_a.naka_rushton_RB_sensitivity(:));
-if naka_rushton_RB_sensitivity_match
-   naka_rushton_RB_sensitivity_match = max(abs(doc_e.naka_rushton_RB_sensitivity(:) - doc_a.naka_rushton_RB_sensitivity(:))) < tol;
-end
-
-if ~naka_rushton_RB_sensitivity_match
-   b = 0;
-   errormsg = ['Naka Rushton RB sensitivity differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_parameters
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_parameters_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_parameters(:),doc_a.naka_rushton_RBN_parameters(:));
-if naka_rushton_RBN_parameters_match
-   naka_rushton_RBN_parameters_match = max(abs(doc_e.naka_rushton_RBN_parameters(:) - doc_a.naka_rushton_RBN_parameters(:))) < tol;
-end
-
-if ~naka_rushton_RBN_parameters_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN parameters differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_contrast
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_contrast_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_contrast(:),doc_a.naka_rushton_RBN_contrast(:));
-if naka_rushton_RBN_contrast_match
-   naka_rushton_RBN_contrast_match = max(abs(doc_e.naka_rushton_RBN_contrast(:) - doc_a.naka_rushton_RBN_contrast(:))) < tol;
-end
-
-if ~naka_rushton_RBN_contrast_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN contrast differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_values
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_values_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_values(:),doc_a.naka_rushton_RBN_values(:));
-if naka_rushton_RBN_values_match
-   naka_rushton_RBN_values_match = max(abs(doc_e.naka_rushton_RBN_values(:) - doc_a.naka_rushton_RBN_values(:))) < tol;
-end
-
-if ~naka_rushton_RBN_values_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN values differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_pref
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_pref_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_pref(:),doc_a.naka_rushton_RBN_pref(:));
-if naka_rushton_RBN_pref_match
-   naka_rushton_RBN_pref_match = max(abs(doc_e.naka_rushton_RBN_pref(:) - doc_a.naka_rushton_RBN_pref(:))) < tol;
-end
-
-if ~naka_rushton_RBN_pref_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN pref differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_empirical_c50
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_empirical_c50_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_empirical_c50(:),doc_a.naka_rushton_RBN_empirical_c50(:));
-if naka_rushton_RBN_empirical_c50_match
-   naka_rushton_RBN_empirical_c50_match = max(abs(doc_e.naka_rushton_RBN_empirical_c50(:) - doc_a.naka_rushton_RBN_empirical_c50(:))) < tol;
-end
-
-if ~naka_rushton_RBN_empirical_c50_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN empirical c50 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_r2
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_r2_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_r2(:),doc_a.naka_rushton_RBN_r2(:));
-if naka_rushton_RBN_r2_match
-   naka_rushton_RBN_r2_match = max(abs(doc_e.naka_rushton_RBN_r2(:) - doc_a.naka_rushton_RBN_r2(:))) < tol;
-end
-
-if ~naka_rushton_RBN_r2_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN r2 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_relative_max_gain
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_relative_max_gain_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_relative_max_gain(:),doc_a.naka_rushton_RBN_relative_max_gain(:));
-if naka_rushton_RBN_relative_max_gain_match
-   naka_rushton_RBN_relative_max_gain_match = max(abs(doc_e.naka_rushton_RBN_relative_max_gain(:) - doc_a.naka_rushton_RBN_relative_max_gain(:))) < tol;
-end
-
-if ~naka_rushton_RBN_relative_max_gain_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN relative max gain differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_saturation_index
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_saturation_index_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_saturation_index(:),doc_a.naka_rushton_RBN_saturation_index(:));
-if naka_rushton_RBN_saturation_index_match
-   naka_rushton_RBN_saturation_index_match = max(abs(doc_e.naka_rushton_RBN_saturation_index(:) - doc_a.naka_rushton_RBN_saturation_index(:))) < tol;
-end
-
-if ~naka_rushton_RBN_saturation_index_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN saturation index differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBN_sensitivity
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBN_sensitivity_match = vlt.data.sizeeq(doc_e.naka_rushton_RBN_sensitivity(:),doc_a.naka_rushton_RBN_sensitivity(:));
-if naka_rushton_RBN_sensitivity_match
-   naka_rushton_RBN_sensitivity_match = max(abs(doc_e.naka_rushton_RBN_sensitivity(:) - doc_a.naka_rushton_RBN_sensitivity(:))) < tol;
-end
-
-if ~naka_rushton_RBN_sensitivity_match
-   b = 0;
-   errormsg = ['Naka Rushton RBN sensitivity differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_parameters
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_parameters_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_parameters(:),doc_a.naka_rushton_RBNS_parameters(:));
-if naka_rushton_RBNS_parameters_match
-   naka_rushton_RBNS_parameters_match = max(abs(doc_e.naka_rushton_RBNS_parameters(:) - doc_a.naka_rushton_RBNS_parameters(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_parameters_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS parameters differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_contrast
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_contrast_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_contrast(:),doc_a.naka_rushton_RBNS_contrast(:));
-if naka_rushton_RBNS_contrast_match
-   naka_rushton_RBNS_contrast_match = max(abs(doc_e.naka_rushton_RBNS_contrast(:) - doc_a.naka_rushton_RBNS_contrast(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_contrast_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS contrast differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_values
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_values_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_values(:),doc_a.naka_rushton_RBNS_values(:));
-if naka_rushton_RBNS_values_match
-   naka_rushton_RBNS_values_match = max(abs(doc_e.naka_rushton_RBNS_values(:) - doc_a.naka_rushton_RBNS_values(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_values_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS values differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_pref
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_pref_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_pref(:),doc_a.naka_rushton_RBNS_pref(:));
-if naka_rushton_RBNS_pref_match
-   naka_rushton_RBNS_pref_match = max(abs(doc_e.naka_rushton_RBNS_pref(:) - doc_a.naka_rushton_RBNS_pref(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_pref_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS pref differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_empirical_c50
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_empirical_c50_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_empirical_c50(:),doc_a.naka_rushton_RBNS_empirical_c50(:));
-if naka_rushton_RBNS_empirical_c50_match
-   naka_rushton_RBNS_empirical_c50_match = max(abs(doc_e.naka_rushton_RBNS_empirical_c50(:) - doc_a.naka_rushton_RBNS_empirical_c50(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_empirical_c50_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS empirical c50 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_r2
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_r2_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_r2(:),doc_a.naka_rushton_RBNS_r2(:));
-if naka_rushton_RBNS_r2_match
-   naka_rushton_RBNS_r2_match = max(abs(doc_e.naka_rushton_RBNS_r2(:) - doc_a.naka_rushton_RBNS_r2(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_r2_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS r2 differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_relative_max_gain
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_relative_max_gain_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_relative_max_gain(:),doc_a.naka_rushton_RBNS_relative_max_gain(:));
-if naka_rushton_RBNS_relative_max_gain_match
-   naka_rushton_RBNS_relative_max_gain_match = max(abs(doc_e.naka_rushton_RBNS_relative_max_gain(:) - doc_a.naka_rushton_RBNS_relative_max_gain(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_relative_max_gain_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS relative max gain differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_saturation_index
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_saturation_index_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_saturation_index(:),doc_a.naka_rushton_RBNS_saturation_index(:));
-if naka_rushton_RBNS_saturation_index_match
-   naka_rushton_RBNS_saturation_index_match = max(abs(doc_e.naka_rushton_RBNS_saturation_index(:) - doc_a.naka_rushton_RBNS_saturation_index(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_saturation_index_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS relative saturation index differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
-% Comparing naka_rushton_RBNS_sensitivity
-
-tol = %put in appropriate tolorance;
-
-naka_rushton_RBNS_sensitivity_match = vlt.data.sizeeq(doc_e.naka_rushton_RBNS_sensitivity(:),doc_a.naka_rushton_RBNS_sensitivity(:));
-if naka_rushton_RBNS_sensitivity_match
-   naka_rushton_RBNS_sensitivity_match = max(abs(doc_e.naka_rushton_RBNS_sensitivity(:) - doc_a.naka_rushton_RBNS_sensitivity(:))) < tol;
-end
-
-if ~naka_rushton_RBNS_sensitivity_match
-   b = 0;
-   errormsg = ['Naka Rushton RBNS sensitivity differed by greater than ' num2str(tol) '.'];
-   return;
-end
-
+% Comparing Tuning_curve
+%	contrast                               
+%	mean                                   
+%	stddev                                 
+%	stderr                                
+%	individual                             
+%	control_stddev                        
+%	control_stderr
+
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.contrast, doc_a.tuning_curve.contrast, tolerance, 'contrast');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance, 'mean');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance, 'stddev');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance, 'stderr');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance, 'individual');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance, 'control_stddev');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance, 'control_stderr');
+
+% Comparing Significance
+%   visual_response_anova_p
+%   across_stimuli_anova_p
+
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tolerance, 'visual response anova p');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tolerance, 'across stimuli anova p');
+
+% Comparing Fitless
+%   interpolated_c50
+
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fitless.interpolated_c50, doc_a.fitless.interpolated_c50, tolerance, 'interpolated c50');
+
+% Comparing Fit
+%   naka_rushton_RB_parameters
+%   naka_rushton_RB_contrast
+%	naka_rushton_RB_values
+%	naka_rushton_RB_pref
+%	naka_rushton_RB_empirical_c50							
+%	naka_rushton_RB_r2
+%	naka_rushton_RB_relative_max_gain
+%	naka_rushton_RB_saturation_index
+%	naka_rushton_RB_sensitivity
+%	naka_rushton_RBN_parameters
+%	naka_rushton_RBN_contrast
+%	naka_rushton_RBN_values
+%	naka_rushton_RBN_pref
+%	naka_rushton_RBN_empirical_c50
+%	naka_rushton_RBN_r2
+%	naka_rushton_RBN_relative_max_gain
+%	naka_rushton_RBN_saturation_index
+%	naka_rushton_RBN_sensitivity
+%	naka_rushton_RBNS_parameters
+%	naka_rushton_RBNS_contrast
+%	naka_rushton_RBNS_values
+%	naka_rushton_RBNS_pref
+%	naka_rushton_RBNS_empirical_c50     	
+%	naka_rushton_RBNS_r2
+%	naka_rushton_RBNS_relative_max_gain
+%	naka_rushton_RBNS_saturation_index
+%	naka_rushton_RBNS_sensitivity
+                                                                    
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_parameters, doc_a.fit.naka_rushton_RB_parameters, tolerance, 'naka rushton RB parameters');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_contrast, doc_a.fit.naka_rushton_RB_contrast, tolerance, 'naka rushton RB contrast');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_values, doc_a.fit.naka_rushton_RB_values, tolerance, 'naka rushton RB values');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_pref, doc_a.fit.naka_rushton_RB_pref, tolerance, 'naka rushton RB pref');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_empirical_c50, doc_a.fit.naka_rushton_RB_empirical_c50, tolerance, 'naka rushton RB empirical c50');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_r2, doc_a.fit.naka_rushton_RB_r2, tolerance, 'naka rushton RB r2');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_relative_max_gain, doc_a.fit.naka_rushton_RB_relative_max, tolerance, 'naka rushton RB relative max');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_saturation_index, doc_a.fit.naka_rushton_RB_saturation_index, tolerance, 'naka rushton RB saturation index');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_sensitivity, doc_a.fit.naka_rushton_RB_sensitivity, tolerance, 'naka rushton RB sensitivity');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters, doc_a.fit.naka_rushton_RBN_parameters, tolerance, 'naka rushton RBN parameters');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_contrast, doc_a.fit.naka_rushton_RBN_contrast, tolerance, 'naka rushton RBN contrast');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_values, doc_a.fit.naka_rushton_RBN_values, tolerance, 'naka rushton RBN values');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_pref, doc_a.fit.naka_rushton_RBN_pref, tolerance, 'naka rushton RBN pref');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_empirical_c50, doc_a.fit.naka_rushton_RBN_empirical_c50, tolerance, 'naka rushton RBN empirical c50');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_r2, doc_a.fit.naka_rushton_RBN_r2, tolerance, 'naka rushton RBN r2');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_relative_max_gain, doc_a.fit.naka_rushton_RBN_relative_max, tolerance, 'naka rushton RBN relative max');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_saturation_index, doc_a.fit.naka_rushton_RBN_saturation_index, tolerance, 'naka rushton RBN saturation index');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_sensitivity, doc_a.fit.naka_rushton_RBN_sensitivity, tolerance, 'naka rushton RBN sensitivity');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters, doc_a.fit.naka_rushton_RBNS_parameters, tolerance, 'naka rushton RBNS parameters');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_contrast, doc_a.fit.naka_rushton_RBNS_contrast, tolerance, 'naka rushton RBNS contrast');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_values, doc_a.fit.naka_rushton_RBNS_values, tolerance, 'naka rushton RBNS values');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_pref, doc_a.fit.naka_rushton_RBNS_pref, tolerance, 'naka rushton RBNS pref');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_empirical_c50, doc_a.fit.naka_rushton_RBNS_empirical_c50, tolerance, 'naka rushton RBNS empirical c50');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_r2, doc_a.fit.naka_rushton_RBNS_r2, tolerance, 'naka rushton RBNS r2');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_relative_max_gain, doc_a.fit.naka_rushton_RBNS_relative_max, tolerance, 'naka rushton RBNS relative max');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_saturation_index, doc_a.fit.naka_rushton_RBNS_saturation_index, tolerance, 'naka rushton RBNS saturation index');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_sensitivity, doc_a.fit.naka_rushton_RBNS_sensitivity, tolerance, 'naka rushton RBNS sensitivity');
+
+end;
