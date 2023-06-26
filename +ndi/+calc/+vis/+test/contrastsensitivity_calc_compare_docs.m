@@ -13,100 +13,38 @@ errormsg = '';
 doc_e = document_expected.document_properties.contrastsensitivity_calc;
 doc_a = document_actual.document_properties.contrastsensitivity_calc;
 
-%Comparing spatial_frequencies
+% Comparing
+%   spatial_frequencies
+%   sensitivity_RB
+%   sensitivity_RBN
+%   sensitivity_RBNS
+%   across_stimuli_varies_p_bonferroni
+%   response_varies_p_bonferroni
+%   visual_response_p_bonferroni
+%   is_modulated_response
+%   response_type
 
-tol = %put in appropriate tolorance;
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.spatial_frequencies, doc_a.spatial_frequencies, tolerance, 'spatial frequencies');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.sensitivity_RB, doc_a.sensitivity_RB, tolerance, 'sensitivity RB');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.sensitivity_RBN, doc_a.sensitivity_RBN, tolerance, 'sensitivity_RBN');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.sensitivity_RBNS, doc_a.sensitivity_RBNS, tolerance, 'sensitivity_RBNS');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.across_stimuli_varies_p_bonferroni, doc_a.across_stimuli_varies_p_bonferroni, tolerance, 'across stimuli varies p bonferroni');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.response_varies_p_bonferroni, doc_a.response_varies_p_bonferroni, tolerance, 'response varies p bonferroni');
+[b,errormsg] = ndi.test.values_within_tolerance(doc_e.visual_response_p_bonferroni, doc_a.visual_response_p_bonferroni, tolerance, 'visual response p bonferroni');
 
-if any(abs(doc_e.spatial_frequencies(:) - doc_a.spatial_frequencies(:)) > tol)
-   b = 0;
-   errormsg = ['Spatial frequencies differ by greater than ' num2str(tol) '.'];
-end
-
-%Comparing sensitivity_RB
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.sensitivity_RB(:) - doc_a.sensitivity_RB(:)) > tol)
-   b = 0;
-   errormsg = ['Sensitivity RB differ by greater than ' num2str(tol) '.'];
-end
-
-%Comparing sensitivity_RBN
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.sensitivity_RBN(:) - doc_a.sensitivity_RBN(:)) > tol)
-   b = 0;
-   errormsg = ['Sensitivity RBN differ by greater than ' num2str(tol) '.'];
-end
-
-%Comparing sensitivity_RBNS
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.sensitivity_RBNS(:) - doc_a.sensitivity_RBNS(:)) > tol)
-   b = 0;
-   errormsg = ['Sensitivity RBNS differ by greater than ' num2str(tol) '.'];
-end
-
-% Comparing is_modulated_response
-
-tol = %put in appropriate tolorance;
-
-is_modulated_response_match = vlt.data.sizeeq(doc_e.is_modulated_response(:),doc_a.is_modulated_response(:));
-if is_modulated_response_match
-   is_modulated_response_match = max(abs(doc_e.is_modulated_response(:) - doc_a.is_modulated_response(:))) < tol;
-end
-
+is_modulated_response_match = strcmpi(doc_e.is_modulated_response, doc_a.is_modulated_response);
 if ~is_modulated_response_match
    b = 0;
-   errormsg = ['Is modulated response is differed by greater than ' num2str(tol) '.'];
+   errormsg = ['Expected is modulated response is ' doc_e.is_modulated_response ' but observed ' doc_a.is_modulated_response];
    return;
 end
 
-%Comparing across_stimuli_varies_p_bonferroni
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.across_stimuli_varies_p_bonferroni(:) - doc_a.across_stimuli_varies_p_bonferroni(:)) > tol)
+response_type_match = strcmpi(doc_e.response_type, doc_a.response_type);
+if ~response_type_match
    b = 0;
-   errormsg = ['Across Stimuli Varies p bonferroni differ by greater than ' num2str(tol) '.'];
+   errormsg = ['Expected response type of ' doc_e.response_type ' but observed ' doc_a.response_type];
+   return;
 end
 
-%Comparing response_varies_p_bonferroni
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.response_varies_p_bonferroni(:) - doc_a.response_varies_p_bonferroni(:)) > tol)
-   b = 0;
-   errormsg = ['Response varies p bonferroni differ by greater than ' num2str(tol) '.'];
-end
-
-%Comparing visual_response_p_bonferroni
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.visual_response_p_bonferroni(:) - doc_a.visual_response_p_bonferroni(:)) > tol)
-   b = 0;
-   errormsg = ['Visual response p bonferroni differ by greater than ' num2str(tol) '.'];
-end
-
-%Comparing response_type
-% check to make sure not NaN
-
-if isnan(doc_a.response_type)
-    disp('Response type is not a number')
-end
-
-if ~isnan(doc_a.response_type)
-
-tol = %put in appropriate tolorance;
-
-if any(abs(doc_e.response_type(:) - doc_a.response_type(:)) > tol)
-   b = 0;
-   errormsg = ['Response type differ by greater than ' num2str(tol) '.'];
-end
-
-end
 
 end
