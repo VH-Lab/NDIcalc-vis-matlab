@@ -17,7 +17,7 @@ doc_a = document_actual.document_properties.contrast_tuning;
 % Comparing properties
 %   Response Units
 
-properties_match = strcmpi(doc_e.properties.response_units, doc_a.properties.response_units);
+properties_match = strcmpi(char(doc_e.properties.response_units), char(doc_a.properties.response_units));
 if ~properties_match
    b = 0;
    errormsg = ['Expected response units in ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
@@ -42,7 +42,10 @@ end
 %	control_stddev                        
 %	control_stderr
 
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.contrast, doc_a.tuning_curve.contrast, tolerance, 'contrast');
+errormsg_list = {};
+b_list = [];
+
+[b_list(1),errormsg_list{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.contrast, doc_a.tuning_curve.contrast, tolerance, 'contrast');
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance, 'mean');
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance, 'stddev');
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance, 'stderr');
@@ -119,4 +122,11 @@ end
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_saturation_index, doc_a.fit.naka_rushton_RBNS_saturation_index, tolerance, 'naka rushton RBNS saturation index');
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_sensitivity, doc_a.fit.naka_rushton_RBNS_sensitivity, tolerance, 'naka rushton RBNS sensitivity');
 
+
+if ~any(b_list),
+    b_failed_index = find(b_list==0);
+    b = b_list(b_failed_index); % 0
+    errormsg = errormsg_list{b_failed_index};
 end;
+
+
