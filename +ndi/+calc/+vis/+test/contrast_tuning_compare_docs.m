@@ -26,7 +26,7 @@ end
 
 %   Response Type
 
-properties_match = strcmpi(doc_e.properties.response_type, doc_a.properties.response_type);
+properties_match = strcmpi(char(doc_e.properties.response_type), char(doc_a.properties.response_type));
 if ~properties_match
    b = 0;
    errormsg = ['Expected response type of ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
