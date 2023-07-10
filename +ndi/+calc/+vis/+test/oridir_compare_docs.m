@@ -18,21 +18,21 @@ doc_a = document_actual.document_properties.orientation_direction_tuning;
 %   response_units
 %   response_type
 
-properties_match = strcmpi(doc_e.properties.coordinates, doc_a.properties.coordinates);
+properties_match = strcmpi(char(doc_e.properties.coordinates), char(doc_a.properties.coordinates));
 if ~properties_match
    b = 0;
    errormsg = ['Expected coordinates of ' doc_e.properties.coordinates ' but observed ' doc_a.properties.coordinates];
    return;
 end
 
-properties_match = strcmpi(doc_e.properties.response_units, doc_a.properties.response_units);
+properties_match = strcmpi(char(doc_e.properties.response_units), char(doc_a.properties.response_units));
 if ~properties_match
    b = 0;
    errormsg = ['Expected response units of ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
    return;
 end
 
-properties_match = strcmpi(doc_e.properties.response_type, doc_a.properties.response_type);
+properties_match = strcmpi(char(doc_e.properties.response_type), char(doc_a.properties.response_type));
 if ~properties_match
    b = 0;
    errormsg = ['Expected response type of ' doc_e.properties.response_type ' but observed ' doc_a.properties.response_type];
