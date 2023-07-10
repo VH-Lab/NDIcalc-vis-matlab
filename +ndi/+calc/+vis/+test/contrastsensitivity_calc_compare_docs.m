@@ -32,14 +32,14 @@ doc_a = document_actual.document_properties.contrastsensitivity_calc;
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.response_varies_p_bonferroni, doc_a.response_varies_p_bonferroni, tolerance, 'response varies p bonferroni');
 [b,errormsg] = ndi.test.values_within_tolerance(doc_e.visual_response_p_bonferroni, doc_a.visual_response_p_bonferroni, tolerance, 'visual response p bonferroni');
 
-is_modulated_response_match = strcmpi(doc_e.is_modulated_response, doc_a.is_modulated_response);
+is_modulated_response_match = strcmpi(char(doc_e.is_modulated_response), char(doc_a.is_modulated_response));
 if ~is_modulated_response_match
    b = 0;
    errormsg = ['Expected is modulated response is ' doc_e.is_modulated_response ' but observed ' doc_a.is_modulated_response];
    return;
 end
 
-response_type_match = strcmpi(doc_e.response_type, doc_a.response_type);
+response_type_match = strcmpi(char(doc_e.response_type), char(doc_a.response_type));
 if ~response_type_match
    b = 0;
    errormsg = ['Expected response type of ' doc_e.response_type ' but observed ' doc_a.response_type];
