@@ -1,12 +1,12 @@
-function [b, errormsg] = oridir_compare_docs(document_expected, document_actual, scope)
+function [b_, errormsg_] = oridir_compare_docs(document_expected, document_actual, scope)
 % ORIDIR_COMPARE_DOCS
 %
 % [B, ERRORMSG] = ndi.calc.vis.test.oridir_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
 %
 
 
-b = 1;
-errormsg = '';
+b_ = ones(1,35);
+errormsg_ = cell(1,35);
 
 % start comparison
 
@@ -18,25 +18,22 @@ doc_a = document_actual.document_properties.orientation_direction_tuning;
 %   response_units
 %   response_type
 
-properties_match = strcmpi(char(doc_e.properties.coordinates), char(doc_a.properties.coordinates));
-if ~properties_match
-   b = 0;
-   errormsg = ['Expected coordinates of ' doc_e.properties.coordinates ' but observed ' doc_a.properties.coordinates];
-   return;
+properties_cmatch = strcmpi(char(doc_e.properties.coordinates), char(doc_a.properties.coordinates));
+if ~properties_cmatch
+    b_(35) = 0;
+    errormsg_{35} = ['Expected coordinates of ' doc_e.properties.coordinates ' but observed ' doc_a.properties.coordinates];
 end
 
-properties_match = strcmpi(char(doc_e.properties.response_units), char(doc_a.properties.response_units));
-if ~properties_match
-   b = 0;
-   errormsg = ['Expected response units of ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
-   return;
+properties_rmatch = strcmpi(char(doc_e.properties.response_units), char(doc_a.properties.response_units));
+if ~properties_rmatch
+    b_(34) = 0;
+    errormsg_{34} = ['Expected response units of ' doc_e.properties.response_units ' but observed ' doc_a.properties.response_units];
 end
 
 properties_match = strcmpi(char(doc_e.properties.response_type), char(doc_a.properties.response_type));
 if ~properties_match
-   b = 0;
-   errormsg = ['Expected response type of ' doc_e.properties.response_type ' but observed ' doc_a.properties.response_type];
-   return;
+   b_(33) = 0;
+   errormsg_{33} = ['Expected response type of ' doc_e.properties.response_type ' but observed ' doc_a.properties.response_type];
 end
 
 % Comparing tuning_curve
@@ -47,21 +44,22 @@ end
 %   individual
 %   raw_individual
 %   control_individual
-
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.direction, doc_a.tuning_curve.direction, tolerance, 'direction');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance, 'mean');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance, 'stddev');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance, 'stderr');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance, 'individual');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance, 'raw individual');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance, 'control individual');
+%b_=[]
+%errormsg_={}
+[b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.direction, doc_a.tuning_curve.direction, 1e-6, 'direction');
+[b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, 1e-6, 'mean');
+[b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, 1e-6, 'stddev');
+[b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, 1e-6, 'stderr');
+[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, 0.5, 'individual');
+[b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, 0.5, 'raw individual');
+[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, 0.5, 'control individual');
 
 % Comparing significance
 %   visual_response_anova_p
 %   across_stimuli_anova_p
 
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tolerance, 'visual response anova p');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tolerance, 'across stimli anova p');
+[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, 0.1, 'visual response anova p');
+[b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, 0.1, 'across stimli anova p');
 
 % Comparing vector
 %   circular_variance
@@ -72,13 +70,13 @@ end
 %   direction_hotelling2test
 %   dot_direction_significance
 
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.circular_variance, doc_a.vector.circular_variance, tolerance, 'circular variance');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.direction_circular_variance, doc_a.vector.direction_circular_variance, tolerance, 'direction circular variance');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.hotelling2test, doc_a.vector.hotelling2test, tolerance, 'hotelling2test');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.orientation_preference, doc_a.vector.orientation_preference, tolerance, 'orientation preference');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.direction_preference, doc_a.vector.direction_preference, tolerance, 'direction preference');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.direction_hotelling2test, doc_a.vector.direction_hotelling2test, tolerance, 'direction hotelling2test');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.vector.dot_direction_significance, doc_a.vector.dot_direction_significance, tolerance, 'dot direction significance');
+[b_(10),errormsg_{10}] = ndi.test.values_within_tolerance(doc_e.vector.circular_variance, doc_a.vector.circular_variance, 0.1, 'circular variance');
+[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.vector.direction_circular_variance, doc_a.vector.direction_circular_variance, 0.1, 'direction circular variance');
+[b_(12),errormsg_{12}] = ndi.test.values_within_tolerance(doc_e.vector.Hotelling2Test, doc_a.vector.Hotelling2Test, 0.1, 'hotelling2test');
+[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.vector.orientation_preference, doc_a.vector.orientation_preference, 10, 'orientation preference');
+[b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.vector.direction_preference, doc_a.vector.direction_preference, 0.1, 'direction preference');
+[b_(15),errormsg_{15}] = ndi.test.values_within_tolerance(doc_e.vector.direction_hotelling2test, doc_a.vector.direction_hotelling2test, 0.1, 'direction hotelling2test');
+[b_(16),errormsg_{16}] = ndi.test.values_within_tolerance(doc_e.vector.dot_direction_significance, doc_a.vector.dot_direction_significance, 0.1, 'dot direction significance');
 
 % Comparing fit
 %   double_gaussian_parameters
@@ -92,15 +90,26 @@ end
 %   orientation_preferred_orthogonal_ratio_rectified
 %   direction_preferred_null_ratio_rectified
 
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters, doc_a.fit.double_gaussian_parameters, tolerance, 'double gaussian parameters');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_angles, doc_a.fit.double_gaussian_fit_angles, tolerance, 'double gaussian fit angles');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_values, doc_a.fit.double_gaussian_fit_values, tolerance, 'double gaussian fit values');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.orientation_angle_preference, doc_a.fit.orientation_angle_preference, tolerance, 'orientation angle preference');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.direction_angle_preference, doc_a.fit.direction_angle_preference, tolerance, 'direction angle preference');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.hwhh, doc_a.fit.hwhh, tolerance, 'hwhh');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.orientation_preferred_orthogonal_ratio, doc_a.fit.orientation_preferred_orthogonal_ratio, tolerance, 'orientation preferred orthogonal ratio');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.direction_preferred_null_ratio, doc_a.fit.direction_preferred_null_ratio, tolerance, 'direction preferred null ratio');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.orientation_preferred_orthogonal_ratio_rectified, doc_a.fit.orientation_preferred_orthogonal_ratio_rectified, tolerance, 'orientation preferred orthogonal ratio rectified');
-[b,errormsg] = ndi.test.values_within_tolerance(doc_e.fit.direction_preferred_null_ratio_rectified, doc_a.fit.direction_preferred_null_ratio_rectified, tolerance, 'direction preferred null ratio rectified');
+[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit.double_guassian_parameters(1), doc_a.fit.double_guassian_parameters(1), 5, 'double gaussian parameters #1');
+[b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit.double_guassian_parameters(2), doc_a.fit.double_guassian_parameters(2), 5, 'double gaussian parameters #2');
+[b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit.double_guassian_parameters(3), doc_a.fit.double_guassian_parameters(3), 10, 'double gaussian parameters #3');
+[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit.double_guassian_parameters(4), doc_a.fit.double_guassian_parameters(4), 20, 'double gaussian parameters #4');
+[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit.double_guassian_parameters(5), doc_a.fit.double_guassian_parameters(5), 10, 'double gaussian parameters #1');
+[b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_angles, doc_a.fit.double_gaussian_fit_angles, 1e-6, 'double gaussian fit angles');
+[b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_values, doc_a.fit.double_gaussian_fit_values, 5, 'double gaussian fit values');
+[b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit.orientation_angle_preference, doc_a.fit.orientation_angle_preference, 10, 'orientation angle preference');
+[b_(25),errormsg_{25}] = ndi.test.values_within_tolerance(doc_e.fit.direction_angle_preference, doc_a.fit.direction_angle_preference, 10, 'direction angle preference');
+[b_(26),errormsg_{26}] = ndi.test.values_within_tolerance(doc_e.fit.hwhh, doc_a.fit.hwhh, 10, 'hwhh');
+[b_(27),errormsg_{27}] = ndi.test.values_within_tolerance(doc_e.fit.orientation_preferred_orthogonal_ratio, doc_a.fit.orientation_preferred_orthogonal_ratio, 0.1, 'orientation preferred orthogonal ratio');
+[b_(28),errormsg_{28}] = ndi.test.values_within_tolerance(doc_e.fit.direction_preferred_null_ratio, doc_a.fit.direction_preferred_null_ratio, 0.1, 'direction preferred null ratio');
+[b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit.orientation_preferred_orthogonal_ratio_rectified, doc_a.fit.orientation_preferred_orthogonal_ratio_rectified, 0.1, 'orientation preferred orthogonal ratio rectified');
+[b_(30),errormsg_{30}] = ndi.test.values_within_tolerance(doc_e.fit.direction_preferred_null_ratio_rectified, doc_a.fit.direction_preferred_null_ratio_rectified, 0.1, 'direction preferred null ratio rectified');
+
+
+if any(b_==0),
+    error_indices = find(b_==0);
+    b_ = b_(error_indices);
+    errormsg_ = errormsg_(error_indices);
+end
 
 end
