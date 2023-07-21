@@ -27,6 +27,18 @@ function [b,msg] = values_within_tolerance(v1, v2, tolerance, fieldname)
 b = 1;
 msg = '';
 
+if isnan(v1)
+    b = 0;
+    msg = [fieldname ' is not a number'];
+    return
+end
+
+if isnan(v2)
+    b = 0;
+    msg = [fieldname ' is not a number'];
+    return
+end
+
 size_matched = vlt.data.sizeeq(v1,v2);
 
 if ~size_matched,
@@ -39,6 +51,7 @@ tolerance_matched = max(abs(v1(:) - v2(:))) < tolerance;
 
 if ~tolerance_matched,
    b = 0;
-   msg = ['Differences in arrays of ' fieldname' exceed the tolerance provided (' num2str(tolerance) ')'];
+   msg = ['Differences in arrays of ' fieldname ' exceed the tolerance provided' ( num2str(tolerance))];
 end;
    
+end
