@@ -105,6 +105,10 @@ end
 [b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit.orientation_preferred_orthogonal_ratio_rectified, doc_a.fit.orientation_preferred_orthogonal_ratio_rectified, 0.1, 'orientation preferred orthogonal ratio rectified');
 [b_(30),errormsg_{30}] = ndi.test.values_within_tolerance(doc_e.fit.direction_preferred_null_ratio_rectified, doc_a.fit.direction_preferred_null_ratio_rectified, 0.1, 'direction preferred null ratio rectified');
 
+% The following code does three things:
+% 1. Identify the b_ values with unmatched results
+% 2. Update b_ to only include those
+% 3. Update the corresponding errormsg_ messages
 
 if any(b_==0),
     error_indices = find(b_==0);
