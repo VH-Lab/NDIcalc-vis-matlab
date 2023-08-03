@@ -4,6 +4,8 @@ function [b_, errormsg_] = oridir_compare_docs(document_expected, document_actua
 % [B, ERRORMSG] = ndi.calc.vis.test.oridir_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
 %
 
+% Initialize b_ as a row vector of ones for tracking comparison results.
+% Initialize errormsg_ as an empty cell array to hold error messages.
 
 b_ = ones(1,35);
 errormsg_ = cell(1,35);
