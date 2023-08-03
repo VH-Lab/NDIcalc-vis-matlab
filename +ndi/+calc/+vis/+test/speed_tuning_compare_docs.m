@@ -4,6 +4,8 @@ function [b_, errormsg_] = speed_tuning_compare_docs(document_expected, document
 % [B, ERRORMSG] = ndi.calc.vis.test.speed_tuning_compare_docs(DOC_EXPECTED, DOC_ACTUAL, SCOPE)
 %
 
+% Initialize b_ as a row vector of ones for tracking comparison results.
+% Initialize errormsg_ as an empty cell array to hold error messages.
 
 b_ = ones(1,19);
 errormsg_ = cell(1,19);
