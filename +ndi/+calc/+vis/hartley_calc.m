@@ -42,8 +42,10 @@ classdef hartley_calc < ndi.calculator
 
 				q1 = ndi.query('','isa','stimulus_presentation','');
 				stimulus_presentation_docs = ndi_calculator_obj.session.database_search(q1);
+                ndi_decoder = ndi.app.stimulus.decoder(ndi_calculator_obj.session);
 
 				for i=1:numel(stimulus_presentation_docs),
+                    presentation_time = ndi_decoder.load_presentation_time(stimulus_presentation_docs{i});
 					[b,stimids] = ndi.calc.vis.hartley_calc.ishartleystim(stimulus_presentation_docs{i});
 
 					if ~b, continue; end;
@@ -57,9 +59,9 @@ classdef hartley_calc < ndi.calculator
 
 					% ASSUMPTION: each stimulus epoch will overlap a single element epoch
 					stim_timeref = ndi.time.timereference(stimulus_element,...
-						ndi.time.clocktype(stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).clocktype),...
+						ndi.time.clocktype(presentation_time(1).clocktype),...
 						stimulus_presentation_docs{i}.document_properties.epochid.epochid,...
-						stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).onset);
+						presentation_time(1).onset);
 					[ts_epoch_t0_out, ts_epoch_timeref, msg] = ndi_calculator_obj.session.syncgraph.time_convert(stim_timeref,...
 						0, element, ndi.time.clocktype('dev_local_time'));
 					% time is 0 because stim_timeref is relative to 1st stim
@@ -82,11 +84,11 @@ classdef hartley_calc < ndi.calculator
 
 						% Step 3b: load the spike times and spike parameters
 
-						frameTimes_indexes = find(stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time.stimevents(:,2)==1);
-						frameTimes = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time.stimevents(frameTimes_indexes,1);
+						frameTimes_indexes = find(presentation_time.stimevents(:,2)==1);
+						frameTimes = presentation_time.stimevents(frameTimes_indexes,1);
 						[spike_values,spike_times] = element.readtimeseries(stim_timeref, ...
-							stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).onset, ...
-							stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(end).offset);
+							presentation_time(1).onset, ...
+							presentation_time(end).offset);
 
 						% load the hartley states
 						P = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.stimuli(stimids(1)).parameters;
