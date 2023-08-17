@@ -117,5 +117,9 @@ if any(b_==0),
     b_ = b_(error_indices);
     errormsg_ = errormsg_(error_indices);
 end
+if all(b_) && all(cellfun('isempty', errormsg_))
+    disp('No error');
+end
+
 
 end
