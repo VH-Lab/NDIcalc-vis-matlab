@@ -231,7 +231,8 @@ classdef contrast_sensitivity < ndi.calculator
 							parameters_here.response_type = response_type_here;
 						
 							if numel(tuning_curves)>0,	
-								doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'contrastsensitivity_calc',parameters_here);
+								doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},...
+									'contrastsensitivity_calc',parameters_here) + ndi_calculator_obj.newdocument();
 								doc{end} = doc{end}.set_dependency_value('element_id',element_doc.id());
 								doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stim_pres_id{i});
 								doc{end} = doc{end}.set_dependency_value('stimulus_response_scalar_id',...

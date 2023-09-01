@@ -39,7 +39,9 @@ classdef contrast_tuning < ndi.calculator
 				tuning_response_doc = tuning_response_doc{1};
 
 				% Step 2: perform the calculator, which here creates a contrast_tuning doc
-				doc = ndi_calculator_obj.calculate_contrast_indexes(tuning_response_doc);
+				doc = ndi_calculator_obj.calculate_contrast_indexes(tuning_response_doc) + ...
+					ndi_calculator_obj.newdocument();
+
 				if isempty(doc.document_properties.contrast_tuning.significance.visual_response_anova_p),
 				end;
 				

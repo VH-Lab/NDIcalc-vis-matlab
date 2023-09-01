@@ -39,7 +39,8 @@ classdef temporal_frequency_tuning < ndi.calculator
 				tuning_response_doc = tuning_response_doc{1};
 
 				% Step 2: perform the calculator, which here creates a temporal_frequency_tuning doc
-				doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc);
+				doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc) + ...
+					ndi_calculator_obj.newdocument();
 				
 				if ~isempty(doc), 
 					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'temporal_frequency_tuning_calc',temporal_frequency_tuning_calc) + doc;
