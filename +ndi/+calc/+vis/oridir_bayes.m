@@ -14,7 +14,7 @@ classdef oridir_bayes < ndi.calculator
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_bayes_obj = oridir_bayes_obj@ndi.calculator(session,'oridir_bayes',...
-					fullfile(parparparpar,'ndi_common','database_documents','calc','oridirtuning_calc.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','orientation_direction_bayes.json'));
 		end; % oridir_bayes() creator
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -34,27 +34,61 @@ classdef oridir_bayes < ndi.calculator
 				end;
 						
 				% Step 2. Set up output structure
-				oridir_bayes = parameters;
 						
 				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
-					'exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+					'exact_string', vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_doc)~=1, 
 					error(['Could not find stimulus tuning curve doc..']);
 				end;
 				tuning_doc = tuning_doc{1};
-						
-				% Step 3. Calculate oridir_bayes and direction indexes from
-				% stimulus responses and write output into an oridir_bayes document
 
-				oriapp = ndi.app.oridirtuning(ndi_calculator_obj.session);
-				doc = oriapp.calculate_oridir_indexes(tuning_doc,0,0);
+				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
+				element_id = tuning_doc.dependency_value('element_id');
+				num_trials = [];
+
+				for i=1:numel(tuning_doc.document_properties.tuning_curve.individual_responses_real),
+					ind{i} = tuning_doc.document_properties.tuning_curve.individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.tuning_curve.individual_responses_imaginary{i};
+					ind_real{i} = ind{i};
+					if any(~isreal(ind_real{i})),
+						ind_real{i} = abs(ind_real{i});
+					end;
+					control_ind{i} = tuning_doc.document_properties.tuning_curve.control_individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.tuning_curve.control_individual_responses_imaginary{i};
+					control_ind_real{i} = control_ind{i};
+					if any(~isreal(control_ind_real{i})),
+						control_ind_real{i} = abs(control_ind_real{i});
+					end;
+					response_ind{i} = ind{i} - control_ind{i};
+					response_mean(i) = nanmean(response_ind{i});
+					num_trials(i) = numel(find(~isnan(response_ind{i})));
+					if ~isreal(response_mean(i)), 
+						response_mean(i) = abs(response_mean(i)); 
+					end;
+					response_stddev(i) = nanstd(response_ind{i});
+					response_stderr(i) = vlt.data.nanstderr(response_ind{i});
+					if any(~isreal(response_ind{i})),
+						response_ind{i} = abs(response_ind{i});
+					end;
+				end;
+
+				data.num_trials = num_trials(:);
+				data.mean_responses = response_mean(:);
+				data.angles = tuning_doc.document_properties.tuning_curve.independent_variable_value(:);
+						
+				% Step 3. Calculate oridir_bayes
+
+				[output_struct] = vis.bayes.double_gaussian.grid_proportional_noise(parameters.input_parameters.grid,...
+					data,parameters.input_parameters.noise_model);
+
+				doc = ndi.document('orientation_direction_bayes','orientation_direction_bayes',output_struct);
 
 				% Step 4. Check if doc exists
 				if ~isempty(doc), 
 					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},...
-						'oridirtuning_calc',oridir_bayes) + doc;
+						'oridir_bayes_calc',parameters) + doc;
 					doc = doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
+					doc = doc.set_dependency_value('element_id',tuning_doc.id());
 				end;
 		end; % calculate
 
@@ -67,7 +101,17 @@ classdef oridir_bayes < ndi.calculator
 			% to the calculator.
 			%
 				% search for stimulus_tuningcurve_id
-				parameters.input_parameters = struct([]);
+				grid = struct('Rp',logspace(log10(.5),log10(150),100), ...
+					'Op',0:1:359, ...
+					'Alpha',linspace(0,1,50), ...
+					'Sig',logspace(log10(5),log10(90),10), ...
+					'Rsp',logspace(log10(0.01),log10(100),50),...
+					'di_bins', 0:0.05:1.0, ...
+					'oi_bins', 0:0.05:1.0, ...
+					'dir_cv_bins', 0:0.05:1.0,...
+					'cv_bins', 0:0.05:1.0);
+				parameters.input_parameters.grid = grid;
+				parameters.input_parameters.noise_model = [ 0.25 0.73 ];
 				parameters.depends_on = vlt.data.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 		end; % default_search_for_input_parameters
@@ -98,11 +142,11 @@ classdef oridir_bayes < ndi.calculator
 			% 'response_type' fields that contain 'mean' or 'F1'.
 			%
 			%         
-				q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
-			
-				q2 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Orientation','');
-				q3 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Direction','');
-				q4 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','angle','');
+				q1 = ndi.query('','isa','stimulus_tuningcurve','');
+				% EDIT HERE
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','Orientation','');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','Direction','');
+				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','angle','');
 				q234 = q2 | q3 | q4;
 				q_total = q1 & q234;
 			
@@ -138,119 +182,6 @@ classdef oridir_bayes < ndi.calculator
 						b = (numel(d.document_properties.independent_variable_label) ==2);
 					end;
 		end; % is_valid_dependency_input()
-
-		function oridir_doc = calculate_oridir_indexes(ndi_calculator_obj, tuning_doc)
-			% CALCULATE_ORIDIR_INDEXES - calculate orientation and direction index values from a tuning curve
-			%
-			% ORIDIR_DOC = CALCULATE_ORIDIR_INDEXES(NDI_ORIDIRTUNING_CALC_OBJ, TUNING_DOC)
-			%
-			% Given a 2-dimensional tuning curve document with measurements
-			% at orientation and direction frequencies, this function calculates oridir_bayes
-			% parameters and stores them in ORIDIRTUNING document ORIDIR_DOC.
-			%
-			%
-				ind = {};
-				ind_real = {};
-				control_ind = {};
-				control_ind_real = {};
-				response_ind = {};
-				response_mean = [];
-				response_stddev = [];
-				response_stderr = [];
-                
-				% stim_response_doc
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
-					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
-				if numel(stim_response_doc)~=1,
-					error(['Could not find stimulus response scalar document.']);
-				end;
-				if iscell(stim_response_doc),
-					stim_response_doc = stim_response_doc{1};
-				end;
-                
-				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
-                
-				for i=1:numel(tuning_doc.document_properties.tuning_curve.individual_responses_real),
-					ind{i} = tuning_doc.document_properties.tuning_curve.individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.individual_responses_imaginary{i};
-					ind_real{i} = ind{i};
-					if any(~isreal(ind_real{i})), 
-						ind_real{i} = abs(ind_real{i}); 
-					end;
-					control_ind{i} = tuning_doc.document_properties.tuning_curve.control_individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.control_individual_responses_imaginary{i};
-					control_ind_real{i} = control_ind{i};
-					if any(~isreal(control_ind_real{i})), 
-						control_ind_real{i} = abs(control_ind_real{i}); 
-					end;
-					response_ind{i} = ind{i} - control_ind{i};
-					response_mean(i) = nanmean(response_ind{i});
-					if ~isreal(response_mean(i)), 
-						response_mean(i) = abs(response_mean(i)); 
-					end;
-					response_stddev(i) = nanstd(response_ind{i});
-					response_stderr(i) = vlt.data.nanstderr(response_ind{i});
-					if any(~isreal(response_ind{i})),
-						response_ind{i} = abs(response_ind{i});
-					end;
-				end;
-                   
-				properties.coordinates = 'compass';
-				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
-				properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
-
-				response.curve = ...
-					[ tuning_doc.document_properties.tuning_curve.independent_variable_value(:)' ; ...
-						response_mean ; ...
-						response_stddev ; ...
-						response_stderr; ];
-				response.ind = response_ind;
-
- 				vi = vlt.neuro.vision.oridir.index.oridir_vectorindexes(response);
- 				fi = vlt.neuro.vision.oridir.index.oridir_fitindexes(response);
-             
-				resp.ind = ind_real;
-				resp.blankind = control_ind_real{1};
-				resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
-				[anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
-
-				tuning_curve = struct(...
-					'direction', vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value), ...
-					'mean', response_mean, ...
-					'stddev', response_stddev, ...
-					'stderr', response_stderr, ...
-					'individual', {response_ind}, ...
-					'raw_individual', {ind_real}, ...
-					'control_individual', {control_ind_real});
-
-				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
-					'across_stimuli_anova_p', anova_across_stims);
-
-				vector = struct('circular_variance', vi.ot_circularvariance, ...
-					'direction_circular_variance', vi.dir_circularvariance', ...
-					'Hotelling2Test', vi.ot_HotellingT2_p, ...
-					'orientation_preference', vi.ot_pref, ...
-					'direction_preference', vi.dir_pref, ...
-					'direction_hotelling2test', vi.dir_HotellingT2_p, ...
-					'dot_direction_significance', vi.dir_dotproduct_sig_p);
-
-				fit = struct('double_guassian_parameters', fi.fit_parameters,...
-					'double_gaussian_fit_angles', vlt.data.rowvec(fi.fit(1,:)), ...
-					'double_gaussian_fit_values', vlt.data.rowvec(fi.fit(2,:)), ...
-					'orientation_preferred_orthogonal_ratio', fi.ot_index, ...
-					'direction_preferred_null_ratio', fi.dir_index, ...
-					'orientation_preferred_orthogonal_ratio_rectified', fi.ot_index_rectified', ...
-					'direction_preferred_null_ratio_rectified', fi.dir_index_rectified, ...
-					'orientation_angle_preference', mod(fi.dirpref,180), ...
-					'direction_angle_preference', fi.dirpref, ...
-					'hwhh', fi.tuning_width);
-
-				% create document and store in oridir_bayes
-				oriprops = ndi.document('stimulus/vision/oridir/orientation_direction_tuning',...
-					'orientation_direction_tuning',vlt.data.var2struct('properties', 'tuning_curve', 'significance', 'vector', 'fit'));
-                                oriprops = oriprops.set_dependency_value('element_id', stim_response_doc{1}.dependency_value('element_id'));
-				oriprops = oriprops.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
-		end; %calculate_oridir_indexes()
     
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
 			% PLOT - provide a diagnostic plot to show the results of the calculator

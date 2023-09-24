@@ -174,7 +174,26 @@ classdef speed_tuning < ndi.calculator
                 ch = get(gcf,'children');
                 currentaxes = gca;
                 axes(ch(1));
-                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3))]);				
+                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3))]);
+
+                element_str = '';
+                ele = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('element_id')));
+                epoch_id = '';
+                tc_id = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('stimulus_tuningcurve_id')));
+                if ~isempty(tc_id),
+                    srs = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',tc_id{1}.dependency_value('stimulus_response_scalar_id')));
+                    if ~isempty(srs),
+                        epoch_id = [srs{1}.document_properties.stimulus_response.element_epochid ' ' srs{1}.document_properties.stimulus_response_scalar.response_type];
+                    end;
+                end;
+
+                if ~isempty(ele),
+                    element = ndi.database.fun.ndi_document2ndi_object(ele{1},ndi_calculator_obj.session);
+                    element_str = element.elementstring();
+                    axes(ch(2));
+                    title([element_str ' ' epoch_id],'interp','none');
+                end;
+                axes(currentaxes);
 
 				if 0, % plot function already does this
 				if ~h.params.suppress_x_label,
