@@ -1,13 +1,13 @@
 {
 	"document_class": {
-		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/oridirtuning_calc.json",
-		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridirtuning_calc_schema.json",
+		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/oridir_bayes_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridir_bayes_calc_schema.json",
 		"class_name":                       "oridir_bayes_calc",
 		"property_list_name":                   "oridir_bayes_calc", 
 		"class_version":                    1,
 		"superclasses": [
 			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
-			{ "definition":                 "$NDICALCDOCUMNTPATH\/vision\/orientation_direction_bayes.json" }
+			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/orientation_direction_bayes.json" }
 		]
 	},
 	"oridir_bayes_calc": {

@@ -26,7 +26,7 @@
 		"other_parameters": {
 			"independent_variable": [],
 			"independent_variable_values": []
-		}
+		},
 		"marginal_likelihoods": {
 			"theta_pref": { "values": [], "likelihoods": [] },
 			"Rsp": { "values": [], "likelihoods": [] },
@@ -42,10 +42,10 @@
 			"sigma": []
 		},
 		"descriptors": {
-			"di": { "values", [], "likelihoods": [] },
-			"oi": { "values", [], "likelihoods": [] },
-			"cv": { "values", [], "likelihoods": [] },
-			"dir_cv":{ "values", [], "likelihoods": [] }
+			"di": { "values": [], "likelihoods": [] },
+			"oi": { "values": [], "likelihoods": [] },
+			"cv": { "values": [], "likelihoods": [] },
+			"dir_cv":{ "values": [], "likelihoods": [] }
 		}
 	}
 }

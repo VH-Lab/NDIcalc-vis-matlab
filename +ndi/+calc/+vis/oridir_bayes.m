@@ -14,7 +14,7 @@ classdef oridir_bayes < ndi.calculator
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_bayes_obj = oridir_bayes_obj@ndi.calculator(session,'oridir_bayes',...
-					fullfile(parparparpar,'ndi_common','database_documents','calc','orientation_direction_bayes.json'));
+					fullfile(parparparpar,'ndi_common','database_documents','calc','oridir_bayes_calc.json'));
 		end; % oridir_bayes() creator
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -42,39 +42,35 @@ classdef oridir_bayes < ndi.calculator
 				end;
 				tuning_doc = tuning_doc{1};
 
+				tapp = ndi.app.stimulus.tuning_response(ndi_calculator_obj.session);
 				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
 				element_id = tuning_doc.dependency_value('element_id');
 				num_trials = [];
 
-				for i=1:numel(tuning_doc.document_properties.tuning_curve.individual_responses_real),
-					ind{i} = tuning_doc.document_properties.tuning_curve.individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.individual_responses_imaginary{i};
+
+				for i=1:numel(tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real),
+					ind{i} = tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_imaginary{i};
 					ind_real{i} = ind{i};
-					if any(~isreal(ind_real{i})),
-						ind_real{i} = abs(ind_real{i});
-					end;
-					control_ind{i} = tuning_doc.document_properties.tuning_curve.control_individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.control_individual_responses_imaginary{i};
+					if any(~isreal(ind_real{i})), ind_real{i} = abs(ind_real{i}); end;
+					control_ind{i} = tuning_doc.document_properties.stimulus_tuningcurve.control_individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.stimulus_tuningcurve.control_individual_responses_imaginary{i};
 					control_ind_real{i} = control_ind{i};
-					if any(~isreal(control_ind_real{i})),
-						control_ind_real{i} = abs(control_ind_real{i});
-					end;
+					if any(~isreal(control_ind_real{i})), control_ind_real{i} = abs(control_ind_real{i}); end;
 					response_ind{i} = ind{i} - control_ind{i};
 					response_mean(i) = nanmean(response_ind{i});
-					num_trials(i) = numel(find(~isnan(response_ind{i})));
-					if ~isreal(response_mean(i)), 
-						response_mean(i) = abs(response_mean(i)); 
-					end;
+					if ~isreal(response_mean(i)), response_mean(i) = abs(response_mean(i)); end;
 					response_stddev(i) = nanstd(response_ind{i});
 					response_stderr(i) = vlt.data.nanstderr(response_ind{i});
 					if any(~isreal(response_ind{i})),
 						response_ind{i} = abs(response_ind{i});
 					end;
+					num_trials(i) = numel(ind{i});
 				end;
 
 				data.num_trials = num_trials(:);
 				data.mean_responses = response_mean(:);
-				data.angles = tuning_doc.document_properties.tuning_curve.independent_variable_value(:);
+				data.angles = tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:);
 						
 				% Step 3. Calculate oridir_bayes
 
@@ -101,11 +97,11 @@ classdef oridir_bayes < ndi.calculator
 			% to the calculator.
 			%
 				% search for stimulus_tuningcurve_id
-				grid = struct('Rp',logspace(log10(.5),log10(150),100), ...
-					'Op',0:1:359, ...
-					'Alpha',linspace(0,1,50), ...
+				grid = struct('Rp',logspace(log10(.5),log10(150),50), ...
+					'Op',0:5:359, ...
+					'Alpha',linspace(0,1,20), ...
 					'Sig',logspace(log10(5),log10(90),10), ...
-					'Rsp',logspace(log10(0.01),log10(100),50),...
+					'Rsp',logspace(log10(0.01),log10(100),20),...
 					'di_bins', 0:0.05:1.0, ...
 					'oi_bins', 0:0.05:1.0, ...
 					'dir_cv_bins', 0:0.05:1.0,...
@@ -143,12 +139,9 @@ classdef oridir_bayes < ndi.calculator
 			%
 			%         
 				q1 = ndi.query('','isa','stimulus_tuningcurve','');
-				% EDIT HERE
-				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','Orientation','');
-				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','Direction','');
-				q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','exact_string_anycase','angle','');
-				q234 = q2 | q3 | q4;
-				q_total = q1 & q234;
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','irection');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','eal');
+				q_total = q1 & q2 & q3;
 			
 				query = struct('name','stimulus_tuningcurve_id','query',q_total);
 		

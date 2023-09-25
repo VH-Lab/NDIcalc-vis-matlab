@@ -1,0 +1,51 @@
+{
+	"classname": "orientation_direction_bayes",
+	"superclasses":  [ "base" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"orientation_direction_bayes": [
+		{
+			"name": "noise_model",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Information about the noise model."
+		},
+		{
+			"name": "other_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The independent variables."
+		},
+		{
+			"name": "marginal_likelihoods",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The marginal likelihoods."
+		},
+		{
+			"name": "maximum_likelihood_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The maximum likelihood parameters."
+		},
+		{
+			"name": "descriptors",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Index values and other descriptors."
+		}
+	]
+}
