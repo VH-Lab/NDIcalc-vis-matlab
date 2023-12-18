@@ -174,7 +174,7 @@ classdef speed_tuning < ndi.calculator
                 ch = get(gcf,'children');
                 currentaxes = gca;
                 axes(ch(1));
-                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3))]);
+                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3)) ', pref: ' num2str(ft.Priebe_fit_parameters(7)/ft.Priebe_fit_parameters(6))]);
 
                 element_str = '';
                 ele = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('element_id')));
