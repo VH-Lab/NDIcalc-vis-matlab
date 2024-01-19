@@ -1,0 +1,50 @@
+{
+	"document_class": {
+		"definition":		"$NDICALCDOCUMENTPATH\/vision\/contrast_tuning_bayes.json",
+		"validation":		"$NDICALCSCHEMAPATH\/vision\/contrast_tuning_bayes_schema.json",
+		"class_name":						"contrast_tuning_bayes",
+        "property_list_name":               "contrast_tuning_bayes",
+		"class_version":					1,
+		"superclasses": [
+			{ "definition":  "$NDIDOCUMENTPATH\/base.json"}
+		]
+	},
+	"depends_on": [
+	        {	"name":     "element_id",
+			"value":    ""
+		},
+	        {	"name":     "stimulus_tuningcurve_id",
+			"value":    ""
+		}
+	],
+	"orientation_direction_bayes": {
+		"noise_model": {
+			"type": "proportional",
+			"offset": 0.45,
+			"slope": 0.45
+		},
+		"other_parameters": {
+			"independent_variable": [],
+			"independent_variable_values": []
+		},
+		"marginal_likelihoods": {
+			"R100": { "values": [], "likelihoods": [] },
+			"c50": { "values": [], "likelihoods": [] },
+			"n": { "values": [], "likelihoods": [] },
+			"s": { "values": [], "likelihoods": [] }
+		},
+		"maximum_likelihood_parameters": {
+			"R100": [],
+			"c50": [],
+			"n": [],
+			"s": []
+		},
+		"descriptors": {
+			"relative_maximum_gain": { "values": [], "likelihoods": [] },
+			"saturation_index": { "values": [], "likelihoods": [] },
+			"contrast_threshold": { "values": [], "likelihoods": [] },
+			"contrast_sensitivity":{ "values": [], "likelihoods": [] }
+		}
+	}
+}
+
