@@ -1,53 +1,52 @@
 {
   "app": {
-    "os": "MACI64",
-    "os_version": "12.5",
-    "name": "ndi_app_oridirtuning",
-    "interpreter_version": "9.11",
+    "os": "MACA64",
+    "os_version": "14.2.1",
+    "name": "ndi.calc.vis.oridir_tuning",
+    "interpreter_version": "23.2",
     "interpreter": "MATLAB",
-    "version": "73fddf2cb2621deee06df0eccec788f4bdbba151",
-    "url": "https://github.com/VH-lab/NDI-matlab"
+    "version": "79f29a3b3f4384fb0b369a40372c0a4a6c26f5e1",
+    "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab"
   },
   "document_class": {
     "superclasses": [
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document_app.json"},
+      {"definition": "$NDIDOCUMENTPATH/base.json"},
       {"definition": "$NDIDOCUMENTPATH/stimulus/vision/oridir/orientation_direction_tuning.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"}
+      {"definition": "$NDIDOCUMENTPATH/base.json"},
+      {"definition": "$NDIDOCUMENTPATH/base.json"}
     ],
     "class_version": 1,
-    "definition": "$NDIDOCUMENTPATH/apps/calculations/oridirtuning_calc.json",
+    "definition": "$NDICALCDOCUMENTPATH/calc/oridirtuning_calc.json",
     "property_list_name": "oridirtuning_calc",
-    "class_name": "ndi_calculation_oridirtuning",
-    "validation": "$NDISCHEMAPATH/apps/calculations/oridirtuning_calc.json"
+    "class_name": "oridirtuning_calc",
+    "validation": "$NDICALCSCHEMAPATH/calc/oridirtuning_calc_schema.json"
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "41268b7fbc5a0d18_40d55809eec66300"
+      "value": "41268f911ca30b1d_4071b606eb3f3910"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268b7fbc742178_40bd48c565feb392"
+      "value": "41268f911caaff1b_c0d6409eef16c65d"
     }
   ],
   "orientation_direction_tuning": {
     "significance": {
       "visual_response_anova_p": 0,
-      "across_stimuli_anova_p": 1
+      "across_stimuli_anova_p": 0
     },
     "fit": {
-      "orientation_angle_preference": 45.00000081337687,
-      "direction_preferred_null_ratio_rectified": 0.034062878556322215,
-      "orientation_preferred_orthogonal_ratio": 0.6262465779102915,
-      "double_guassian_parameters": [
+      "double_gaussian_parameters": [
         10.878551561213325,
         19.375002743400792,
         45.00000081337687,
         28.185609034466008,
         18.34424630034538
       ],
+      "orientation_angle_preference": 45.00000081337687,
+      "direction_preferred_null_ratio_rectified": 0.034062878556322215,
+      "orientation_preferred_orthogonal_ratio": 0.6262465779102915,
       "orientation_preferred_orthogonal_ratio_rectified": 0.6262465779102915,
       "double_gaussian_fit_values": [
         16.29542065736161,
@@ -780,10 +779,10 @@
     "vector": {
       "direction_hotelling2test": 0,
       "Hotelling2Test": 0,
-      "dot_direction_significance": 6.021856229260406E-53,
+      "dot_direction_significance": 5.335683362912492E-53,
       "circular_variance": 0.74,
       "orientation_preference": 90.00000000000003,
-      "direction_preference": 45.00000000000108,
+      "direction_preference": 45.00000000000117,
       "direction_circular_variance": 0.99
     },
     "tuning_curve": {
@@ -1108,19 +1107,17 @@
       "response_units": []
     }
   },
-  "ndi_document": {
-    "datestamp": "2022-08-18T20:51:08.175Z",
-    "name": "",
-    "session_id": "412687d3aac9b99c_c0cca19f666d4314",
-    "database_version": 1,
-    "id": "41268b7fbcd9339a_40c9427327ffe1f6",
-    "type": ""
-  },
   "oridirtuning_calc": {
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268b7fbc742178_40bd48c565feb392"
+      "value": "41268f911caaff1b_c0d6409eef16c65d"
     },
     "input_parameters": []
+  },
+  "base": {
+    "datestamp": "2024-01-21T13:21:56.010Z",
+    "name": "",
+    "session_id": "41268f473808ee2b_40d7bda9bb5ff733",
+    "id": "41268f911d21c530_c0d8ce666199f4b9"
   }
 }

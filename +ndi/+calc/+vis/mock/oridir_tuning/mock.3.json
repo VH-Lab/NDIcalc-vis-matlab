@@ -1,53 +1,52 @@
 {
   "app": {
-    "os": "MACI64",
-    "os_version": "12.5",
-    "name": "ndi_app_oridirtuning",
-    "interpreter_version": "9.11",
+    "os": "MACA64",
+    "os_version": "14.2.1",
+    "name": "ndi.calc.vis.oridir_tuning",
+    "interpreter_version": "23.2",
     "interpreter": "MATLAB",
-    "version": "73fddf2cb2621deee06df0eccec788f4bdbba151",
-    "url": "https://github.com/VH-lab/NDI-matlab"
+    "version": "79f29a3b3f4384fb0b369a40372c0a4a6c26f5e1",
+    "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab"
   },
   "document_class": {
     "superclasses": [
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document_app.json"},
+      {"definition": "$NDIDOCUMENTPATH/base.json"},
       {"definition": "$NDIDOCUMENTPATH/stimulus/vision/oridir/orientation_direction_tuning.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"},
-      {"definition": "$NDIDOCUMENTPATH/ndi_document.json"}
+      {"definition": "$NDIDOCUMENTPATH/base.json"},
+      {"definition": "$NDIDOCUMENTPATH/base.json"}
     ],
     "class_version": 1,
-    "definition": "$NDIDOCUMENTPATH/apps/calculations/oridirtuning_calc.json",
+    "definition": "$NDICALCDOCUMENTPATH/calc/oridirtuning_calc.json",
     "property_list_name": "oridirtuning_calc",
-    "class_name": "ndi_calculation_oridirtuning",
-    "validation": "$NDISCHEMAPATH/apps/calculations/oridirtuning_calc.json"
+    "class_name": "oridirtuning_calc",
+    "validation": "$NDICALCSCHEMAPATH/calc/oridirtuning_calc_schema.json"
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "41268b7fbab3b778_40d3e2bca2d4183e"
+      "value": "41268f911b05fc6b_c0bfe7e39e02660b"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268b7fbac9d608_c0cff720ca276328"
+      "value": "41268f911b0d9314_40a3919baef764ec"
     }
   ],
   "orientation_direction_tuning": {
     "significance": {
-      "visual_response_anova_p": 1,
-      "across_stimuli_anova_p": 0
+      "visual_response_anova_p": 0,
+      "across_stimuli_anova_p": 1
     },
     "fit": {
-      "orientation_angle_preference": 44.99999978820233,
-      "direction_preferred_null_ratio_rectified": 0.3598669059990984,
-      "orientation_preferred_orthogonal_ratio": 0.01443273326845764,
-      "double_guassian_parameters": [
+      "double_gaussian_parameters": [
         13.5874804413934,
         8.50910637242226,
         44.99999978820233,
         76.65178147891028,
         1.9617469142828085E-13
       ],
+      "orientation_angle_preference": 44.99999978820233,
+      "direction_preferred_null_ratio_rectified": 0.3598669059990984,
+      "orientation_preferred_orthogonal_ratio": 0.01443273326845764,
       "orientation_preferred_orthogonal_ratio_rectified": 0.01443273326845764,
       "double_gaussian_fit_values": [
         20.749636356646647,
@@ -780,9 +779,9 @@
     "vector": {
       "direction_hotelling2test": 0,
       "Hotelling2Test": 0,
-      "dot_direction_significance": 0.16687723816834651,
+      "dot_direction_significance": 0.8948361242891973,
       "circular_variance": 0.99,
-      "orientation_preference": 89.99999999999994,
+      "orientation_preference": 90.00000000000001,
       "direction_preference": 44.99999999999999,
       "direction_circular_variance": 0.89
     },
@@ -1108,19 +1107,17 @@
       "response_units": []
     }
   },
-  "ndi_document": {
-    "datestamp": "2022-08-18T20:46:41.475Z",
-    "name": "",
-    "session_id": "412687d3aac9b99c_c0cca19f666d4314",
-    "database_version": 1,
-    "id": "41268b7fbb449b68_c0b15d0fcc2f854e",
-    "type": ""
-  },
   "oridirtuning_calc": {
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268b7fbac9d608_c0cff720ca276328"
+      "value": "41268f911b0d9314_40a3919baef764ec"
     },
     "input_parameters": []
+  },
+  "base": {
+    "datestamp": "2024-01-21T13:17:36.483Z",
+    "name": "",
+    "session_id": "41268f473808ee2b_40d7bda9bb5ff733",
+    "id": "41268f911b980e98_40dba22d0d902cd1"
   }
 }

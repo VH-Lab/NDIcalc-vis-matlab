@@ -234,7 +234,7 @@ classdef oridir_tuning < ndi.calculator
 					'direction_hotelling2test', vi.dir_HotellingT2_p, ...
 					'dot_direction_significance', vi.dir_dotproduct_sig_p);
 
-				fit = struct('double_guassian_parameters', fi.fit_parameters,...
+				fit = struct('double_gaussian_parameters', fi.fit_parameters,...
 					'double_gaussian_fit_angles', vlt.data.rowvec(fi.fit(1,:)), ...
 					'double_gaussian_fit_values', vlt.data.rowvec(fi.fit(2,:)), ...
 					'orientation_preferred_orthogonal_ratio', fi.ot_index, ...
@@ -361,7 +361,6 @@ classdef oridir_tuning < ndi.calculator
 				doc_expected_output = {};
 
 				for i=1:number_of_tests,
-
 					docs{i} = {};
 
 					parameters = oridir_calc_obj.generate_mock_parameters(scope, i);
@@ -393,17 +392,21 @@ classdef oridir_tuning < ndi.calculator
 					docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 
-					calcparameters = oridir_calc_obj.default_search_for_input_parameters();
+                    calcparameters = oridir_calc_obj.default_search_for_input_parameters();
+                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
+
+                    doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
 					if numel(doc_output{i})>1,
 						error(['Generated more than one output doc when one was expected.']);
+                    elseif numel(doc_output{i})==0,
+						error(['Generated no output docs when one was expected.']);
 					end;
 					doc_output{i} = doc_output{i}{1};
 
 					if generate_expected_docs,
-						oridir_calc_obj.write_mock_expected_output(i,doc_output{i}{1});
+						oridir_calc_obj.write_mock_expected_output(i,doc_output{i});
 					end;
 
 					doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
