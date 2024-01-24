@@ -392,15 +392,15 @@ classdef oridir_tuning < ndi.calculator
 					docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 
-                    calcparameters = oridir_calc_obj.default_search_for_input_parameters();
-                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
+					calcparameters = oridir_calc_obj.default_search_for_input_parameters();
+					calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
 
-                    doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
+					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
 					if numel(doc_output{i})>1,
 						error(['Generated more than one output doc when one was expected.']);
-                    elseif numel(doc_output{i})==0,
+					elseif numel(doc_output{i})==0,
 						error(['Generated no output docs when one was expected.']);
 					end;
 					doc_output{i} = doc_output{i}{1};
@@ -460,7 +460,7 @@ classdef oridir_tuning < ndi.calculator
 				P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
 				P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
 				P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
-				P_(9,:) = [0 20 20 45 45] %Equal response Rp and Rn
+				P_(9,:) = [0 20 20 45 45] ; %Equal response Rp and Rn
 
 					% we should add more
 
