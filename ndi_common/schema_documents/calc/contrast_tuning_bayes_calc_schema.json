@@ -1,0 +1,26 @@
+{
+	"classname": "contrast_tuning_bayes_calc",
+	"superclasses":  [ "base", "contrast_tuning_bayes"],
+	"depends_on": [ ],
+	"file": [ ],
+	"contrast_tuning_bayes_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The depends on inputs"
+		}
+	]
+}
+
+
