@@ -169,8 +169,9 @@ classdef spatial_frequency_tuning < ndi.calculator
 					linestyle = '-';
 				end;
 
-				h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
-				h.objects = cat(2,h.objects,h_fit);
+					% the spline fits are terrible
+				%h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
+				%h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
