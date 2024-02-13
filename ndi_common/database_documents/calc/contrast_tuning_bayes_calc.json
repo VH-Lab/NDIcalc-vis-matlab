@@ -1,0 +1,24 @@
+{
+	"document_class": {
+		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/contrast_tuning_bayes_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/contrast_tuning_bayes_calc_schema.json",
+		"class_name":                       "contrast_tuning_bayes_calc",
+		"property_list_name":                   "contrast_tuning_bayes_calc", 
+		"class_version":                    1,
+		"superclasses": [
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
+			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/contrast_tuning_bayes.json" }
+		]
+	},
+	"contrast_tuning_bayes_calc": {
+		"input_parameters": {
+		},
+		"depends_on": [
+			{
+				"name":				"stimulus_tuningcurve_id",
+				"value":			[]
+			}
+		]
+	}
+}
+
