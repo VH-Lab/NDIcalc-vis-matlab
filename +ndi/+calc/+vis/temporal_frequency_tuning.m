@@ -172,12 +172,13 @@ classdef temporal_frequency_tuning < ndi.calculator
 					linestyle = '-';
 				end;
 
-				h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
-				h.objects = cat(2,h.objects,h_fit);
+					% drop spline, gausslog because not good
+				%h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
+				%h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(tft.fit_dog.values,tft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
-				h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
-				h.objects = cat(2,h.objects,h_fit);
+				%h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
+				%h.objects = cat(2,h.objects,h_fit);
 
 				if ~h.params.suppress_x_label,
 					h.xlabel = xlabel('Temporal frequency');

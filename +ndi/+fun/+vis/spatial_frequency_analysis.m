@@ -61,12 +61,6 @@ preftf = resp.curve(1,preftf(1));
  % STEP 2: DOG fit
 rcurve = resp.curve;
 
-search_options=optimset('fminsearch');
-search_options.TolFun=1e-3;
-search_options.TolX=1e-3;
-%search_options.MaxFunEvals='300*numberOfVariables';
-search_options.Display='off';
-
 [dog_par,norm_error] = ndi.fun.vis.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
 
 dog_par = [0 dog_par]; % add in the 0 to comply with old dog

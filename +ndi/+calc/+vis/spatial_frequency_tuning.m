@@ -174,8 +174,9 @@ classdef spatial_frequency_tuning < ndi.calculator
 				%h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
-				h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
-				h.objects = cat(2,h.objects,h_fit);
+					% the gauss log fits are terrible
+				%h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
+				%h.objects = cat(2,h.objects,h_fit);
 
 				if ~h.params.suppress_x_label,
 					h.xlabel = xlabel('Spatial frequency');

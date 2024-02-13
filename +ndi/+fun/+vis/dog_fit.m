@@ -42,11 +42,11 @@ did.datastructures.assign(varargin{:});
 mydog = fittype('a*exp(-(x.^2)/(2*b^2)) - c*exp(-(x.^2)/(2*d^2))');
 
 my = max(y(:));
-mx = max(x(:));
+mx = max(x(:)) - min(x(:));
 
 fo = fitoptions(mydog);
 fo.Lower = [0; eps; 0; eps];
-fo.Upper = [10*my; mx; 10*my; mx;];
+fo.Upper = [10*max(0,my); 10*mx; 10*max(0,my); 10*mx;];
 
 best_error = Inf;
 dog_param_best = [];
