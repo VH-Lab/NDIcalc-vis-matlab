@@ -7,6 +7,10 @@ doc_struct = ndi.viz.bigtable.tuning_curve_struct(S,element_name,element_ref,var
 
 N = numel(doc_struct.best_fit_docs);
 
+if N==0,
+    error(['No matching tuning curves.'])
+end;
+
 for i=1:N,
 	element_struct(i) = ndi.viz.bigtable.element_struct(S,doc_struct.element_docs{i});
 end;

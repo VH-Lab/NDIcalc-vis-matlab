@@ -44,7 +44,6 @@ all_fit_type = S.database_search(q_o);
 
 q_otc = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string',tuning_curve_search_string);
 all_tuning_curves = S.database_search(q_otc); % these are the stimulus tuning curves that form basis of responses
-
 matching_calc = [];
 matching_stim_response_doc = [];
 
