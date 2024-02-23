@@ -35,7 +35,7 @@ else,
 	w = 1./(1+s(:));
 end;
 
-start_positions = 10;
+start_positions = 40;
 
 did.datastructures.assign(varargin{:});
 
