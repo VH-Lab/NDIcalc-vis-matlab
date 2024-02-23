@@ -43,7 +43,7 @@ classdef oridir_bayes < ndi.calculator
 				tuning_doc = tuning_doc{1};
 
 				tapp = ndi.app.stimulus.tuning_response(ndi_calculator_obj.session);
-				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
+				tuning_doc = ndi.app.stimulus.tuning_response.tuningdoc_fixcellarrays_static(tuning_doc);
 				element_id = tuning_doc.dependency_value('element_id');
 				num_trials = [];
 

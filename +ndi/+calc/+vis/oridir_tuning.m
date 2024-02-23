@@ -168,7 +168,7 @@ classdef oridir_tuning < ndi.calculator
 					stim_response_doc = stim_response_doc{1};
 				end;
                 
-				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
+				tuning_doc = ndi.app.stimulus.tuning_response.tuningdoc_fixcellarrays_static(tuning_doc);
                 
 				for i=1:numel(tuning_doc.document_properties.tuning_curve.individual_responses_real),
 					ind{i} = tuning_doc.document_properties.tuning_curve.individual_responses_real{i} + ...
