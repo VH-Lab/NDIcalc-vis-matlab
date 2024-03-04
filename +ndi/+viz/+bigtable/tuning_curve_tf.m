@@ -1,4 +1,4 @@
-function big_tf_table = tuning_curve_tf(S, element_name,element_ref, condition_name, tuning_curve_search_string, element_type);
+function big_tf_table = tuning_curve_tf(S, element_name,element_ref, condition_name, tuning_curve_search_string, element_type, acceptable_response_types);
 
 fit_doc_type = 'temporal_frequency_tuning_calc';
 fit_type_property = 'temporal_frequency_tuning';
@@ -15,6 +15,10 @@ if nargin<6,
 	element_type = 'spikes';
 end;
 
+if nargin<7,
+    acceptable_response_types = {'mean','F1'};
+end;
+
 big_tf_table = ndi.viz.bigtable.tuning_curve(S,element_name,element_ref, table_func,...
 	'tuning_curve_search_string',tuning_curve_search_string,...
 	'fit_type_property', fit_type_property,...
@@ -22,7 +26,8 @@ big_tf_table = ndi.viz.bigtable.tuning_curve(S,element_name,element_ref, table_f
 	'property_name',property_name,...
 	'x_axis_name', x_axis_name, ...
 	'test_prefix',test_prefix,...
-	'element_type',element_type);
+	'element_type',element_type,...
+    'acceptable_response_types',acceptable_response_types);
 
 for i=1:size(big_tf_table,1),
 	condition_struct(i).condition_name = condition_name;

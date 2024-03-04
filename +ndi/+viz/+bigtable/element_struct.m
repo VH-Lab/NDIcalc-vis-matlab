@@ -25,4 +25,4 @@ if isempty(e_s),
 	error(['Could not find subject for element ' estruct.element_full_name '.']);
 end;
 
-estruct.subject_name = e_s{1}.document_properties.base.name;
+estruct.subject_name = e_s{1}.document_properties.subject.local_identifier;
