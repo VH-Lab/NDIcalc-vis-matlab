@@ -1,4 +1,4 @@
-function big_sf_table = tuning_curve_sf(S, element_name,element_ref, condition_name, tuning_curve_search_string, element_type);
+function big_sf_table = tuning_curve_sf(S, element_name,element_ref, condition_name, tuning_curve_search_string, element_type, acceptable_response_types);
 
 fit_doc_type = 'spatial_frequency_tuning_calc';
 fit_type_property = 'spatial_frequency_tuning';
@@ -13,6 +13,10 @@ end;
 
 if nargin<6,
 	element_type = 'spikes';
+end;
+
+if nargin<7,
+    acceptable_response_types = {'mean','F1'};
 end;
 
 big_sf_table = ndi.viz.bigtable.tuning_curve(S,element_name,element_ref, table_func,...
