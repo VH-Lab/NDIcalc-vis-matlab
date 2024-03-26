@@ -43,3 +43,5 @@ bigtable = [struct2table(element_struct) struct2table(best_struct)];
 for k=1:numel(indiv_structs),
 	bigtable = [bigtable struct2table(indiv_structs{k})];
 end;
+
+
