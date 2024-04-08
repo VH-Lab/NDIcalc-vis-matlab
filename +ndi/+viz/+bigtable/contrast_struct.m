@@ -1,9 +1,9 @@
-function [thestruct] = dir_struct(fit_doc, stimulus_response_doc, response_type, f1f0_struct, varargin)
+function [thestruct] = contrast_struct(fit_doc, stimulus_response_doc, response_type, f1f0_struct, varargin)
 
 
 prefix = '';
-property_name = 'orientation_direction_tuning';
-x_axis_name = 'direction';
+property_name = 'contrast_tuning';
+x_axis_name = 'contrast';
 
 did.datastructures.assign(varargin{:});
 
@@ -29,7 +29,7 @@ thestruct.empirical_max_response_location = x_values(maxvalue_loc);
 [minvalue,minvalue_loc] = min(tune_info.tuning_curve.mean);
 thestruct.empirical_min_response_value = minvalue;
 thestruct.empirical_min_response_location = x_values(minvalue_loc);
-thestruct.empirical_control_individual = mean(tune_info.tuning_curve.control_individual);
+thestruct.empirical_control_individual = 0; %mean(tune_info.tuning_curve.control_individual);
 
 if ~isempty(f1f0_struct),
 	thestruct.f0_empirical = f1f0_struct.f0;
@@ -43,14 +43,15 @@ else,
 	thestruct.f1f0_2f1overf1f0 = [];
 end;
 
-fn = fieldnames(tune_info.vector);
+fn = fieldnames(tune_info.fitless);
 for i=1:numel(fn), 
-	thestruct = setfield(thestruct,['vector_' fn{i}], getfield(tune_info.vector,fn{i}));
+	thestruct = setfield(thestruct,['fitless_' fn{i}], getfield(tune_info.fitless,fn{i}));
 end;
 
 fn = fieldnames(tune_info.fit);
 for i=1:numel(fn),
-	if any(strcmp(fn{i},{'double_gaussian_parameters','double_gaussian_fit_angles','double_gaussian_fit_values'})),
+	v = getfield(tune_info.fit,fn{i});
+	if numel(v)>1 & ~ischar(v),
 		thestruct = setfield(thestruct,['fit_' fn{i}],mat2str(getfield(tune_info.fit,fn{i})));
 	else,
 		thestruct = setfield(thestruct,['fit_' fn{i}],getfield(tune_info.fit,fn{i}));
