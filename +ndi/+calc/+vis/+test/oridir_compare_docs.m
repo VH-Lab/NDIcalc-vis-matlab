@@ -10,6 +10,24 @@ function [b_, errormsg_] = oridir_compare_docs(document_expected, document_actua
 b_ = ones(1,35);
 errormsg_ = cell(1,35);
 
+ % establish scope-dependent tolerances
+switch(scope),
+    case 'standard',
+       tolerance.tuning_curve.mean = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+
+    case 'low_noise',
+       tolerance.tuning_curve.mean = 2;
+       tolerance.tuning_curve.stddev = 1e-6;
+
+    case 'high_noise',
+        tolerance.tuning_curve.mean = 5;
+        tolerance.tuning_curve.stddev = 1e-6;
+
+    otherwise,
+       error(['Unknown scope ' scope '.']);
+end;
+
 % start comparison
 
 doc_e = document_expected.document_properties.orientation_direction_tuning;
@@ -49,8 +67,8 @@ end
 %b_=[]
 %errormsg_={}
 [b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.direction, doc_a.tuning_curve.direction, 1e-6, 'direction');
-[b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, 1e-6, 'mean');
-[b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, 1e-6, 'stddev');
+[b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance.tuning_curve.mean, 'mean');
+[b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance.tuning_curve.stddev, 'stddev');
 [b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, 1e-6, 'stderr');
 [b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, 0.5, 'individual');
 [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, 0.5, 'raw individual');
