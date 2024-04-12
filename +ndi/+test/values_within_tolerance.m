@@ -51,7 +51,7 @@ tolerance_matched = max(abs(v1(:) - v2(:))) < tolerance;
 
 if ~tolerance_matched,
    b = 0;
-   msg = ['Differences in arrays of ' fieldname ' exceed the tolerance provided' ( num2str(tolerance))];
+   msg = ['Differences in arrays of ' fieldname ' exceed the tolerance provided ' ( num2str(tolerance))];
 end;
    
 end
