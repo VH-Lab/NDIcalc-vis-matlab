@@ -1,5 +1,6 @@
 function T_out = stimtunefitT2features(stimtunefit_table, tablefunc)
 
+mys = vlt.data.emptystruct;
 
 for i=1:size(stimtunefit_table,1),
 	mystruct = feval(tablefunc,...
