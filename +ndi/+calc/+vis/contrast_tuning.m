@@ -265,6 +265,154 @@ classdef contrast_tuning < ndi.calculator
 				contrast_props_doc = contrast_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 
 		end; % calculate_contrast_indexes()
+        % TESTING METHODS
 
+		function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, varargin)
+			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
+			%
+			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(CONTRAST_CALC_OBJ, ...
+			%    SCOPE, NUMBER_OF_TESTS, ...)
+			%
+			% Creates a set of documents to test ndi.calc.vis.contrast_tuning.
+			%
+			% SCOPE is the scope to be tested: 'standard', 'low_noise', 'high_noise'
+			% NUMBER_OF_TESTS indicates the number of tests to be performed.
+			%
+			% DOCS{i} is the set of helper documents that may have been created
+			%   in generating the ith test.
+			% DOC_OUTPUT{i} is the actual output of the calculator when operating on
+			%   DOCS{i} (the ith test).
+			% DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
+			%   were no noise.
+			%
+			% The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
+			% as part of the TEST function for ndi.calculator objects.
+			%
+			% This function's behavior can be modified by name/value pairs.
+			% --------------------------------------------------------------------------------
+			% | Parameter (default):     | Description:                                      |
+			% |--------------------------|---------------------------------------------------|
+			% | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
+			% |                          |   generate the "right answer"?) Use carefully.    |
+			% |--------------------------|---------------------------------------------------|
+			%
+
+				generate_expected_docs = 0;
+				vlt.data.assign(varargin{:});
+
+				docs = {};
+				doc_output = {};
+				doc_expected_output = {};
+
+				for i=1:number_of_tests,
+					docs{i} = {};
+                    S = contrast_calc_obj.session;
+					[rmax,c50,N,s] = contrast_calc_obj.generate_mock_parameters(scope, i);
+                    numsteps = 10; %sets size of x
+					contrasts = logspace(-1,0,numsteps); % generates a row vector of 'numsteps' logarithmically equally spaced points between 10^-1 and 10^0
+					
+                    r = rmax * vlt.fit.naka_rushton_func(contrasts,c50,N,s);
+                    %param_struct = struct([]); %this didn't work - need at
+                    %least one parameter?
+                    param_struct = struct('spatial_frequency',0.5);
+					independent_variable = {'contrast'};
+					x = contrasts(:); % column
+					r = r(:); % column
+					x(end+1,1) = NaN;
+					r(end+1,1) = 0;
+					
+					switch (scope),
+						case 'standard',
+							reps = 5; % need reps to test significance measures
+							noise = 0;
+						case 'low_noise',
+							reps = 10;
+							noise = 0.1;
+						case 'high_noise',
+							reps = 10;
+							noise = 1;
+						otherwise,
+							error(['Unknown scope ' scope '.']);
+					end; % switch
+
+					docs{i} = ndi.mock.fun.stimulus_response(S,...
+						param_struct, independent_variable, x, r, noise, reps);
+
+                    calcparameters = contrast_calc_obj.default_search_for_input_parameters();
+                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','contrast','');
+					calcparameters.query.query = calcparameters.query.query & ...
+						ndi.query('','depends_on','element_id',docs{i}{3}.id());
+
+                    doc_output{i} = contrast_calc_obj.run('Replace',calcparameters);
+					if numel(doc_output{i})>1,
+						error(['Generated more than one output doc when one was expected.']);
+                    elseif numel(doc_output{i})==0,
+						error(['Generated no output docs when one was expected.']);
+					end;
+					doc_output{i} = doc_output{i}{1};
+
+					if generate_expected_docs,
+						contrast_calc_obj.write_mock_expected_output(i,doc_output{i});
+					end;
+
+					doc_expected_output{i} = contrast_calc_obj.load_mock_expected_output(i);
+
+				end; % for
+		end; % generate_mock_docs()
+
+		function [b,errormsg] = compare_mock_docs(oridir_calc_obj, expected_doc, actual_doc, scope)
+			% COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
+			%
+			% [B, ERRORMSG] = COMPARE_MOCK_DOCS(CTEST_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
+			%
+			% Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
+			% the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
+			% this function computes whether the ACTUAL_DOC is within an allowed tolerance of
+			% EXPECTED_DOC.
+			%
+			% B is 1 if the differences in the documents are within the tolerance of the class.
+			% Otherwise, B is 0.
+			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
+			%
+			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
+			%
+
+				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);			
+
+				b = 1;
+				errormsg = '';
+
+		end;
+
+		function [rmax, c50, N, s, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
+			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
+			%
+			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+			%
+			% Generates a parameter set for generating a mock document with a given index value.
+			% P will be a row vector of parameters [Rsp Rp Rn theta sigma].
+			% TOTAL is the total number of mock stimuli that are available to be generated.
+			% 
+			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
+			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
+			% using MOD).
+			% 
+
+				P_(1,:) = [ 10 .45 1.5 1 ] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
+
+					% we should add more
+
+				total = size(P_,1);
+
+				actual_index = 1+mod(index-1,total);
+
+				% no dependence on scope for this stimulus type
+
+				P = P_(actual_index,:);
+                rmax = P(1);
+                c50 = P(2);
+                N = P(3);
+                s = P(4);
+		end; % generate_mock_parameters
 	end; % methods()
 end % contrast_tuning

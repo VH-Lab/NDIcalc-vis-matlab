@@ -460,7 +460,7 @@ classdef oridir_tuning < ndi.calculator
 				P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
 				P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
 				P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
-				P_(9,:) = [0 20 20 45 45] %Equal response Rp and Rn
+				P_(9,:) = [0 20 20 45 45] ; %Equal response Rp and Rn
 
 					% we should add more
 
