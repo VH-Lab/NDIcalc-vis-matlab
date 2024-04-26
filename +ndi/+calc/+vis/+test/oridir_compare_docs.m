@@ -13,6 +13,7 @@ errormsg_ = cell(1,35);
  % establish scope-dependent tolerances
 switch(scope),
     case 'standard',
+    
        tolerance.tuning_curve.direction = 1e-6;
        tolerance.tuning_curve.mean = 1e-6;
        tolerance.tuning_curve.stddev = 1e-6;
@@ -44,7 +45,9 @@ switch(scope),
        tolerance.fit.orientation_preferred_orthogonal_ratio_rectified = 0.1;
        tolerance.fit.direction_preferred_null_ratio_rectified = 0.1;
 
+
     case 'low_noise',
+    
        tolerance.tuning_curve.direction = 1e-6;
        tolerance.tuning_curve.mean = 2;
        tolerance.tuning_curve.stddev = 1e-6;
@@ -78,6 +81,7 @@ switch(scope),
 
 
     case 'high_noise',
+    
         tolerance.tuning_curve.direction = 1e-6;
         tolerance.tuning_curve.mean = 5;
         tolerance.tuning_curve.stddev = 1e-6;
@@ -109,6 +113,7 @@ switch(scope),
         tolerance.fit.direction_preferred_null_ratio = 0.1;
         tolerance.fit.orientation_preferred_orthogonal_ratio_rectified = 0.1;
         tolerance.fit.direction_preferred_null_ratio_rectified = 0.1;
+
 
     otherwise,
        error(['Unknown scope ' scope '.']);
