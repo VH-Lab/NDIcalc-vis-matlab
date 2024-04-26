@@ -13,7 +13,29 @@ errormsg_ = cell(1,35);
  % establish scope-dependent tolerances
 switch(scope),
     case 'standard',
+       tolerance.tuning_curve.direction = 1e-6;
        tolerance.tuning_curve.mean = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stderr = 1e-6;
+       tolerance.tuning_curve.individual = 0.5;
+       tolerance.tuning_curve.raw_individual = 0.5;
+       tolerance.tuning_curve.control_individual = 0.5;
+       tolerance.tuning_curve.visual_response_anova_p = 0.1;
+       tolerance.tuning_curve.across_stimuli_anova_p = 0.1;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
+       tolerance.tuning_curve.stddev = 1e-6;
        tolerance.tuning_curve.stddev = 1e-6;
 
     case 'low_noise',
@@ -66,20 +88,20 @@ end
 %   control_individual
 %b_=[]
 %errormsg_={}
-[b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.direction, doc_a.tuning_curve.direction, 1e-6, 'direction');
+[b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.direction, doc_a.tuning_curve.direction, tolerance.tuning_curve.direction, 'direction');
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance.tuning_curve.mean, 'mean');
 [b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance.tuning_curve.stddev, 'stddev');
-[b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, 1e-6, 'stderr');
-[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, 0.5, 'individual');
-[b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, 0.5, 'raw individual');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, 0.5, 'control individual');
+[b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance.tuning_curve.stderr, 'stderr');
+[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance.tuning_curve.individual, 'individual');
+[b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance.tuning_curve.raw_individual, 'raw individual');
+[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance.tuning_curve.control_individual, 'control individual');
 
 % Comparing significance
 %   visual_response_anova_p
 %   across_stimuli_anova_p
 
-[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, 0.1, 'visual response anova p');
-[b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, 0.1, 'across stimli anova p');
+[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tolerance.tuning_curve.visual_response_anova_p, 'visual response anova p');
+[b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tuning_curve.across_stimuli_anova_p, 'across stimli anova p');
 
 % Comparing vector
 %   circular_variance
