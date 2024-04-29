@@ -178,7 +178,7 @@ classdef contrast_tuning < ndi.calculator
 					h.ylabel = ylabel(['Response (' ct.properties.response_type ', ' ct.properties.response_units ')']);
 				end;
 
-				if 0, % when database is faster :-/
+				if 1, % when database is faster :-/
 					if ~h.params.suppress_title,
 						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
 						h.title = title(element.elementstring(), 'interp','none');
@@ -342,7 +342,7 @@ classdef contrast_tuning < ndi.calculator
                     calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','contrast','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-
+                    I = contrast_calc_obj.search_for_input_parameters(calcparameters);
                     doc_output{i} = contrast_calc_obj.run('Replace',calcparameters);
 					if numel(doc_output{i})>1,
 						error(['Generated more than one output doc when one was expected.']);
@@ -377,7 +377,7 @@ classdef contrast_tuning < ndi.calculator
 			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
 			%
 
-				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);			
+				[b,errormsg] = ndi.calc.vis.test.contrast_tuning_compare_docs(expected_doc,actual_doc,scope);			
 
 				b = 1;
 				errormsg = '';
@@ -398,7 +398,7 @@ classdef contrast_tuning < ndi.calculator
 			% using MOD).
 			% 
 
-				P_(1,:) = [ 10 .45 1.5 1 ] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
+				P_(1,:) = [ 10 .45 1.5 2 ] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
 
 					% we should add more
 
