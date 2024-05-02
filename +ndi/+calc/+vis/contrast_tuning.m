@@ -398,8 +398,15 @@ classdef contrast_tuning < ndi.calculator
 			% using MOD).
 			% 
 
-				P_(1,:) = [ 10 .45 1.5 2 ] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
-
+				P_(1,:) = [ 10 .45 1.5 1 ] ; % saturated and conventional forms should both fit the data equally well
+                P_(2,:) = [ 10 .45 1.5 2 ] ; % supersaturated
+                P_(3,:) = [ 10 .45 1.5 .5 ] ; % unsaturated
+                P_(4,:) = [ 20 .45 1.5 2 ] ; % supersaturated and higher firing rate
+                P_(5,:) = [ 5 .45 1.5 2 ] ; % supersaturated and lower firing rate
+                P_(6,:) = [ 10 .45 1 2 ] ; % lower N
+                P_(7,:) = [ 10 .45 2 2 ] ; % higher N
+                P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
+                P_(9,:) = [ 10 .15 1.5 2 ] ; % lower c50
 					% we should add more
 
 				total = size(P_,1);
