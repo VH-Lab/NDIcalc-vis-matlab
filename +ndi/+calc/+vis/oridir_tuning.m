@@ -427,15 +427,11 @@ classdef oridir_tuning < ndi.calculator
 			% B is 1 if the differences in the documents are within the tolerance of the class.
 			% Otherwise, B is 0.
 			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
-			%
-			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
-			%
 
-				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);			
 
-				b = 1;
-				errormsg = '';
-
+				[b_,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);
+    			b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
+                
 		end;
 
 		function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
