@@ -35,8 +35,8 @@ thestruct.f1_empirical = f1f0_struct.f1;
 thestruct.f1f0_ratio = f1f0_struct.f1f0_ratio;
 thestruct.f1f0_2f1overf1f0 = f1f0_struct.f1f0_2f1overf1f0;
 
-thestruct.empirical_low_pass_index = tune_info.tuning_curve.mean(minx_loc)/maxvalue;
-thestruct.empirical_high_pass_index = tune_info.tuning_curve.mean(maxx_loc)/maxvalue;
+thestruct.empirical_low_pass_index = rectify(tune_info.tuning_curve.mean(minx_loc))/rectify(maxvalue);
+thestruct.empirical_high_pass_index = rectify(tune_info.tuning_curve.mean(maxx_loc))/rectify(maxvalue);
 
 thestruct.fitless_L50 = tune_info.fitless.L50;
 thestruct.fitless_Pref = tune_info.fitless.Pref;
