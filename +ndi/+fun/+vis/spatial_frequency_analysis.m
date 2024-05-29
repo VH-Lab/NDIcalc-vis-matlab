@@ -53,19 +53,15 @@ function [sf_props]=spatial_frequency_analysis(resp)
 
 [mf,preftf]=max(resp.curve(2,:));
 preftf = resp.curve(1,preftf(1));
-[lowv, maxv, highv] = compute_halfwidth(resp.curve(1,:),resp.curve(2,:));
+[lowv, maxv, highv] = ndi.fun.vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
 
 [sf_props.fitless.L50,sf_props.fitless.Pref,sf_props.fitless.H50] = ...
-	ndi.fun.vis.compute_halfwidth(resp.curve(1,:),resp.curve(2,:));
+	ndi.fun.vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
 
  % STEP 2: DOG fit
 rcurve = resp.curve;
 
-search_options=optimset('fminsearch');
-search_options.TolFun=1e-3;
-search_options.TolX=1e-3;
-%search_options.MaxFunEvals='300*numberOfVariables';
-search_options.Display='off';
+[dog_par,norm_error] = ndi.fun.vis.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
 
 norm_error_overall = Inf;
 dog_par_overall = [];
@@ -73,14 +69,14 @@ dog_par_overall = [];
 for jj=1:10,
 	r0 = 0; re = mf; ri = mf; se = maxv; si = 5+5*randn;
     %forcing a better fit by manually adding (100,0), and (120,0)
-    dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
-		[rcurve(1,:) 100 120],[rcurve(2,:) 0 0], ...
-		[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
-	% dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
-	% 	[rcurve(1,:)],[rcurve(2,:)], ...
-	% 	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
+    %dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
+	%	[rcurve(1,:) 100 120],[rcurve(2,:) 0 0], ...
+	%	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
+	 dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
+	 	[rcurve(1,:)],[rcurve(2,:)], ...
+	 	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
     %forcing a better fit by manually adding (100,0), and (120,0)
-	norm_error=dog_error(dog_par, [rcurve(1,:) 100 120],[rcurve(2,:) 0 0 ]);
+	%norm_error=dog_error(dog_par, [rcurve(1,:) 100 120],[rcurve(2,:) 0 0 ]);
     norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 
 	if norm_error<norm_error_overall,
@@ -90,6 +86,7 @@ end;
 
 norm_error = norm_error_overall;
 dog_par = dog_par_overall;
+dog_par = [0 dog_par]; % add in the 0 to comply with old dog
 
 sfrange_interp=logspace( log10(min( min(rcurve(1,:)),0.01)),log10(120),100);
 if isempty(dog_par),
@@ -98,13 +95,11 @@ if isempty(dog_par),
 	response=NaN*sfrange_interp;
 else,
 	%forcing a better fit by manually adding (0,0), (100,0), and (120,0)
-    norm_error=dog_error(dog_par, [0 rcurve(1,:) 100 120 ],[0 rcurve(2,:) 0 0]);
-    %norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
+  norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
 	response=dog(dog_par',sfrange_interp);
 end;
 
-	
 [lowdog, prefdog, highdog] = ndi.fun.vis.compute_halfwidth(sfrange_interp,response);
 
 fit_dog.parameters = dog_par;
@@ -120,8 +115,8 @@ sf_props.fit_dog = fit_dog;
 
 fitx = sfrange_interp;
 %forcing a better fit by manually adding (0,0), (100,0), and (120,0)
-fity = interp1([0 rcurve(1,:) 100 120],[0 rcurve(2,:) 0 0], fitx,'spline');
-%fity = interp1([rcurve(1,:)],[rcurve(2,:)], fitx,'spline');
+%fity = interp1([0 rcurve(1,:) 100 120],[0 rcurve(2,:) 0 0], fitx,'spline');
+fity = interp1([rcurve(1,:)],[rcurve(2,:) ], fitx,'spline');
 [lowspline, prefspline, highspline] = ndi.fun.vis.compute_halfwidth(fitx,fity);
 
 fit_spline.values = fitx;
@@ -147,11 +142,8 @@ end
 e = 0;
 e_range = [ 0 0 ];
 
-%forcing a better fit by manually adding (0,0), (100,0), and (120,0)
-%[gausslog_par,gof,gausslog_fitcurve] = vlt.fit.gausslogfit([0 rcurve(1,:) 100 120]',[0 rcurve(2,:) 0 0]',...
-%	'a_hint',a,'a_range',a_range,'b_hint',b,'b_range',b_range,'c_hint',c,'d_hint',d,'e_hint',e,'e_range',e_range);
 
-[gausslog_par,gof,gausslog_fitcurve] = vlt.fit.gausslogfit(rcurve(1,:)',rcurve(2,:)',...
+[gausslog_par,gof,gausslog_fitcurve] = vlt.fit.gausslogfit([rcurve(1,:) ]',[rcurve(2,:) ]',...
 	'a_hint',a,'a_range',a_range,'b_hint',b,'b_range',b_range,'c_hint',c,'d_hint',d,'e_hint',e,'e_range',e_range);
 
 [low_gausslog,pref_gausslog,high_gausslog] = ndi.fun.vis.compute_halfwidth(gausslog_fitcurve(1,:),gausslog_fitcurve(2,:));

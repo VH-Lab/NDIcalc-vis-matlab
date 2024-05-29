@@ -1,29 +1,29 @@
-classdef oridir_bayes < ndi.calculator
+classdef contrast_tuning_bayes < ndi.calculator
 
 	methods
-		function oridir_bayes_obj = oridir_bayes(session)
-			% oridir_bayes - ndi.calculator object that
+		function contrast_tuning_bayes_obj = contrast_tuning_bayes(session)
+			% contrast_tuning_bayes - ndi.calculator object that
 			% calculates orientation and direction tuning curves from spike
 			% elements
 			%
-			% ORIDIRTUNING_OBJ = ORIDIRTUNING(SESSION)
+			% CONTASTTUNINGBAYES_OBJ = CONTRAST_TUNING_BAYES(SESSION)
 			%
-			% Creates a oridir_bayes ndi.calculator object
+			% Creates a contrast_tuning_bayes ndi.calculator object
 			%
 				ndi.globals;
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
-				oridir_bayes_obj = oridir_bayes_obj@ndi.calculator(session,'oridir_bayes',...
-					fullfile(parparparpar,'ndi_common','database_documents','calc','oridir_bayes_calc.json'));
-		end; % oridir_bayes() creator
+				contrast_tuning_bayes_obj = contrast_tuning_bayes_obj@ndi.calculator(session,'contrast_tuning_bayes',...
+					fullfile(parparparpar,'ndi_common','database_documents','calc','contrast_tuning_bayes_calc.json'));
+		end; % contrast_tuning_bayes() creator
 
 		function doc = calculate(ndi_calculator_obj, parameters)
 			% CALCULATE - perform the calculator for
-			% ndi.calc.oridir_bayes
+			% ndi.calc.contrast_tuning_bayes
 			%
 			% DOC = CALCULATE(NDI_CALCULATION_OBJ, PARAMETERS)
 			%
-			% Creates a oridir_bayes_direction_tuning_calc document given input parameters.
+			% Creates a contrast_tuning_bayes_direction_tuning_calc document given input parameters.
 			
 				% Step 1. Check inputs
 				if ~isfield(parameters,'input_parameters'),
@@ -47,7 +47,6 @@ classdef oridir_bayes < ndi.calculator
 				element_id = tuning_doc.dependency_value('element_id');
 				num_trials = [];
 
-
 				for i=1:numel(tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real),
 					ind{i} = tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real{i} + ...
 						sqrt(-1)*tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_imaginary{i};
@@ -68,21 +67,21 @@ classdef oridir_bayes < ndi.calculator
 					num_trials(i) = numel(ind{i});
 				end;
 
-				data.num_trials = num_trials(:);
-				data.mean_responses = response_mean(:);
-				data.angles = tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:);
+				response_struct.num_trials = num_trials(:);
+				response_struct.mean_responses = response_mean(:);
+				response_struct.contrast = tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:);
 						
-				% Step 3. Calculate oridir_bayes
+				% Step 3. Calculate contrast_tuning_bayes
 
-				[output_struct] = vis.bayes.double_gaussian.grid_proportional_noise(parameters.input_parameters.grid,...
-					data,parameters.input_parameters.noise_model);
+				[output_struct] = vis.bayes.naka_rushton.grid_proportional_noise(parameters.input_parameters.grid,...
+					response_struct,parameters.input_parameters.noise_model);
 
-				doc = ndi.document('orientation_direction_bayes','orientation_direction_bayes',output_struct);
+				doc = ndi.document('contrast_tuning_bayes','contrast_tuning_bayes',output_struct);
 
 				% Step 4. Check if doc exists
 				if ~isempty(doc), 
 					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},...
-						'oridir_bayes_calc',parameters) + doc;
+						'contrast_tuning_bayes_calc',parameters) + doc;
 					doc = doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 					doc = doc.set_dependency_value('element_id',element_id);
 				end;
@@ -97,15 +96,10 @@ classdef oridir_bayes < ndi.calculator
 			% to the calculator.
 			%
 				% search for stimulus_tuningcurve_id
-				grid = struct('Rp',logspace(log10(.5),log10(150),30), ...
-					'Op',0:5:359, ...
-					'Alpha',linspace(0,1,20), ...
-					'Sig',logspace(log10(5),log10(90),10), ...
-					'Rsp',logspace(log10(0.01),log10(30),10),...
-					'di_bins', 0:0.05:1.0, ...
-					'oi_bins', 0:0.05:1.0, ...
-					'dir_cv_bins', 0:0.05:1.0,...
-					'cv_bins', 0:0.05:1.0);
+				grid = struct('r100', linspace(0,150,150), ...
+					'c50',0.1:0.05:1, ...
+					'n',linspace(0.5,4,40), ...
+					's',linspace(1,2,20));
 				parameters.input_parameters.grid = grid;
 				parameters.input_parameters.noise_model = [ 0.25 0.73 ];
 				parameters.depends_on = vlt.data.emptystruct('name','value');
@@ -139,9 +133,8 @@ classdef oridir_bayes < ndi.calculator
 			%
 			%         
 				q1 = ndi.query('','isa','stimulus_tuningcurve','');
-				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','irection');
-				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','eal');
-				q_total = q1 & q2 & q3;
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','contrast');
+				q_total = q1 & q2;
 			
 				query = struct('name','stimulus_tuningcurve_id','query',q_total);
 		
@@ -172,7 +165,7 @@ classdef oridir_bayes < ndi.calculator
 					case lower('stimulus_tuningcurve_id'),
 						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
-						b = (numel(d.document_properties.independent_variable_label) ==2);
+						b = (numel(d.document_properties.independent_variable_label) ==1);
 					end;
 		end; % is_valid_dependency_input()
     
@@ -187,8 +180,10 @@ classdef oridir_bayes < ndi.calculator
 			%
 			% This function takes additional input arguments as name/value pairs.
 			% See ndi.calculator.plot_parameters for a description of those parameters.
+			%
+			% This calculator plots in the current figure and makes several panels.
 
-				plot_tuning_curve_log = 0;
+				plot_tuning_curve_log = 1;
 
 				vlt.data.assign(varargin{:});
 
@@ -202,38 +197,31 @@ classdef oridir_bayes < ndi.calculator
 					error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
 				end;
            
-				ot = doc.document_properties.orientation_direction_tuning;  % set variable for less typing
-            
-				% Set up plot
-				ha = vlt.plot.myerrorbar(ot.tuning_curve.direction, ...
-					ot.tuning_curve.mean, ...
-					ot.tuning_curve.stderr, ...
-					ot.tuning_curve.stderr);
-                
-				delete(ha(2));
-				set(ha(1), 'color', [0 0 0]);
-				h.objects(end+1) = ha(1);
+				vis.bayes.naka_rushton.plot(doc.document_properties.contrast_tuning_bayes);
                 
 				% Plot responses
-				hold on;
-				h_baseline = plot([0 360], [0 0], 'k--');
-				h_fitline = plot(ot.fit.double_gaussian_fit_angles,...
-					ot.fit.double_gaussian_fit_values,'k-');
-				h.objects(end+1) = h_baseline;
-				h.objects(end+1) = h_fitline;
+				%hold on;
+				%h_baseline = plot([0 360], [0 0], 'k--');
+				%h_fitline = plot(ot.fit.double_gaussian_fit_angles,...
+				%	ot.fit.double_gaussian_fit_values,'k-');
+				%h.objects(end+1) = h_baseline;
+				%h.objects(end+1) = h_fitline;
 			
 				% Set labels
-				if ~h.params.suppress_x_label,
-					h.xlabel = xlabel('Direction (\circ)');
-				end;
-				if ~h.params.suppress_y_label,
-					h.ylabel = ylabel(ot.properties.response_units);
-				end;
+				%if ~h.params.suppress_x_label,
+				%	h.xlabel = xlabel('Direction (\circ)');
+				%end;
+				%if ~h.params.suppress_y_label,
+				%	h.ylabel = ylabel(ot.properties.response_units);
+				%end;
 
 				if 1, % when database is faster :-/ it is faster
 					if ~h.params.suppress_title,
+						subplot(3,3,1);
 						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
-						title_str = [element.elementstring() '.' element.type '; ' ot.properties.response_type];
+						tc_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('stimulus_tuningcurve_id')));
+						response_type = ndi.fun.stimulus.tuning_curve_to_response_type(ndi_calculator_obj.session, tc_doc{1});
+						title_str = [element.elementstring() '.' element.type '; ' response_type];
 
 						if plot_tuning_curve_log,
 							log_str = ndi.fun.calc.stimulus_tuningcurve_log(ndi_calculator_obj.session,doc);
@@ -247,4 +235,4 @@ classdef oridir_bayes < ndi.calculator
 
 	end; % methods()
 			
-end % oridir_bayes
+end % contrast_tuning_bayes

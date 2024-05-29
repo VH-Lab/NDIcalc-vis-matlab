@@ -169,12 +169,14 @@ classdef spatial_frequency_tuning < ndi.calculator
 					linestyle = '-';
 				end;
 
-				h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
-				h.objects = cat(2,h.objects,h_fit);
+					% the spline fits are terrible
+				%h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
+				%h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
-				h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
-				h.objects = cat(2,h.objects,h_fit);
+					% the gauss log fits are terrible
+				%h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
+				%h.objects = cat(2,h.objects,h_fit);
 
 				if ~h.params.suppress_x_label,
 					h.xlabel = xlabel('Spatial frequency');
@@ -217,6 +219,8 @@ classdef spatial_frequency_tuning < ndi.calculator
 
 				resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
 
+				stc = tuning_doc.document_properties.stimulus_tuningcurve;
+
 				tuning_curve = struct(...
 					'spatial_frequency', ...
 						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
@@ -224,8 +228,11 @@ classdef spatial_frequency_tuning < ndi.calculator
 					'stddev', resp.curve(3,:), ...
 					'stderr', resp.curve(4,:), ...
 					'individual', {resp.ind}, ...
-					'control_stddev', resp.blankresp(2),...
-					'control_stderr', resp.blankresp(3));
+					'control_mean', stc.control_response_mean,...
+					'control_stddev', stc.control_response_stddev,...
+					'control_stderr', stc.control_response_stderr,...
+					'control_mean_stddev', resp.blankresp(2),...
+					'control_mean_stderr', resp.blankresp(3));
 
 				[anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
 
