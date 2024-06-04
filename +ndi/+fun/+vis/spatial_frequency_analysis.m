@@ -47,6 +47,14 @@ function [sf_props]=spatial_frequency_analysis(resp)
 %  'SF spline Low'            |   Low cut-off, as measured with spline
 %  'SF spline High'           |   High cut-off, as measured with spline
 %
+%  Movshon et al 2005 fit: 
+%  'SF MV params'             |   [k fc fh B]
+%  'SF MV Fit'                |   First row has SF values, 2nd has responses
+%  'SF MV R2'                 |   R2 error.
+%  'SF MV L50'                |   Low cut-off
+%  'SF MV Pref'               |   SF Preference
+%  'SF MV H50'                |   High cut-off
+%
 
 
   % STEP 1: empirical parameters (fitless)
@@ -86,6 +94,19 @@ fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
 
 sf_props.fit_dog = fit_dog;
+
+[MV_P,mvfit,mv_mse,MV_R2] = vis.frequency.movshon2005_fit(rcurve(1,:)', rcurve(2,:)');
+
+fit_movshon.parameters = MV_P;
+fit_movshon.values = sfrange_interp(:);
+fit_movshon.fit = vis.frequency.movshon2005_func(sfrange_interp(:),MV_P);
+[lowmov, prefmov, highmov] = ndi.fun.vis.compute_halfwidth(sfrange_interp,fit_movshon.fit);
+fit_movshon.L50 = lowmov;
+fit_movshon.Pref = prefmov;
+fit_movshon.H50 = highmov;
+fit_movshon.R2 = MV_R2;
+
+sf_props.fit_movshon = fit_movshon;
 
  % STEP 3: spline fitting
 

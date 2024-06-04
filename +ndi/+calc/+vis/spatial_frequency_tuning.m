@@ -174,6 +174,8 @@ classdef spatial_frequency_tuning < ndi.calculator
 				%h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
 				h.objects = cat(2,h.objects,h_fit);
+				h_fit = plot(sft.fit_movshon.values,sft.fit_movshon.fit,['b' linestyle],'linewidth',2);
+				h.objects = cat(2,h.objects,h_fit);
 					% the gauss log fits are terrible
 				%h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
 				%h.objects = cat(2,h.objects,h_fit);
@@ -239,15 +241,16 @@ classdef spatial_frequency_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				tf_props = ndi.fun.vis.spatial_frequency_analysis(resp);
+				sf_props = ndi.fun.vis.spatial_frequency_analysis(resp);
 
 				spatial_frequency_tuning.properties = properties;
 				spatial_frequency_tuning.tuning_curve = tuning_curve;
 				spatial_frequency_tuning.significance = significance;
-				spatial_frequency_tuning.fitless = tf_props.fitless;
-				spatial_frequency_tuning.fit_dog = tf_props.fit_dog;
-				spatial_frequency_tuning.fit_spline = tf_props.fit_spline;
-				spatial_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
+				spatial_frequency_tuning.fitless = sf_props.fitless;
+				spatial_frequency_tuning.fit_dog = sf_props.fit_dog;
+				spatial_frequency_tuning.fit_movshon = sf_props.fit_movshon;
+				spatial_frequency_tuning.fit_spline = sf_props.fit_spline;
+				spatial_frequency_tuning.fit_gausslog = sf_props.fit_gausslog;
 
 				spatial_frequency_props_doc = ndi.document('spatial_frequency_tuning',...
 					'spatial_frequency_tuning',spatial_frequency_tuning);

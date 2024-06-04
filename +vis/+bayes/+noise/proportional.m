@@ -37,5 +37,5 @@ end;
 offset = noise_model(1);
 slope = noise_model(2);
 
-sigma = (10.^offset + responses.^slope)./sqrt(num_trials);
+sigma = (10.^offset * responses.^slope)./sqrt(num_trials);
 

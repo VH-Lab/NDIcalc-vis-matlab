@@ -40,18 +40,34 @@ function [p,rfit,mse,rsquared] = movshon2005_fit(f, r)
 %      % the second fit 
 %   plot(freq_points,vis.frequency.movshon2005_func(freq_points,P2),'b-'); 
 %   box off;
-%   ylabel('Response');
-%   xlabel('Temporal Frequency');
+%   ylabel('Response (ips)');
+%   xlabel('Temporal Frequency (Hz)');
 %   set(gca,'xscale','log');
 %
 
 myfun = @(P,x) vis.frequency.movshon2005_func(x,P);
 
 startPoint = [max(r);median(f);median(f);1];
+startPoint(:,2) = [max(r); 0; max(f); 1];
+startPoint(:,3) = [max(r); max(f); 0; 1];
+startPoint(:,4) = [max(r); median(f); median(f)/2; 1];
+startPoint(:,5) = [max(r); median(f); 2*median(f); 1];
+
 lowerB = [0; min(f)/10; min(f)/10; 1/10000];
 upperB = [2 * max(r); max(f)*10; max(f)*10; 10000];
 
-P_best = lsqcurvefit(myfun, startPoint, f, r, lowerB, upperB);
+best_err = Inf;
+P_best = startPoint(:,1);
+
+opts = optimset('Display','off');
+
+for i=1:size(startPoint,1),
+	[P_here,err_here] = lsqcurvefit(myfun, startPoint(:,i), f, r, lowerB, upperB,opts);
+	if err_here < best_err,
+		best_err = err_here;
+		P_best = P_here;
+	end;
+end;
 
 rfit = vis.frequency.movshon2005_func(f,P_best);
 

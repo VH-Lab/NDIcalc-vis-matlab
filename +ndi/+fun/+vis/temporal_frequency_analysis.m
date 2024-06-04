@@ -87,6 +87,19 @@ fit_dog.H50 = highdog;
 
 tf_props.fit_dog = fit_dog;
 
+[MV_P,mvfit,mv_mse,MV_R2] = vis.frequency.movshon2005_fit(rcurve(1,:)', rcurve(2,:)');
+
+fit_movshon.parameters = MV_P;
+fit_movshon.values = tfrange_interp(:);
+fit_movshon.fit = vis.frequency.movshon2005_func(tfrange_interp(:),MV_P);
+[lowmov, prefmov, highmov] = ndi.fun.vis.compute_halfwidth(tfrange_interp(:),fit_movshon.fit(:));
+fit_movshon.L50 = lowmov;
+fit_movshon.Pref = prefmov;
+fit_movshon.H50 = highmov;
+fit_movshon.R2 = MV_R2;
+
+tf_props.fit_movshon = fit_movshon;
+
  % STEP 3: spline fitting
 
 fitx = tfrange_interp;

@@ -50,6 +50,15 @@
 			"Pref":					0,
 			"H50":					0
 		},
+                "fit_movshon": {
+                        "parameters":                   [0,0,0,0],
+                        "values":                               0,
+                        "fit":                                  0,
+                        "R2":                                   0,
+                        "L50":                                  0,
+                        "Pref":                                 0,
+                        "H50":                                  0
+                },
 		"fit_spline": {
 			"values":		0,
 			"fit":			0,

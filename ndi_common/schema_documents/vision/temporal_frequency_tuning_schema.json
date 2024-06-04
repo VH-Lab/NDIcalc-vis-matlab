@@ -47,6 +47,14 @@
 			"queryable": 1,
 			"documentation": "The difference-of-gaussian fit structure."
 		},
+                {
+                        "name": "fit_movshon",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "The Movshon 2005 fit structure."
+                },
 		{
 			"name": "fit_spline",
 			"type": "structure",
