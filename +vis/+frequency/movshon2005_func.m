@@ -12,10 +12,13 @@ function r = movshon2005_func(f, P)
 %   fc - P(2) - characteristic temporal frequency
 %   fh - P(3) - corner frequency of the low-frequency limb
 %   B - P(4) - slope of the low-frequency limb
+%
+% If P has 5 parameters, then there is a constant term C. Otherwise C is 0.
+%   C - P(5)
 % 
 % The function has the form:
 %
-%    R(f) = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B)
+%    R(f) = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B) + C
 %
 %
 % Example:
@@ -39,7 +42,13 @@ k = P(1);
 fc = P(2);
 fh = P(3);
 B = P(4);
+if numel(P)>4,
+	C = P(5);
+else,
+	C = 0;
+end;
 
-r = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B);
+r = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B) + C;
 
 r = r(:);
+

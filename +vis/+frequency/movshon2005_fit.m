@@ -1,13 +1,14 @@
-function [p,rfit,mse,rsquared] = movshon2005_fit(f, r)
+function [p,rfit,mse,rsquared] = movshon2005_fit(f, r, useC)
 % MOVSHON2005_FIT - fit a Movshen et al. 2005 frequency response function
 %
-% [P,RFIT,MSE,RSQUARED] = MOVSHON2005_FUNC(F, R)
+% [P,RFIT,MSE,RSQUARED] = MOVSHON2005_FUNC(F, R, USEC)
 %
 % Computes a least squares fit of responses (R) to frequencies (F) according to
 % Movshon et al. 2005, J Neurosci 25:2712-2722.
 %
 % F is a vector of frequencies over which to make the calculation.
-% R is a corresponding vector of responses for each value of F
+% R is a corresponding vector of responses for each value of F.
+% If USEC is present and is 1, then P will also contain the constant.
 % Outpus:
 % P is a vector with the parameters where
 %   k - P(1) - scaling factor
@@ -45,6 +46,10 @@ function [p,rfit,mse,rsquared] = movshon2005_fit(f, r)
 %   set(gca,'xscale','log');
 %
 
+if nargin<3,
+	useC = 0;
+end;
+
 myfun = @(P,x) vis.frequency.movshon2005_func(x,P);
 
 startPoint = [max(r);median(f);median(f);1];
@@ -55,6 +60,12 @@ startPoint(:,5) = [max(r); median(f); 2*median(f); 1];
 
 lowerB = [0; min(f)/10; min(f)/10; 1/10000];
 upperB = [2 * max(r); max(f)*10; max(f)*10; 10000];
+
+if useC,
+	startPoint(5,:) = 0;
+	lowerB(5) = -2*max(abs(r));
+	upperB(5) = 0;
+end;
 
 best_err = Inf;
 P_best = startPoint(:,1);
