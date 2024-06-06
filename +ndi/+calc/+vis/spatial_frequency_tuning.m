@@ -176,6 +176,8 @@ classdef spatial_frequency_tuning < ndi.calculator
 				h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(sft.fit_movshon.values,sft.fit_movshon.fit,['b' linestyle],'linewidth',2);
 				h.objects = cat(2,h.objects,h_fit);
+				h_fit = plot(sft.fit_movshon_c.values,sft.fit_movshon_c.fit,['g' linestyle],'linewidth',1.5);
+				h.objects = cat(2,h.objects,h_fit);
 					% the gauss log fits are terrible
 				%h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
 				%h.objects = cat(2,h.objects,h_fit);
@@ -249,6 +251,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 				spatial_frequency_tuning.fitless = sf_props.fitless;
 				spatial_frequency_tuning.fit_dog = sf_props.fit_dog;
 				spatial_frequency_tuning.fit_movshon = sf_props.fit_movshon;
+				spatial_frequency_tuning.fit_movshon_c = sf_props.fit_movshon_c;
 				spatial_frequency_tuning.fit_spline = sf_props.fit_spline;
 				spatial_frequency_tuning.fit_gausslog = sf_props.fit_gausslog;
 

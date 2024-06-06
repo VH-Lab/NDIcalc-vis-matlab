@@ -108,6 +108,20 @@ fit_movshon.R2 = MV_R2;
 
 sf_props.fit_movshon = fit_movshon;
 
+[MV_P_c,mvfit_c,mv_mse_c,MV_R2_c] = vis.frequency.movshon2005_fit(rcurve(1,:)', rcurve(2,:)',1);
+
+fit_movshon_c.parameters = MV_P_c;
+fit_movshon_c.values = sfrange_interp(:);
+fit_movshon_c.fit = vis.frequency.movshon2005_func(sfrange_interp(:),MV_P_c);
+[lowmov_c, prefmov_c, highmov_c] = ndi.fun.vis.compute_halfwidth(sfrange_interp,fit_movshon_c.fit);
+fit_movshon_c.L50 = lowmov_c;
+fit_movshon_c.Pref = prefmov_c;
+fit_movshon_c.H50 = highmov_c;
+fit_movshon_c.R2 = MV_R2_c;
+
+sf_props.fit_movshon_c = fit_movshon_c;
+
+
  % STEP 3: spline fitting
 
 fitx = sfrange_interp;

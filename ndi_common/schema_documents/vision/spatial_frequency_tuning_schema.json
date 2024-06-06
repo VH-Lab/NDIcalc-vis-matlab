@@ -56,6 +56,14 @@
 			"documentation": "The Movshon 2005 fit structure."
 		},
 		{
+			"name": "fit_movshon_c",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The Movshon 2005 fit structure with a constant term."
+		},
+		{
 			"name": "fit_spline",
 			"type": "structure",
 			"default_value": "",

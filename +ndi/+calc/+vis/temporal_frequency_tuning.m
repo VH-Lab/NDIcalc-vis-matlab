@@ -179,6 +179,8 @@ classdef temporal_frequency_tuning < ndi.calculator
 				h.objects = cat(2,h.objects,h_fit);
 				h_fit = plot(tft.fit_movshon.values,tft.fit_movshon.fit,['b' linestyle],'linewidth',2);
 				h.objects = cat(2,h.objects,h_fit);
+				h_fit = plot(tft.fit_movshon_c.values,tft.fit_movshon_c.fit,['g' linestyle],'linewidth',2);
+				h.objects = cat(2,h.objects,h_fit);
 				%h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
 				%h.objects = cat(2,h.objects,h_fit);
 
@@ -253,6 +255,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 				temporal_frequency_tuning.fitless = tf_props.fitless;
 				temporal_frequency_tuning.fit_dog = tf_props.fit_dog;
 				temporal_frequency_tuning.fit_movshon = tf_props.fit_movshon;
+				temporal_frequency_tuning.fit_movshon_c = tf_props.fit_movshon_c;
 				temporal_frequency_tuning.fit_spline = tf_props.fit_spline;
 				temporal_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
 
