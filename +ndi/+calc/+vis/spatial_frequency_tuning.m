@@ -134,9 +134,19 @@ classdef spatial_frequency_tuning < ndi.calculator
 			%
                         % Handles to the figure, the axes, and any objects created are returned in H.
                         %
-                        % This function takes additional input arguments as name/value pairs.
-                        % See ndi.calculator.plot_parameters for a description of those parameters.
+			% This function takes additional input arguments as name/value pairs.
+			% See ndi.calculator.plot_parameters for a description of many parameters.
+			% Also takes:
+			% |----------------------|-------------------------------------------------------|
+			% | Parameter (default)  | Description                                           |
+			% |----------------------|-------------------------------------------------------|
+			% | useAbsolute (0)      | Plot the absolute value of the responses and fits of  | 
+			% |                      |   absolute value.                                     |
+			% |----------------------|-------------------------------------------------------|
+			%  
 
+				useAbsolute = 0;
+				vlt.data.assign(varargin{:});
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
 
@@ -156,8 +166,15 @@ classdef spatial_frequency_tuning < ndi.calculator
 				h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
 				h.objects(end+1) = h_baseline;
 				[v,sortorder] = sort(tc.spatial_frequency);
+
+				myfun = @(x) x;
+				if useAbsolute,
+					myfun = @(x) abs(x);
+				end
+
 				h_errorbar = errorbar(tc.spatial_frequency(sortorder(:)),...
-					tc.mean(sortorder(:)),tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
+					myfun(tc.mean(sortorder(:))),...
+					tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
 				set(h_errorbar,'color',[0 0 0],'linewidth',1,'linestyle','none');
 				set(gca,'xscale','log');
 				h.objects = cat(2,h.objects,h_errorbar);
@@ -168,6 +185,11 @@ classdef spatial_frequency_tuning < ndi.calculator
 				if sft.significance.visual_response_anova_p<0.05,
 					linestyle = '-';
 				end;
+				sft_o = sft;
+
+				if useAbsolute,
+					sft = doc.document_properties.spatial_frequency_tuning.abs;
+				end
 
 					% the spline fits are terrible
 				%h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
@@ -186,7 +208,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 					h.xlabel = xlabel('Spatial frequency');
 				end;
 				if ~h.params.suppress_y_label,
-					h.ylabel = ylabel(['Response (' sft.properties.response_type ', ' sft.properties.response_units ')']);
+					h.ylabel = ylabel(['Response (' sft_o.properties.response_type ', ' sft_o.properties.response_units ')']);
 				end;
 
 				if 0, % when database is faster :-/
@@ -254,6 +276,17 @@ classdef spatial_frequency_tuning < ndi.calculator
 				spatial_frequency_tuning.fit_movshon_c = sf_props.fit_movshon_c;
 				spatial_frequency_tuning.fit_spline = sf_props.fit_spline;
 				spatial_frequency_tuning.fit_gausslog = sf_props.fit_gausslog;
+
+				resp_abs = resp;
+				resp_abs.curve(2,:) = abs(resp_abs.curve(2,:));
+				abs_sf_props = ndi.fun.vis.spatial_frequency_analysis(resp_abs);
+
+				spatial_frequency_tuning.abs.fitless = abs_sf_props.fitless;
+				spatial_frequency_tuning.abs.fit_dog = abs_sf_props.fit_dog;
+				spatial_frequency_tuning.abs.fit_movshon = abs_sf_props.fit_movshon;
+				spatial_frequency_tuning.abs.fit_movshon_c = abs_sf_props.fit_movshon_c;
+				spatial_frequency_tuning.abs.fit_spline = abs_sf_props.fit_spline;
+				spatial_frequency_tuning.abs.fit_gausslog = abs_sf_props.fit_gausslog;
 
 				spatial_frequency_props_doc = ndi.document('spatial_frequency_tuning',...
 					'spatial_frequency_tuning',spatial_frequency_tuning);

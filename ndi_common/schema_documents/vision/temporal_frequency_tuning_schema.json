@@ -78,6 +78,15 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "The gaussian log fit structure."
-		}
+		},
+                {
+                        "name": "abs",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "Fits with absolute values."
+                }
+
 	]
 }
