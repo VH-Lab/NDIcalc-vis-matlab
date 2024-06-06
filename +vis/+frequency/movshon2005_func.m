@@ -48,7 +48,7 @@ else,
 	C = 0;
 end;
 
-r = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B) + C;
+r = C + k * exp(-(f./fc).^2) ./ (1+(fh./f).^B);
 
 r = r(:);
 
