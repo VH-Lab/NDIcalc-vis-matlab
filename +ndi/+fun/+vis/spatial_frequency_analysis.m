@@ -66,6 +66,15 @@ preftf = resp.curve(1,preftf(1));
 [sf_props.fitless.L50,sf_props.fitless.Pref,sf_props.fitless.H50] = ...
 	ndi.fun.vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
 
+sf_props.fitless.bandwidth = vis.frequency.bandwidth(sf_props.fitless.L50, sf_props.fitless.H50);
+[minValue,minLoc] = min(resp.curve(2,:));
+[maxValue,maxLoc] = max(resp.curve(2,:));
+[minFValue,minFLoc] = min(resp.curve(1,:));
+[maxFValue,maxFLoc] = max(resp.curve(1,:));
+
+sf_props.fitless.low_pass_index = rectify(resp.curve(2,minFLoc))/rectify(maxValue);
+sf_props.fitless.high_pass_index = rectify(resp.curve(2,maxFLoc))/rectify(maxValue);
+
  % STEP 2: DOG fit
 rcurve = resp.curve;
 
@@ -92,6 +101,7 @@ fit_dog.fit = response;
 fit_dog.L50 = lowdog;
 fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
+fit_dog.bandwidth = vis.frequency.bandwidth(fit_dog.L50, fit_dog.H50);
 
 sf_props.fit_dog = fit_dog;
 
@@ -107,6 +117,7 @@ fit_movshon.L50 = lowmov;
 fit_movshon.Pref = prefmov;
 fit_movshon.H50 = highmov;
 fit_movshon.R2 = MV_R2;
+fit_movshon.bandwidth = vis.frequency.bandwidth(fit_movshon.L50, fit_movshon.H50);
 
 sf_props.fit_movshon = fit_movshon;
 
@@ -122,6 +133,7 @@ fit_movshon_c.L50 = lowmov_c;
 fit_movshon_c.Pref = prefmov_c;
 fit_movshon_c.H50 = highmov_c;
 fit_movshon_c.R2 = MV_R2_c;
+fit_movshon_c.bandwidth = vis.frequency.bandwidth(fit_movshon_c.L50, fit_movshon_c.H50);
 
 sf_props.fit_movshon_c = fit_movshon_c;
 
@@ -136,6 +148,7 @@ fit_spline.fit = fity;
 fit_spline.L50 = lowspline;
 fit_spline.Pref = prefspline;
 fit_spline.H50 = highspline;
+fit_spline.bandwidth = vis.frequency.bandwidth(fit_spline.L50, fit_spline.H50);
 
 sf_props.fit_spline = fit_spline;
 
@@ -161,6 +174,7 @@ fit_gausslog.fit = vlt.math.gausslog(fit_gausslog.values,fit_gausslog.parameters
 fit_gausslog.L50 = low_gausslog;
 fit_gausslog.Pref = pref_gausslog;
 fit_gausslog.H50 = high_gausslog;
+fit_gausslog.bandwidth = vis.frequency.bandwidth(fit_gausslog.L50,fit_gausslog.H50);
 
 sf_props.fit_gausslog = fit_gausslog;
 

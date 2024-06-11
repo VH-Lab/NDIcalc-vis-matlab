@@ -39,7 +39,10 @@
 		"fitless": {
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"low_pass_index":			0,
+			"high_pass_index":			0,
+			"bandwidth":				0
 		},
 		"fit_dog": {
 			"parameters":			[0, 0, 0, 0, 0],
@@ -48,7 +51,8 @@
 			"R2":				[0],
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"bandwidth":				0
 		},
 		"fit_movshon": {
 			"parameters":			[0,0,0,0],
@@ -57,7 +61,8 @@
 			"R2":					0,
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"bandwidth":				0
 		},
 		"fit_movshon_c": {
 			"parameters":			[0,0,0,0,0],
@@ -66,14 +71,16 @@
 			"R2":					0,
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"bandwidth":				0
 		},
 		"fit_spline": {
 			"values":		0,
 			"fit":			0,
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"bandwidth":				0
 		},
 		"fit_sgauss": {
 			"parameters":			[0, 0, 0, 0, 0],
@@ -82,7 +89,8 @@
 			"R2":				[0],
 			"L50":					0,
 			"Pref":					0,
-			"H50":					0
+			"H50":					0,
+			"bandwidth":				0
 		},
 		"abs": {
 		}
