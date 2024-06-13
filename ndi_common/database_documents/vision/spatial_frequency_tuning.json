@@ -45,7 +45,7 @@
 			"bandwidth":				0
 		},
 		"fit_dog": {
-			"parameters":			[0, 0, 0, 0, 0],
+			"parameters":			[0 0, 0, 0, 0],
 			"values":				[0],
 			"fit":				[0],
 			"R2":				[0],

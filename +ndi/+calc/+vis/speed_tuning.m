@@ -39,7 +39,8 @@ classdef speed_tuning < ndi.calculator
 				tuning_response_doc = tuning_response_doc{1};
 
 				% Step 2: perform the calculator, which here creates a speed_tuning doc
-				doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc);
+				doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc) + ...
+					ndi_calculator_obj.newdocument();
 				
 				if ~isempty(doc), 
 					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'speedtuning_calc',speed_tuning_calc) + doc;
