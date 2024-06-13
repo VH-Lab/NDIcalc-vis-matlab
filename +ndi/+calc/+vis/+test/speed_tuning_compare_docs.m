@@ -44,14 +44,19 @@ end
 %   raw_individual					
 %   control_individual			
 
+tolerance = 1e-6; %placeholder
+
 [b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.spatial_frequency, doc_a.tuning_curve.spatial_frequency, 1e-16, 'spatial frequency');
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.temporal_frequency, doc_a.tuning_curve.temporal_frequency, 1e-16, 'temporal frequency');
 [b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance, 'mean');
 [b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance, 'stddev');
 [b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance, 'stderr');
 [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance, 'individual');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance, 'raw individual');
-[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance, 'control individual');
+%[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance, 'raw individual');
+%[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance, 'control individual');
+[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance, 'individual');
+[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance, 'individual');
+
 
 % Comparing significance
 %   visual_response_anova_p
