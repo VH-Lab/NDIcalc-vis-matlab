@@ -85,18 +85,13 @@ dog_par_overall = [];
 
 for jj=1:10,
 	r0 = 0; re = mf; ri = mf; se = maxv; si = 5+5*randn;
-    %forcing a better fit by manually adding (100,0), and (120,0)
-    %dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
-	%	[rcurve(1,:) 100 120],[rcurve(2,:) 0 0], ...
-	%	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
-	 dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
+	dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
 	 	[rcurve(1,:)],[rcurve(2,:)], ...
 	 	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
-    %forcing a better fit by manually adding (100,0), and (120,0)
-	%norm_error=dog_error(dog_par, [rcurve(1,:) 100 120],[rcurve(2,:) 0 0 ]);
-    norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
+	norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 
 	if norm_error<norm_error_overall,
+		norm_error_overall = norm_error;
 		dog_par_overall = dog_par;
 	end;
 end;
@@ -111,8 +106,6 @@ if isempty(dog_par),
 	r2 = -Inf;
 	response=NaN*sfrange_interp;
 else,
-	%forcing a better fit by manually adding (0,0), (100,0), and (120,0)
-  norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
 	response=dog(dog_par',sfrange_interp);
 end;
@@ -188,7 +181,6 @@ c = maxv;
 d = rand*(highv - lowv);
 if isnan(d)
     d = 1;
-    %d = randn;
 end
 e = 0;
 e_range = [ 0 0 ];
