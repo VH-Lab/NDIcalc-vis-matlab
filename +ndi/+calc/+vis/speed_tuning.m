@@ -328,7 +328,7 @@ classdef speed_tuning < ndi.calculator
                     S = speed_calc_obj.session;
                     
                     %taken from calculate_speed_indexes method:
-                    numsteps = 200;
+                    numsteps = 5;
                     sfs = logspace(log10(0.01),log10(60),numsteps);
 				    tfs = logspace(log10(0.01),log10(120),numsteps);
 				    [SFs,TFs] = meshgrid(sfs,tfs);
@@ -424,13 +424,13 @@ classdef speed_tuning < ndi.calculator
 			% using MOD).
 			% 
                 %1st test taken from example in vlt.neuro.vision.speed.tuningfunc:
-                A = [1,1]; %add more tests by adding to end of each parameter's vector
-                zeta = [0,0];
-                xi = [0,0];
-                sigma_sf = [0.2,0.2]; % Cycles per degree
-                sigma_tf = [4,4]; % Cycles per second; this is the fall off
-                sf0 = [0.1,1];
-                tf0 = [4,1];
+                A = [1,1,1]; %add more tests by adding to end of each parameter's vector
+                zeta = [0,0,0];
+                xi = [0,0,0];
+                sigma_sf = [0.2,0.2,2]; % Cycles per degree
+                sigma_tf = [4,4,2]; % Cycles per second; this is the fall off
+                sf0 = [0.1,1,1];
+                tf0 = [4,1,1];
                 P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
 
                 % %1st test from spatial_frequency_tuning:
