@@ -47,6 +47,22 @@
 			"queryable": 1,
 			"documentation": "The difference-of-gaussian fit structure."
 		},
+                {
+                        "name": "fit_movshon",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "The Movshon 2005 fit structure."
+                },
+                {
+                        "name": "fit_movshon_c",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "The Movshon 2005 fit structure with a constant term."
+                },
 		{
 			"name": "fit_spline",
 			"type": "structure",
@@ -62,6 +78,15 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "The gaussian log fit structure."
-		}
+		},
+                {
+                        "name": "abs",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "Fits with absolute values."
+                }
+
 	]
 }

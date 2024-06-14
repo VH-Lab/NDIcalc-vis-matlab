@@ -33,7 +33,7 @@ classdef hartley_calc < ndi.calculator
 				hartley_calc = parameters;
 
 				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
 				end;
@@ -141,8 +141,10 @@ classdef hartley_calc < ndi.calculator
 								hartley_reverse_correlation.reconstruction_properties.X_coords(:); ...
 								hartley_reverse_correlation.reconstruction_properties.Y_coords(:)];
 
-							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'hartley_calc',parameters,...
-								'hartley_reverse_correlation',hartley_reverse_correlation,'reverse_correlation',reverse_correlation,'ngrid',ngridp);
+							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},...
+								'hartley_calc',parameters,...
+								'hartley_reverse_correlation',hartley_reverse_correlation,...
+								'reverse_correlation',reverse_correlation,'ngrid',ngridp) + ndi_calculator_obj.newdocument();
 							doc{end} = doc{end}.set_dependency_value('element_id',element_doc.id());
 							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i}.id());
 
@@ -179,7 +181,7 @@ classdef hartley_calc < ndi.calculator
 					'T', -0.100:0.010:0.250, ...
 					'X_sample', 1, ...
 					'Y_sample', 1);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 					
 		end; % default_search_for_input_parameters
@@ -353,7 +355,7 @@ classdef hartley_calc < ndi.calculator
 			%
 				fields_out = {'M','L_max','K_max','sf_max','fps','color_high','color_low','rect'};
 				fields_names = {'M', 'L_absmax','K_absmax','sfmax','fps','chromhigh','chromlow','rect'};
-				hartleydocinfo = vlt.data.emptystruct(fields_out{:});
+				hartleydocinfo = did.datastructures.emptystruct(fields_out{:});
 				hartleydocinfo(1).M = stimstruct.M;
 				for i=1:numel(fields_out), 
 					if ~isfield(stimstruct,fields_names{i}),

@@ -29,7 +29,7 @@ classdef spike_shape < ndi.calculator
 				if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on.''']); end;
 				
 				% Step 1: set up 
-				element_id = vlt.db.struct_name_value_search(parameters.depends_on,'element_id');
+				element_id = did.db.struct_name_value_search(parameters.depends_on,'element_id');
 				spiking_element = ndi.database.fun.ndi_document2ndi_object(element_id, ndi_calculator_obj.session);
 
 				% Step 2: perform the calculator for each recording epoch of the element
@@ -115,7 +115,7 @@ classdef spike_shape < ndi.calculator
 					'cheby_order', 4,...
 					'cheby_R', 0.5,...
 					'cheby_cutoff', 300);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = struct('name','element_id','query',ndi.query('element.type','exact_string','spikes',''));
 		end; % default_search_for_input_parameters
 
