@@ -115,7 +115,7 @@ classdef spike_shape < ndi.calculator
 					'cheby_order', 4,...
 					'cheby_R', 0.5,...
 					'cheby_cutoff', 300);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = struct('name','element_id','query',ndi.query('element.type','exact_string','spikes',''));
 		end; % default_search_for_input_parameters
 

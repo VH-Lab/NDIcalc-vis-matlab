@@ -61,10 +61,10 @@ function [sf_props]=spatial_frequency_analysis(resp)
 
 [mf,preftf]=max(resp.curve(2,:));
 preftf = resp.curve(1,preftf(1));
-[lowv, maxv, highv] = ndi.fun.vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
+[lowv, maxv, highv] = vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
 
 [sf_props.fitless.L50,sf_props.fitless.Pref,sf_props.fitless.H50] = ...
-	ndi.fun.vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
+	vis.compute_halfwidth_interp(resp.curve(1,:),resp.curve(2,:));
 
 sf_props.fitless.bandwidth = vis.frequency.bandwidth(sf_props.fitless.L50, sf_props.fitless.H50);
 [minValue,minLoc] = min(resp.curve(2,:));
@@ -78,7 +78,7 @@ sf_props.fitless.high_pass_index = rectify(resp.curve(2,maxFLoc))/rectify(maxVal
  % STEP 2: DOG fit
 rcurve = resp.curve;
 
-[dog_par,norm_error] = ndi.fun.vis.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
+[dog_par,norm_error] = vis.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
 
 dog_par = [0 dog_par]; % add in the 0 to comply with old dog
 
@@ -93,7 +93,7 @@ else,
 	response=dog(dog_par',sfrange_interp);
 end;
 
-[lowdog, prefdog, highdog] = ndi.fun.vis.compute_halfwidth(sfrange_interp,response);
+[lowdog, prefdog, highdog] = vis.compute_halfwidth(sfrange_interp,response);
 
 fit_dog.parameters = dog_par;
 fit_dog.values = sfrange_interp;
@@ -112,7 +112,7 @@ sf_props.fit_dog = fit_dog;
 fit_movshon.parameters = MV_P;
 fit_movshon.values = sfrange_interp(:);
 fit_movshon.fit = vis.frequency.movshon2005_func(sfrange_interp(:),MV_P);
-[lowmov, prefmov, highmov] = ndi.fun.vis.compute_halfwidth(sfrange_interp,fit_movshon.fit);
+[lowmov, prefmov, highmov] = vis.compute_halfwidth(sfrange_interp,fit_movshon.fit);
 fit_movshon.L50 = lowmov;
 fit_movshon.Pref = prefmov;
 fit_movshon.H50 = highmov;
@@ -128,7 +128,7 @@ sf_props.fit_movshon = fit_movshon;
 fit_movshon_c.parameters = MV_P_c;
 fit_movshon_c.values = sfrange_interp(:);
 fit_movshon_c.fit = vis.frequency.movshon2005_func(sfrange_interp(:),MV_P_c);
-[lowmov_c, prefmov_c, highmov_c] = ndi.fun.vis.compute_halfwidth(sfrange_interp,fit_movshon_c.fit);
+[lowmov_c, prefmov_c, highmov_c] = vis.compute_halfwidth(sfrange_interp,fit_movshon_c.fit);
 fit_movshon_c.L50 = lowmov_c;
 fit_movshon_c.Pref = prefmov_c;
 fit_movshon_c.H50 = highmov_c;
@@ -141,7 +141,7 @@ sf_props.fit_movshon_c = fit_movshon_c;
 
 fitx = sfrange_interp;
 fity = interp1([rcurve(1,:)],[rcurve(2,:) ], fitx,'spline');
-[lowspline, prefspline, highspline] = ndi.fun.vis.compute_halfwidth(fitx,fity);
+[lowspline, prefspline, highspline] = vis.compute_halfwidth(fitx,fity);
 
 fit_spline.values = fitx;
 fit_spline.fit = fity;
@@ -166,7 +166,7 @@ e_range = [ 0 0 ];
 [gausslog_par,gof,gausslog_fitcurve] = vlt.fit.gausslogfit([rcurve(1,:) ]',[rcurve(2,:) ]',...
 	'a_hint',a,'a_range',a_range,'b_hint',b,'b_range',b_range,'c_hint',c,'d_hint',d,'e_hint',e,'e_range',e_range);
 
-[low_gausslog,pref_gausslog,high_gausslog] = ndi.fun.vis.compute_halfwidth(gausslog_fitcurve(1,:),gausslog_fitcurve(2,:));
+[low_gausslog,pref_gausslog,high_gausslog] = vis.compute_halfwidth(gausslog_fitcurve(1,:),gausslog_fitcurve(2,:));
 
 fit_gausslog.parameters = gausslog_par;
 fit_gausslog.values = sfrange_interp;

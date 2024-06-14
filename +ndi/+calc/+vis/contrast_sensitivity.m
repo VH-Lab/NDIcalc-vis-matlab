@@ -227,7 +227,7 @@ classdef contrast_sensitivity < ndi.calculator
 							% could actually do 2-factor ANOVA on responses; would be better
 							parameters_here.visual_response_p_bonferroni = nanmin(visual_response_p)*numel(visual_response_p);
 							parameters_here.response_varies_p_bonferroni = nanmin(across_stims_p)*numel(across_stims_p);
-							parameters_here.depends_on = vlt.data.emptystruct('name','value');
+							parameters_here.depends_on = did.datastructures.emptystruct('name','value');
 							parameters_here.response_type = response_type_here;
 						
 							if numel(tuning_curves)>0,	
@@ -257,7 +257,7 @@ classdef contrast_sensitivity < ndi.calculator
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct([]);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 					
 		end; % default_search_for_input_parameters

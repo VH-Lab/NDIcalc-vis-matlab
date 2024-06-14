@@ -59,7 +59,7 @@ classdef speed_tuning < ndi.calculator
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct([]);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 					
 		end; % default_search_for_input_parameters

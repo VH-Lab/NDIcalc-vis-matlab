@@ -68,7 +68,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 				% search for stimulus_tuningcurve_id
 				parameters.input_parameters = struct([]);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 		end; % default_search_for_input_parameters
 
@@ -266,7 +266,7 @@ classdef oridir_tuning < ndi.calculator
 
 				plot_tuning_curve_log = 0;
 
-				vlt.data.assign(varargin{:});
+				did.datastructures.assign(varargin{:});
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
@@ -354,7 +354,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 
 				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				did.datastructures.assign(varargin{:});
 
 				docs = {};
 				doc_output = {};
