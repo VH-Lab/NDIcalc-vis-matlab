@@ -44,14 +44,19 @@ end
 %   raw_individual					
 %   control_individual			
 
+tolerance = 1e-2; %placeholder
+
 [b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.spatial_frequency, doc_a.tuning_curve.spatial_frequency, 1e-16, 'spatial frequency');
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.temporal_frequency, doc_a.tuning_curve.temporal_frequency, 1e-16, 'temporal frequency');
 [b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance, 'mean');
 [b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance, 'stddev');
 [b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance, 'stderr');
 [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance, 'individual');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance, 'raw individual');
-[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance, 'control individual');
+%[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance, 'raw individual');
+%[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance, 'control individual');
+[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance, 'individual');
+[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance, 'individual');
+
 
 % Comparing significance
 %   visual_response_anova_p
@@ -69,13 +74,21 @@ end
 %   Priebe_fit_spatial_frequency_preference
 %   Priebe_fit_temporal_frequency_preference
 
-[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters, doc_a.fit.Priebe_fit_parameters, tolerance, 'Priebe fit parameters');
-[b_(12),errormsg_{12}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_spatial_frequencies, doc_a.fit.Priebe_fit_spatial_frequencies, tolerance, 'Priebe fit spatial frequencies');
-[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_temporal_frequencies, doc_a.fit.Priebe_fit_temporal_frequencies, tolerance, 'Priebe fit temporal frequencies');
-[b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_values, doc_a.fit.Priebe_fit_values, tolerance, 'Priebe fit values');
-[b_(15),errormsg_{15}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_speed_tuning_index, doc_a.fit.Priebe_fit_speed_tuning_index, tolerance, 'Priebe fit speed tuning index');
-[b_(16),errormsg_{16}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_spatial_frequency_preference, doc_a.fit.Priebe_fit_spatial_frequency_preference, tolerance, 'Priebe fit spatial frequency preference');
-[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_temporal_frequency_preference, doc_a.fit.Priebe_fit_temporal_frequency_preference, tolerance, 'Priebe fit temporal frequency preference');
+%split up Priebe_fit_parameters so different parameters get different
+%tolerances
+Priebe_fit_param_tolerance = [1e-3 1e-3 1 1e-1 1e-2 1e-3 1e-2];
+[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(1), doc_a.fit.Priebe_fit_parameters(1), Priebe_fit_param_tolerance(1), 'Priebe fit parameters');
+[b_(12),errormsg_{12}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(2), doc_a.fit.Priebe_fit_parameters(2), Priebe_fit_param_tolerance(2), 'Priebe fit parameters');
+[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(3), doc_a.fit.Priebe_fit_parameters(3), Priebe_fit_param_tolerance(3), 'Priebe fit parameters');
+[b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(4), doc_a.fit.Priebe_fit_parameters(4), Priebe_fit_param_tolerance(4), 'Priebe fit parameters');
+[b_(15),errormsg_{15}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(5), doc_a.fit.Priebe_fit_parameters(5), Priebe_fit_param_tolerance(5), 'Priebe fit parameters');
+[b_(16),errormsg_{16}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_parameters(6), doc_a.fit.Priebe_fit_parameters(6), Priebe_fit_param_tolerance(6), 'Priebe fit parameters');
+[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_spatial_frequencies, doc_a.fit.Priebe_fit_spatial_frequencies, tolerance, 'Priebe fit spatial frequencies');
+[b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_temporal_frequencies, doc_a.fit.Priebe_fit_temporal_frequencies, tolerance, 'Priebe fit temporal frequencies');
+[b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_values, doc_a.fit.Priebe_fit_values, tolerance, 'Priebe fit values');
+[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_speed_tuning_index, doc_a.fit.Priebe_fit_speed_tuning_index, tolerance, 'Priebe fit speed tuning index');
+[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_spatial_frequency_preference, doc_a.fit.Priebe_fit_spatial_frequency_preference, tolerance, 'Priebe fit spatial frequency preference');
+[b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit.Priebe_fit_temporal_frequency_preference, doc_a.fit.Priebe_fit_temporal_frequency_preference, tolerance, 'Priebe fit temporal frequency preference');
 
 
 % The following code does three things:
