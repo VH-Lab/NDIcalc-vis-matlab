@@ -32,7 +32,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 				spatial_frequency_tuning_calc = parameters;
 
 				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
 				end;

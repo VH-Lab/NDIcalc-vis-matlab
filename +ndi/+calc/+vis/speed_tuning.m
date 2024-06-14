@@ -32,7 +32,7 @@ classdef speed_tuning < ndi.calculator
 				speed_tuning_calc = parameters;
 
 				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
 				end;
@@ -159,7 +159,7 @@ classdef speed_tuning < ndi.calculator
 				% now call the plot routine
 
 				[SF,TF,MNs] = vlt.math.vector2mesh(tc.spatial_frequency,tc.temporal_frequency,tc.mean);
-				MNs_fit = vlt.neuro.vision.speed.tuningfunc(SF,TF,ft.Priebe_fit_parameters);
+				MNs_fit = vis.speed.tuningfunc(SF,TF,ft.Priebe_fit_parameters);
 
 				significant = 0;
 				linestyle = '--';
@@ -167,10 +167,10 @@ classdef speed_tuning < ndi.calculator
 					significant = 1;
 					linestyle = '-';
 				end;
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs_fit,'marker','none','linestyle',linestyle);
+				vis.speed.plottuning(SF,TF,MNs_fit,'marker','none','linestyle',linestyle);
 
 				% now plot raw responses
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs);
+				vis.speed.plottuning(SF,TF,MNs);
 
                 ch = get(gcf,'children');
                 currentaxes = gca;
@@ -258,11 +258,11 @@ classdef speed_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				f = vlt.neuro.vision.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
+				f = vis.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
 				sfs = logspace(0.01,60,200);
 				tfs = logspace(0.01,120,200);
 				[SFs,TFs] = meshgrid(sfs,tfs);
-				fit_values = vlt.neuro.vision.speed.tuningfunc(SFs(:),TFs(:),f);
+				fit_values = vis.speed.tuningfunc(SFs(:),TFs(:),f);
 
 				fit.Priebe_fit_parameters = f;
 				fit.Priebe_fit_spatial_frequencies = SFs(:);

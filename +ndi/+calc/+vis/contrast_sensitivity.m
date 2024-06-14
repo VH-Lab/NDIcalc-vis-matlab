@@ -32,7 +32,7 @@ classdef contrast_sensitivity < ndi.calculator
 				contrastsensitivity_calc = parameters;
 
 				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
 				end;

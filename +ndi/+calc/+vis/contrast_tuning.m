@@ -32,7 +32,7 @@ classdef contrast_tuning < ndi.calculator
 				contrast_tuning_calc = parameters;
 
 				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
 				end;
@@ -227,7 +227,7 @@ classdef contrast_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				fitless.interpolated_c50 = vlt.neuro.vision.contrast.indexes.c50interpolated(tuning_curve.contrast,...
+				fitless.interpolated_c50 = vis.contrast.indexes.c50interpolated(tuning_curve.contrast,...
 					tuning_curve.mean);
 
 				prefixes = {'naka_rushton_RB_','naka_rushton_RBN_', 'naka_rushton_RBNS_'};
@@ -238,7 +238,7 @@ classdef contrast_tuning < ndi.calculator
 				fit(1).naka_rushton_RB_parameters = [];
 
 				for f = 1:numel(fitterms),
-					fi = vlt.neuro.vision.contrast.indexes.fitindexes(resp,fitterms(f));
+					fi = vis.contrast.indexes.fitindexes(resp,fitterms(f));
 					fit = setfield(fit,[prefixes{f} 'parameters'],fi.fit_parameters);
 					fit = setfield(fit,[prefixes{f} 'contrast'],fi.fit(1,:));
 					fit = setfield(fit,[prefixes{f} 'values'],fi.fit(2,:));

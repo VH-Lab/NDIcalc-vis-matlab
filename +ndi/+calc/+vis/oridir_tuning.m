@@ -38,7 +38,7 @@ classdef oridir_tuning < ndi.calculator
 						
 				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_doc)~=1, 
 					error(['Could not find stimulus tuning curve doc..']);
 				end;
@@ -206,8 +206,8 @@ classdef oridir_tuning < ndi.calculator
 						response_stderr; ];
 				response.ind = response_ind;
 
- 				vi = vlt.neuro.vision.oridir.index.oridir_vectorindexes(response);
- 				fi = vlt.neuro.vision.oridir.index.oridir_fitindexes(response);
+ 				vi = vis.oridir.index.oridir_vectorindexes(response);
+ 				fi = vis.oridir.index.oridir_fitindexes(response);
              
 				resp.ind = ind_real;
 				resp.blankind = control_ind_real{1};
@@ -366,7 +366,7 @@ classdef oridir_tuning < ndi.calculator
 					parameters = oridir_calc_obj.generate_mock_parameters(scope, i);
 
 					angles = 0:30:360-30; % use these angles
-					r = vlt.neuro.vision.oridir.doublegaussianfunc(angles,parameters);
+					r = vis.oridir.doublegaussianfunc(angles,parameters);
 
 					param_struct = struct('sFrequency',0.5,'tFrequency',2);
 					independent_variable = {'angle'};
