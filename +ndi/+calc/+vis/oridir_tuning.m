@@ -396,7 +396,6 @@ classdef oridir_tuning < ndi.calculator
 					calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-
 					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
 					if numel(doc_output{i})>1,
 						error(['Generated more than one output doc when one was expected.']);
