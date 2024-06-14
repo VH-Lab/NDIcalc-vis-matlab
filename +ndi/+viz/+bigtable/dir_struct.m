@@ -29,7 +29,7 @@ thestruct.empirical_max_response_location = x_values(maxvalue_loc);
 [minvalue,minvalue_loc] = min(tune_info.tuning_curve.mean);
 thestruct.empirical_min_response_value = minvalue;
 thestruct.empirical_min_response_location = x_values(minvalue_loc);
-thestruct.empirical_control_individual = mean(tune_info.tuning_curve.control_individual);
+thestruct.empirical_control_individual = mat2str(tune_info.tuning_curve.control_individual);
 
 if ~isempty(f1f0_struct),
 	thestruct.f0_empirical = f1f0_struct.f0;

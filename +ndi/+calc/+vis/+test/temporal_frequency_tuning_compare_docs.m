@@ -41,6 +41,7 @@ switch(scope),
        error(['Unknown scope ' scope '.']);
 end;
 
+
 % start comparison
 
 doc_e = document_expected.document_properties.temporal_frequency_tuning;

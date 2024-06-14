@@ -63,6 +63,29 @@ rcurve = resp.curve;
 
 [dog_par,norm_error] = ndi.fun.vis.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
 
+norm_error_overall = Inf;
+dog_par_overall = [];
+
+for jj=1:10,
+	r0 = 0; re = mf; ri = mf; se = maxv; si = 5+5*randn;
+    %forcing a better fit by manually adding (100,0), and (120,0)
+    %dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
+	%	[rcurve(1,:) 100 120],[rcurve(2,:) 0 0], ...
+	%	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
+	 dog_par=fminsearch('dog_error',[r0 re se ri si],search_options,...
+	 	[rcurve(1,:)],[rcurve(2,:)], ...
+	 	[rcurve(4,:) mean(rcurve(4,:)) mean(rcurve(4,:))] 	    )';
+    %forcing a better fit by manually adding (100,0), and (120,0)
+	%norm_error=dog_error(dog_par, [rcurve(1,:) 100 120],[rcurve(2,:) 0 0 ]);
+    norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
+
+	if norm_error<norm_error_overall,
+		dog_par_overall = dog_par;
+	end;
+end;
+
+norm_error = norm_error_overall;
+dog_par = dog_par_overall;
 dog_par = [0 dog_par]; % add in the 0 to comply with old dog
 
 sfrange_interp=logspace( log10(min( min(rcurve(1,:)),0.01)),log10(120),100);
@@ -71,7 +94,8 @@ if isempty(dog_par),
 	r2 = -Inf;
 	response=NaN*sfrange_interp;
 else,
-	norm_error=dog_error(dog_par, [rcurve(1,:) ],[ rcurve(2,:) ]);
+	%forcing a better fit by manually adding (0,0), (100,0), and (120,0)
+  norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
 	response=dog(dog_par',sfrange_interp);
 end;
@@ -90,6 +114,8 @@ sf_props.fit_dog = fit_dog;
  % STEP 3: spline fitting
 
 fitx = sfrange_interp;
+%forcing a better fit by manually adding (0,0), (100,0), and (120,0)
+%fity = interp1([0 rcurve(1,:) 100 120],[0 rcurve(2,:) 0 0], fitx,'spline');
 fity = interp1([rcurve(1,:)],[rcurve(2,:) ], fitx,'spline');
 [lowspline, prefspline, highspline] = ndi.fun.vis.compute_halfwidth(fitx,fity);
 
@@ -109,8 +135,13 @@ b = mf;
 b_range = [0 2*max(0,mf)];
 c = maxv;
 d = rand*(highv - lowv);
+if isnan(d)
+    d = 1;
+    %d = randn;
+end
 e = 0;
 e_range = [ 0 0 ];
+
 
 [gausslog_par,gof,gausslog_fitcurve] = vlt.fit.gausslogfit([rcurve(1,:) ]',[rcurve(2,:) ]',...
 	'a_hint',a,'a_range',a_range,'b_hint',b,'b_range',b_range,'c_hint',c,'d_hint',d,'e_hint',e,'e_range',e_range);
