@@ -11,6 +11,38 @@ function [b_, errormsg_] = spatial_frequency_tuning_compare_docs(document_expect
 b_ = ones(1,39);
 errormsg_ = cell(1,39);
 
+ % establish scope-dependent tolerances
+switch(scope),
+    case 'standard',
+    
+       tol_tuning_curve = 1e-6;
+       tol_significance = 1e-6;
+       tol_fitless = 0.1;
+       tol_fit_spline = 0.1;
+       tol_fit_dog = 0.1;
+       tol_fit_gausslog = 0.1;
+
+    case 'low_noise',
+    
+       tol_tuning_curve = 1e-6;
+       tol_significance = 1e-6;
+       tol_fitless = 0.1;
+       tol_fit_spline = 0.1;
+       tol_fit_dog = 0.1;
+       tol_fit_gausslog = 0.1;
+
+    case 'high_noise',
+    
+       tol_tuning_curve = 1e-6;
+       tol_significance = 1e-6;
+       tol_fitless = 0.1;
+       tol_fit_spline = 0.1;
+       tol_fit_dog = 0.1;
+       tol_fit_gausslog = 0.1;
+
+    otherwise,
+       error(['Unknown scope ' scope '.']);
+end;
 
 % start comparison
 
@@ -45,8 +77,6 @@ end
 %	control_stddev                        
 %	control_stderr
 
-tol_tuning_curve = 1e-6;
-
 [b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.spatial_frequency, doc_a.tuning_curve.spatial_frequency, tol_tuning_curve, 'spatial_frequency');
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tol_tuning_curve, 'mean');
 [b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tol_tuning_curve, 'stddev');
@@ -59,8 +89,6 @@ tol_tuning_curve = 1e-6;
 %   visual_response_anova_p
 %   across_stimuli_anova_p
 
-tol_significance = 1e-6;
-
 [b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tol_significance, 'visual response anova p');
 [b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tol_significance, 'across stimuli anova p');
 
@@ -68,8 +96,6 @@ tol_significance = 1e-6;
 %   H50
 %   Pref
 %   L50
-
-tol_fitless = 0.1;
 
 [b_(10),errormsg_{10}] = ndi.test.values_within_tolerance(doc_e.fitless.H50, doc_a.fitless.H50, tol_fitless, 'H50');
 [b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fitless.Pref, doc_a.fitless.Pref, tol_fitless, 'Pref');
@@ -81,8 +107,6 @@ tol_fitless = 0.1;
 %   Pref
 %   L50
 %   values
-
-tol_fit_spline = 0.1;
 
 [b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'fit');
 [b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'H50');
@@ -97,8 +121,6 @@ tol_fit_spline = 0.1;
 %   L50
 %   values
 %   parameters
-
-tol_fit_dog = 0.1;
 
 [b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'fit');
 [b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'H50');
@@ -115,8 +137,6 @@ tol_fit_dog = 0.1;
 %   values
 %   parameters
 
-tol_fit_gausslog = 0.1;
-
 [b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog, 'fit');
 [b_(25),errormsg_{25}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog, 'H50');
 [b_(26),errormsg_{26}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog, 'Pref');
@@ -124,8 +144,6 @@ tol_fit_gausslog = 0.1;
 [b_(28),errormsg_{28}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog, 'values');
 [b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog, 'parameters');
                                                                     
-
-
 % Identify the b_ values with unmatched results
 % Update b_ to only include those
 % Update the corresponding errormsg_ messages
