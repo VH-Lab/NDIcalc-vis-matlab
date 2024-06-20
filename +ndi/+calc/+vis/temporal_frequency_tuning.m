@@ -268,7 +268,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				tf_props = vis.temporal_frequency_analysis(resp);
+				tf_props = vis.frequency.temporal_frequency_analysis(resp);
 
 				temporal_frequency_tuning.properties = properties;
 				temporal_frequency_tuning.tuning_curve = tuning_curve;
@@ -282,7 +282,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 
 				resp_abs = resp;
 				resp_abs.curve(2,:) = abs(resp_abs.curve(2,:));
-				abs_tf_props = vis.temporal_frequency_analysis(resp_abs);
+				abs_tf_props = vis.frequency.temporal_frequency_analysis(resp_abs);
 
 				temporal_frequency_tuning.abs.fitless = abs_tf_props.fitless;
 				temporal_frequency_tuning.abs.fit_dog = abs_tf_props.fit_dog;

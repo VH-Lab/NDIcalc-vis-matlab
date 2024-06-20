@@ -26,6 +26,7 @@ switch(scope),
        tolerance.significance.visual_response_anova_p = 1e-6;
        tolerance.significance.across_stimuli_anova_p = 1e-6;
        tolerance.fitless.interpolated_c50 = 0.1;
+       tolerance.fit.naka_rushton_RB_parameters = 0.1;
        tolerance.fit.naka_rushton_RB_contrast = 0.1;
        tolerance.fit.naka_rushton_RB_values = 0.1;
        tolerance.fit.naka_rushton_RB_pref = 0.1;	
@@ -66,6 +67,7 @@ switch(scope),
        tolerance.significance.visual_response_anova_p = 1e-6;
        tolerance.significance.across_stimuli_anova_p = 1e-6;
        tolerance.fitless.interpolated_c50 = 0.1;
+       tolerance.fit.naka_rushton_RB_parameters = 0.1;
        tolerance.fit.naka_rushton_RB_contrast = 0.1;
        tolerance.fit.naka_rushton_RB_values = 0.1;
        tolerance.fit.naka_rushton_RB_pref = 0.1;	
@@ -105,6 +107,7 @@ switch(scope),
        tolerance.significance.visual_response_anova_p = 1e-6;
        tolerance.significance.across_stimuli_anova_p = 1e-6;
        tolerance.fitless.interpolated_c50 = 0.1;
+       tolerance.fit.naka_rushton_RB_parameters = 0.1;
        tolerance.fit.naka_rushton_RB_contrast = 0.1;
        tolerance.fit.naka_rushton_RB_values = 0.1;
        tolerance.fit.naka_rushton_RB_pref = 0.1;	
