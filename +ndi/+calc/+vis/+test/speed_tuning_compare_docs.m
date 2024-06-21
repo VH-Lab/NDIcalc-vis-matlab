@@ -20,8 +20,8 @@ switch(scope),
        tolerance.tuning_curve.stddev = 1e-6;			
        tolerance.tuning_curve.stderr = 1e-6;			
        tolerance.tuning_curve.individual = 1e-6;					
-       tolerance.tuning_curve.raw_individual = 1e-6;
-       tolerance.tuning_curve.control_individual = 1e-6;
+       tolerance.tuning_curve.control_stddv = 1e-6;
+       tolerance.tuning_curve.control_stderr = 1e-6;
        tolerance.significance.visual_response_anova_p = 1e-6;	
        tolerance.significance.across_stimuli_anova_p = 1e-6;	
        tolerance.fit.Priebe_fit_parameters = [1e-3 1e-3 1 1e-1 1e-2 1e-3 1e-2];
@@ -40,8 +40,8 @@ switch(scope),
        tolerance.tuning_curve.stddev = 1e-6;			
        tolerance.tuning_curve.stderr = 1e-6;			
        tolerance.tuning_curve.individual = 1e-6;					
-       tolerance.tuning_curve.raw_individual = 1e-6;
-       tolerance.tuning_curve.control_individual = 1e-6;
+       tolerance.tuning_curve.control_stddev = 1e-6;
+       tolerance.tuning_curve.control_stderr = 1e-6;
        tolerance.significance.visual_response_anova_p = 1e-6;	
        tolerance.significance.across_stimuli_anova_p = 1e-6;	
        tolerance.fit.Priebe_fit_parameters = [1e-3 1e-3 1 1e-1 1e-2 1e-3 1e-2];
@@ -60,8 +60,8 @@ switch(scope),
        tolerance.tuning_curve.stddev = 1e-6;			
        tolerance.tuning_curve.stderr = 1e-6;			
        tolerance.tuning_curve.individual = 1e-6;					
-       tolerance.tuning_curve.raw_individual = 1e-6;
-       tolerance.tuning_curve.control_individual = 1e-6;
+       tolerance.tuning_curve.control_stddev = 1e-6;
+       tolerance.tuning_curve.control_stderr = 1e-6;
        tolerance.significance.visual_response_anova_p = 1e-6;	
        tolerance.significance.across_stimuli_anova_p = 1e-6;	
        tolerance.fit.Priebe_fit_parameters = [1e-3 1e-3 1 1e-1 1e-2 1e-3 1e-2];
@@ -118,8 +118,8 @@ end
 [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance.tuning_curve.individual, 'individual');
 %[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance.tuning_curve.raw_individual, 'raw individual');
 %[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance.tuning_curve.control_individual, 'control individual');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance, 'individual');
-[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance, 'individual');
+[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance.tuning_curve.control_stddev, 'control stddev');
+[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance.tuning_curve.control_stderr, 'control stderr');
 
 % Comparing significance
 %   visual_response_anova_p
