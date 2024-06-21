@@ -323,7 +323,7 @@ classdef oridir_tuning < ndi.calculator
 
 		% TESTING METHODS
 
-		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, varargin)
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, varargin)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(ORIDIR_CALC_OBJ, ...
@@ -350,18 +350,24 @@ classdef oridir_tuning < ndi.calculator
 			% |--------------------------|---------------------------------------------------|
 			% | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
 			% |                          |   generate the "right answer"?) Use carefully.    |
+            % | specific_test_inds([])     | Should we specify which tests to run?             |
 			% |--------------------------|---------------------------------------------------|
 			%
-
+                specific_test_inds = [];
 				generate_expected_docs = 0;
 				did.datastructures.assign(varargin{:});
 
 				docs = {};
 				doc_output = {};
 				doc_expected_output = {};
-
-				for i=1:number_of_tests,
-					docs{i} = {};
+                %if not specifying the number of tests, just use the number
+                %given by number_of_tests; otherwise use the test indices
+                %specified by specific_test_inds
+                if numel(specific_test_inds) == 0
+                    specific_test_inds = 1:number_of_tests;
+                end
+				for i=specific_test_inds,
+                    docs{end+1} = {};
 
 					parameters = oridir_calc_obj.generate_mock_parameters(scope, i);
 
@@ -389,26 +395,26 @@ classdef oridir_tuning < ndi.calculator
 							error(['Unknown scope ' scope '.']);
 					end; % switch
 
-					docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
+					docs{end} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 
 					calcparameters = oridir_calc_obj.default_search_for_input_parameters();
 					calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
 					calcparameters.query.query = calcparameters.query.query & ...
-						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
-					if numel(doc_output{i})>1,
+						ndi.query('','depends_on','element_id',docs{end}{3}.id());
+					doc_output{end+1} = oridir_calc_obj.run('Replace',calcparameters);
+					if numel(doc_output{end})>1,
 						error(['Generated more than one output doc when one was expected.']);
-					elseif numel(doc_output{i})==0,
+					elseif numel(doc_output{end})==0,
 						error(['Generated no output docs when one was expected.']);
 					end;
-					doc_output{i} = doc_output{i}{1};
+					doc_output{end} = doc_output{end}{1}; %what's the point of this?
 
 					if generate_expected_docs,
-						oridir_calc_obj.write_mock_expected_output(i,doc_output{i});
+						oridir_calc_obj.write_mock_expected_output(i,doc_output{end});
 					end;
 
-					doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
+					doc_expected_output{end+1} = oridir_calc_obj.load_mock_expected_output(i);
 
 				end; % for
 		end; % generate_mock_docs()

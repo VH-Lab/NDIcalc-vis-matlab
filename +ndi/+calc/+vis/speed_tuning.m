@@ -329,8 +329,10 @@ classdef speed_tuning < ndi.calculator
                     
                     %taken from calculate_speed_indexes method:
                     numsteps = 5;
-                    sfs = logspace(log10(0.01),log10(60),numsteps);
-				    tfs = logspace(log10(0.01),log10(120),numsteps);
+                    %sfs = logspace(log10(0.01),log10(60),numsteps);
+				    sfs = [0.05 0.08 0.1 0.2 0.4 0.8 1.2]; %taken from demo
+                    %tfs = logspace(log10(0.01),log10(120),numsteps);
+                    tfs = [0.5 1 2 4 8 16 32]; %taken from demo
 				    [SFs,TFs] = meshgrid(sfs,tfs);
                     function_params = speed_calc_obj.generate_mock_parameters(scope, i);
                     r_ = vlt.neuro.vision.speed.tuningfunc(SFs,TFs,function_params);
@@ -423,14 +425,17 @@ classdef speed_tuning < ndi.calculator
 			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
 			% using MOD).
 			% 
-                %1st test taken from example in vlt.neuro.vision.speed.tuningfunc:
-                A = [1,1,1]; %add more tests by adding to end of each parameter's vector
-                zeta = [0,0,0];
-                xi = [0,0,0];
-                sigma_sf = [0.2,0.2,2]; % Cycles per degree
-                sigma_tf = [4,4,2]; % Cycles per second; this is the fall off
-                sf0 = [0.1,1,1];
-                tf0 = [4,1,1];
+                %1st test taken from demo script
+                %2nd test neuron not selective for speed
+                %3rd test neuron maximally selective for speed
+                %add more tests by adding to end of each parameter's vector
+                A = [50,50,50]; %Peak response of the neuron
+                zeta = [0,0,0]; %Skew of the temporal freq tuning curve
+                xi = [.2,0,1]; %speed tuning index (0 to 1)
+                sigma_sf = [1,1,1]; % Tuning width of the neuron for spatial frequency (Cycles per degree)
+                sigma_tf = [1,1,1]; % Tuning width of the neuron for temporal frequency (Cycles per second)
+                sf0 = [0.2,0.2,0.2]; %preferred spatial frequency averaged across temporal frequencies
+                tf0 = [2,2,2]; %preferred temporal frequency averaged across spatial frequencies
                 P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
 
                 % %1st test from spatial_frequency_tuning:

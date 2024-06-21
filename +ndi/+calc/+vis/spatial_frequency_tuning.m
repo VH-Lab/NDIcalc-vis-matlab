@@ -380,8 +380,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                     calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-                    %I =
-                    %spatial_freq_calc_obj.search_for_input_parameters(calcparameters);
+                    I = spatial_freq_calc_obj.search_for_input_parameters(calcparameters);
                     %%doesn't seem to be used
                     doc_output{i} = spatial_freq_calc_obj.run('Replace',calcparameters);
 					if numel(doc_output{i})>1,

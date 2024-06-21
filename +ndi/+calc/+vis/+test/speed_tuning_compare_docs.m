@@ -121,6 +121,7 @@ end
 [b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tolerance.tuning_curve.control_stddev, 'control stddev');
 [b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tolerance.tuning_curve.control_stderr, 'control stderr');
 
+
 % Comparing significance
 %   visual_response_anova_p
 %   across_stimuli_anova_p

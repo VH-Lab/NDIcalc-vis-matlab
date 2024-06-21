@@ -1,11 +1,11 @@
 {
   "app": {
     "os": "MACI64",
-    "os_version": "14.3.1",
+    "os_version": "13.3.1",
     "name": "ndi.calc.vis.oridir_tuning",
     "interpreter_version": "9.14",
     "interpreter": "MATLAB",
-    "version": "4c72714a91c5c919745f532c9d78ef128e491532",
+    "version": "e93bd21c49fed524eb5a6c79189d7e8b0cbe1e55",
     "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab"
   },
   "document_class": {
@@ -24,11 +24,11 @@
   "depends_on": [
     {
       "name": "element_id",
-      "value": "41268ffdb9ee71c4_c0d99867ba404c80"
+      "value": "412690bf9e6da24b_c0ca99fc85fe1f20"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268ffdba16b3bc_40d0af8c68f61873"
+      "value": "412690bf9e765ce3_40cbe48afe8ce552"
     }
   ],
   "orientation_direction_tuning": {
@@ -779,10 +779,10 @@
     "vector": {
       "direction_hotelling2test": 0,
       "Hotelling2Test": 0,
-      "dot_direction_significance": 9.067856428763974E-58,
+      "dot_direction_significance": 9.092276686823532E-58,
       "circular_variance": 0.71,
       "orientation_preference": 90,
-      "direction_preference": 45.000000000000014,
+      "direction_preference": 45.00000000000001,
       "direction_circular_variance": 0.76
     },
     "tuning_curve": {
@@ -1068,14 +1068,14 @@
   "oridirtuning_calc": {
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "41268ffdba16b3bc_40d0af8c68f61873"
+      "value": "412690bf9e765ce3_40cbe48afe8ce552"
     },
     "input_parameters": []
   },
   "base": {
-    "datestamp": "2024-03-15T20:45:54.643Z",
+    "datestamp": "2024-06-20T19:26:23.681Z",
     "name": "",
-    "session_id": "41268d7e00abd88a_40c15611a212517c",
-    "id": "41268ffdbafd9019_c0d2787629779473"
+    "session_id": "412690b35e49aede_c0c3f4ca3697ac85",
+    "id": "412690bf9eb7d5a0_c0ca11bf2b87592b"
   }
 }
