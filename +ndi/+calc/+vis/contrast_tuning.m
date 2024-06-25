@@ -216,11 +216,11 @@ classdef contrast_tuning < ndi.calculator
 
 				tuning_curve = struct(...
 					'contrast', ...
-						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
-					'mean', resp.curve(2,:), ...
-					'stddev', resp.curve(3,:), ...
-					'stderr', resp.curve(4,:), ...
-					'individual', {resp.ind}, ...
+						vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
+					'mean', vlt.data.colvec(resp.curve(2,:)), ...
+					'stddev', vlt.data.colvec(resp.curve(3,:)), ...
+					'stderr', vlt.data.colvec(resp.curve(4,:)), ...
+					'individual', vlt.data.cellarray2mat(resp.ind), ...
 					'control_stddev', resp.blankresp(2),...
 					'control_stderr', resp.blankresp(3));
 
@@ -239,9 +239,9 @@ classdef contrast_tuning < ndi.calculator
 
 				for f = 1:numel(fitterms),
 					fi = vis.contrast.indexes.fitindexes(resp,fitterms(f));
-					fit = setfield(fit,[prefixes{f} 'parameters'],fi.fit_parameters);
-					fit = setfield(fit,[prefixes{f} 'contrast'],fi.fit(1,:));
-					fit = setfield(fit,[prefixes{f} 'values'],fi.fit(2,:));
+					fit = setfield(fit,[prefixes{f} 'parameters'],vlt.data.colvec(fi.fit_parameters));
+					fit = setfield(fit,[prefixes{f} 'contrast'],vlt.data.colvec(fi.fit(1,:)));
+					fit = setfield(fit,[prefixes{f} 'values'],vlt.data.colvec(fi.fit(2,:)));
 					[m,pref_index] = max(fi.fit(2,:));
 					pref = fi.fit(1,pref_index);
 					fit = setfield(fit,[prefixes{f} 'pref'], pref);
@@ -249,7 +249,7 @@ classdef contrast_tuning < ndi.calculator
 					fit = setfield(fit,[prefixes{f} '_r2'], fi.r2);
 					fit = setfield(fit,[prefixes{f} 'relative_max_gain'], fi.relative_max_gain);
 					fit = setfield(fit,[prefixes{f} 'saturation_index'], fi.saturation_index);
-					fit = setfield(fit,[prefixes{f} 'sensitivity'], fi.sensitivity);
+					fit = setfield(fit,[prefixes{f} 'sensitivity'], vlt.data.colvec(fi.sensitivity));
 				end;
 
 				contrast_tuning.properties = properties;
@@ -376,7 +376,8 @@ classdef contrast_tuning < ndi.calculator
 			%
 
 				[b_,errormsg] = ndi.calc.vis.test.contrast_tuning_compare_docs(expected_doc,actual_doc,scope);			
-                b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
+                errormsg = cat(2,errormsg{:}); %removes extra errormsg cells
+                b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors - can also use b = all(b)
 		end;
 
 		function [rmax, c50, N, s, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
