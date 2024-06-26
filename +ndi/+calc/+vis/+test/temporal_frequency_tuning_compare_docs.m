@@ -8,8 +8,8 @@ function [b_, errormsg_] = temporal_frequency_tuning_compare_docs(document_expec
 % Initialize b_ as a row vector of ones for tracking comparison results
 % Initialize errormsg_ as an empty cell array to hold error messages
 
-b_ = ones(1,39);
-errormsg_ = cell(1,39);
+b_ = ones(1,23);
+errormsg_ = cell(1,23);
 
 % establish scope-dependent tolerances
 switch(scope),
@@ -90,7 +90,7 @@ end
 [b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tol_significance, 'visual response anova p');
 [b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tol_significance, 'across stimuli anova p');
 
-% Comparing Fitless
+% Comparing fitless
 %   H50
 %   Pref
 %   L50
@@ -106,11 +106,11 @@ end
 %   L50
 %   values
 
-[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'fit');
+[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit_spline.fit, doc_a.fit_spline.fit, tol_fit_spline, 'fit');
 [b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'H50');
 [b_(15),errormsg_{15}] = ndi.test.values_within_tolerance(doc_e.fit_spline.Pref, doc_a.fit_spline.Pref, tol_fit_spline, 'Pref');
 [b_(16),errormsg_{16}] = ndi.test.values_within_tolerance(doc_e.fit_spline.L50, doc_a.fit_spline.L50, tol_fit_spline, 'L50');
-[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit_spline.L50, doc_a.fit_spline.L50, tol_fit_spline, 'values');
+[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit_spline.values, doc_a.fit_spline.values, tol_fit_spline, 'values');
 
 % Comparing fit_dog
 %   fit
@@ -121,11 +121,11 @@ end
 %   parameters
 
 [b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'fit');
-[b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'H50');
-[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'Pref');
-[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'L50');
-[b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'values');
-[b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'parameters');
+[b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit_dog.H50, doc_a.fit_dog.H50, tol_fit_dog, 'H50');
+[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit_dog.Pref, doc_a.fit_dog.Pref, tol_fit_dog, 'Pref');
+[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit_dog.L50, doc_a.fit_dog.L50, tol_fit_dog, 'L50');
+[b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit_dog.values, doc_a.fit_dog.values, tol_fit_dog, 'values');
+[b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters, doc_a.fit_dog.parameters, tol_fit_dog, 'parameters');
                                                                     
 % Identify the b_ values with unmatched results
 % Update b_ to only include those
