@@ -8,8 +8,8 @@ function [b_, errormsg_] = temporal_frequency_tuning_compare_docs(document_expec
 % Initialize b_ as a row vector of ones for tracking comparison results
 % Initialize errormsg_ as an empty cell array to hold error messages
 
-b_ = ones(1,23);
-errormsg_ = cell(1,23);
+b_ = [];
+errormsg_ = cell(0);
 
 % establish scope-dependent tolerances
 switch(scope),
@@ -78,13 +78,16 @@ end
 %   control_mean_stddev
 %   control_mean_stderr
 
-[b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.temporal_frequency, doc_a.tuning_curve.temporal_frequency, tol_tuning_curve, 'temporal_frequency');
-[b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tol_tuning_curve, 'mean');
-[b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tol_tuning_curve, 'stddev');
-[b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tol_tuning_curve, 'stderr');
-[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tol_tuning_curve, 'individual');
-[b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tol_tuning_curve, 'control_stddev');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tol_tuning_curve, 'control_stderr');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.temporal_frequency, doc_a.tuning_curve.temporal_frequency, tol_tuning_curve, 'temporal_frequency');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tol_tuning_curve, 'mean');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tol_tuning_curve, 'stddev');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tol_tuning_curve, 'stderr');
+%[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tol_tuning_curve, 'individual');
+for i = 1:size(doc_a.tuning_curve.individual,1) %number of rows in individual corresponds to the number of specified reps
+    [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual(1,:), doc_a.tuning_curve.individual(i,:), tol_tuning_curve, ['individual data row ',num2str(i)]);
+end
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tol_tuning_curve, 'control_stddev');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tol_tuning_curve, 'control_stderr');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean, doc_a.tuning_curve.control_mean, tol_tuning_curve, 'control_mean');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean_stddev, doc_a.tuning_curve.control_mean_stddev, tol_tuning_curve, 'control_mean_stddev');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean_stderr, doc_a.tuning_curve.control_mean_stderr, tol_tuning_curve, 'control_mean_stderr');
@@ -95,8 +98,8 @@ end
 %   visual_response_anova_p
 %   across_stimuli_anova_p
 
-[b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tol_significance, 'visual response anova p');
-[b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tol_significance, 'across stimuli anova p');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tol_significance, 'visual response anova p');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tol_significance, 'across stimuli anova p');
 
 % Comparing fitless
 %   H50
@@ -106,9 +109,9 @@ end
 %   low_pass_index
 %   high_pass_index
 
-[b_(10),errormsg_{10}] = ndi.test.values_within_tolerance(doc_e.fitless.H50, doc_a.fitless.H50, tol_fitless, 'H50');
-[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fitless.Pref, doc_a.fitless.Pref, tol_fitless, 'Pref');
-[b_(12),errormsg_{12}] = ndi.test.values_within_tolerance(doc_e.fitless.L50, doc_a.fitless.L50, tol_fitless, 'L50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.H50, doc_a.fitless.H50, tol_fitless, 'H50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.Pref, doc_a.fitless.Pref, tol_fitless, 'Pref');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.L50, doc_a.fitless.L50, tol_fitless, 'L50');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.bandwidth, doc_a.fitless.bandwidth, tol_fitless, 'bandwidth');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.low_pass_index, doc_a.fitless.low_pass_index, tol_fitless, 'low_pass_index');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.high_pass_index, doc_a.fitless.high_pass_index, tol_fitless, 'high_pass_index');
@@ -121,11 +124,11 @@ end
 %   values
 %   bandwidth
 
-[b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit_spline.fit, doc_a.fit_spline.fit, tol_fit_spline, 'fit');
-[b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'H50');
-[b_(15),errormsg_{15}] = ndi.test.values_within_tolerance(doc_e.fit_spline.Pref, doc_a.fit_spline.Pref, tol_fit_spline, 'Pref');
-[b_(16),errormsg_{16}] = ndi.test.values_within_tolerance(doc_e.fit_spline.L50, doc_a.fit_spline.L50, tol_fit_spline, 'L50');
-[b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit_spline.values, doc_a.fit_spline.values, tol_fit_spline, 'values');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_spline.fit, doc_a.fit_spline.fit, tol_fit_spline, 'fit');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline, 'H50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_spline.Pref, doc_a.fit_spline.Pref, tol_fit_spline, 'Pref');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_spline.L50, doc_a.fit_spline.L50, tol_fit_spline, 'L50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_spline.values, doc_a.fit_spline.values, tol_fit_spline, 'values');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fitless.bandwidth, doc_a.fitless.bandwidth, tol_fitless, 'bandwidth');
 
 % Comparing fit_dog
@@ -137,12 +140,12 @@ end
 %   parameters
 %   bandwidth
 
-[b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'fit');
-[b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit_dog.H50, doc_a.fit_dog.H50, tol_fit_dog, 'H50');
-[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit_dog.Pref, doc_a.fit_dog.Pref, tol_fit_dog, 'Pref');
-[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit_dog.L50, doc_a.fit_dog.L50, tol_fit_dog, 'L50');
-[b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit_dog.values, doc_a.fit_dog.values, tol_fit_dog, 'values');
-[b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters, doc_a.fit_dog.parameters, tol_fit_dog, 'parameters');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog, 'fit');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.H50, doc_a.fit_dog.H50, tol_fit_dog, 'H50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.Pref, doc_a.fit_dog.Pref, tol_fit_dog, 'Pref');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.L50, doc_a.fit_dog.L50, tol_fit_dog, 'L50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.values, doc_a.fit_dog.values, tol_fit_dog, 'values');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters, doc_a.fit_dog.parameters, tol_fit_dog, 'parameters');
 [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_dog.bandwidth, doc_a.fit_dog.bandwidth, tol_fit_dog, 'bandwidth');
 
 % Comparing fit_gausslog

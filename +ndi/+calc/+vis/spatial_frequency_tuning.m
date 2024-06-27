@@ -265,7 +265,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				sf_props = vis.spatial_frequency_analysis(resp);
+				sf_props = vis.frequency.spatial_frequency_analysis(resp);
 
 				spatial_frequency_tuning.properties = properties;
 				spatial_frequency_tuning.tuning_curve = tuning_curve;

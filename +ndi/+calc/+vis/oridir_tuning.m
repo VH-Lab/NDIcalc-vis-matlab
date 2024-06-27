@@ -394,7 +394,6 @@ classdef oridir_tuning < ndi.calculator
 						otherwise,
 							error(['Unknown scope ' scope '.']);
 					end; % switch
-
 					docs{end} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 

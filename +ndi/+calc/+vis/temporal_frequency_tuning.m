@@ -411,8 +411,8 @@ classdef temporal_frequency_tuning < ndi.calculator
 			%
 
 				[b_,errormsg] = ndi.calc.vis.test.temporal_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);	%need to finish implementing
-        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
-
+        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors; can also use all(b_)
+                errormsg = cat(2,errormsg{:}); %turn into a string
 		end;
 
         function [P, total] = generate_mock_parameters(temporal_freq_calc_obj, scope, index)
@@ -424,11 +424,11 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% P will be a row vector of parameters [a1 b1 a2 b2].
 			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
-			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
+			% SCOPE can be 'standard', 'low_noise', or 'high_noise'.
 			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
 			% using MOD).
 			% 
-				% add options for different scopes
+				% add options for different scopes - see issue #27
                 P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
 				total = size(P_,1);
 
