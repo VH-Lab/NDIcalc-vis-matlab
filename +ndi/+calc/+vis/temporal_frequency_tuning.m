@@ -410,7 +410,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
 			%
 
-				[b_,errormsg] = ndi.calc.vis.test.temporal_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);	%need to implement
+				[b_,errormsg] = ndi.calc.vis.test.temporal_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);	%need to finish implementing
         		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
 
 		end;
@@ -428,7 +428,8 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
 			% using MOD).
 			% 
-				P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
+				% add options for different scopes
+                P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
 				total = size(P_,1);
 
 				actual_index = 1+mod(index-1,total);
