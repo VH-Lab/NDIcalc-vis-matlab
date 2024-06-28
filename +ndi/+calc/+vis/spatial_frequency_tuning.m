@@ -249,11 +249,11 @@ classdef spatial_frequency_tuning < ndi.calculator
 
 				tuning_curve = struct(...
 					'spatial_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
-					'mean', resp.curve(2,:), ...
-					'stddev', resp.curve(3,:), ...
-					'stderr', resp.curve(4,:), ...
-					'individual', {resp.ind}, ...
+						vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
+					'mean', vlt.data.colvec(resp.curve(2,:)), ...
+					'stddev', vlt.data.colvec(resp.curve(3,:)), ...
+					'stderr', vlt.data.colvec(resp.curve(4,:)), ...
+					'individual', vlt.data.cellarray2mat(resp.ind), ...
 					'control_mean', stc.control_response_mean,...
 					'control_stddev', stc.control_response_stddev,...
 					'control_stderr', stc.control_response_stderr,...
@@ -342,10 +342,12 @@ classdef spatial_frequency_tuning < ndi.calculator
 					%spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
                     spatial_freq_values = logspace(-2,log10(60),numsteps);
                     switch (function_choice)
-                        case 'gausslog'
-                            r = vlt.math.gausslog(spatial_freq_values,function_params);
                         case 'dog'
                             r = vlt.math.dog(spatial_freq_values,function_params);
+                        case 'movshon' %function_params should have 4 values 
+                            r = vis.frequency.movshon2005_func(spatial_freq_values,function_params);
+                        case 'movshon_c' %function_params should have 5 params 
+                            r = vis.frequency.movshon2005_func(spatial_freq_values,function_params);
                         otherwise
                             error(['Unkown function ' function_choice '.']);
                     end
@@ -432,17 +434,20 @@ classdef spatial_frequency_tuning < ndi.calculator
 			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
 			% using MOD).
 			% 
-                function_choice_{1} = 'gausslog';
-				P_(1,:) = [ 0 1 .1 1 ] ; %no offset, peak normalized to 1, peak x-value set to .1, width set to 1
-                function_choice_{2} = 'dog';
-				P_(2,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
-				total = size(P_,1);
-
+                %plot is using dog, movshon, and movshon_c fits - let's use
+                %those here
+                function_choice_{1} = 'dog';
+				P_{1} = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
+                function_choice_{2} = 'movshon';
+                P_{2} = [ 10 5 12 1]; %example from vis.frequency.movshon2005_func
+                function_choice_{3} = 'movshon_c';
+                P_{3} = [ 10 5 12 1 1]; %example from vis.frequency.movshon2005_func
+                total = size(P_,2); % P_ is a 1xN cell array, this sets total equal to N 
 				actual_index = 1+mod(index-1,total);
 
 				% no dependence on scope for this stimulus type
 
-				P = P_(actual_index,:);
+				P = P_{actual_index};
                 function_choice = function_choice_{actual_index};
 		end; % generate_mock_parameters
 	end; % methods()

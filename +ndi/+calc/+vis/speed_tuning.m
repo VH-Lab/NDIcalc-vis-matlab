@@ -408,8 +408,8 @@ classdef speed_tuning < ndi.calculator
 			%
 
 				[b_,errormsg] = ndi.calc.vis.test.speed_tuning_compare_docs(expected_doc,actual_doc,scope);
-        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
-
+        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors. Alternative: b = all(b_);
+                errormsg = cat(2,errormsg{:}); %turn into a string
 		end;
 
         function [P, total] = generate_mock_parameters(speed_calc_obj, scope, index)

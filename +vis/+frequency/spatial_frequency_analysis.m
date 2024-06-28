@@ -94,9 +94,9 @@ end;
 
 [lowdog, prefdog, highdog] = vis.frequency.compute_halfwidth(sfrange_interp,response);
 
-fit_dog.parameters = dog_par;
-fit_dog.values = sfrange_interp;
-fit_dog.fit = response;
+fit_dog.parameters = vlt.data.colvec(dog_par);
+fit_dog.values = vlt.data.colvec(sfrange_interp);
+fit_dog.fit = vlt.data.colvec(response);
 fit_dog.L50 = lowdog;
 fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
