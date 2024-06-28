@@ -88,9 +88,9 @@ end;
 	
 [lowdog, prefdog, highdog] = vis.frequency.compute_halfwidth(tfrange_interp,response);
 
-fit_dog.parameters = dog_par;
-fit_dog.values = tfrange_interp;
-fit_dog.fit = response;
+fit_dog.parameters = vlt.data.colvec(dog_par);
+fit_dog.values = vlt.data.colvec(tfrange_interp);
+fit_dog.fit = vlt.data.colvec(response);
 fit_dog.L50 = lowdog;
 fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
@@ -136,8 +136,8 @@ fitx = tfrange_interp;
 fity = interp1([rcurve(1,:) ],[rcurve(2,:)], fitx,'spline');
 [lowspline, prefspline, highspline] = vis.frequency.compute_halfwidth(fitx,fity);
 
-fit_spline.values = fitx;
-fit_spline.fit = fity;
+fit_spline.values = vlt.data.colvec(fitx);
+fit_spline.fit = vlt.data.colvec(fity);
 fit_spline.L50 = lowspline;
 fit_spline.Pref = prefspline;
 fit_spline.H50 = highspline;
@@ -161,9 +161,9 @@ e_range = [ 0 0 ];
 
 [low_gausslog,pref_gausslog,high_gausslog] = vis.frequency.compute_halfwidth(gausslog_fitcurve(1,:),gausslog_fitcurve(2,:));
 
-fit_gausslog.parameters = gausslog_par;
-fit_gausslog.values = tfrange_interp;
-fit_gausslog.fit = vlt.math.gausslog(fit_gausslog.values,fit_gausslog.parameters);
+fit_gausslog.parameters = vlt.data.colvec(gausslog_par);
+fit_gausslog.values = vlt.data.colvec(tfrange_interp);
+fit_gausslog.fit = vlt.data.colvec(vlt.math.gausslog(fit_gausslog.values,fit_gausslog.parameters));
 fit_gausslog.L50 = low_gausslog;
 fit_gausslog.Pref = pref_gausslog;
 fit_gausslog.H50 = high_gausslog;

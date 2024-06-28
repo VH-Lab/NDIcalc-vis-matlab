@@ -161,9 +161,14 @@ end
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tolerance.tuning_curve.mean, 'mean');
 [b_(3),errormsg_{3}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stddev, doc_a.tuning_curve.stddev, tolerance.tuning_curve.stddev, 'stddev');
 [b_(4),errormsg_{4}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.stderr, doc_a.tuning_curve.stderr, tolerance.tuning_curve.stderr, 'stderr');
-[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance.tuning_curve.individual, 'individual');
-[b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance.tuning_curve.raw_individual, 'raw individual');
-[b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance.tuning_curve.control_individual, 'control individual');
+%[b_(5),errormsg_{5}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual, doc_a.tuning_curve.individual, tolerance.tuning_curve.individual, 'individual');
+for i = 1:size(doc_a.tuning_curve.individual,1)
+    [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual(1,:), doc_a.tuning_curve.individual(i,:), tolerance.tuning_curve.individual, ['individual data row ',num2str(i)]);
+    [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual(1,:), doc_a.tuning_curve.raw_individual(i,:), tolerance.tuning_curve.raw_individual, ['raw individual data row ',num2str(i)]);
+    [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual(1,:), doc_a.tuning_curve.control_individual(i,:), tolerance.tuning_curve.control_individual, ['control individual data row ',num2str(i)]);
+end
+% [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.raw_individual, doc_a.tuning_curve.raw_individual, tolerance.tuning_curve.raw_individual, 'raw individual');
+% [b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_individual, doc_a.tuning_curve.control_individual, tolerance.tuning_curve.control_individual, 'control individual');
 
 % Comparing significance
 %   visual_response_anova_p

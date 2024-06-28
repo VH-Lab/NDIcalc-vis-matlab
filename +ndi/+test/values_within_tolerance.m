@@ -35,19 +35,33 @@ if ~size_matched,
   return;
 end;
 
-if isnan(v1)
-    b = 0;
-    msg = [fieldname ' is not a number'];
-    return
+is_nan = isnan(v1)|isnan(v2); %which indices of either v1 or v2 are NaN
+if (any(is_nan,'all')) && ~isequaln(v1((is_nan)),v2(is_nan)) %do v1 and v2 share NaN indices? If not, there's an error
+  b = 0;
+  msg = ['Arrays of ' fieldname ' do not have shared NaN indices'];
+  return;
 end
 
-if isnan(v2)
-    b = 0;
-    msg = [fieldname ' is not a number'];
-    return
+is_inf = isinf(v1)|isinf(v2); %which indices of either v1 or v2 are inf
+if (any(is_inf,'all')) && ~isequaln(v1((is_inf)),v2(is_inf)) %do v1 and v2 share NaN indices? If not, there's an error
+  b = 0;
+  msg = ['Arrays of ' fieldname ' do not have shared NaN indices'];
+  return;
 end
 
-tolerance_matched = max(abs(v1(:) - v2(:))) < tolerance;
+% if isnan(v1)
+%     b = 0;
+%     msg = [fieldname ' is not a number'];
+%     return
+% end
+% 
+% if isnan(v2)
+%     b = 0;
+%     msg = [fieldname ' is not a number'];
+%     return
+% end
+isnot_infOrNan = ~(isinf(v1)|isnan(v1));
+tolerance_matched = max(abs(v1(isnot_infOrNan) - v2(isnot_infOrNan))) < tolerance;
 
 if ~tolerance_matched,
    b = 0;
