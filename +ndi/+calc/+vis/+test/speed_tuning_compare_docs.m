@@ -20,7 +20,7 @@ switch(scope),
        tolerance.tuning_curve.stddev = 1e-6;			
        tolerance.tuning_curve.stderr = 1e-6;			
        tolerance.tuning_curve.individual = 1e-6;					
-       tolerance.tuning_curve.control_stddv = 1e-6;
+       tolerance.tuning_curve.control_stddev = 1e-6;
        tolerance.tuning_curve.control_stderr = 1e-6;
        tolerance.significance.visual_response_anova_p = 1e-6;	
        tolerance.significance.across_stimuli_anova_p = 1e-6;	
