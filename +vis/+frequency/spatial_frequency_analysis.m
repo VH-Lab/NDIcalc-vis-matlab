@@ -80,7 +80,7 @@ rcurve = resp.curve;
 
 [dog_par,norm_error] = vis.frequency.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
 
-dog_par = [0 dog_par]; % add in the 0 to comply with old dog
+%dog_par = [0 dog_par]; % add in the 0 to comply with old dog
 
 sfrange_interp=logspace( log10(min( min(rcurve(1,:)),0.01)),log10(120),100);
 if isempty(dog_par),
@@ -89,7 +89,7 @@ if isempty(dog_par),
 	response=NaN*sfrange_interp;
 else,
 	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
-	response=dog(dog_par',sfrange_interp);
+	response=vis.frequency.dog(sfrange_interp,dog_par');
 end;
 
 [lowdog, prefdog, highdog] = vis.frequency.compute_halfwidth(sfrange_interp,response);
