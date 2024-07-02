@@ -428,14 +428,32 @@ classdef speed_tuning < ndi.calculator
                 %1st test taken from demo script
                 %2nd test neuron not selective for speed
                 %3rd test neuron maximally selective for speed
+                %4th through 7th: tiling TF/SF space with TF-tuned
+                %cells
+                %8th through 11th: tiling TF/SF space with SF-tuned
+                %cells
+                %12th through 15th: tiling TF/SF space with speed-tuned
+                %cells
+                %16th: try a different peak neuron response?
+                %17th and 18th: skew temporal freq tuning curve in
+                %different directions?
                 %add more tests by adding to end of each parameter's vector
-                A = [50,50,50]; %Peak response of the neuron
-                zeta = [0,0,0]; %Skew of the temporal freq tuning curve
-                xi = [.2,0,1]; %speed tuning index (0 to 1)
-                sigma_sf = [1,1,1]; % Tuning width of the neuron for spatial frequency (Cycles per degree)
-                sigma_tf = [1,1,1]; % Tuning width of the neuron for temporal frequency (Cycles per second)
-                sf0 = [0.2,0.2,0.2]; %preferred spatial frequency averaged across temporal frequencies
-                tf0 = [2,2,2]; %preferred temporal frequency averaged across spatial frequencies
+                A = [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,20,20]; %Peak response of the neuron
+                zeta = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,.5,-.5]; %Skew of the temporal freq tuning curve
+                xi = [.2,0,1,0,0,0,0,0,0,0,0,1,1,1,1,.5,.5,.5]; %speed tuning index (0 to 1)
+                sigma_sf = [1,1,1,1.2,1.2,1.2,1.2,.5,.5,.5,.5,1,1,1,1,1,1,1]; % Tuning width of the neuron for spatial frequency (Cycles per degree)
+                sigma_tf = [1,1,1,.5,.5,.5,.5,1.2,1.2,1.2,1.2,1,1,1,1,1,1,1]; % Tuning width of the neuron for temporal frequency (Cycles per second)
+                sf0 = [0.2,0.2,0.2,.2,.8,.2,.8,.2,.8,.2,.8,.2,.8,.2,.8,sqrt(2)/5,sqrt(2)/5,sqrt(2)/5]; %preferred spatial frequency averaged across temporal frequencies
+                tf0 = [2,2,2,2,2,16,16,2,2,16,16,2,2,16,16,4,4,4]; %preferred temporal frequency averaged across spatial frequencies
+                
+                %for trying out new tests:
+                % A = 20;
+                % zeta = .5;
+                % xi = .5;
+                % sigma_sf = 1;
+                % sigma_tf = 1;
+                % sf0 = sqrt(2)/5;
+                % tf0 = 4;
                 P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
 
                 % %1st test from spatial_frequency_tuning:
