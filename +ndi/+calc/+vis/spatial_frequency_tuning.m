@@ -378,7 +378,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 					docs{i} = ndi.mock.fun.stimulus_response(S,...
 						param_struct, independent_variable, x, r, noise, reps);
 
-                    calcparameters = spatial_freq_calc_obj.default_search_for_input_parameters();
+                    !calcparameters = spatial_freq_calc_obj.default_search_for_input_parameters();
                     calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
 					calcparameters.query.query = calcparameters.query.query & ...
 						ndi.query('','depends_on','element_id',docs{i}{3}.id());
@@ -427,7 +427,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
 			%
 			% Generates a parameter set for generating a mock document with a given index value.
-			% P will be a row vector of parameters [Rsp Rp Rn theta sigma].
+			% P will be a row vector of parameters 
 			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
 			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
@@ -440,8 +440,8 @@ classdef spatial_frequency_tuning < ndi.calculator
 				P_{1} = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
                 function_choice_{2} = 'movshon';
                 P_{2} = [ 10 5 12 1]; %example from vis.frequency.movshon2005_func
-                function_choice_{3} = 'movshon_c';
-                P_{3} = [ 10 5 12 1 1]; %example from vis.frequency.movshon2005_func
+                function_choice_{1} = 'movshon_c';
+                P_{1} = [ 10 5 12 1 -1]; 
                 total = size(P_,2); % P_ is a 1xN cell array, this sets total equal to N 
 				actual_index = 1+mod(index-1,total);
 
