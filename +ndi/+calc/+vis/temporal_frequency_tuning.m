@@ -430,6 +430,13 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% 
 				% add options for different scopes - see issue #27
                 P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
+                P_(2,:) = [1 1 .5 1];
+                P_(3,:) = [1 1 .5 2 ];
+                P_(4,:) = [1 1 2 .5] ;
+                P_(5,:) = [1 1 1 .5];
+                P_(6,:) = [2 1 2 .5];
+                P_(7,:) = [1 2 1 1];
+                P_(8,:) = [1 2 -1 1];
 				total = size(P_,1);
 
 				actual_index = 1+mod(index-1,total);
