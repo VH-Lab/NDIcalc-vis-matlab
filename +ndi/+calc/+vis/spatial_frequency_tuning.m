@@ -453,7 +453,22 @@ classdef spatial_frequency_tuning < ndi.calculator
                 P_{8} = [2 1 2 .5];
                 P_{9} = [1 2 1 1];
                 P_{10} = [1 2 -1 1];
-                
+                for i = 11:23
+                    function_choice_{i} = 'movshon_c';
+                end
+                P_{11} = [10 10 12 1 -1]; %double the characteristic spatial frequency
+                P_{12} = [5 10 12 1 -1]; %flip the scaling factor and characteristic spatial frequency
+                P_{13} = [10 10 18 1 -1]; %increase the corner spatial frequency on the lower frequency side
+                P_{14} = [10 10 6 1 -1]; %halve the corner spatial frequency on the lower frequency side
+                P_{15} = [10 10 6 2 -1]; %double the slope of the lower frequency side
+                P_{16} = [10 10 6 5 -1]; %further increase the slope of the lower frequency side
+                P_{17} = [10 10 6 .5 -1]; %halve the slope of the lower frequency side
+                P_{18} = [10 10 6 .5 1]; %raise the constant to above baseline
+                P_{19} = [10 10 6 .5 0]; %keep the constant at 0
+                P_{20} = [20 10 6 .5 -.5]; %double the scaling factor
+                P_{21} = [20 10 0 .5 -.5]; %set the corner frequency of the lower frequency side to lowest possible (0)
+                P_{22} = [20 10 6 0 -5]; %another boundary condition: set slope of lower frequency side to 0
+                P_{23} = [0 10 6 .5 -.5]; %set scaling factor to 0 as an example of no tuning
                 total = size(P_,2); % P_ is a 1xN cell array, this sets total equal to N 
 				actual_index = 1+mod(index-1,total);
 
