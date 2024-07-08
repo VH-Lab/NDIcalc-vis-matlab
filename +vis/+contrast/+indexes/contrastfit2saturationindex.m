@@ -1,7 +1,7 @@
 function si = contrastfit2saturationindex(contrast, responses)
 % CONTRASTFIT2SATURATIONINDEX - Compute Saturation Index 
 %
-%   SI = vlt.neuro.vision.contrast.indexes.contrastfit2saturationindex(CONTRAST, RESPONSE)
+%   SI = ndi.vis.contrast.contrastfit2saturationindex(CONTRAST, RESPONSE)
 %
 %  Given contrast in 1 percent steps in CONTRAST, this function
 %  computes the "saturation index" that is defined as:

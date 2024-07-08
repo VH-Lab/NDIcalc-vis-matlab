@@ -386,7 +386,7 @@ classdef contrast_tuning < ndi.calculator
 			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
 			%
 			% Generates a parameter set for generating a mock document with a given index value.
-			% P will be a row vector of parameters [Rsp Rp Rn theta sigma].
+			% P will be a row vector of parameters [C, C50, N, S].
 			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
 			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
@@ -403,8 +403,9 @@ classdef contrast_tuning < ndi.calculator
                 P_(7,:) = [ 10 .45 2 2 ] ; % higher N
                 P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
                 P_(9,:) = [ 10 .15 1.5 2 ] ; % lower c50
+                P_(10,:) = [ -1 .45 1.5 1 ]; %all negative, R(0) == max(R) so the saturation index should be NaN
+                P_(11,:) = [10 .05 1.5 2]; %seems like this makes R(0) == max(R), so the saturation index should be NaN
 					% we should add more
-                    %add a case where R(0) == max(R)
 				total = size(P_,1);
 
 				actual_index = 1+mod(index-1,total);
