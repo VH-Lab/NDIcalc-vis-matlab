@@ -404,13 +404,13 @@ classdef contrast_tuning < ndi.calculator
                 P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
                 P_(9,:) = [ 10 .15 1.5 2 ] ; % lower c50
 					% we should add more
-
+                    %add a case where R(0) == max(R)
 				total = size(P_,1);
 
 				actual_index = 1+mod(index-1,total);
 
 				% no dependence on scope for this stimulus type
-
+                
 				P = P_(actual_index,:);
                 rmax = P(1);
                 c50 = P(2);
