@@ -1,11 +1,29 @@
-function [thestruct] = freq_struct(tuning_doc, stimulus_response_doc, response_type, f1f0_struct, varargin)
+function [t] = tc_table(tuning_doc, stimulus_response_doc, response_type, f1f0_struct, varargin)
 
 
 prefix = '';
-%property_name = 'temporal_frequency_tuning';
-%x_axis_name = 'temporal_frequency';
 
 did.datastructures.assign(varargin{:});
+
+t_tuning_doc = tuning_doc.to_table();
+
+t_tuning_doc = renamevars(t_tuning_doc,t_tuning_doc.Properties.VariableNames,...
+	strcat(prefix,t_tuning_doc.Properties.VariableNames));
+
+t_stimulus_response_doc = stimulus_response_doc.to_table();
+
+t_stimulus_response_doc = ...
+	renamevars(t_stimulus_response_doc,t_stimulus_response_doc.Properties.VariableNames,...
+	strcat([prefix 'resp_'],t_stimulus_response_doc.Properties.VariableNames));
+
+t_f0f1 = struct2table(f1f0_struct);
+
+t_f0f1 = renamevars(t_f0f1,t_f0f1.Properties.VariableNames,...
+	strcat(prefix,t_f0f1.Properties.VariableNames));
+
+t = [t_tuning_doc t_stimulus_response_doc t_f0f1];
+
+return;
 
 tune_info = getfield(tuning_doc.document_properties, property_name);
 

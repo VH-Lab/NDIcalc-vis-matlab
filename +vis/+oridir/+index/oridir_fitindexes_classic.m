@@ -61,15 +61,27 @@ end;
 da = diff(sort(angles));
 da = da(1);
 
-[P_fit,fitcurve,msse,R2] = vis.oridir.fit.doublegaussian(tuneangles,tuneresps);
-Rsp = P_fit(1);
-Rp = P_fit(2);
-Rn = P_fit(3);
-Ot = P_fit(4);
-sigm = P_fit(5);
+widthseeds = [da/2 da 40 60 90];
+errors = [Inf];
+for i=1:length(widthseeds),
+	ws = widthseeds(i);
+	[Rspt,Rpt,Ott,sigmt,Rnt,fitcurvet,ert,R2t] = vlt.fit.otfit_carandini(tuneangles,0,maxresp,otpref,ws,'widthint',[da/2 180],...
+		'Rpint',[0 3*maxresp],'Rnint',[0 3*maxresp],'spontint',[min(tuneresps) max(tuneresps)],'data',tuneresps);
+	if ert<errors(1),
+		Rsp=Rspt;
+		Rp=Rpt;
+		Ot=Ott;
+		sigm=sigmt;
+		fitcurve=fitcurvet;
+		er=ert;
+		R2=R2t;
+		Rn=Rnt;
+		errors(1) = ert;
+        end;
+end;
 
 fi.fit_parameters = [ Rsp Rp Ot sigm Rn];
-fi.fit = fitcurve;
+fi.fit = [0:359; vlt.data.rowvec(fitcurve)];
 fi.ot_index = vlt.neuro.vision.oridir.index.fit2fitoi(fi.fit);
 fi.ot_index_rectified = min(vlt.math.rectify(fi.ot_index),1);
 fi.ot_index_diffsum = vlt.neuro.vision.oridir.index.fit2fitoidiffsum(fi.fit);

@@ -1,26 +1,26 @@
-function [stats] = plot_tf(bigtable, condition_name, reference_group, group_name, options)
-% PLOT_TF - visualize temporal frequency results across conditions
+function [stats] = plot_oridir2(bigtable, condition_name, reference_group, group_name, options)
+% PLOT_ORIDIR - visualize temporal frequency results across conditions
 %
-% STATS = PLOT_TF(TBL, CONDITION_NAME, REFERENCE_GROUP, GROUP_NAME, ...)
+% STATS = PLOT_ORIDIR(TBL, CONDITION_NAME, REFERENCE_GROUP, GROUP_NAME, ...)
 %
 % Given a table TBL and table column name that describes the different experimental
 % conditions CONDITION_NAME and the name of the REFERENCE_GROUP (the condition
 % that is the control) and the name of a column that determines random factors
-% (GROUP_NAME), plots many features relevant for TEMPORAL FREQUENCY tuning.
+% (GROUP_NAME), plots many features relevant for ORIENTATION/DIRECTION tuning.
 %
 % The fields that are examined are as follows:
-%   [prefix '_tf_empirical_low_pass_index']
-%   [prefix '_tf_ultimate_Pref']
-%   [prefix '_tf_fitless_bandwidth']
-%   [prefix '_tf_empirical_high_pass_index']
-%   [prefix '_tf_empirical_max_response_value']
+%   [prefix '_DIR_empirical_low_pass_index']
+%   [prefix '_DIR_ultimate_Pref']
+%   [prefix '_DIR_fitless_bandwidth']
+%   [prefix '_DIR_empirical_high_pass_index']
+%   [prefix '_DIR_empirical_max_response_value']
 %   
 %
 % The function takes options as name/value pairs:
 % ----------------------------------------------------------------------------------
 % | Parameter (default)          | Description                                     |
 % |------------------------------|-------------------------------------------------|
-% | prefix ('best')              | The prefix to be applied in front of temporal   |
+% |prefix ('best')               | The prefix to be applied in front of temporal   |
 % |                              |    frequency tuning fields.                     |
 % | colors (vlt.plot.colorlist())| The colors that should be assigned to the       |
 % |                              |    conditions.                                  |
@@ -42,20 +42,20 @@ prefix = options.prefix;
 colors = options.colors;
 group_line_color = options.group_line_color;
 
-I = find(bigtable.best_tf_visual_response_anova_p<0.05);
-bigtable_tf = bigtable(I,:);
+sigstr = [prefix '_DIR_oridir.sig.visual_response_anova_p'];
 
-Y_values = {[prefix '_tf_empirical_low_pass_index'],... 
-        [prefix '_tf_ultimate_Pref'],... 
-        [prefix '_tf_fitless_bandwidth'],... 
-        [prefix '_tf_empirical_high_pass_index'],... 
-        [prefix '_tf_empirical_max_response_value']}; 
-Y_labels = {'TF low pass index','TF Pref (Hz)','TF Bandwidth',... 
-        'TF high pass index','TF Max Response'}; 
- 
-log_type = [ 0 1 0 0 0]; 
-plot_type = [1 1 2 1 1]; 
-stat_type = [ 1 1 2 1 1]; 
+I = find(bigtable.(sigstr)<0.05);
+bigtable_dir = bigtable(I,:);
+
+Y_values = {...
+	[prefix '_DIR_oridir.vector.circular_variance'],...
+	[prefix '_DIR_oridir.vector.direction_circular_variance']};
+Y_labels = {'1 - CircVar','1 -DirCircVar'};
+
+log_type = [ 0 0 ];
+plot_type = [1 1 ];
+stat_type = [ 1 1 ];
+
 
 figlist_exist = get(0,'children');
 
@@ -65,14 +65,16 @@ stats.prefix = prefix;
 stats.Y_values = Y_values;
 stats.Y_labels = Y_labels;
 
-[stats.lme,stats.lme_]=vlt.stats.plot_lme_array(bigtable_tf, condition_name, Y_values, Y_labels, ...
-	{'Y','Y','vlt.math.clip(Y,[0 8])','Y','Y'}, reference_group, group_name, log_type, plot_type, stat_type,...
-	'colors',colors,'category_mean_color',[0.5 0.5 0.5],'group_mean_color',group_line_color,'point_marker_size',2,...
+[stats.lme,stats.lme_]=vlt.stats.plot_lme_array(bigtable_dir, condition_name,...
+	 Y_values, Y_labels, {'1-Y','1-Y'}, ...
+	reference_group, group_name, log_type, plot_type, stat_type,...
+	'colors',colors,'category_mean_color',[0.5 0.5 0.5],...
+	'group_mean_color',group_line_color,'point_marker_size',2,...
 	'within_category_space',2,'across_category_space',4);
 
 new_figs = setdiff(get(0,'children'),figlist_exist);
 for i=1:numel(new_figs),
-    set(new_figs(i),'tag',['TF_' int2str(i)]);
+    set(new_figs(i),'tag',['DIR_' int2str(i)]);
 end;
 figlist_exist = get(0,'children');
 
