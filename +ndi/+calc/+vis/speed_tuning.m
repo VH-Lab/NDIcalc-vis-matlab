@@ -463,13 +463,13 @@ classdef speed_tuning < ndi.calculator
                 
                 %for trying out new tests:
                 % A = 20;
-                % zeta = .5;
-                % xi = .5;
+                % zeta = 0;
+                % xi = .000009;
                 % sigma_sf = 1;
                 % sigma_tf = 1;
                 % sf0 = sqrt(2)/5;
                 % tf0 = 4;
-                P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
+                % P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
 
                 % %1st test from spatial_frequency_tuning:
                 % sf_params = [1 1 0 1]; 

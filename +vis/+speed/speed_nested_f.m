@@ -20,7 +20,7 @@ function p = speed_nested_f(response_vector_length,error_withspeed,error_nospeed
 %    P is the p-value returned by the F-test performed between the two
 %    models.
 %
-%  See also SPEED.FIT.FIT, SPEED.FIT.FIT_NOSPEED.
+%  See also  VIS.SPEED.FIT, VIS.SPEED.FIT_NOSPEED.
 %
     df_withspeed = response_vector_length - 7; % The number of degrees of freedom in the model with a speed parameter
     df_nospeed = response_vector_length - 6; % The number of degrees of freedom in the model without a speed parameter

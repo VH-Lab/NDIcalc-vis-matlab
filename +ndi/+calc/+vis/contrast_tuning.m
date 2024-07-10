@@ -246,7 +246,7 @@ classdef contrast_tuning < ndi.calculator
 					pref = fi.fit(1,pref_index);
 					fit = setfield(fit,[prefixes{f} 'pref'], pref);
 					fit = setfield(fit,[prefixes{f} 'empirical_c50'], fi.empirical_C50);
-					fit = setfield(fit,[prefixes{f} '_r2'], fi.r2);
+					fit = setfield(fit,[prefixes{f} 'r2'], fi.r2);
 					fit = setfield(fit,[prefixes{f} 'relative_max_gain'], fi.relative_max_gain);
 					fit = setfield(fit,[prefixes{f} 'saturation_index'], fi.saturation_index);
 					fit = setfield(fit,[prefixes{f} 'sensitivity'], vlt.data.colvec(fi.sensitivity));

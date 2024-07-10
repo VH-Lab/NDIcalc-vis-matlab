@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "ndi.calc.vis.contrast_tuning",
-    "version": "e0092756f034a7b78373389828d739bad15e43d8",
+    "version": "fedd1881ecc19fe9e16c5079d526be5dd4484aec",
     "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab",
     "os": "MACI64",
     "os_version": "13.3.1",
@@ -9,10 +9,10 @@
     "interpreter_version": "9.14"
   },
   "base": {
-    "id": "412690e38f09af30_c092fc57934a13dc",
+    "id": "412690e789a68be5_40d10a1a7449f543",
     "session_id": "412690b35e49aede_c0c3f4ca3697ac85",
     "name": "",
-    "datestamp": "2024-07-08T18:42:17.633Z"
+    "datestamp": "2024-07-10T18:27:08.534Z"
   },
   "contrast_tuning": {
     "properties": {
@@ -353,7 +353,7 @@
       ],
       "naka_rushton_RB_pref": 1,
       "naka_rushton_RB_empirical_c50": 0.13,
-      "naka_rushton_RB__r2": 0.517621052194585,
+      "naka_rushton_RB_r2": 0.517621052194585,
       "naka_rushton_RB_relative_max_gain": 6.8197294875320056,
       "naka_rushton_RB_saturation_index": 0,
       "naka_rushton_RB_sensitivity": [
@@ -581,7 +581,7 @@
       ],
       "naka_rushton_RBN_pref": 1,
       "naka_rushton_RBN_empirical_c50": 0.16,
-      "naka_rushton_RBN__r2": 0.76915911362303757,
+      "naka_rushton_RBN_r2": 0.76915911362303757,
       "naka_rushton_RBN_relative_max_gain": 6.6211912815507583,
       "naka_rushton_RBN_saturation_index": 0,
       "naka_rushton_RBN_sensitivity": [
@@ -810,7 +810,7 @@
       ],
       "naka_rushton_RBNS_pref": 0.45,
       "naka_rushton_RBNS_empirical_c50": 0.19,
-      "naka_rushton_RBNS__r2": 1,
+      "naka_rushton_RBNS_r2": 1,
       "naka_rushton_RBNS_relative_max_gain": 3.4895423911581247,
       "naka_rushton_RBNS_saturation_index": 0.44668268600508854,
       "naka_rushton_RBNS_sensitivity": [
@@ -831,17 +831,17 @@
     "input_parameters": [],
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690e38f02a768_40c107998b1743d4"
+      "value": "412690e789a0966d_40c9fbb123b554ff"
     }
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "412690e38ed67b40_40c5f501de66bcca"
+      "value": "412690e78967f60e_40cbea70e1ced219"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690e38f02a768_40c107998b1743d4"
+      "value": "412690e789a0966d_40c9fbb123b554ff"
     }
   ],
   "document_class": {
