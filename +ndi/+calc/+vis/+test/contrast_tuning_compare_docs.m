@@ -36,7 +36,9 @@ switch(scope),
        tolerance.fit.naka_rushton_RB_relative_max_gain = 5; %max(dr/dc) where dc is <1 and dr can be up to ~50
        tolerance.fit.naka_rushton_RB_saturation_index = 0.1; %0 to 1 if R100 > R0, otherwise can theoretically go up to inf
        tolerance.fit.naka_rushton_RB_sensitivity = 10; %units of 1/contrast (1 to up to 1000)
-       tolerance.fit.naka_rushton_RBN_parameters = 0.1;
+       tolerance.fit.naka_rushton_RBN_parameters(1) = 5; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBN_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
        tolerance.fit.naka_rushton_RBN_contrast = 0.1;
        tolerance.fit.naka_rushton_RBN_values = 0.1;
        tolerance.fit.naka_rushton_RBN_pref = 0.1;
@@ -45,7 +47,10 @@ switch(scope),
        tolerance.fit.naka_rushton_RBN_relative_max_gain = 0.1;
        tolerance.fit.naka_rushton_RBN_saturation_index = 0.1;
        tolerance.fit.naka_rushton_RBN_sensitivity = 0.1;
-       tolerance.fit.naka_rushton_RBNS_parameters = 0.05;
+       tolerance.fit.naka_rushton_RBNS_parameters(1) = 5; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBNS_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
+       tolerance.fit.naka_rushton_RBNS_parameters(4) = 0.1; %supersaturation, ~1 to ~2.5
        tolerance.fit.naka_rushton_RBNS_contrast = 0.1;
        tolerance.fit.naka_rushton_RBNS_values = 0.1;
        tolerance.fit.naka_rushton_RBNS_pref = 0.1; 
@@ -232,7 +237,8 @@ end
 %	naka_rushton_RBNS_saturation_index
 %	naka_rushton_RBNS_sensitivity
                                                               
-[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_parameters, doc_a.fit.naka_rushton_RB_parameters, tolerance.fit.naka_rushton_RB_parameters, 'naka rushton RB parameters');
+[b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_parameters(1), doc_a.fit.naka_rushton_RB_parameters(1), tolerance.fit.naka_rushton_RB_parameters(1), 'naka rushton RB parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_parameters(2), doc_a.fit.naka_rushton_RB_parameters(2), tolerance.fit.naka_rushton_RB_parameters(2), 'naka rushton RB parameter 2');
 [b_(12),errormsg_{12}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_contrast, doc_a.fit.naka_rushton_RB_contrast, tolerance.fit.naka_rushton_RB_contrast, 'naka rushton RB contrast');
 [b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_values, doc_a.fit.naka_rushton_RB_values, tolerance.fit.naka_rushton_RB_values, 'naka rushton RB values');
 [b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_pref, doc_a.fit.naka_rushton_RB_pref, tolerance.fit.naka_rushton_RB_pref, 'naka rushton RB pref');
@@ -241,7 +247,10 @@ end
 [b_(17),errormsg_{17}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_relative_max_gain, doc_a.fit.naka_rushton_RB_relative_max_gain, tolerance.fit.naka_rushton_RB_relative_max_gain, 'naka rushton RB relative max');
 [b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_saturation_index, doc_a.fit.naka_rushton_RB_saturation_index, tolerance.fit.naka_rushton_RB_saturation_index, 'naka rushton RB saturation index');
 [b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RB_sensitivity, doc_a.fit.naka_rushton_RB_sensitivity, tolerance.fit.naka_rushton_RB_sensitivity, 'naka rushton RB sensitivity');
-[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters, doc_a.fit.naka_rushton_RBN_parameters, tolerance.fit.naka_rushton_RBN_parameters, 'naka rushton RBN parameters');
+[b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters(1), doc_a.fit.naka_rushton_RBN_parameters(1), tolerance.fit.naka_rushton_RBN_parameters(1), 'naka rushton RBN parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters(1), doc_a.fit.naka_rushton_RBN_parameters(1), tolerance.fit.naka_rushton_RBN_parameters(1), 'naka rushton RBN parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters(2), doc_a.fit.naka_rushton_RBN_parameters(2), tolerance.fit.naka_rushton_RBN_parameters(2), 'naka rushton RBN parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_parameters(3), doc_a.fit.naka_rushton_RBN_parameters(3), tolerance.fit.naka_rushton_RBN_parameters(3), 'naka rushton RBN parameter 3');
 [b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_contrast, doc_a.fit.naka_rushton_RBN_contrast, tolerance.fit.naka_rushton_RBN_contrast, 'naka rushton RBN contrast');
 [b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_values, doc_a.fit.naka_rushton_RBN_values, tolerance.fit.naka_rushton_RBN_values, 'naka rushton RBN values');
 [b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_pref, doc_a.fit.naka_rushton_RBN_pref, tolerance.fit.naka_rushton_RBN_pref, 'naka rushton RBN pref');
@@ -251,6 +260,10 @@ end
 [b_(27),errormsg_{27}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_saturation_index, doc_a.fit.naka_rushton_RBN_saturation_index, tolerance.fit.naka_rushton_RBN_saturation_index, 'naka rushton RBN saturation index');
 [b_(28),errormsg_{28}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBN_sensitivity, doc_a.fit.naka_rushton_RBN_sensitivity, tolerance.fit.naka_rushton_RBN_sensitivity, 'naka rushton RBN sensitivity');
 [b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters, doc_a.fit.naka_rushton_RBNS_parameters, tolerance.fit.naka_rushton_RBNS_parameters, 'naka rushton RBNS parameters');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters(1), doc_a.fit.naka_rushton_RBNS_parameters(1), tolerance.fit.naka_rushton_RBNS_parameters(1), 'naka rushton RBNS parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters(2), doc_a.fit.naka_rushton_RBNS_parameters(2), tolerance.fit.naka_rushton_RBNS_parameters(2), 'naka rushton RBNS parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters(3), doc_a.fit.naka_rushton_RBNS_parameters(3), tolerance.fit.naka_rushton_RBNS_parameters(3), 'naka rushton RBNS parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_parameters(4), doc_a.fit.naka_rushton_RBNS_parameters(4), tolerance.fit.naka_rushton_RBNS_parameters(4), 'naka rushton RBNS parameter 4');
 [b_(30),errormsg_{30}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_contrast, doc_a.fit.naka_rushton_RBNS_contrast, tolerance.fit.naka_rushton_RBNS_contrast, 'naka rushton RBNS contrast');
 [b_(31),errormsg_{31}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_values, doc_a.fit.naka_rushton_RBNS_values, tolerance.fit.naka_rushton_RBNS_values, 'naka rushton RBNS values');
 [b_(32),errormsg_{32}] = ndi.test.values_within_tolerance(doc_e.fit.naka_rushton_RBNS_pref, doc_a.fit.naka_rushton_RBNS_pref, tolerance.fit.naka_rushton_RBNS_pref, 'naka rushton RBNS pref');
