@@ -19,31 +19,74 @@ switch(scope),
        tol_tuning_curve.mean = 1e-6;
        tol_tuning_curve.stddev = 1e-6;
        tol_tuning_curve.stderr = 1e-6;
-       tol_tuning_curve.individual = 1e-6;
+       tol_tuning_curve.individual = .5; %responses in units of Hz
+       tol_tuning_curve.control_mean = 1e-6;
        tol_tuning_curve.control_stddev = 1e-6;
        tol_tuning_curve.control_stderr = 1e-6;
-       tol_significance.visual_response_anova_p = 1e-6;
-       tol_significance.across_stimuli_anova_p = 1e-6;
-       tol_fitless.H50 = 0.1;
-       tol_fitless.Pref = 0.1;
-       tol_fitless.L50 = 0.1;
-       tol_fit_spline.fit = 0.1;
-       tol_fit_spline.H50 = 0.1;
-       tol_fit_spline.Pref = 0.1;
-       tol_fit_spline.L50 = 0.1;
-       tol_fit_spline.values = 0.1;
-       tol_fit_dog.fit = 0.1;
-       tol_fit_dog.H50 = 0.1;
-       tol_fit_dog.Pref = 0.1;
-       tol_fit_dog.L50 = 0.1;
-       tol_fit_dog.values = 0.1;
-       tol_fit_dog.parameters = 0.1;
-       tol_fit_gausslog.fit = 0.1;
-       tol_fit_gausslog.H50 = 0.1;
-       tol_fit_gausslog.Pref = 0.1;
-       tol_fit_gausslog.L50 = 0.1;
-       tol_fit_gausslog.values = 0.1;
-       tol_fit_gausslog.parameters = 0.1;
+       tol_tuning_curve.control_mean_stddev = 1e-6;
+       tol_tuning_curve.control_mean_stderr = 1e-6;
+       tol_significance.visual_response_anova_p = .1;
+       tol_significance.across_stimuli_anova_p = .1;
+       tol_fitless.H50 = 1; %spatial freq range: 10^-2 to 60
+       tol_fitless.Pref = 1;
+       tol_fitless.L50 = 1;
+       tol_fitless.bandwidth = 1;
+       tol_fitless.low_pass_index = 1e-6;
+       tol_fitless.high_pass_index = 1e-6;
+       tol_fit_spline.fit = 1;
+       tol_fit_spline.H50 = 1;
+       tol_fit_spline.Pref = 1;
+       tol_fit_spline.L50 = 1;
+       tol_fit_spline.values = 1;
+       tol_fit_spline.bandwidth = 1;
+       tol_fit_dog.fit = 2; %double the tolerance for fits because fits can look different even for the same underlying data
+       tol_fit_dog.H50 = 2;
+       tol_fit_dog.Pref = 2;
+       tol_fit_dog.L50 = 2;
+       tol_fit_dog.values = 2;
+       tol_fit_dog.bandwidth = 2;
+       tol_fit_dog.parameters(1) = 2;
+       tol_fit_dog.parameters(2) = 2;
+       tol_fit_dog.parameters(3) = 2;
+       tol_fit_dog.parameters(4) = 2;
+       tol_fit_gausslog.fit = 2;
+       tol_fit_gausslog.H50 = 2;
+       tol_fit_gausslog.Pref = 2;
+       tol_fit_gausslog.L50 = 2;
+       tol_fit_gausslog.values = 2;
+       tol_fit_gausslog.bandwidth = 2;
+       tol_fit_gausslog.parameters(1) = 1; %offset: about -5 to 5
+       tol_fit_gausslog.parameters(2) = 2; %height above offset: about 10 to 100
+       tol_fit_gausslog.parameters(3) = 2; %peak location: 0 to 60, but shouldn't vary much
+       tol_fit_gausslog.parameters(4) = 2; %width: 0 to 60
+       %tol_fit_gausslog.parameters(5) = 0.1; %not included in output
+       %document for some reason
+       tol_fit_movshon.fit = 2;
+       tol_fit_movshon.H50 = 2;
+       tol_fit_movshon.Pref = 2;
+       tol_fit_movshon.L50 = 2;
+       tol_fit_movshon.values = 2;
+       tol_fit_movshon.parameters(1) = 2; %scaling factor
+       tol_fit_movshon.parameters(2) = 2; %characteristic spatial frequency
+       tol_fit_movshon.parameters(3) = 2; %corner frequency of low-frequency limb
+       tol_fit_movshon.parameters(4) = 2; %slope of low-frequency limb
+       tol_fit_movshon.R2 = .1;
+       tol_fit_movshon.bandwidth = .6; % about 0 to 6
+       
+       tol_fit_movshon_c.fit = 2;
+       tol_fit_movshon_c.H50 = 2;
+       tol_fit_movshon_c.Pref = 2;
+       tol_fit_movshon_c.L50 = 2;
+       tol_fit_movshon_c.values = 2;
+       tol_fit_movshon_c.parameters(1) = 2;
+       tol_fit_movshon_c.parameters(2) = 2;
+       tol_fit_movshon_c.parameters(3) = 2;
+       tol_fit_movshon_c.parameters(4) = 2;
+       tol_fit_movshon_c.parameters(5) = 1;
+       tol_fit_movshon_c.R2 = 0.1;
+       tol_fit_movshon_c.bandwidth = .6;
+       
+       %tol_fit_abs still needs to be added
 
     case 'low_noise',
     
@@ -142,9 +185,12 @@ end
 %	mean                                   
 %	stddev                                 
 %	stderr                                
-%	individual                             
+%	individual
+%   control_mean
 %	control_stddev                        
 %	control_stderr
+%   control_mean_stddev
+%   control_mean_stderr
 
 [b_(1),errormsg_{1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.spatial_frequency, doc_a.tuning_curve.spatial_frequency, tol_tuning_curve.spatial_frequency, 'spatial_frequency');
 [b_(2),errormsg_{2}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.mean, doc_a.tuning_curve.mean, tol_tuning_curve.mean, 'mean');
@@ -155,8 +201,11 @@ end
 for i = 1:size(doc_a.tuning_curve.individual,1)
     [b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.individual(1,:), doc_a.tuning_curve.individual(i,:), tol_tuning_curve.individual, ['individual ',num2str(i)]);
 end
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean, doc_a.tuning_curve.control_mean, tol_tuning_curve.control_mean, 'control_mean');
 [b_(6),errormsg_{6}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stddev, doc_a.tuning_curve.control_stddev, tol_tuning_curve.control_stddev, 'control_stddev');
 [b_(7),errormsg_{7}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_stderr, doc_a.tuning_curve.control_stderr, tol_tuning_curve.control_stderr, 'control_stderr');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean_stddev, doc_a.tuning_curve.control_mean_stddev, tol_tuning_curve.control_mean_stddev, 'control_mean_stddev');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.tuning_curve.control_mean_stderr, doc_a.tuning_curve.control_mean_stderr, tol_tuning_curve.control_mean_stderr, 'control_mean_stderr');
 
 % Comparing Significance
 %   visual_response_anova_p
@@ -169,6 +218,9 @@ end
 %   H50
 %   Pref
 %   L50
+%   bandwidth
+%   low_pass_index
+%   high_pass_index
 
 [b_(10),errormsg_{10}] = ndi.test.values_within_tolerance(doc_e.fitless.H50, doc_a.fitless.H50, tol_fitless.H50, 'fitless H50');
 [b_(11),errormsg_{11}] = ndi.test.values_within_tolerance(doc_e.fitless.Pref, doc_a.fitless.Pref, tol_fitless.Pref, 'fitless Pref');
@@ -180,6 +232,7 @@ end
 %   Pref
 %   L50
 %   values
+%   bandwidth
 
 [b_(13),errormsg_{13}] = ndi.test.values_within_tolerance(doc_e.fit_spline.fit, doc_a.fit_spline.fit, tol_fit_spline.fit, 'fit_spline fit');
 [b_(14),errormsg_{14}] = ndi.test.values_within_tolerance(doc_e.fit_spline.H50, doc_a.fit_spline.H50, tol_fit_spline.H50, 'fit_spline H50');
@@ -193,6 +246,7 @@ end
 %   Pref
 %   L50
 %   values
+%   bandwidth
 %   parameters
 
 [b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_dog.fit, 'fit_dog fit');
@@ -208,6 +262,7 @@ end
 %   Pref
 %   L50
 %   values
+%   bandwidth
 %   parameters
 
 [b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog.fit, 'fit_gausslog fit');

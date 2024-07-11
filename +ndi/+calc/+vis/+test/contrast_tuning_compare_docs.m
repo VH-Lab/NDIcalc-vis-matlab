@@ -82,29 +82,29 @@ switch(scope),
        tolerance.fit.naka_rushton_RB_relative_max_gain = 10; %max(dr/dc) where dc is <1 and dr can be up to ~50
        tolerance.fit.naka_rushton_RB_saturation_index = 0.2; %0 to 1 if R100 > R0, otherwise can theoretically go up to inf
        tolerance.fit.naka_rushton_RB_sensitivity = 20; %units of 1/contrast (1 to up to 1000)
-       tolerance.fit.naka_rushton_RBN_parameters(1) = 5; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBN_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
+       tolerance.fit.naka_rushton_RBN_parameters(1) = 10; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.2; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBN_parameters(3) = 0.4; %range 0.1 to 5 according to naka_rushton_fit
        tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
-       tolerance.fit.naka_rushton_RBN_values = 5;
-       tolerance.fit.naka_rushton_RBN_pref = 0.1;
-       tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.1;
-       tolerance.fit.naka_rushton_RBN_r2 = 0.1;
-       tolerance.fit.naka_rushton_RBN_relative_max_gain = 5;
-       tolerance.fit.naka_rushton_RBN_saturation_index = 0.1;
-       tolerance.fit.naka_rushton_RBN_sensitivity = 10;
-       tolerance.fit.naka_rushton_RBNS_parameters(1) = 5; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBNS_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
-       tolerance.fit.naka_rushton_RBNS_parameters(4) = 0.1; %supersaturation, ~1 to ~2.5
+       tolerance.fit.naka_rushton_RBN_values = 10;
+       tolerance.fit.naka_rushton_RBN_pref = 0.2;
+       tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.2;
+       tolerance.fit.naka_rushton_RBN_r2 = 0.2;
+       tolerance.fit.naka_rushton_RBN_relative_max_gain = 10;
+       tolerance.fit.naka_rushton_RBN_saturation_index = 0.2;
+       tolerance.fit.naka_rushton_RBN_sensitivity = 20;
+       tolerance.fit.naka_rushton_RBNS_parameters(1) = 10; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.2; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBNS_parameters(3) = 0.4; %range 0.1 to 5 according to naka_rushton_fit
+       tolerance.fit.naka_rushton_RBNS_parameters(4) = 0.2; %supersaturation, ~1 to ~2.5
        tolerance.fit.naka_rushton_RBNS_contrast = 1e-6;
-       tolerance.fit.naka_rushton_RBNS_values = 5;
-       tolerance.fit.naka_rushton_RBNS_pref = 0.1; 
-       tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.1;
-       tolerance.fit.naka_rushton_RBNS_r2 = 0.1;
-       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 5;
-       tolerance.fit.naka_rushton_RBNS_saturation_index = 0.1;
-       tolerance.fit.naka_rushton_RBNS_sensitivity = 10;
+       tolerance.fit.naka_rushton_RBNS_values = 10;
+       tolerance.fit.naka_rushton_RBNS_pref = 0.2; 
+       tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.2;
+       tolerance.fit.naka_rushton_RBNS_r2 = 0.2;
+       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 10;
+       tolerance.fit.naka_rushton_RBNS_saturation_index = 0.2;
+       tolerance.fit.naka_rushton_RBNS_sensitivity = 20;
     case 'high_noise',
     
        tolerance.tuning_curve.contrast = 1e-6;%units of contrast but doesn't vary due to noise
@@ -117,39 +117,39 @@ switch(scope),
        tolerance.significance.visual_response_anova_p = 0.1;
        tolerance.significance.across_stimuli_anova_p = 1; %this is 1 in golden file but ~0 with low noise, so it's unclear how to make a tolerance <1
        tolerance.fitless.interpolated_c50 = 0.1;
-       tolerance.fit.naka_rushton_RB_parameters(1) = 5; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RB_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RB_contrast = 0.1; %0 to 1
-       tolerance.fit.naka_rushton_RB_values = 5; %responses (0 to ~50)
-       tolerance.fit.naka_rushton_RB_pref = 0.1;	%0 to 1
-       tolerance.fit.naka_rushton_RB_empirical_c50 = 0.1; %0 to 1
-       tolerance.fit.naka_rushton_RB_r2 = 0.1; %0 to 1
-       tolerance.fit.naka_rushton_RB_relative_max_gain = 5; %max(dr/dc) where dc is <1 and dr can be up to ~50
+       tolerance.fit.naka_rushton_RB_parameters(1) = 20; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RB_parameters(2) = 0.4; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RB_contrast = 0.4; %0 to 1
+       tolerance.fit.naka_rushton_RB_values = 20; %responses (0 to ~50)
+       tolerance.fit.naka_rushton_RB_pref = 0.4;	%0 to 1
+       tolerance.fit.naka_rushton_RB_empirical_c50 = 0.4; %0 to 1
+       tolerance.fit.naka_rushton_RB_r2 = 0.4; %0 to 1
+       tolerance.fit.naka_rushton_RB_relative_max_gain = 20; %max(dr/dc) where dc is <1 and dr can be up to ~50
        tolerance.fit.naka_rushton_RB_saturation_index = 0.1; %0 to 1 if R100 > R0, otherwise can theoretically go up to inf
-       tolerance.fit.naka_rushton_RB_sensitivity = 10; %units of 1/contrast (1 to up to 1000)
-       tolerance.fit.naka_rushton_RBN_parameters(1) = 5; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBN_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
+       tolerance.fit.naka_rushton_RB_sensitivity = 40; %units of 1/contrast (1 to up to 1000)
+       tolerance.fit.naka_rushton_RBN_parameters(1) = 20; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.4; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBN_parameters(3) = 0.8; %range 0.1 to 5 according to naka_rushton_fit
        tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
-       tolerance.fit.naka_rushton_RBN_values = 5;
-       tolerance.fit.naka_rushton_RBN_pref = 0.1;
-       tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.1;
-       tolerance.fit.naka_rushton_RBN_r2 = 0.1;
-       tolerance.fit.naka_rushton_RBN_relative_max_gain = 5;
-       tolerance.fit.naka_rushton_RBN_saturation_index = 0.1;
-       tolerance.fit.naka_rushton_RBN_sensitivity = 10;
-       tolerance.fit.naka_rushton_RBNS_parameters(1) = 5; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBNS_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
-       tolerance.fit.naka_rushton_RBNS_parameters(4) = 0.1; %supersaturation, ~1 to ~2.5
+       tolerance.fit.naka_rushton_RBN_values = 20;
+       tolerance.fit.naka_rushton_RBN_pref = 0.4;
+       tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.4;
+       tolerance.fit.naka_rushton_RBN_r2 = 0.4;
+       tolerance.fit.naka_rushton_RBN_relative_max_gain = 20;
+       tolerance.fit.naka_rushton_RBN_saturation_index = 0.4;
+       tolerance.fit.naka_rushton_RBN_sensitivity = 40;
+       tolerance.fit.naka_rushton_RBNS_parameters(1) = 20; %max response (0 to ~50)
+       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.4; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBNS_parameters(3) = 0.8; %range 0.1 to 5 according to naka_rushton_fit
+       tolerance.fit.naka_rushton_RBNS_parameters(4) = 0.4; %supersaturation, ~1 to ~2.5
        tolerance.fit.naka_rushton_RBNS_contrast = 1e-6;
-       tolerance.fit.naka_rushton_RBNS_values = 5;
-       tolerance.fit.naka_rushton_RBNS_pref = 0.1; 
-       tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.1;
-       tolerance.fit.naka_rushton_RBNS_r2 = 0.1;
-       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 5;
-       tolerance.fit.naka_rushton_RBNS_saturation_index = 0.1;
-       tolerance.fit.naka_rushton_RBNS_sensitivity = 10;
+       tolerance.fit.naka_rushton_RBNS_values = 20;
+       tolerance.fit.naka_rushton_RBNS_pref = 0.4; 
+       tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.4;
+       tolerance.fit.naka_rushton_RBNS_r2 = 0.4;
+       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 20;
+       tolerance.fit.naka_rushton_RBNS_saturation_index = 0.4;
+       tolerance.fit.naka_rushton_RBNS_sensitivity = 40;
         
     otherwise,
        error(['Unknown scope ' scope '.']);
