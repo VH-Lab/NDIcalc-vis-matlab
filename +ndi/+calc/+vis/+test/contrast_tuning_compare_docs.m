@@ -63,7 +63,7 @@ switch(scope),
        
     case 'low_noise',
        tolerance.tuning_curve.contrast = 1e-6;%units of contrast but doesn't vary due to noise
-       tolerance.tuning_curve.mean = 3; %units of Hz (mean from 0 to ~50), 3 standard errors
+       tolerance.tuning_curve.mean = 3; %units of spikes/second (mean from 0 to ~50), 3 standard errors
        tolerance.tuning_curve.stddev = 3; %standard deviation is likely <3 for low_noise
        tolerance.tuning_curve.stderr = 1; %standard error is around 1/3 of standard deviation
        tolerance.tuning_curve.individual = 9; %3 standard deviations
