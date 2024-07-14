@@ -38,6 +38,14 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "The fits structure."
-		}
+		},
+        {
+            "name": "fit_no_speed",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The fits (with no speed parameter) structure."
+        }
 	]
 }

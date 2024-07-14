@@ -210,7 +210,7 @@ end
 [b_(18),errormsg_{18}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters(2), doc_a.fit.double_gaussian_parameters(2), tolerance.fit.double_gaussian_parameters(2), 'double gaussian parameters #2');
 [b_(19),errormsg_{19}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters(3), doc_a.fit.double_gaussian_parameters(3), tolerance.fit.double_gaussian_parameters(3), 'double gaussian parameters #3');
 [b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters(4), doc_a.fit.double_gaussian_parameters(4), tolerance.fit.double_gaussian_parameters(4), 'double gaussian parameters #4');
-[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters(5), doc_a.fit.double_gaussian_parameters(5), tolerance.fit.double_gaussian_parameters(5), 'double gaussian parameters #1');
+[b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_parameters(5), doc_a.fit.double_gaussian_parameters(5), tolerance.fit.double_gaussian_parameters(5), 'double gaussian parameters #5');
 [b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_angles, doc_a.fit.double_gaussian_fit_angles, tolerance.fit.double_gaussian_fit_angles, 'double gaussian fit angles');
 [b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit.double_gaussian_fit_values, doc_a.fit.double_gaussian_fit_values, tolerance.fit.double_gaussian_fit_values, 'double gaussian fit values');
 [b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit.orientation_angle_preference, doc_a.fit.orientation_angle_preference, tolerance.fit.orientation_angle_preference, 'orientation angle preference');

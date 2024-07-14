@@ -258,7 +258,7 @@ classdef speed_tuning < ndi.calculator
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				f = vis.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
+				[f, error_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
 				sfs = logspace(0.01,60,200);
 				tfs = logspace(0.01,120,200);
 				[SFs,TFs] = meshgrid(sfs,tfs);
@@ -272,10 +272,25 @@ classdef speed_tuning < ndi.calculator
 				fit.Priebe_fit_spatial_frequency_preference = fit.Priebe_fit_parameters(6);
 				fit.Priebe_fit_temporal_frequency_preference = fit.Priebe_fit_parameters(7);
 
-				speed_tuning.properties = properties;
+				%add fit with speed parameter set to 0
+                [f_no_speed, error_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
+                fit_no_speed_values = vis.speed.tuningfunc(SFs(:),TFs(:),f_no_speed);
+                fit_no_speed.Priebe_fit_parameters = f_no_speed;
+				fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
+				fit_no_speed.Priebe_fit_temporal_frequencies = TFs(:);
+				fit_no_speed.Priebe_fit_values = fit_no_speed_values;
+				fit_no_speed.Priebe_fit_speed_tuning_index = fit_no_speed.Priebe_fit_parameters(3);
+				fit_no_speed.Priebe_fit_spatial_frequency_preference = fit_no_speed.Priebe_fit_parameters(6);
+				fit_no_speed.Priebe_fit_temporal_frequency_preference = fit_no_speed.Priebe_fit_parameters(7);
+                %add nested-F test
+                num_responses = numel(fit_values);
+                fit_no_speed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses,error_withspeed,error_nospeed);
+
+                speed_tuning.properties = properties;
 				speed_tuning.tuning_curve = tuning_curve;
 				speed_tuning.significance = significance;
 				speed_tuning.fit = fit;
+                speed_tuning.fit_no_speed = fit_no_speed;
 
 				speed_props_doc = ndi.document('speed_tuning',...
 					'speed_tuning',speed_tuning);
@@ -448,8 +463,8 @@ classdef speed_tuning < ndi.calculator
                 
                 %for trying out new tests:
                 % A = 20;
-                % zeta = .5;
-                % xi = .5;
+                % zeta = 0;
+                % xi = .000009;
                 % sigma_sf = 1;
                 % sigma_tf = 1;
                 % sf0 = sqrt(2)/5;

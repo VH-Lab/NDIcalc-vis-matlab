@@ -33,7 +33,7 @@ switch(scope),
       tolerance.fitless.bandwidth = 0.5;
       tolerance.fitless.low_pass_index = 0.5;
       tolerance.fitless.high_pass_index = 0.5;
-      tolerance.fit_dog.parameters, = 0.5;
+      tolerance.fit_dog.parameters = 0.5;
       tolerance.fit_dog.values = 0.5;
       tolerance.fit_dog.fit = 0.5;
       tolerance.fit_dog.L50 = 0.5;
@@ -90,7 +90,7 @@ switch(scope),
       tolerance.fitless.bandwidth = 0.5;
       tolerance.fitless.low_pass_index = 0.5;
       tolerance.fitless.high_pass_index = 0.5;
-      tolerance.fit_dog.parameters, = 0.5;
+      tolerance.fit_dog.parameters = 0.5;
       tolerance.fit_dog.values = 0.5;
       tolerance.fit_dog.fit = 0.5;
       tolerance.fit_dog.L50 = 0.5;
@@ -147,7 +147,7 @@ switch(scope),
       tolerance.fitless.bandwidth = 0.5;
       tolerance.fitless.low_pass_index = 0.5;
       tolerance.fitless.high_pass_index = 0.5;
-      tolerance.fit_dog.parameters, = 0.5;
+      tolerance.fit_dog.parameters = 0.5;
       tolerance.fit_dog.values = 0.5;
       tolerance.fit_dog.fit = 0.5;
       tolerance.fit_dog.L50 = 0.5;

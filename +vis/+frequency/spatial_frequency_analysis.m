@@ -120,7 +120,7 @@ fit_movshon.bandwidth = vis.frequency.bandwidth(fit_movshon.L50, fit_movshon.H50
 
 sf_props.fit_movshon = fit_movshon;
 
- % STEP 4: Movshon fit without constant term
+ % STEP 4: Movshon fit with constant term
 
 [MV_P_c,mvfit_c,mv_mse_c,MV_R2_c] = vis.frequency.movshon2005_fit(rcurve(1,:)', rcurve(2,:)',1);
 
