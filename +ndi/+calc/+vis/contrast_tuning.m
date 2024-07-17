@@ -402,7 +402,7 @@ classdef contrast_tuning < ndi.calculator
                 P_(6,:) = [ 10 .45 1 2 ] ; % lower N
                 P_(7,:) = [ 10 .45 2 2 ] ; % higher N
                 P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
-                P_(9,:) = [ 10 .15 1.5 2 ] ; % lower c50
+                P_(9,:) = [ 10 .25 1.5 2 ] ; % lower c50 (but not too low that responses don't make sense)
                 P_(10,:) = [ -1 .45 1.5 1 ]; %all negative, R(0) == max(R) so the saturation index should be NaN
 					% potentially add more
 				total = size(P_,1);
