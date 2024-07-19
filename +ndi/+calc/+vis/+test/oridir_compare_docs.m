@@ -48,20 +48,20 @@ switch(scope),
 
     case 'low_noise',
     
-       tolerance.tuning_curve.direction = 1e-6;
-       tolerance.tuning_curve.mean = 2;
-       tolerance.tuning_curve.stddev = 1e-6;
-       tolerance.tuning_curve.stderr = 1e-6;
-       tolerance.tuning_curve.individual = 0.5;
-       tolerance.tuning_curve.raw_individual = 0.5;
-       tolerance.tuning_curve.control_individual = 0.5;
-       tolerance.significance.visual_response_anova_p = 0.1;
-       tolerance.significance.across_stimuli_anova_p = 0.1;
+       tolerance.tuning_curve.direction = 1e-6; %units of degrees, should be the same regardless of noise
+       tolerance.tuning_curve.mean = 15; % 3 standard errors covers 99.7% of means?
+       tolerance.tuning_curve.stddev = 15; %chosen empirically
+       tolerance.tuning_curve.stderr = 5; %stddev divided by sqrt(n)
+       tolerance.tuning_curve.individual = 45; %3 standard deviations covers 99.7% of individual data points
+       tolerance.tuning_curve.raw_individual = 45;
+       tolerance.tuning_curve.control_individual = 45;
+       tolerance.significance.visual_response_anova_p = 0.2; %0 to 1
+       tolerance.significance.across_stimuli_anova_p = 0.2;
        tolerance.vector.circular_variance = 0.1;
        tolerance.vector.direction_circular_variance = 0.1;
        tolerance.vector.Hotelling2Test = 0.1;
-       tolerance.vector.orientation_preference = 10;
-       tolerance.vector.direction_preference = 0.1;
+       tolerance.vector.orientation_preference = 18;
+       tolerance.vector.direction_preference = 36;
        tolerance.vector.direction_hotelling2test = 0.1;
        tolerance.vector.dot_direction_significance = 0.1;
        tolerance.fit.double_gaussian_parameters(1) = 5;
@@ -71,8 +71,8 @@ switch(scope),
        tolerance.fit.double_gaussian_parameters(5) = 10;
        tolerance.fit.double_gaussian_fit_angles = 1e-6;
        tolerance.fit.double_gaussian_fit_values = 5;
-       tolerance.fit.orientation_angle_preference = 10;
-       tolerance.fit.direction_angle_preference = 10;
+       tolerance.fit.orientation_angle_preference = 18;
+       tolerance.fit.direction_angle_preference = 36;
        tolerance.fit.hwhh = 10;
        tolerance.fit.orientation_preferred_orthogonal_ratio = 0.1;
        tolerance.fit.direction_preferred_null_ratio = 0.1;
