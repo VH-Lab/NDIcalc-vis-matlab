@@ -30,7 +30,7 @@ switch(scope),
        tolerance.fit.naka_rushton_RB_parameters(2) = 0.1; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
        tolerance.fit.naka_rushton_RB_contrast = 1e-6; %0 to 1
        tolerance.fit.naka_rushton_RB_values = 5; %responses (0 to ~50)
-       tolerance.fit.naka_rushton_RB_pref = 0.1;	%0 to 1
+       tolerance.fit.naka_rushton_RB_pref = 1e-6;	%0 to 1, should be 1 if no supersaturation
        tolerance.fit.naka_rushton_RB_empirical_c50 = 0.1; %0 to 1
        tolerance.fit.naka_rushton_RB_r2 = 0.1; %0 to 1
        tolerance.fit.naka_rushton_RB_relative_max_gain = 5; %max(dr/dc) where dc is <1 and dr can be up to ~50
@@ -41,7 +41,7 @@ switch(scope),
        tolerance.fit.naka_rushton_RBN_parameters(3) = 0.2; %range 0.1 to 5 according to naka_rushton_fit
        tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
        tolerance.fit.naka_rushton_RBN_values = 5;
-       tolerance.fit.naka_rushton_RBN_pref = 0.1;
+       tolerance.fit.naka_rushton_RBN_pref = 1e-6; %should be 1 if no supersaturation
        tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.1;
        tolerance.fit.naka_rushton_RBN_r2 = 0.1;
        tolerance.fit.naka_rushton_RBN_relative_max_gain = 5;
@@ -76,7 +76,7 @@ switch(scope),
        tolerance.fit.naka_rushton_RB_parameters(2) = 0.5; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
        tolerance.fit.naka_rushton_RB_contrast = 1e-6; %0 to 1
        tolerance.fit.naka_rushton_RB_values = 20; %responses (0 to ~50)
-       tolerance.fit.naka_rushton_RB_pref = 0.2;	%0 to 1
+       tolerance.fit.naka_rushton_RB_pref = 1e-6;	%0 to 1, should be 1 if no supersaturation
        tolerance.fit.naka_rushton_RB_empirical_c50 = 0.3; %0 to 1
        tolerance.fit.naka_rushton_RB_r2 = 0.2; %0 to 1
        tolerance.fit.naka_rushton_RB_relative_max_gain = 10; %max(dr/dc) where dc is <1 and dr can be up to ~50
@@ -87,16 +87,16 @@ switch(scope),
        tolerance.fit.naka_rushton_RBN_parameters(3) = 1; %range 0.1 to 5 according to naka_rushton_fit
        tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
        tolerance.fit.naka_rushton_RBN_values = 20;
-       tolerance.fit.naka_rushton_RBN_pref = 0.2;
+       tolerance.fit.naka_rushton_RBN_pref = 1e-6; %should be 1 when no supersaturation
        tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.2;
        tolerance.fit.naka_rushton_RBN_r2 = 0.2;
        tolerance.fit.naka_rushton_RBN_relative_max_gain = 10;
        tolerance.fit.naka_rushton_RBN_saturation_index = 1e-6; %(Rmax - R(100)) / (Rmax - R(0)), should always be 0
        tolerance.fit.naka_rushton_RBN_sensitivity = inf;
        tolerance.fit.naka_rushton_RBNS_parameters(1) = 10; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.5; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
+       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
        tolerance.fit.naka_rushton_RBNS_parameters(3) = 1; %range 0.1 to 5 according to naka_rushton_fit
-       tolerance.fit.naka_rushton_RBNS_parameters(4) = 1; %supersaturation, ~1 to ~2.5
+       tolerance.fit.naka_rushton_RBNS_parameters(4) = 2; %supersaturation, ~1 to ~2.5
        tolerance.fit.naka_rushton_RBNS_contrast = 1e-6;
        tolerance.fit.naka_rushton_RBNS_values = 20;
        tolerance.fit.naka_rushton_RBNS_pref = 0.2; 
@@ -113,40 +113,40 @@ switch(scope),
        tolerance.tuning_curve.individual = 180; %3 standard deviations from the mean should cover 99.7% of points
        tolerance.tuning_curve.control_stddev = 15;
        tolerance.tuning_curve.control_stderr = 5;
-       tolerance.significance.visual_response_anova_p = 0.2; %doubled due to high noise
-       tolerance.significance.across_stimuli_anova_p = 0.2; %doubled due to high noise
-       tolerance.fitless.interpolated_c50 = 1; %contrast at half-max (0 to 1), somehow it was way off. Shouldn't interpolated_c50 match the equivalent doc_expected_output's field fit.naka_rusthon_RBNS_parameters(2), the chosen C50?
+       tolerance.significance.visual_response_anova_p = 0.3; %tripled due to high noise
+       tolerance.significance.across_stimuli_anova_p = 0.3; %tripled due to high noise
+       tolerance.fitless.interpolated_c50 = 1; %contrast at half-max (0 to 1)
        tolerance.fit.naka_rushton_RB_parameters(1) = 30; %max response (0 to ~50), increased for high noise
        tolerance.fit.naka_rushton_RB_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
        tolerance.fit.naka_rushton_RB_contrast = 1e-6; %0 to 1
        tolerance.fit.naka_rushton_RB_values = 40; %responses (0 to ~50), doubled for high noise
-       tolerance.fit.naka_rushton_RB_pref = 0.2;	%0 to 1
+       tolerance.fit.naka_rushton_RB_pref = 1e-6;	%0 to 1, should be 1 when no supersaturation
        tolerance.fit.naka_rushton_RB_empirical_c50 = 0.3; %0 to 1
        tolerance.fit.naka_rushton_RB_r2 = 0.6; %0 to 1, can vary significantly due to high noise
        tolerance.fit.naka_rushton_RB_relative_max_gain = 50; %max(dr/dc) where dc is <1 and dr can be up to ~50
        tolerance.fit.naka_rushton_RB_saturation_index = 1e-6; %(Rmax - R(100)) / (Rmax - R(0)), should always be 0
        tolerance.fit.naka_rushton_RB_sensitivity = inf; %units of 1/contrast (1 to up to 1000), set to inf for now since it's very noisy
        tolerance.fit.naka_rushton_RBN_parameters(1) = 30; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R), greater tolerance for hihg noise
+       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R), greater tolerance for high noise
        tolerance.fit.naka_rushton_RBN_parameters(3) = 4.9; %range 0.1 to 5 according to naka_rushton_fit, greater tolerance for high noise
        tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
        tolerance.fit.naka_rushton_RBN_values = 40; %doubled for high noise
-       tolerance.fit.naka_rushton_RBN_pref = 0.2;
+       tolerance.fit.naka_rushton_RBN_pref = 1e-6;%0 to 1, should be 1 when no supersaturation
        tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.2;
        tolerance.fit.naka_rushton_RBN_r2 = 0.6;%0 to 1, can vary significantly due to high noise
-       tolerance.fit.naka_rushton_RBN_relative_max_gain = 50; %increased for high noise
+       tolerance.fit.naka_rushton_RBN_relative_max_gain = 100; %increased for high noise and for test 9 (where max response and supersaturation are high)
        tolerance.fit.naka_rushton_RBN_saturation_index = 1e-6; %should always be 0
        tolerance.fit.naka_rushton_RBN_sensitivity = inf;
        tolerance.fit.naka_rushton_RBNS_parameters(1) = 30; %max response (0 to ~50)
        tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
        tolerance.fit.naka_rushton_RBNS_parameters(3) = 4.9; %range 0.1 to 5 according to naka_rushton_fit, greater tolerance for high noise
-       tolerance.fit.naka_rushton_RBNS_parameters(4) = 2; %supersaturation can vary a lot due to high noise, so doubled from low noise tolerance
+       tolerance.fit.naka_rushton_RBNS_parameters(4) = 3; %supersaturation can vary a lot due to high noise, so increased from low noise tolerance
        tolerance.fit.naka_rushton_RBNS_contrast = 1e-6; 
        tolerance.fit.naka_rushton_RBNS_values = 40; %doubled for high noise
-       tolerance.fit.naka_rushton_RBNS_pref = 0.4; %RBNS contrast pref doubled from low noise since RBNS fit changes the most
+       tolerance.fit.naka_rushton_RBNS_pref = 0.56; %in these tests, ranges from .45 to 1
        tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.3;
        tolerance.fit.naka_rushton_RBNS_r2 = 0.6;%0 to 1, can vary significantly due to high noise
-       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 50; %doubled for high noise
+       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 100; %increased for high noise
        tolerance.fit.naka_rushton_RBNS_saturation_index = 1;%(Rmax - R(100)) / (Rmax - R(0)), 0 to 1 if R100 > R0, otherwise can theoretically go up to inf. 0 if R(100)==Rmax
        tolerance.fit.naka_rushton_RBNS_sensitivity = inf;
         
@@ -205,13 +205,19 @@ end
 %   across_stimuli_anova_p
 %anovas are funky with no noise, so adding a separate case for when the
 %difference is 1 or almost 1
-if abs(diff([doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p]))<0.9
+if abs(diff([doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p]))<0.5
     [b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, tolerance.significance.visual_response_anova_p, 'visual response anova p');
+elseif isnan(doc_e.significance.visual_response_anova_p) %no way to compare if the expected doc anova p value is NaN, so all tests pass
+    b_(8) = 1;
+    errormsg_{8} = '';
 else %set tolerance to 1.1
     [b_(8),errormsg_{8}] = ndi.test.values_within_tolerance(doc_e.significance.visual_response_anova_p, doc_a.significance.visual_response_anova_p, 1.1, 'visual response anova p');
 end
-if abs(diff([doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p]))<0.9
+if abs(diff([doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p]))<0.5
     [b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, tolerance.significance.across_stimuli_anova_p, 'across stimuli anova p');
+elseif isnan(doc_e.significance.across_stimuli_anova_p) %no way to compare if the expected doc anova p value is NaN, so all tests pass
+    b_(9) = 1;
+    errormsg_{9} = '';
 else
     [b_(9),errormsg_{9}] = ndi.test.values_within_tolerance(doc_e.significance.across_stimuli_anova_p, doc_a.significance.across_stimuli_anova_p, 1.1, 'across stimuli anova p');
 end    

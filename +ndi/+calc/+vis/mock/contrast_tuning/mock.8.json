@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "ndi.calc.vis.contrast_tuning",
-    "version": "20db0189e9b0f475fa609f15352898a57a3c0e10",
+    "version": "6c240ff202e4df236bd53fd80430f52e125e57e4",
     "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab",
     "os": "MACI64",
     "os_version": "13.3.1",
@@ -9,10 +9,10 @@
     "interpreter_version": "9.14"
   },
   "base": {
-    "id": "412690f53bd94381_c0c40a4edf0d6656",
+    "id": "412690f78f8be30b_c0da037647c4aa11",
     "session_id": "412690b35e49aede_c0c3f4ca3697ac85",
     "name": "",
-    "datestamp": "2024-07-17T14:48:19.466Z"
+    "datestamp": "2024-07-18T18:43:43.460Z"
   },
   "contrast_tuning": {
     "properties": {
@@ -138,7 +138,7 @@
       "across_stimuli_anova_p": 0
     },
     "fitless": {
-      "interpolated_c50": 0.31
+      "interpolated_c50": 0.32
     },
     "fit": {
       "naka_rushton_RB_parameters": [
@@ -831,17 +831,17 @@
     "input_parameters": [],
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690f53bd18299_c0a40ba50d6941a6"
+      "value": "412690f78f847154_c0a1cd572e1cb22b"
     }
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "412690f53b8a2f34_40bbd40fe93bc759"
+      "value": "412690f78f19ab1c_40d0f4efa6a26439"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690f53bd18299_c0a40ba50d6941a6"
+      "value": "412690f78f847154_c0a1cd572e1cb22b"
     }
   ],
   "document_class": {

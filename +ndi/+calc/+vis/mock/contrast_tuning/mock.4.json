@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "ndi.calc.vis.contrast_tuning",
-    "version": "20db0189e9b0f475fa609f15352898a57a3c0e10",
+    "version": "6c240ff202e4df236bd53fd80430f52e125e57e4",
     "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab",
     "os": "MACI64",
     "os_version": "13.3.1",
@@ -9,10 +9,10 @@
     "interpreter_version": "9.14"
   },
   "base": {
-    "id": "412690f53a8cdfad_c0b08e09af02f7db",
+    "id": "412690f78dd58410_c0dfd7dbf8d9e223",
     "session_id": "412690b35e49aede_c0c3f4ca3697ac85",
     "name": "",
-    "datestamp": "2024-07-17T14:44:40.361Z"
+    "datestamp": "2024-07-18T18:38:54.495Z"
   },
   "contrast_tuning": {
     "properties": {
@@ -831,17 +831,17 @@
     "input_parameters": [],
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690f53a857168_c0b140f09322dbf8"
+      "value": "412690f78dce12e6_c0c818744676c9d5"
     }
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "412690f53a3fcb23_40bcaf4af929feea"
+      "value": "412690f78d94dafd_40c744bde4aaeb1f"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "412690f53a857168_c0b140f09322dbf8"
+      "value": "412690f78dce12e6_c0c818744676c9d5"
     }
   ],
   "document_class": {

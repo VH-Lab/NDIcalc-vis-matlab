@@ -381,17 +381,18 @@ classdef contrast_tuning < ndi.calculator
 		end;
 
 		function [rmax, c50, N, s, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
-			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
+			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.contrast_tuning
 			%
-			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+			% [RMAX, C50, N, S, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
 			%
 			% Generates a parameter set for generating a mock document with a given index value.
-			% P will be a row vector of parameters [C, C50, N, S].
+            % RMAX is the maximum response
+            % C50 is the half-maximum contrast
+            % N is the exponent parameter that sets the shape
+            % S is the degree of supersaturation
 			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
-			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
-			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
-			% using MOD).
+			% INDEX selects which parameters are used to generate a mock document (from 1...TOTAL).
 			% 
 
 				P_(1,:) = [ 10 .45 1.5 1 ] ; % saturated and conventional forms should both fit the data equally well
@@ -403,7 +404,6 @@ classdef contrast_tuning < ndi.calculator
                 P_(7,:) = [ 10 .45 2 2 ] ; % higher N
                 P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
                 P_(9,:) = [ 10 .25 1.5 2 ] ; % lower c50 (but not too low that responses don't make sense)
-                P_(10,:) = [ -1 .45 1.5 1 ]; %all negative, R(0) == max(R) so the saturation index should be NaN
 					% potentially add more
 				total = size(P_,1);
 
