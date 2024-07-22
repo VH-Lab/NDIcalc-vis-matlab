@@ -136,9 +136,21 @@ classdef contrast_tuning < ndi.calculator
                         %
                         % This function takes additional input arguments as name/value pairs.
                         % See ndi.calculator.plot_parameters for a description of those parameters.
+                        % 
+                        % Additional name/value pairs are:
+                        % -------------------------------------------------------------------------
+                        % | Parameter (default)            | Description                          |
+                        % |--------------------------------|--------------------------------------|
+                        % | Display_element_name (1)       | 0/1 Should we display the element    |
+                        % |                                |    name in the title?                |
+                        % |--------------------------------|--------------------------------------|
+                        %
+                        %
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
+                Display_element_name = 1;
+                did.datastructures.assign(varargin{:});
 
 				if isa(doc_or_parameters,'ndi.document'),
 					doc = doc_or_parameters;
@@ -178,7 +190,7 @@ classdef contrast_tuning < ndi.calculator
 					h.ylabel = ylabel(['Response (' ct.properties.response_type ', ' ct.properties.response_units ')']);
 				end;
 
-				if 1, % when database is faster :-/
+				if Display_element_name,
 					if ~h.params.suppress_title,
 						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
 						h.title = title(element.elementstring(), 'interp','none');
@@ -283,7 +295,8 @@ classdef contrast_tuning < ndi.calculator
 			% DOC_OUTPUT{i} is the actual output of the calculator when operating on
 			%   DOCS{i} (the ith test).
 			% DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-			%   were no noise.
+			%   were no noise. If these documents are plotted, they must be plotted
+            %   with Display_element_name set to 0 in PLOT.            %   
 			%
 			% The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
 			% as part of the TEST function for ndi.calculator objects.
