@@ -15,11 +15,11 @@ function [s,c_criterion] = contrastfit2sensitivity(nkparameters, criterion)
 %    c = 0:0.1:1;
 %    rm = 10;
 %    c50 = 0.3;
-%    r = rm*vlt.fit.naka_rushton_func(c,c50);
+%    r = rm*vis.contrast.naka_rushton_func(c,c50);
 %    figure;
 %    plot(c,r,'b-');
 %    xlabel('Contrast'); ylabel('Response'); box off;
-%    [s,c_criterion] = vlt.neuro.vision.contrast.indexes.contrastfit2sensitivity([rm c50],2);
+%    [s,c_criterion] = vis.contrast.indexes.contrastfit2sensitivity([rm c50],2);
 %    hold on
 %    A = axis;
 %    plot(c_criterion*[1 1],A([3 4]),'k-');

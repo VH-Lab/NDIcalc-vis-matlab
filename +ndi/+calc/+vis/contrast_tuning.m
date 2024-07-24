@@ -136,9 +136,21 @@ classdef contrast_tuning < ndi.calculator
                         %
                         % This function takes additional input arguments as name/value pairs.
                         % See ndi.calculator.plot_parameters for a description of those parameters.
+                        % 
+                        % Additional name/value pairs are:
+                        % -------------------------------------------------------------------------
+                        % | Parameter (default)            | Description                          |
+                        % |--------------------------------|--------------------------------------|
+                        % | Display_element_name (1)       | 0/1 Should we display the element    |
+                        % |                                |    name in the title?                |
+                        % |--------------------------------|--------------------------------------|
+                        %
+                        %
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
+                Display_element_name = 1;
+                did.datastructures.assign(varargin{:});
 
 				if isa(doc_or_parameters,'ndi.document'),
 					doc = doc_or_parameters;
@@ -178,7 +190,7 @@ classdef contrast_tuning < ndi.calculator
 					h.ylabel = ylabel(['Response (' ct.properties.response_type ', ' ct.properties.response_units ')']);
 				end;
 
-				if 1, % when database is faster :-/
+				if Display_element_name,
 					if ~h.params.suppress_title,
 						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
 						h.title = title(element.elementstring(), 'interp','none');
@@ -283,7 +295,8 @@ classdef contrast_tuning < ndi.calculator
 			% DOC_OUTPUT{i} is the actual output of the calculator when operating on
 			%   DOCS{i} (the ith test).
 			% DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-			%   were no noise.
+			%   were no noise. If these documents are plotted, they must be plotted
+            %   with Display_element_name set to 0 in PLOT.            %   
 			%
 			% The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
 			% as part of the TEST function for ndi.calculator objects.
@@ -381,17 +394,18 @@ classdef contrast_tuning < ndi.calculator
 		end;
 
 		function [rmax, c50, N, s, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
-			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
+			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.contrast_tuning
 			%
-			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+			% [RMAX, C50, N, S, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
 			%
 			% Generates a parameter set for generating a mock document with a given index value.
-			% P will be a row vector of parameters [C, C50, N, S].
+            % RMAX is the maximum response
+            % C50 is the half-maximum contrast
+            % N is the exponent parameter that sets the shape
+            % S is the degree of supersaturation
 			% TOTAL is the total number of mock stimuli that are available to be generated.
 			% 
-			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
-			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
-			% using MOD).
+			% INDEX selects which parameters are used to generate a mock document (from 1...TOTAL).
 			% 
 
 				P_(1,:) = [ 10 .45 1.5 1 ] ; % saturated and conventional forms should both fit the data equally well
@@ -402,10 +416,8 @@ classdef contrast_tuning < ndi.calculator
                 P_(6,:) = [ 10 .45 1 2 ] ; % lower N
                 P_(7,:) = [ 10 .45 2 2 ] ; % higher N
                 P_(8,:) = [ 10 .75 1.5 2 ] ; % higher c50
-                P_(9,:) = [ 10 .15 1.5 2 ] ; % lower c50
-                P_(10,:) = [ -1 .45 1.5 1 ]; %all negative, R(0) == max(R) so the saturation index should be NaN
-                P_(11,:) = [10 .05 1.5 2]; %seems like this makes R(0) == max(R), so the saturation index should be NaN
-					% we should add more
+                P_(9,:) = [ 10 .25 1.5 2 ] ; % lower c50 (but not too low that responses don't make sense)
+					% potentially add more
 				total = size(P_,1);
 
 				actual_index = 1+mod(index-1,total);
