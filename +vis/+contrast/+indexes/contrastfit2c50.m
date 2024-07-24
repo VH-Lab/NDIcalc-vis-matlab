@@ -1,7 +1,7 @@
 function c50 = contrastfit2c50(contrast, responses)
 % CONTRASTFIT2C50- Compute Half maximum
 %
-%   C50 = vlt.neuro.vision.contrast.indexes.contrastfit2c50(CONTRAST, RESPONSE)
+%   C50 = vis.contrast.indexes.contrastfit2c50(CONTRAST, RESPONSE)
 %
 %  Given contrast in 1 percent steps in CONTRAST, this function
 %  computes the half maximum value that is defined as:
@@ -9,6 +9,9 @@ function c50 = contrastfit2c50(contrast, responses)
 %  value of C such that R(C50) = 0.5 * max(R)
 %
 %  Units of contrast can be percent or from 0 to 1.
+%  responses should be a row vector
+%  
+%  Note that this empirical C50 does not equal the C50 of a Naka-Rushton equation.
 %
 %  See Heimel et al. 2005 (Journal of Neurophysiology)
 
