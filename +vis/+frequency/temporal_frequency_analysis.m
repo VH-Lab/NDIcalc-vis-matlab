@@ -34,7 +34,7 @@ function [tf_props]=temporal_frequency_analysis(resp)
 %  'TF High TF'               |   high TF with half of max response
 %
 %  Difference of gaussians fit:
-%  'TF DOG params'            |   'r0 re se ri si'
+%  'TF DOG params'            |   '[A1 B1 A2 B2]'
 %  'TF DOG Fit'               |   1st row has TF values, 2nd has responses
 %  'TF DOG R2'                |   R^2 error
 %  'TF DOG Low'               |   Low cut-off, as measured with DOG
