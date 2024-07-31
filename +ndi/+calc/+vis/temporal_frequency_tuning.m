@@ -410,7 +410,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
 			%
 
-				[b_,errormsg] = ndi.calc.vis.test.temporal_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);	%need to finish implementing
+				[b_,errormsg] = ndi.calc.vis.test.temporal_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);
         		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors; can also use all(b_)
                 errormsg = cat(2,errormsg{:}); %turn into a string
 		end;

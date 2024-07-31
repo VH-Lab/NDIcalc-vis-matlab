@@ -416,8 +416,9 @@ classdef spatial_frequency_tuning < ndi.calculator
 			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
 			%
 
-				[b_,errormsg] = ndi.calc.vis.test.spatial_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);	
-        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors
+				[b_,errormsg] = ndi.calc.vis.test.spatial_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);
+        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors; can also use all(b_)
+                errormsg = cat(2,errormsg{:}); %turn into a string
 
 		end;
 
@@ -436,39 +437,41 @@ classdef spatial_frequency_tuning < ndi.calculator
 			% 
                 %plot is using dog, movshon, and movshon_c fits - let's use
                 %those here
-                function_choice_{1} = 'dog';
-				P_{1} = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
-                function_choice_{2} = 'movshon';
-                P_{2} = [ 10 5 12 1]; %example from vis.frequency.movshon2005_func
-                function_choice_{3} = 'movshon_c';
-                P_{3} = [ 10 5 12 1 -1]; 
-                %tests 4 through 10 made using difference of gaussians
-                for i = 4:10 
+                %function_choice_{1} = 'dog';
+				%P_{1} = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1 - removed because this trivial test has lots of degeneracy among parameters
+                function_choice_{1} = 'movshon';
+                P_{1} = [ 10 5 12 1]; %example from vis.frequency.movshon2005_func
+                function_choice_{2} = 'movshon_c';
+                P_{2} = [ 10 5 12 1 -1]; 
+                %tests 3 through 8 made using difference of gaussians
+                for i = 3:8 
                     function_choice_{i} = 'dog';
                 end
-                P_{4} = [1 1 .5 1];
-                P_{5} = [1 1 .5 2 ];
-                P_{6} = [1 1 2 .5] ;
-                P_{7} = [1 1 1 .5];
-                P_{8} = [2 1 2 .5];
-                P_{9} = [1 2 1 1];
-                P_{10} = [1 2 -1 1];
-                for i = 11:23
+                %P_{3} = [1 1 .5 1]; also a degenerate choice, since [.5 1 0 n] fits the same curve
+                P_{3} = [1 1 .5 2 ];
+                P_{4} = [1 1 2 .5] ;
+                P_{5} = [1 1 1 .5];
+                P_{6} = [2 1 2 .5];
+                P_{7} = [1 2 1 1];
+                P_{8} = [1 2 -1 1];
+                for i = 9:20
                     function_choice_{i} = 'movshon_c';
                 end
-                P_{11} = [10 10 12 1 -1]; %double the characteristic spatial frequency
-                P_{12} = [5 10 12 1 -1]; %flip the scaling factor and characteristic spatial frequency
-                P_{13} = [10 10 18 1 -1]; %increase the corner spatial frequency on the lower frequency side
-                P_{14} = [10 10 6 1 -1]; %halve the corner spatial frequency on the lower frequency side
-                P_{15} = [10 10 6 2 -1]; %double the slope of the lower frequency side
-                P_{16} = [10 10 6 5 -1]; %further increase the slope of the lower frequency side
-                P_{17} = [10 10 6 .5 -1]; %halve the slope of the lower frequency side
-                P_{18} = [10 10 6 .5 1]; %raise the constant to above baseline
-                P_{19} = [10 10 6 .5 0]; %keep the constant at 0
-                P_{20} = [20 10 6 .5 -.5]; %double the scaling factor
-                P_{21} = [20 10 0 .5 -.5]; %set the corner frequency of the lower frequency side to lowest possible (0)
-                P_{22} = [20 10 6 0 -5]; %another boundary condition: set slope of lower frequency side to 0
-                P_{23} = [0 10 6 .5 -.5]; %set scaling factor to 0 as an example of no tuning
+                P_{9} = [10 10 12 1 -1]; %double the characteristic spatial frequency
+                P_{10} = [5 10 12 1 -1]; %flip the scaling factor and characteristic spatial frequency
+                P_{11} = [10 10 18 1 -1]; %increase the corner spatial frequency on the lower frequency side
+                P_{12} = [10 10 6 1 -1]; %halve the corner spatial frequency on the lower frequency side
+                P_{13} = [10 10 6 2 -1]; %double the slope of the lower frequency side
+                P_{14} = [10 10 6 5 -1]; %further increase the slope of the lower frequency side
+                P_{15} = [10 10 6 .5 -1]; %halve the slope of the lower frequency side
+                P_{16} = [10 10 6 .5 1]; %raise the constant to above baseline
+                P_{17} = [10 10 6 .5 0]; %keep the constant at 0
+                P_{18} = [20 10 6 .5 -.5]; %double the scaling factor
+                %P_{19} = [20 10 0 .5 -.5]; %set the corner frequency of the lower frequency side to lowest possible (0)
+                %P_{20} = [20 10 6 0 -5]; %another boundary condition: set slope of lower frequency side to 0
+                %P_{22} = [0 10 6 .5 -.5]; %set scaling factor to 0 as an
+                %example of no tuning, this has too much degeneracy to be a
+                %good test
                 total = size(P_,2); % P_ is a 1xN cell array, this sets total equal to N 
 				actual_index = 1+mod(index-1,total);
 

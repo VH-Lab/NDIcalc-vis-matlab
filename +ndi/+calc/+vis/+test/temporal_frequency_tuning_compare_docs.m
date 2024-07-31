@@ -631,15 +631,18 @@ end
 [b_(98),errormsg_{98}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.bandwidth, doc_a.abs.fit_gausslog.bandwidth, tolerance.abs.fit_gausslog.bandwidth, 'abs fit_gausslog bandwidth');
 
 
-% The following code does three things:
-% 1. Identify the b_ values with unmatched results
-% 2. Update b_ to only include those
-% 3. Update the corresponding errormsg_ messages
+% Identify the b_ values with unmatched results
+% Update b_ to only include those
+% Update the corresponding errormsg_ messages
 
 if any(b_==0),
     error_indices = find(b_==0);
     b_ = b_(error_indices);
     errormsg_ = errormsg_(error_indices);
+end
+
+if all(b_) && all(cellfun('isempty', errormsg_))
+    disp('No error');
 end
 
 

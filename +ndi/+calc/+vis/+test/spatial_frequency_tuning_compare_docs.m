@@ -12,117 +12,130 @@ b_ = ones(1,100);
 errormsg_ = cell(1,100);
 
  % establish scope-dependent tolerances
-switch(scope),
-    case 'standard',
-    
-       tol_tuning_curve.spatial_frequency = 1e-6;
+switch(scope)
+    case 'standard'
+       tol_tuning_curve.spatial_frequency = 1e-6; %little variability for tuning curve under no noise
        tol_tuning_curve.mean = 1e-6;
        tol_tuning_curve.stddev = 1e-6;
        tol_tuning_curve.stderr = 1e-6;
-       tol_tuning_curve.individual = .5; %responses in units of Hz
+       tol_tuning_curve.individual = 1e-6; 
        tol_tuning_curve.control_mean = 1e-6;
        tol_tuning_curve.control_stddev = 1e-6;
        tol_tuning_curve.control_stderr = 1e-6;
        tol_tuning_curve.control_mean_stddev = 1e-6;
        tol_tuning_curve.control_mean_stderr = 1e-6;
-       tol_significance.visual_response_anova_p = .1;
-       tol_significance.across_stimuli_anova_p = .1;
-       tol_fitless.H50 = 1; %spatial freq range: 10^-2 to 60
-       tol_fitless.Pref = 1;
-       tol_fitless.L50 = 1;
-       tol_fitless.bandwidth = 1;
-       tol_fitless.low_pass_index = 1; % 1 to 100 technically, but in practice should be 1
-       tol_fitless.high_pass_index = 1; % 1 to 100 technically, but in practice is 100
-       tol_fit_spline.fit = 1;
-       tol_fit_spline.H50 = 1;
-       tol_fit_spline.Pref = 1;
-       tol_fit_spline.L50 = 1;
-       tol_fit_spline.values = 1;
-       tol_fit_spline.bandwidth = 1;
-       tol_fit_dog.fit = 2; %double the tolerance for fits because fits can look different even for the same underlying data
-       tol_fit_dog.H50 = 2;
-       tol_fit_dog.Pref = 2;
-       tol_fit_dog.L50 = 2;
-       tol_fit_dog.values = 2;
-       tol_fit_dog.bandwidth = 2;
-       tol_fit_dog.parameters(1) = 2;
-       tol_fit_dog.parameters(2) = 2;
-       tol_fit_dog.parameters(3) = 2;
-       tol_fit_dog.parameters(4) = 2;
-       tol_fit_gausslog.fit = 2;
-       tol_fit_gausslog.H50 = 2;
-       tol_fit_gausslog.Pref = 2;
-       tol_fit_gausslog.L50 = 2;
-       tol_fit_gausslog.values = 2;
-       tol_fit_gausslog.bandwidth = 2;
-       tol_fit_gausslog.parameters(1) = 1; %offset: about -5 to 5
-       tol_fit_gausslog.parameters(2) = 2; %height above offset: about 10 to 100
-       tol_fit_gausslog.parameters(3) = 2; %peak location: 0 to 60, but shouldn't vary much
-       tol_fit_gausslog.parameters(4) = 2; %width: 0 to 60
-       %tol_fit_gausslog.parameters(5) = 0.1; %not included in output
-       %document for some reason
-       tol_fit_movshon.fit = 2;
-       tol_fit_movshon.H50 = 2;
-       tol_fit_movshon.Pref = 2;
-       tol_fit_movshon.L50 = 2;
-       tol_fit_movshon.values = 2;
-       tol_fit_movshon.parameters(1) = 2; %scaling factor
-       tol_fit_movshon.parameters(2) = 2; %characteristic spatial frequency
-       tol_fit_movshon.parameters(3) = 2; %corner frequency of low-frequency limb
-       tol_fit_movshon.parameters(4) = 2; %slope of low-frequency limb
-       tol_fit_movshon.R2 = .1;
+       tol_significance.visual_response_anova_p = 1e-6;
+       tol_significance.across_stimuli_anova_p = 1e-6;
+       tol_fitless.H50 = 1e-6; %little variability for fields of fitless under no noise
+       tol_fitless.Pref = 1e-6;
+       tol_fitless.L50 = 1e-6;
+       tol_fitless.bandwidth = 1e-6;
+       tol_fitless.low_pass_index = 1e-6; 
+       tol_fitless.high_pass_index = 1e-6; 
+       tol_fit_spline.fit = 1e-6; %little variability for fit_spline under no noise
+       tol_fit_spline.H50 = 1e-6;
+       tol_fit_spline.Pref = 1e-6;
+       tol_fit_spline.L50 = 1e-6;
+       tol_fit_spline.values = 1e-6;
+       tol_fit_spline.bandwidth = 1e-6;
+       % DOG function: y = A1*exp(-x.^2/(2*B1^2)) - A2*exp(-x.^2/(2*B2^2))
+       tol_fit_dog.fit = .5; %fits can look different even for the same underlying data
+       tol_fit_dog.H50 = .5;
+       tol_fit_dog.Pref = .5;
+       tol_fit_dog.L50 = .5;
+       tol_fit_dog.values = 1e-6;
+       tol_fit_dog.bandwidth = .5;
+       tol_fit_dog.parameters(1) = .5; %A1
+       tol_fit_dog.parameters(2) = .5; %B1
+       tol_fit_dog.parameters(3) = .5; %A2
+       tol_fit_dog.parameters(4) = .5; %B2
+       %Gausslog function: Y = a+b*exp(-((log10(x)-log10(c)).^2/(2*d^2)))
+       tol_fit_gausslog.fit = .5;
+       tol_fit_gausslog.H50 = .5;
+       tol_fit_gausslog.Pref = .5;
+       tol_fit_gausslog.L50 = .5;
+       tol_fit_gausslog.values = 1e-6;
+       tol_fit_gausslog.bandwidth = .5;
+       tol_fit_gausslog.parameters(1) = .5; %a - offset: about -5 to 5
+       tol_fit_gausslog.parameters(2) = .5; %b - height above offset: about 10 to 100
+       tol_fit_gausslog.parameters(3) = .5; %c - peak location: 0 to 60, but shouldn't vary much
+       tol_fit_gausslog.parameters(4) = .5; %d - width: 0 to 60
+       %Movshon function: R(f) = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B)
+       tol_fit_movshon.fit = .5;
+       tol_fit_movshon.H50 = .5;
+       tol_fit_movshon.Pref = .5;
+       tol_fit_movshon.L50 = .5;
+       tol_fit_movshon.values = 1e-6;
+       tol_fit_movshon.parameters(1) = .5; % k - scaling factor
+       tol_fit_movshon.parameters(2) = .5; % fc - characteristic spatial frequency
+       tol_fit_movshon.parameters(3) = .5; % fh - corner frequency of low-frequency limb
+       tol_fit_movshon.parameters(4) = .5; % b - slope of low-frequency limb
+       tol_fit_movshon.R2 = .01;
        tol_fit_movshon.bandwidth = .6; % about 0 to 6
-       
-       tol_fit_movshon_c.fit = 2;
-       tol_fit_movshon_c.H50 = 2;
-       tol_fit_movshon_c.Pref = 2;
-       tol_fit_movshon_c.L50 = 2;
-       tol_fit_movshon_c.values = 2;
-       tol_fit_movshon_c.parameters(1) = 2;
-       tol_fit_movshon_c.parameters(2) = 2;
-       tol_fit_movshon_c.parameters(3) = 2;
-       tol_fit_movshon_c.parameters(4) = 2;
-       tol_fit_movshon_c.parameters(5) = 1;
-       tol_fit_movshon_c.R2 = 0.1;
+       %Movshon_c function: R(f) = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B) + C
+       tol_fit_movshon_c.fit = .5;
+       tol_fit_movshon_c.H50 = .5;
+       tol_fit_movshon_c.Pref = .5;
+       tol_fit_movshon_c.L50 = .5;
+       tol_fit_movshon_c.values = 1e-6;
+       tol_fit_movshon_c.parameters(1) = .5; % k - scaling factor
+       tol_fit_movshon_c.parameters(2) = .5; % fc - characteristic spatial frequency
+       tol_fit_movshon_c.parameters(3) = .5; % fh - corner frequency of low-frequency limb
+       tol_fit_movshon_c.parameters(4) = .5; % b - slope of low-frequency limb
+       tol_fit_movshon_c.parameters(5) = .5; % c - constant term
+       tol_fit_movshon_c.R2 = 0.01;
        tol_fit_movshon_c.bandwidth = .6;
        
-       tolerance.abs.fitless.L50 = 0.5;
-       tolerance.abs.fitless.Pref = 0.5;
-       tolerance.abs.fitless.H50 = 0.5;
-       tolerance.abs.fitless.bandwidth = 0.5;
-       tolerance.abs.fitless.low_pass_index = 0.5;
-       tolerance.abs.fitless.high_pass_index = 0.5;
-       tolerance.abs.fit_dog.parameters = 0.5;
-       tolerance.abs.fit_dog.values = 0.5;
+       tolerance.abs.fitless.L50 = 1e-6;
+       tolerance.abs.fitless.Pref = 1e-6;
+       tolerance.abs.fitless.H50 = 1e-6;
+       tolerance.abs.fitless.bandwidth = 1e-6;
+       tolerance.abs.fitless.low_pass_index = 1e-6;
+       tolerance.abs.fitless.high_pass_index = 1e-6;
+       tolerance.abs.fit_dog.parameters(1) = 0.5;
+       tolerance.abs.fit_dog.parameters(2) = 0.5;
+       tolerance.abs.fit_dog.parameters(3) = 0.5;
+       tolerance.abs.fit_dog.parameters(4) = 0.5;
+       tolerance.abs.fit_dog.values = 1e-6;
        tolerance.abs.fit_dog.fit = 0.5;
        tolerance.abs.fit_dog.L50 = 0.5;
        tolerance.abs.fit_dog.Pref = 0.5;
        tolerance.abs.fit_dog.H50 = 0.5;
        tolerance.abs.fit_dog.bandwidth = 0.5;
-       tolerance.abs.fit_movshon.parameters = 0.5;
-       tolerance.abs.fit_movshon.values = 0.5;
+       tolerance.abs.fit_movshon.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon.parameters(4) = 0.5;
+       tolerance.abs.fit_movshon.values = 1e-6;
        tolerance.abs.fit_movshon.fit = 0.5;
        tolerance.abs.fit_movshon.L50 = 0.5;
        tolerance.abs.fit_movshon.Pref = 0.5;
        tolerance.abs.fit_movshon.H50 = 0.5;
-       tolerance.abs.fit_movshon.R2 = 0.5;
+       tolerance.abs.fit_movshon.R2 = 0.01;
        tolerance.abs.fit_movshon.bandwidth = 0.5;
-       tolerance.abs.fit_movshon_c.parameters = 0.5;
-       tolerance.abs.fit_movshon_c.values = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(4) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(5) = 0.5;
+       tolerance.abs.fit_movshon_c.values = 1e-6;
        tolerance.abs.fit_movshon_c.fit = 0.5;
        tolerance.abs.fit_movshon_c.L50 = 0.5;
        tolerance.abs.fit_movshon_c.Pref = 0.5;
        tolerance.abs.fit_movshon_c.H50 = 0.5;
-       tolerance.abs.fit_movshon_c.R2 = 0.5;
+       tolerance.abs.fit_movshon_c.R2 = 0.01;
        tolerance.abs.fit_movshon_c.bandwidth = 0.5;
-       tolerance.abs.fit_spline.values = 0.5;
-       tolerance.abs.fit_spline.fit = 0.5;
-       tolerance.abs.fit_spline.L50 = 0.5;
-       tolerance.abs.fit_spline.Pref = 0.5;
-       tolerance.abs.fit_spline.H50 = 0.5;
-       tolerance.abs.fit_spline.bandwidth = 0.5;
-       tolerance.abs.fit_gausslog.parameters = 0.5;
-       tolerance.abs.fit_gausslog.values = 0.5;
+       tolerance.abs.fit_spline.values = 1e-6;
+       tolerance.abs.fit_spline.fit = 1e-6;
+       tolerance.abs.fit_spline.L50 = 1e-6;
+       tolerance.abs.fit_spline.Pref = 1e-6;
+       tolerance.abs.fit_spline.H50 = 1e-6;
+       tolerance.abs.fit_spline.bandwidth = 1e-6;
+       tolerance.abs.fit_gausslog.parameters(1) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(2) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(3) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(4) = 0.5;
+       tolerance.abs.fit_gausslog.values = 1e-6;
        tolerance.abs.fit_gausslog.fit = 0.5;
        tolerance.abs.fit_gausslog.L50 = 0.5;
        tolerance.abs.fit_gausslog.Pref = 0.5;
@@ -203,20 +216,26 @@ switch(scope),
        tol_fit_movshon_c.R2 = 0.2;
        tol_fit_movshon_c.bandwidth = 1.2;
 
-       tolerance.abs.fitless.L50 = 0.5;
+     tolerance.abs.fitless.L50 = 0.5;
        tolerance.abs.fitless.Pref = 0.5;
        tolerance.abs.fitless.H50 = 0.5;
        tolerance.abs.fitless.bandwidth = 0.5;
        tolerance.abs.fitless.low_pass_index = 0.5;
        tolerance.abs.fitless.high_pass_index = 0.5;
-       tolerance.abs.fit_dog.parameters = 0.5;
+       tolerance.abs.fit_dog.parameters(1) = 0.5;
+       tolerance.abs.fit_dog.parameters(2) = 0.5;
+       tolerance.abs.fit_dog.parameters(3) = 0.5;
+       tolerance.abs.fit_dog.parameters(4) = 0.5;
        tolerance.abs.fit_dog.values = 0.5;
        tolerance.abs.fit_dog.fit = 0.5;
        tolerance.abs.fit_dog.L50 = 0.5;
        tolerance.abs.fit_dog.Pref = 0.5;
        tolerance.abs.fit_dog.H50 = 0.5;
        tolerance.abs.fit_dog.bandwidth = 0.5;
-       tolerance.abs.fit_movshon.parameters = 0.5;
+       tolerance.abs.fit_movshon.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon.parameters(4) = 0.5;
        tolerance.abs.fit_movshon.values = 0.5;
        tolerance.abs.fit_movshon.fit = 0.5;
        tolerance.abs.fit_movshon.L50 = 0.5;
@@ -224,7 +243,11 @@ switch(scope),
        tolerance.abs.fit_movshon.H50 = 0.5;
        tolerance.abs.fit_movshon.R2 = 0.5;
        tolerance.abs.fit_movshon.bandwidth = 0.5;
-       tolerance.abs.fit_movshon_c.parameters = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(4) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(5) = 0.5;
        tolerance.abs.fit_movshon_c.values = 0.5;
        tolerance.abs.fit_movshon_c.fit = 0.5;
        tolerance.abs.fit_movshon_c.L50 = 0.5;
@@ -238,14 +261,16 @@ switch(scope),
        tolerance.abs.fit_spline.Pref = 0.5;
        tolerance.abs.fit_spline.H50 = 0.5;
        tolerance.abs.fit_spline.bandwidth = 0.5;
-       tolerance.abs.fit_gausslog.parameters = 0.5;
+       tolerance.abs.fit_gausslog.parameters(1) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(2) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(3) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(4) = 0.5;
        tolerance.abs.fit_gausslog.values = 0.5;
        tolerance.abs.fit_gausslog.fit = 0.5;
        tolerance.abs.fit_gausslog.L50 = 0.5;
        tolerance.abs.fit_gausslog.Pref = 0.5;
        tolerance.abs.fit_gausslog.H50 = 0.5;
        tolerance.abs.fit_gausslog.bandwidth = 0.5;
-
 
     case 'high_noise',
     
@@ -326,14 +351,20 @@ switch(scope),
        tolerance.abs.fitless.bandwidth = 0.5;
        tolerance.abs.fitless.low_pass_index = 0.5;
        tolerance.abs.fitless.high_pass_index = 0.5;
-       tolerance.abs.fit_dog.parameters = 0.5;
+       tolerance.abs.fit_dog.parameters(1) = 0.5;
+       tolerance.abs.fit_dog.parameters(2) = 0.5;
+       tolerance.abs.fit_dog.parameters(3) = 0.5;
+       tolerance.abs.fit_dog.parameters(4) = 0.5;
        tolerance.abs.fit_dog.values = 0.5;
        tolerance.abs.fit_dog.fit = 0.5;
        tolerance.abs.fit_dog.L50 = 0.5;
        tolerance.abs.fit_dog.Pref = 0.5;
        tolerance.abs.fit_dog.H50 = 0.5;
        tolerance.abs.fit_dog.bandwidth = 0.5;
-       tolerance.abs.fit_movshon.parameters = 0.5;
+       tolerance.abs.fit_movshon.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon.parameters(4) = 0.5;
        tolerance.abs.fit_movshon.values = 0.5;
        tolerance.abs.fit_movshon.fit = 0.5;
        tolerance.abs.fit_movshon.L50 = 0.5;
@@ -341,7 +372,11 @@ switch(scope),
        tolerance.abs.fit_movshon.H50 = 0.5;
        tolerance.abs.fit_movshon.R2 = 0.5;
        tolerance.abs.fit_movshon.bandwidth = 0.5;
-       tolerance.abs.fit_movshon_c.parameters = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(1) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(2) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(3) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(4) = 0.5;
+       tolerance.abs.fit_movshon_c.parameters(5) = 0.5;
        tolerance.abs.fit_movshon_c.values = 0.5;
        tolerance.abs.fit_movshon_c.fit = 0.5;
        tolerance.abs.fit_movshon_c.L50 = 0.5;
@@ -355,7 +390,10 @@ switch(scope),
        tolerance.abs.fit_spline.Pref = 0.5;
        tolerance.abs.fit_spline.H50 = 0.5;
        tolerance.abs.fit_spline.bandwidth = 0.5;
-       tolerance.abs.fit_gausslog.parameters = 0.5;
+       tolerance.abs.fit_gausslog.parameters(1) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(2) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(3) = 0.5;
+       tolerance.abs.fit_gausslog.parameters(4) = 0.5;
        tolerance.abs.fit_gausslog.values = 0.5;
        tolerance.abs.fit_gausslog.fit = 0.5;
        tolerance.abs.fit_gausslog.L50 = 0.5;
@@ -466,7 +504,7 @@ end
 [b_(20),errormsg_{20}] = ndi.test.values_within_tolerance(doc_e.fit_dog.Pref, doc_a.fit_dog.Pref, tol_fit_dog.Pref, 'fit_dog Pref');
 [b_(21),errormsg_{21}] = ndi.test.values_within_tolerance(doc_e.fit_dog.L50, doc_a.fit_dog.L50, tol_fit_dog.L50, 'fit_dog L50');
 [b_(22),errormsg_{22}] = ndi.test.values_within_tolerance(doc_e.fit_dog.values, doc_a.fit_dog.values, tol_fit_dog.values, 'fit_dog values');
-[b_(23),errormsg_{23] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(1), doc_a.fit_dog.parameters(1), tol_fit_dog.parameters(1), 'fit_dog parameter 1');
+[b_(23),errormsg_{23}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(1), doc_a.fit_dog.parameters(1), tol_fit_dog.parameters(1), 'fit_dog parameter 1');
 [b_(75),errormsg_{75}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(2), doc_a.fit_dog.parameters(2), tol_fit_dog.parameters(2), 'fit_dog parameter 2');
 [b_(76),errormsg_{76}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(3), doc_a.fit_dog.parameters(3), tol_fit_dog.parameters(3), 'fit_dog parameter 3');
 [b_(77),errormsg_{77}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(4), doc_a.fit_dog.parameters(4), tol_fit_dog.parameters(4), 'fit_dog parameter 4');
@@ -481,15 +519,60 @@ end
 %   bandwidth
 %   parameters
 
-[b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit_dog.fit, doc_a.fit_dog.fit, tol_fit_gausslog.fit, 'fit_gausslog fit');
-[b_(25),errormsg_{25}] = ndi.test.values_within_tolerance(doc_e.fit_dog.H50, doc_a.fit_dog.H50, tol_fit_gausslog.H50, 'fit_gausslog H50');
-[b_(26),errormsg_{26}] = ndi.test.values_within_tolerance(doc_e.fit_dog.Pref, doc_a.fit_dog.Pref, tol_fit_gausslog.Pref, 'fit_gausslog Pref');
-[b_(27),errormsg_{27}] = ndi.test.values_within_tolerance(doc_e.fit_dog.L50, doc_a.fit_dog.L50, tol_fit_gausslog.L50, 'fit_gausslog L50');
-[b_(28),errormsg_{28}] = ndi.test.values_within_tolerance(doc_e.fit_dog.values, doc_a.fit_dog.values, tol_fit_gausslog.values, 'fit_gausslog values');
-[b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(1), doc_a.fit_dog.parameters(1), tol_fit_gausslog.parameters(1), 'fit_gausslog parameter 1');
-[b_(30),errormsg_{30}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(2), doc_a.fit_dog.parameters(2), tol_fit_gausslog.parameters(2), 'fit_gausslog parameter 2');
-[b_(31),errormsg_{31}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(3), doc_a.fit_dog.parameters(3), tol_fit_gausslog.parameters(3), 'fit_gausslog parameter 3');
-[b_(32),errormsg_{32}] = ndi.test.values_within_tolerance(doc_e.fit_dog.parameters(4), doc_a.fit_dog.parameters(4), tol_fit_gausslog.parameters(4), 'fit_gausslog parameter 4');
+[b_(24),errormsg_{24}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.fit, doc_a.fit_gausslog.fit, tol_fit_gausslog.fit, 'fit_gausslog fit');
+[b_(25),errormsg_{25}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.H50, doc_a.fit_gausslog.H50, tol_fit_gausslog.H50, 'fit_gausslog H50');
+[b_(26),errormsg_{26}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.Pref, doc_a.fit_gausslog.Pref, tol_fit_gausslog.Pref, 'fit_gausslog Pref');
+[b_(27),errormsg_{27}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.L50, doc_a.fit_gausslog.L50, tol_fit_gausslog.L50, 'fit_gausslog L50');
+[b_(28),errormsg_{28}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.values, doc_a.fit_gausslog.values, tol_fit_gausslog.values, 'fit_gausslog values');
+[b_(29),errormsg_{29}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.parameters(1), doc_a.fit_gausslog.parameters(1), tol_fit_gausslog.parameters(1), 'fit_gausslog parameter 1');
+[b_(30),errormsg_{30}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.parameters(2), doc_a.fit_gausslog.parameters(2), tol_fit_gausslog.parameters(2), 'fit_gausslog parameter 2');
+[b_(31),errormsg_{31}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.parameters(3), doc_a.fit_gausslog.parameters(3), tol_fit_gausslog.parameters(3), 'fit_gausslog parameter 3');
+[b_(32),errormsg_{32}] = ndi.test.values_within_tolerance(doc_e.fit_gausslog.parameters(4), doc_a.fit_gausslog.parameters(4), tol_fit_gausslog.parameters(4), 'fit_gausslog parameter 4');
+
+%  Comparing fit_movshon
+%    parameters 1-4
+%    values
+%    fit
+%    L50
+%    Pref
+%    H50
+%    R2
+%    bandwidth
+
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.parameters(1), doc_a.fit_movshon.parameters(1), tol_fit_movshon.parameters(1), 'fit_movshon parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.parameters(2), doc_a.fit_movshon.parameters(2), tol_fit_movshon.parameters(2), 'fit_movshon parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.parameters(3), doc_a.fit_movshon.parameters(3), tol_fit_movshon.parameters(3), 'fit_movshon parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.parameters(4), doc_a.fit_movshon.parameters(4), tol_fit_movshon.parameters(4), 'fit_movshon parameter 4');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.values, doc_a.fit_movshon.values, tol_fit_movshon.values, 'fit_movshon values');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.fit, doc_a.fit_movshon.fit, tol_fit_movshon.fit, 'fit_movshon fit');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.L50, doc_a.fit_movshon.L50, tol_fit_movshon.L50, 'fit_movshon L50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.Pref, doc_a.fit_movshon.Pref, tol_fit_movshon.Pref, 'fit_movshon Pref');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.H50, doc_a.fit_movshon.H50, tol_fit_movshon.H50, 'fit_movshon H50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.R2, doc_a.fit_movshon.R2, tol_fit_movshon.R2, 'fit_movshon R2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon.bandwidth, doc_a.fit_movshon.bandwidth, tol_fit_movshon.bandwidth, 'fit_movshon bandwidth');
+
+%  Comparing fit_movshon_c
+%    parameters 1-5
+%    values
+%    fit
+%    L50
+%    Pref
+%    H50
+%    R2
+%    bandwidth
+
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.parameters(1), doc_a.fit_movshon_c.parameters(1), tol_fit_movshon_c.parameters(1), 'fit_movshon_c parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.parameters(2), doc_a.fit_movshon_c.parameters(2), tol_fit_movshon_c.parameters(2), 'fit_movshon_c parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.parameters(3), doc_a.fit_movshon_c.parameters(3), tol_fit_movshon_c.parameters(3), 'fit_movshon_c parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.parameters(4), doc_a.fit_movshon_c.parameters(4), tol_fit_movshon_c.parameters(4), 'fit_movshon_c parameter 4');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.parameters(5), doc_a.fit_movshon_c.parameters(5), tol_fit_movshon_c.parameters(5), 'fit_movshon_c parameter 5');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.values, doc_a.fit_movshon_c.values, tol_fit_movshon_c.values, 'fit_movshon_c values');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.fit, doc_a.fit_movshon_c.fit, tol_fit_movshon_c.fit, 'fit_movshon_c fit');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.L50, doc_a.fit_movshon_c.L50, tol_fit_movshon_c.L50, 'fit_movshon_c L50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.Pref, doc_a.fit_movshon_c.Pref, tol_fit_movshon_c.Pref, 'fit_movshon_c Pref');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.H50, doc_a.fit_movshon_c.H50, tol_fit_movshon_c.H50, 'fit_movshon_c H50');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.R2, doc_a.fit_movshon_c.R2, tol_fit_movshon_c.R2, 'fit_movshon_c R2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.fit_movshon_c.bandwidth, doc_a.fit_movshon_c.bandwidth, tol_fit_movshon_c.bandwidth, 'fit_movshon_c bandwidth');
 
 % abs values
 %  Comparing fitless
@@ -516,7 +599,10 @@ end
 %    H50
 %    bandwidth
 
-[b_(39),errormsg_{39}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.parameters, doc_a.abs.fit_dog.parameters, tolerance.abs.fit_dog.parameters, 'abs fit_dog parameters');
+[b_(39),errormsg_{39}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.parameters(1), doc_a.abs.fit_dog.parameters(1), tolerance.abs.fit_dog.parameters(1), 'abs fit_dog parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.parameters(2), doc_a.abs.fit_dog.parameters(2), tolerance.abs.fit_dog.parameters(2), 'abs fit_dog parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.parameters(3), doc_a.abs.fit_dog.parameters(3), tolerance.abs.fit_dog.parameters(3), 'abs fit_dog parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.parameters(4), doc_a.abs.fit_dog.parameters(4), tolerance.abs.fit_dog.parameters(4), 'abs fit_dog parameter 4');
 [b_(40),errormsg_{40}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.values, doc_a.abs.fit_dog.values, tolerance.abs.fit_dog.values, 'abs fit_dog values');
 [b_(41),errormsg_{41}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.fit, doc_a.abs.fit_dog.fit, tolerance.abs.fit_dog.fit, 'abs fit_dog fit');
 [b_(42),errormsg_{42}] = ndi.test.values_within_tolerance(doc_e.abs.fit_dog.L50, doc_a.abs.fit_dog.L50, tolerance.abs.fit_dog.L50, 'abs fit_dog L50');
@@ -534,7 +620,10 @@ end
 %    R2
 %    bandwidth
 
-[b_(46),errormsg_{46}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.parameters, doc_a.abs.fit_movshon.parameters, tolerance.abs.fit_movshon.parameters, 'abs fit_movshon parameters');
+[b_(46),errormsg_{46}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.parameters(1), doc_a.abs.fit_movshon.parameters(1), tolerance.abs.fit_movshon.parameters(1), 'abs fit_movshon parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.parameters(2), doc_a.abs.fit_movshon.parameters(2), tolerance.abs.fit_movshon.parameters(2), 'abs fit_movshon parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.parameters(3), doc_a.abs.fit_movshon.parameters(3), tolerance.abs.fit_movshon.parameters(3), 'abs fit_movshon parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.parameters(4), doc_a.abs.fit_movshon.parameters(4), tolerance.abs.fit_movshon.parameters(4), 'abs fit_movshon parameter 4');
 [b_(47),errormsg_{47}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.values, doc_a.abs.fit_movshon.values, tolerance.abs.fit_movshon.values, 'abs fit_movshon values');
 [b_(48),errormsg_{48}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.fit, doc_a.abs.fit_movshon.fit, tolerance.abs.fit_movshon.fit, 'abs fit_movshon fit');
 [b_(49),errormsg_{49}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon.L50, doc_a.abs.fit_movshon.L50, tolerance.abs.fit_movshon.L50, 'abs fit_movshon L50');
@@ -553,7 +642,11 @@ end
 %    R2
 %    bandwidth
 
-[b_(54),errormsg_{54}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters, doc_a.abs.fit_movshon_c.parameters, tolerance.abs.fit_movshon_c.parameters, 'abs fit_movshon_c parameters');
+[b_(54),errormsg_{54}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters(1), doc_a.abs.fit_movshon_c.parameters(1), tolerance.abs.fit_movshon_c.parameters(1), 'abs fit_movshon_c parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters(2), doc_a.abs.fit_movshon_c.parameters(2), tolerance.abs.fit_movshon_c.parameters(2), 'abs fit_movshon_c parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters(3), doc_a.abs.fit_movshon_c.parameters(3), tolerance.abs.fit_movshon_c.parameters(3), 'abs fit_movshon_c parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters(4), doc_a.abs.fit_movshon_c.parameters(4), tolerance.abs.fit_movshon_c.parameters(4), 'abs fit_movshon_c parameter 4');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.parameters(5), doc_a.abs.fit_movshon_c.parameters(5), tolerance.abs.fit_movshon_c.parameters(5), 'abs fit_movshon_c parameter 5');
 [b_(55),errormsg_{55}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.values, doc_a.abs.fit_movshon_c.values, tolerance.abs.fit_movshon_c.values, 'abs fit_movshon_c values');
 [b_(56),errormsg_{56}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.fit, doc_a.abs.fit_movshon_c.fit, tolerance.abs.fit_movshon_c.fit, 'abs fit_movshon_c fit');
 [b_(57),errormsg_{57}] = ndi.test.values_within_tolerance(doc_e.abs.fit_movshon_c.L50, doc_a.abs.fit_movshon_c.L50, tolerance.abs.fit_movshon_c.L50, 'abs fit_movshon_c L50');
@@ -586,7 +679,10 @@ end
 %    H50
 %    bandwidth
 
-[b_(68),errormsg_{68}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.parameters, doc_a.abs.fit_gausslog.parameters, tolerance.abs.fit_gausslog.parameters, 'abs fit_gausslog parameters');
+[b_(68),errormsg_{68}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.parameters(1), doc_a.abs.fit_gausslog.parameters(1), tolerance.abs.fit_gausslog.parameters(1), 'abs fit_gausslog parameter 1');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.parameters(2), doc_a.abs.fit_gausslog.parameters(2), tolerance.abs.fit_gausslog.parameters(2), 'abs fit_gausslog parameter 2');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.parameters(3), doc_a.abs.fit_gausslog.parameters(3), tolerance.abs.fit_gausslog.parameters(3), 'abs fit_gausslog parameter 3');
+[b_(end+1),errormsg_{end+1}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.parameters(4), doc_a.abs.fit_gausslog.parameters(4), tolerance.abs.fit_gausslog.parameters(4), 'abs fit_gausslog parameter 4');
 [b_(69),errormsg_{69}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.values, doc_a.abs.fit_gausslog.values, tolerance.abs.fit_gausslog.values, 'abs fit_gausslog values');
 [b_(70),errormsg_{70}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.fit, doc_a.abs.fit_gausslog.fit, tolerance.abs.fit_gausslog.fit, 'abs fit_gausslog fit');
 [b_(71),errormsg_{71}] = ndi.test.values_within_tolerance(doc_e.abs.fit_gausslog.L50, doc_a.abs.fit_gausslog.L50, tolerance.abs.fit_gausslog.L50, 'abs fit_gausslog L50');
