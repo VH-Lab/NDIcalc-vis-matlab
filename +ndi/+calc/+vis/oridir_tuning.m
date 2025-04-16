@@ -10,7 +10,6 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% Creates a oridir_tuning ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
@@ -247,7 +246,7 @@ classdef oridir_tuning < ndi.calculator
 					'hwhh', fi.tuning_width);
 
 				% create document and store in oridir_tuning
-				oriprops_doc = ndi.document('stimulus/vision/oridir/orientation_direction_tuning',...
+				oriprops_doc = ndi.document('orientation_direction_tuning',...
 					'orientation_direction_tuning',vlt.data.var2struct('properties', 'tuning_curve', 'significance', 'vector', 'fit'));
                                 oriprops_doc = oriprops_doc.set_dependency_value('element_id', stim_response_doc.dependency_value('element_id'));
 				oriprops_doc = oriprops_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
@@ -267,7 +266,7 @@ classdef oridir_tuning < ndi.calculator
 
 				plot_tuning_curve_log = 0;
 
-				did.datastructures.assign(varargin{:});
+				vlt.data.assign(varargin{:});
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
