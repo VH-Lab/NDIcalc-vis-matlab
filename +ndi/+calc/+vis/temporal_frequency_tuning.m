@@ -8,7 +8,6 @@ classdef temporal_frequency_tuning < ndi.calculator
 			%
 			% Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.temporal_frequency_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...

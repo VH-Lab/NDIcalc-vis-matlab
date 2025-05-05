@@ -8,7 +8,6 @@ classdef spatial_frequency_tuning < ndi.calculator
 			%
 			% Creates a SPATIAL_FREQUENCY_TUNING ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.spatial_frequency_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calculator(session,'spatial_frequency_tuning_calc',...

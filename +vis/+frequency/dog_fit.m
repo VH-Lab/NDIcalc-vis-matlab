@@ -37,7 +37,7 @@ end;
 
 start_positions = 40;
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 mydog = fittype('a*exp(-(x.^2)/(2*b^2)) - c*exp(-(x.^2)/(2*d^2))');
 

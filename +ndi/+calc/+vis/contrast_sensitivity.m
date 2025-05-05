@@ -8,7 +8,6 @@ classdef contrast_sensitivity < ndi.calculator
 			%
 			% Creates a CONTRAST_TUNING ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.contrast_sensitivity');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				contrast_sensitivity_obj = contrast_sensitivity_obj@ndi.calculator(session,'contrastsensitivity_calc',...

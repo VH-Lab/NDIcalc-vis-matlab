@@ -8,7 +8,6 @@ classdef speed_tuning < ndi.calculator
 			%
 			% Creates a SPEED_TUNING ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				speed_tuning_obj = speed_tuning_obj@ndi.calculator(session,'speedtuning_calc',...

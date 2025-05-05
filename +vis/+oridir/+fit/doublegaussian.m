@@ -58,7 +58,11 @@ rmin = min(responses);
 span = peak - rmin;
 
 fo.Lower = [  -span;       0;   0;    -4*180;    median(diff(angles))/2];
-fo.Upper = [   span;  3*peak;   1;     4*180;    90 ];
+fo.Upper = [   span;  max(3*peak,0);   1;     4*180;    90 ];
+
+fo.Lower
+fo.Upper
+
 
 bestErr = Inf;
 bestP = [];

@@ -8,7 +8,6 @@ classdef hartley_calc < ndi.calculator
 			%
 			% Creates a HARTLEY_CALC ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.hartley_calc');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
