@@ -1,12 +1,17 @@
-    - calc:
-      - contrastsensitivity_calc : 'documents/calc/contrastsensitivity_calc.md'
-      - contrasttuning_calc : 'documents/calc/contrasttuning_calc.md'
-      - hartley_calc : 'documents/calc/hartley_calc.md'
-      - oridirtuning_calc : 'documents/calc/oridirtuning_calc.md'
-      - speedtuning_calc : 'documents/calc/speedtuning_calc.md'
-    - neuro:
-      - hartley_reverse_correlation : 'documents/neuro/hartley_reverse_correlation.md'
-      - reverse_correlation : 'documents/neuro/reverse_correlation.md'
-    - vision:
-      - contrast_tuning : 'documents/vision/contrast_tuning.md'
-      - speed_tuning : 'documents/vision/speed_tuning.md'
+      - calc:
+        - contrastsensitivity_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/contrastsensitivity_calc.md'
+        - contrasttuning_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/contrasttuning_calc.md'
+        - hartley_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/hartley_calc.md'
+        - oridirtuning_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/oridirtuning_calc.md'
+        - spatial_frequency_tuning_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/spatial_frequency_tuning_calc.md'
+        - speedtuning_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/speedtuning_calc.md'
+        - spike_shape_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/spike_shape_calc.md'
+        - temporal_frequency_tuning_calc : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/calc/temporal_frequency_tuning_calc.md'
+      - neuro:
+        - hartley_reverse_correlation : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/neuro/hartley_reverse_correlation.md'
+        - reverse_correlation : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/neuro/reverse_correlation.md'
+      - vision:
+        - contrast_tuning : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/vision/contrast_tuning.md'
+        - spatial_frequency_tuning : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/vision/spatial_frequency_tuning.md'
+        - speed_tuning : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/vision/speed_tuning.md'
+        - temporal_frequency_tuning : '/Users/vanhoosr/Documents/MATLAB/tools/NDIcalc-vis-matlab/docs/documents/vision/temporal_frequency_tuning.md'
