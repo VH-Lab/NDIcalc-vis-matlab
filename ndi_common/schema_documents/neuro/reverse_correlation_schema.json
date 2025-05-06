@@ -1,0 +1,29 @@
+{
+	"classname": "reverse_correlation",
+	"superclasses":  [ "base", "ngrid"],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_presentation_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"reverse_correlation": [
+		{
+			"name": "method",
+			"type": "string",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The reverse correlation method performed."
+		},
+		{
+			"name": "dimension_labels",
+			"type": "string",
+			"default_value": [],
+			"parameters": [],
+			"queryable": 1,
+			"documentation": "The dimension labels for the time, x, y axes"
+		}
+	]
+}
+
+

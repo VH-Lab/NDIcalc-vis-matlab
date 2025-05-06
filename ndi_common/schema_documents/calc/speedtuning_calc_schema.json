@@ -1,0 +1,26 @@
+{
+	"classname": "speedtuning_calc",
+	"superclasses":  [ "base", "speed_tuning"],
+	"depends_on": [ ],
+	"file": [ ],
+	"speedtuning_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The depends on inputs"
+		}
+	]
+}
+
+

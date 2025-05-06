@@ -1,0 +1,26 @@
+{
+	"classname": "oridirtuning_calc",
+	"superclasses":  [ "base", "orientation_direction_tuning"],
+	"depends_on": [ ],
+	"file": [ ],
+	"oridirtuning_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The input structure."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": [],
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The depends on inputs"
+		}
+	]
+}
+
+

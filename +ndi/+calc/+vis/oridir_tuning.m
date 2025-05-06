@@ -10,7 +10,6 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% Creates a oridir_tuning ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
@@ -36,9 +35,9 @@ classdef oridir_tuning < ndi.calculator
 				% Step 2. Set up output structure
 				oridir_tuning = parameters;
 						
-				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
-					'exact_number',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+				tuning_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
+					'exact_string',...
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_doc)~=1, 
 					error(['Could not find stimulus tuning curve doc..']);
 				end;
@@ -48,7 +47,8 @@ classdef oridir_tuning < ndi.calculator
 				% stimulus responses and write output into an oridir_tuning document
 
 				oriapp = ndi.app.oridirtuning(ndi_calculator_obj.session);
-				doc = oriapp.calculate_oridir_indexes(tuning_doc,0,0);
+				doc = ndi_calculator_obj.calculate_oridir_indexes(tuning_doc) + ...
+					ndi_calculator_obj.newdocument();
 
 				% Step 4. Check if doc exists
 				if ~isempty(doc), 
@@ -68,7 +68,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 				% search for stimulus_tuningcurve_id
 				parameters.input_parameters = struct([]);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 		end; % default_search_for_input_parameters
 
@@ -119,7 +119,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% Tests whether a potential input to a calculator is valid.
 			% NAME - potential dependency name
-			% VALUE - ndi_document id of the potential dependency name
+			% VALUE - base id of the potential dependency name
 			%
 			% The base class behavior of this function will return true.
 			% This is overridden if additional criteria beyond an ndi.query
@@ -133,13 +133,13 @@ classdef oridir_tuning < ndi.calculator
 
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
-						q = ndi.query('ndi_document.id','exact_string',value,'');
+						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
 						b = (numel(d.document_properties.independent_variable_label) ==2);
 					end;
 		end; % is_valid_dependency_input()
 
-		function oridir_doc = calculate_oridir_indexes(ndi_calculator_obj, tuning_doc)
+		function oriprops_doc = calculate_oridir_indexes(ndi_calculator_obj, tuning_doc)
 			% CALCULATE_ORIDIR_INDEXES - calculate orientation and direction index values from a tuning curve
 			%
 			% ORIDIR_DOC = CALCULATE_ORIDIR_INDEXES(NDI_ORIDIRTUNING_CALC_OBJ, TUNING_DOC)
@@ -159,7 +159,7 @@ classdef oridir_tuning < ndi.calculator
 				response_stderr = [];
                 
 				% stim_response_doc
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
 				if numel(stim_response_doc)~=1,
 					error(['Could not find stimulus response scalar document.']);
@@ -168,17 +168,17 @@ classdef oridir_tuning < ndi.calculator
 					stim_response_doc = stim_response_doc{1};
 				end;
                 
-				tuning_doc = tapp.tuningdoc_fixcellarrays(tuning_doc);
-                
-				for i=1:numel(tuning_doc.document_properties.tuning_curve.individual_responses_real),
-					ind{i} = tuning_doc.document_properties.tuning_curve.individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.individual_responses_imaginary{i};
+				tuning_doc = ndi.app.stimulus.tuning_response.tuningdoc_fixcellarrays_static(tuning_doc);
+
+				for i=1:numel(tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real),
+					ind{i} = tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.stimulus_tuningcurve.individual_responses_imaginary{i};
 					ind_real{i} = ind{i};
 					if any(~isreal(ind_real{i})), 
 						ind_real{i} = abs(ind_real{i}); 
 					end;
-					control_ind{i} = tuning_doc.document_properties.tuning_curve.control_individual_responses_real{i} + ...
-						sqrt(-1)*tuning_doc.document_properties.tuning_curve.control_individual_responses_imaginary{i};
+					control_ind{i} = tuning_doc.document_properties.stimulus_tuningcurve.control_individual_responses_real{i} + ...
+						sqrt(-1)*tuning_doc.document_properties.stimulus_tuningcurve.control_individual_responses_imaginary{i};
 					control_ind_real{i} = control_ind{i};
 					if any(~isreal(control_ind_real{i})), 
 						control_ind_real{i} = abs(control_ind_real{i}); 
@@ -196,18 +196,18 @@ classdef oridir_tuning < ndi.calculator
 				end;
                    
 				properties.coordinates = 'compass';
-				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
+				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 				properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
 
 				response.curve = ...
-					[ tuning_doc.document_properties.tuning_curve.independent_variable_value(:)' ; ...
+					[ tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:)' ; ...
 						response_mean ; ...
 						response_stddev ; ...
 						response_stderr; ];
 				response.ind = response_ind;
 
- 				vi = vlt.neuro.vision.oridir.index.oridir_vectorindexes(response);
- 				fi = vlt.neuro.vision.oridir.index.oridir_fitindexes(response);
+ 				vi = vis.oridir.index.oridir_vectorindexes(response);
+ 				fi = vis.oridir.index.oridir_fitindexes(response);
              
 				resp.ind = ind_real;
 				resp.blankind = control_ind_real{1};
@@ -215,13 +215,13 @@ classdef oridir_tuning < ndi.calculator
 				[anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
 
 				tuning_curve = struct(...
-					'direction', vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value), ...
-					'mean', response_mean, ...
-					'stddev', response_stddev, ...
-					'stderr', response_stderr, ...
-					'individual', {response_ind}, ...
-					'raw_individual', {ind_real}, ...
-					'control_individual', {control_ind_real});
+					'direction', vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
+					'mean', response_mean(:), ...
+					'stddev', response_stddev(:), ...
+					'stderr', response_stderr(:), ...
+					'individual', vlt.data.cellarray2mat(response_ind), ...
+					'raw_individual', vlt.data.cellarray2mat(ind_real), ...
+					'control_individual', vlt.data.cellarray2mat(control_ind_real));
 
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
@@ -234,9 +234,9 @@ classdef oridir_tuning < ndi.calculator
 					'direction_hotelling2test', vi.dir_HotellingT2_p, ...
 					'dot_direction_significance', vi.dir_dotproduct_sig_p);
 
-				fit = struct('double_guassian_parameters', fi.fit_parameters,...
-					'double_gaussian_fit_angles', vlt.data.rowvec(fi.fit(1,:)), ...
-					'double_gaussian_fit_values', vlt.data.rowvec(fi.fit(2,:)), ...
+				fit = struct('double_gaussian_parameters', fi.fit_parameters,...
+					'double_gaussian_fit_angles', vlt.data.colvec(fi.fit(1,:)), ...
+					'double_gaussian_fit_values', vlt.data.colvec(fi.fit(2,:)), ...
 					'orientation_preferred_orthogonal_ratio', fi.ot_index, ...
 					'direction_preferred_null_ratio', fi.dir_index, ...
 					'orientation_preferred_orthogonal_ratio_rectified', fi.ot_index_rectified', ...
@@ -246,10 +246,10 @@ classdef oridir_tuning < ndi.calculator
 					'hwhh', fi.tuning_width);
 
 				% create document and store in oridir_tuning
-				oriprops = ndi.document('stimulus/vision/oridir/orientation_direction_tuning',...
+				oriprops_doc = ndi.document('orientation_direction_tuning',...
 					'orientation_direction_tuning',vlt.data.var2struct('properties', 'tuning_curve', 'significance', 'vector', 'fit'));
-                                oriprops = oriprops.set_dependency_value('element_id', stim_response_doc{1}.dependency_value('element_id'));
-				oriprops = oriprops.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
+                                oriprops_doc = oriprops_doc.set_dependency_value('element_id', stim_response_doc.dependency_value('element_id'));
+				oriprops_doc = oriprops_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 		end; %calculate_oridir_indexes()
     
 		function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
@@ -263,6 +263,10 @@ classdef oridir_tuning < ndi.calculator
 			%
 			% This function takes additional input arguments as name/value pairs.
 			% See ndi.calculator.plot_parameters for a description of those parameters.
+
+				plot_tuning_curve_log = 0;
+
+				vlt.data.assign(varargin{:});
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
@@ -302,10 +306,16 @@ classdef oridir_tuning < ndi.calculator
 					h.ylabel = ylabel(ot.properties.response_units);
 				end;
 
-				if 0, % when database is faster :-/
+				if 1, % when database is faster :-/ it is faster
 					if ~h.params.suppress_title,
-						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('stimulus_tuningcurve_id'),ndi_calculator_obj.session);
-						h.title = title([element.elementstring() '.' element.type '; ' ot.properties.response_type]);
+						element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
+						title_str = [element.elementstring() '.' element.type '; ' ot.properties.response_type];
+
+						if plot_tuning_curve_log,
+							log_str = ndi.fun.calc.stimulus_tuningcurve_log(ndi_calculator_obj.session,doc);
+							title_str = {title_str, log_str};
+						end;
+						h.title = title(title_str,'interp','none');
 					end;
 				end;
 				box off;
@@ -340,24 +350,30 @@ classdef oridir_tuning < ndi.calculator
 			% |--------------------------|---------------------------------------------------|
 			% | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
 			% |                          |   generate the "right answer"?) Use carefully.    |
+			% | specific_test_inds([])     | Should we specify which tests to run?             |
 			% |--------------------------|---------------------------------------------------|
 			%
-
+				specific_test_inds = [];
 				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				did.datastructures.assign(varargin{:});
 
 				docs = {};
 				doc_output = {};
 				doc_expected_output = {};
+				%if not specifying the number of tests, just use the number
+				%given by number_of_tests; otherwise use the test indices
+				%specified by specific_test_inds
+				if numel(specific_test_inds) == 0
+					specific_test_inds = 1:number_of_tests;
+				end
 
-				for i=1:number_of_tests,
-
-					docs{i} = {};
+				for i=specific_test_inds,
+					docs{end+1} = {};
 
 					parameters = oridir_calc_obj.generate_mock_parameters(scope, i);
 
 					angles = 0:30:360-30; % use these angles
-					r = vlt.neuro.vision.oridir.doublegaussianfunc(angles,parameters);
+					r = vis.oridir.doublegaussianfunc(angles,parameters);
 
 					param_struct = struct('sFrequency',0.5,'tFrequency',2);
 					independent_variable = {'angle'};
@@ -379,24 +395,26 @@ classdef oridir_tuning < ndi.calculator
 						otherwise,
 							error(['Unknown scope ' scope '.']);
 					end; % switch
-
-					docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
+					docs{end} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
 						param_struct, independent_variable, x, r, noise, reps);
 
 					calcparameters = oridir_calc_obj.default_search_for_input_parameters();
+					calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
 					calcparameters.query.query = calcparameters.query.query & ...
-						ndi.query('','depends_on','element_id',docs{i}{3}.id());
-					doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
-					if numel(doc_output{i})>1,
+						ndi.query('','depends_on','element_id',docs{end}{3}.id());
+					doc_output{end+1} = oridir_calc_obj.run('Replace',calcparameters);
+					if numel(doc_output{end})>1,
 						error(['Generated more than one output doc when one was expected.']);
+					elseif numel(doc_output{end})==0,
+						error(['Generated no output docs when one was expected.']);
 					end;
-					doc_output{i} = doc_output{i}{1};
+					doc_output{end} = doc_output{end}{1}; %what's the point of this?
 
 					if generate_expected_docs,
-						oridir_calc_obj.write_mock_expected_output(i,doc_output{i}{1});
+						oridir_calc_obj.write_mock_expected_output(i,doc_output{end});
 					end;
 
-					doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
+					doc_expected_output{end+1} = oridir_calc_obj.load_mock_expected_output(i);
 
 				end; % for
 		end; % generate_mock_docs()
@@ -415,14 +433,11 @@ classdef oridir_tuning < ndi.calculator
 			% Otherwise, B is 0.
 			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
 			%
-			% In this abstract class, B is always 1 and ERRORMSG is always an empty string.
+			% Uses the function ndi.calc.vis.test.oridir_compare_docs().
 			%
-
-				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);			
-
-				b = 1;
-				errormsg = '';
-
+				[b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);
+				errormsg = cat(2,errormsg{:});
+				b = all(b);
 		end;
 
 		function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
@@ -447,7 +462,7 @@ classdef oridir_tuning < ndi.calculator
 				P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
 				P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
 				P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
-				P_(9,:) = [0 20 20 45 45] %Equal response Rp and Rn
+				P_(9,:) = [0 20 20 45 45] ; %Equal response Rp and Rn
 
 					% we should add more
 

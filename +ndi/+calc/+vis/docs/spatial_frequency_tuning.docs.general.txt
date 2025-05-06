@@ -1,0 +1,29 @@
+This calculator object computes several index values and fits of spatial frequency responses.
+
+There are two major types of indexes returned. One set are "fitless" index values that compute index values based on the empirical measurements without fitting. The second type are fit parameters and associated index values. The following fits are performed.
+
+Difference-of-Gaussians:
+
+R(f) = a1*exp(-X.^2/(2*b1^2)) - a2*exp(-X.^2/(2*b2^2))
+
+where the fit parameters are
+         a1        - Amplitude of the first Gaussian (a1 >= 0)
+         b1        - Fall-off of the first Gaussian
+         a2        - Amplitude of the second Gaussian (a2 >= 0)
+         b2        - Fall-off of the second Gaussian
+
+See Heimel 2005 (J. Neurophysiol) for a reference.
+
+Movshon 2005 fit (with or without constant term C):
+
+R(f) = k * exp(-(f./fc).^2) ./ (1+(fh./f).^B) + C
+
+where the fit parameters are
+         k         - Scaling factor (k>=0)
+         fc        - Characteristic frequency
+         fh        - Corner frequency of low frequency limb
+         B         - Slope of low-frequency limb
+         C         - A constant term (used in one version of the fit and not the other)
+
+See Movshon 2005 (J. Neurosci) for a reference.
+

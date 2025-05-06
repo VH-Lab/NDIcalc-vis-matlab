@@ -1,12 +1,12 @@
 {
 	"document_class": {
 		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/oridirtuning_calc.json",
-		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridirtuning_calc.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/oridirtuning_calc_schema.json",
 		"class_name":                       "oridirtuning_calc",
 		"property_list_name":                   "oridirtuning_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
 			{ "definition":                 "$NDIDOCUMENTPATH\/stimulus\/vision\/oridir\/orientation_direction_tuning.json"}
 		]
 	},

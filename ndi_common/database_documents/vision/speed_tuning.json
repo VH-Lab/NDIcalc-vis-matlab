@@ -1,12 +1,12 @@
 {
 	"document_class": {
-		"definition":						"$NDICALCDOCUMENTPATH\/vision\/speed_tuning.json",
-		"validation":						"$NDICALCSCHEMAPATH\/vision\/speed_tuning_schema.json",
+		"definition":	"$NDICALCDOCUMENTPATH\/vision\/speed_tuning.json",
+		"validation":	"$NDICALCSCHEMAPATH\/vision\/speed_tuning_schema.json",
 		"class_name":						"speed_tuning",
                 "property_list_name":                                   "speed_tuning",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"}
+			{ "definition":       "$NDIDOCUMENTPATH\/base.json"}
 		]
 	},
 	"depends_on": [
@@ -14,8 +14,8 @@
 			"name":		"element_id",
 			"value":	"" 
 		},
-	        {	"name":     "stimulus_tuningcurve_id",
-			"value":    ""
+	        {	"name":     	"stimulus_tuningcurve_id",
+			"value":   	""
 		}
 	],
 	"speed_tuning":  {
@@ -48,6 +48,16 @@
 			"Priebe_fit_speed_tuning_index":			[0],
 			"Priebe_fit_spatial_frequency_preference":		0,
 			"Priebe_fit_temporal_frequency_preference":		0
-		}
+		},
+        "fit_no_speed": {
+            "Priebe_fit_parameters":				[0],
+			"Priebe_fit_spatial_frequencies":			[0],
+			"Priebe_fit_temporal_frequencies":			[0],
+			"Priebe_fit_values":					[0],
+			"Priebe_fit_speed_tuning_index":			[0],
+			"Priebe_fit_spatial_frequency_preference":		0,
+			"Priebe_fit_temporal_frequency_preference":		0,
+            "Priebe_fit_nested_F_test_p_value":             0
+        }
 	}
 }

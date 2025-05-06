@@ -6,8 +6,8 @@
 		"property_list_name":               "reverse_correlation",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/ndi_document.json"},
-			{ "definition":                 "$NDIDOCUMENTPATH\/data\/ndi_document_ngrid.json"}
+			{ "definition":                 "$NDIDOCUMENTPATH\/base.json"},
+			{ "definition":                 "$NDIDOCUMENTPATH\/data\/ngrid.json"}
 		]
 	},
 	"depends_on": [

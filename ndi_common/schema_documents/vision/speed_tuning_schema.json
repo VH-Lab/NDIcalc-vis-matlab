@@ -1,0 +1,51 @@
+{
+	"classname": "speed_tuning",
+	"superclasses":  [ "base" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"speed_tuning": [
+		{
+			"name": "properties",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The units structure."
+		},
+		{
+			"name": "tuning_curve",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The tuning curve structure."
+		},
+		{
+			"name": "significance",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The significance structure."
+		},
+		{
+			"name": "fit",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The fits structure."
+		},
+        {
+            "name": "fit_no_speed",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The fits (with no speed parameter) structure."
+        }
+	]
+}

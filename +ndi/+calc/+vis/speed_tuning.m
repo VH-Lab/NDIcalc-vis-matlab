@@ -8,7 +8,6 @@ classdef speed_tuning < ndi.calculator
 			%
 			% Creates a SPEED_TUNING ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.contrast_tuning');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				speed_tuning_obj = speed_tuning_obj@ndi.calculator(session,'speedtuning_calc',...
@@ -31,15 +30,16 @@ classdef speed_tuning < ndi.calculator
 				% Step 1: set up the output structure
 				speed_tuning_calc = parameters;
 
-				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+				tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
+					did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
 				if numel(tuning_response_doc)~=1, 
 					error(['Could not find stimulus tuning doc..']);
 				end;
 				tuning_response_doc = tuning_response_doc{1};
 
 				% Step 2: perform the calculator, which here creates a speed_tuning doc
-				doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc);
+				doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc) + ...
+					ndi_calculator_obj.newdocument();
 				
 				if ~isempty(doc), 
 					doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'speedtuning_calc',speed_tuning_calc) + doc;
@@ -58,7 +58,7 @@ classdef speed_tuning < ndi.calculator
 			% so this search will yield empty.
 			%
 				parameters.input_parameters = struct([]);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 					
 		end; % default_search_for_input_parameters
@@ -85,11 +85,11 @@ classdef speed_tuning < ndi.calculator
 			% the contain 'mean' or 'F1'.
 			%
 			%
-				q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
-				q2 = ndi.query('tuning_curve.independent_variable_label','hasmember','spatial_frequency','');
-				q3 = ndi.query('tuning_curve.independent_variable_label','hasmember','temporal_frequency','');
-				q4 = ndi.query('tuning_curve.independent_variable_label','hassize',[2 1],'');
-				q_total = q1 & q2 & q3 & q4;
+				q1 = ndi.query('','isa','stimulus_tuningcurve','');
+				q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
+				q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
+				%q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','hassize',[2 1],'');
+				q_total = q1 & q2 & q3; % & q4;
 
 				query = struct('name','stimulus_tuningcurve_id','query',q_total);
 		end; % default_parameters_query()
@@ -100,7 +100,7 @@ classdef speed_tuning < ndi.calculator
 			% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)
 			%
 			% Tests whether a potential input to a calculator is valid.
-			% The potential dependency name is provided in NAME and its ndi_document id is
+			% The potential dependency name is provided in NAME and its base id is
 			% provided in VALUE.
 			%
 			% The base class behavior of this function is simply to return true, but it
@@ -115,7 +115,7 @@ classdef speed_tuning < ndi.calculator
 	
 				switch lower(name),
 					case lower('stimulus_tuningcurve_id'),
-						q = ndi.query('ndi_document.id','exact_string',value,'');
+						q = ndi.query('base.id','exact_string',value,'');
 						d = ndi_calculator_obj.S.database_search(q);
 						b = (numel(d.document_properties.independent_variable_label) ==2);
 					case lower('element_id'),
@@ -158,7 +158,7 @@ classdef speed_tuning < ndi.calculator
 				% now call the plot routine
 
 				[SF,TF,MNs] = vlt.math.vector2mesh(tc.spatial_frequency,tc.temporal_frequency,tc.mean);
-				MNs_fit = vlt.neuro.vision.speed.tuningfunc(SF,TF,ft.Priebe_fit_parameters);
+				MNs_fit = vis.speed.tuningfunc(SF,TF,ft.Priebe_fit_parameters);
 
 				significant = 0;
 				linestyle = '--';
@@ -166,15 +166,34 @@ classdef speed_tuning < ndi.calculator
 					significant = 1;
 					linestyle = '-';
 				end;
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs_fit,'marker','none','linestyle',linestyle);
+				vis.speed.plottuning(SF,TF,MNs_fit,'marker','none','linestyle',linestyle);
 
 				% now plot raw responses
-				vlt.neuro.vision.speed.plottuning(SF,TF,MNs);
+				vis.speed.plottuning(SF,TF,MNs);
 
                 ch = get(gcf,'children');
                 currentaxes = gca;
                 axes(ch(1));
-                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3))]);				
+                title(['Speed tuning:' num2str(ft.Priebe_fit_parameters(3)) ', pref: ' num2str(ft.Priebe_fit_parameters(7)/ft.Priebe_fit_parameters(6))]);
+
+                element_str = '';
+                ele = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('element_id')));
+                epoch_id = '';
+                tc_id = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('stimulus_tuningcurve_id')));
+                if ~isempty(tc_id),
+                    srs = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',tc_id{1}.dependency_value('stimulus_response_scalar_id')));
+                    if ~isempty(srs),
+                        epoch_id = [srs{1}.document_properties.stimulus_response.element_epochid ' ' srs{1}.document_properties.stimulus_response_scalar.response_type];
+                    end;
+                end;
+
+                if ~isempty(ele),
+                    element = ndi.database.fun.ndi_document2ndi_object(ele{1},ndi_calculator_obj.session);
+                    element_str = element.elementstring();
+                    axes(ch(2));
+                    title([element_str ' ' epoch_id],'interp','none');
+                end;
+                axes(currentaxes);
 
 				if 0, % plot function already does this
 				if ~h.params.suppress_x_label,
@@ -199,9 +218,9 @@ classdef speed_tuning < ndi.calculator
 			% parameters and stores them in SPEED_TUNING document SPEED_PROPS_DOC.
 			%
 			%
-				properties.response_units = tuning_doc.document_properties.tuning_curve.response_units;
+				properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 				
-				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id',...
+				stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
 					'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
 				if numel(stim_response_doc)~=1,
 					error(['Could not find stimulus response scalar document.']);
@@ -214,7 +233,7 @@ classdef speed_tuning < ndi.calculator
 
 				sf_coord = 1;
 				tf_coord = 2;
-				if contains(tuning_doc.document_properties.tuning_curve.independent_variable_label{1},'temporal','IgnoreCase',true),
+				if contains(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_label{1},'temporal','IgnoreCase',true),
 					sf_coord = 2;
 					tf_coord = 1;
 				end;
@@ -225,24 +244,24 @@ classdef speed_tuning < ndi.calculator
 
 				tuning_curve = struct(...
 					'spatial_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value(:,1)), ...
+						vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,1)), ...
 					'temporal_frequency', ...
-						vlt.data.rowvec(tuning_doc.document_properties.tuning_curve.independent_variable_value(:,2)), ...
-					'mean', resp.curve(2,:), ...
-					'stddev', resp.curve(3,:), ...
-					'stderr', resp.curve(4,:), ...
-					'individual', {resp.ind}, ...
+						vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:,2)), ...
+					'mean', vlt.data.colvec(resp.curve(2,:)), ...
+					'stddev', vlt.data.colvec(resp.curve(3,:)), ...
+					'stderr', vlt.data.colvec(resp.curve(4,:)), ...
+					'individual', vlt.data.cellarray2mat(resp.ind), ...
 					'control_stddev', resp.blankresp(2),...
 					'control_stderr', resp.blankresp(3));
 
 				significance = struct('visual_response_anova_p',anova_across_stims_blank,...
 					'across_stimuli_anova_p', anova_across_stims);
 
-				f = vlt.neuro.vision.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
+				[f, error_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
 				sfs = logspace(0.01,60,200);
 				tfs = logspace(0.01,120,200);
 				[SFs,TFs] = meshgrid(sfs,tfs);
-				fit_values = vlt.neuro.vision.speed.tuningfunc(SFs(:),TFs(:),f);
+				fit_values = vis.speed.tuningfunc(SFs(:),TFs(:),f);
 
 				fit.Priebe_fit_parameters = f;
 				fit.Priebe_fit_spatial_frequencies = SFs(:);
@@ -252,10 +271,25 @@ classdef speed_tuning < ndi.calculator
 				fit.Priebe_fit_spatial_frequency_preference = fit.Priebe_fit_parameters(6);
 				fit.Priebe_fit_temporal_frequency_preference = fit.Priebe_fit_parameters(7);
 
-				speed_tuning.properties = properties;
+				%add fit with speed parameter set to 0
+                [f_no_speed, error_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:),tuning_curve.temporal_frequency(:),tuning_curve.mean(:));
+                fit_no_speed_values = vis.speed.tuningfunc(SFs(:),TFs(:),f_no_speed);
+                fit_no_speed.Priebe_fit_parameters = f_no_speed;
+				fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
+				fit_no_speed.Priebe_fit_temporal_frequencies = TFs(:);
+				fit_no_speed.Priebe_fit_values = fit_no_speed_values;
+				fit_no_speed.Priebe_fit_speed_tuning_index = fit_no_speed.Priebe_fit_parameters(3);
+				fit_no_speed.Priebe_fit_spatial_frequency_preference = fit_no_speed.Priebe_fit_parameters(6);
+				fit_no_speed.Priebe_fit_temporal_frequency_preference = fit_no_speed.Priebe_fit_parameters(7);
+                %add nested-F test
+                num_responses = numel(fit_values);
+                fit_no_speed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses,error_withspeed,error_nospeed);
+
+                speed_tuning.properties = properties;
 				speed_tuning.tuning_curve = tuning_curve;
 				speed_tuning.significance = significance;
 				speed_tuning.fit = fit;
+                speed_tuning.fit_no_speed = fit_no_speed;
 
 				speed_props_doc = ndi.document('speed_tuning',...
 					'speed_tuning',speed_tuning);
@@ -263,5 +297,191 @@ classdef speed_tuning < ndi.calculator
 					tuning_doc.dependency_value('element_id'));
 				speed_props_doc = speed_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 		end; % calculate_speed_indexes()
+
+        % TESTING METHODS
+
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(speed_calc_obj, scope, number_of_tests, varargin)
+			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
+			%
+			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(SPEED_CALC_OBJ, ...
+			%    SCOPE, NUMBER_OF_TESTS, ...)
+			%
+			% Creates a set of documents to test ndi.calc.vis.speed_tuning.
+			%
+			% SCOPE is the scope to be tested: 'standard', 'low_noise', 'high_noise'
+			% NUMBER_OF_TESTS indicates the number of tests to be performed.
+			%
+			% DOCS{i} is the set of helper documents that may have been created
+			%   in generating the ith test.
+			% DOC_OUTPUT{i} is the actual output of the calculator when operating on
+			%   DOCS{i} (the ith test).
+			% DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
+			%   were no noise.
+			%
+			% The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
+			% as part of the TEST function for ndi.calculator objects.
+			%
+			% This function's behavior can be modified by name/value pairs.
+			% --------------------------------------------------------------------------------
+			% | Parameter (default):     | Description:                                      |
+			% |--------------------------|---------------------------------------------------|
+			% | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
+			% |                          |   generate the "right answer"?) Use carefully.    |
+			% |--------------------------|---------------------------------------------------|
+			%
+
+				generate_expected_docs = 0;
+				vlt.data.assign(varargin{:});
+
+				docs = {};
+				doc_output = {};
+				doc_expected_output = {};
+
+				for i=1:number_of_tests,
+					docs{i} = {};
+                    S = speed_calc_obj.session;
+                    
+                    %taken from calculate_speed_indexes method:
+                    numsteps = 5;
+                    %sfs = logspace(log10(0.01),log10(60),numsteps);
+				    sfs = [0.05 0.08 0.1 0.2 0.4 0.8 1.2]; %taken from demo
+                    %tfs = logspace(log10(0.01),log10(120),numsteps);
+                    tfs = [0.5 1 2 4 8 16 32]; %taken from demo
+				    [SFs,TFs] = meshgrid(sfs,tfs);
+                    function_params = speed_calc_obj.generate_mock_parameters(scope, i);
+                    r_ = vlt.neuro.vision.speed.tuningfunc(SFs,TFs,function_params);
+                    
+                    %r = vlt.math.dog(speed_values,function_params);
+                    %param_struct = struct([]); %this didn't work - need at
+                    %least one parameter?
+                    param_struct = struct('contrast',.5); %random choice, can be anything between 0 and 1
+					independent_variable = {'temporal_frequency','spatial_frequency'};
+                    x = [SFs(:),TFs(:)]; % columns
+					r = r_(:); % columns
+					%why do we have these? Set control (blank) stimulus to
+                    %firing rate = 0?
+                    %should we have just one blank stimulus row or
+                    %multiple? Add nan to end of x or end of sfs and tfs?
+                    x(end+1,:) = NaN;
+                    r(end+1,1) = 0;
+					
+					switch (scope),
+						case 'standard',
+							reps = 5; % need reps to test significance measures
+							noise = 0;
+						case 'low_noise',
+							reps = 10;
+							noise = 0.1;
+						case 'high_noise',
+							reps = 10;
+							noise = 1;
+						otherwise,
+							error(['Unknown scope ' scope '.']);
+					end; % switch
+
+					docs{i} = ndi.mock.fun.stimulus_response(S,...
+						param_struct, independent_variable, x, r, noise, reps);
+
+                    calcparameters = speed_calc_obj.default_search_for_input_parameters();
+                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
+					calcparameters.query.query = calcparameters.query.query & ...
+                        ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
+                    calcparameters.query.query = calcparameters.query.query & ...
+						ndi.query('','depends_on','element_id',docs{i}{3}.id());
+                    %I = speed_calc_obj.search_for_input_parameters(calcparameters);
+                    doc_output{i} = speed_calc_obj.run('Replace',calcparameters);
+					if numel(doc_output{i})>1,
+						error(['Generated more than one output doc when one was expected.']);
+                    elseif numel(doc_output{i})==0,
+						error(['Generated no output docs when one was expected.']);
+					end;
+					doc_output{i} = doc_output{i}{1};
+
+					if generate_expected_docs,
+						speed_calc_obj.write_mock_expected_output(i,doc_output{i});
+					end;
+
+					doc_expected_output{i} = speed_calc_obj.load_mock_expected_output(i);
+
+				end; % for
+		end; % generate_mock_docs()
+
+		function [b,errormsg] = compare_mock_docs(speed_calc_obj, expected_doc, actual_doc, scope)
+			% COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
+			%
+			% [B, ERRORMSG] = COMPARE_MOCK_DOCS(CTEST_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
+			%
+			% Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
+			% the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
+			% this function computes whether the ACTUAL_DOC is within an allowed tolerance of
+			% EXPECTED_DOC.
+			%
+			% B is 1 if the differences in the documents are within the tolerance of the class.
+			% Otherwise, B is 0.
+			% If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
+			%
+
+				[b_,errormsg] = ndi.calc.vis.test.speed_tuning_compare_docs(expected_doc,actual_doc,scope);
+        		b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors. Alternative: b = all(b_);
+                errormsg = cat(2,errormsg{:}); %turn into a string
+		end;
+
+        function [P, total] = generate_mock_parameters(speed_calc_obj, scope, index)
+			% generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
+			%
+			% [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+			%
+			% Generates a parameter set for generating a mock document with a given index value.
+			% P will be a row vector of parameters [a1 b1 a2 b2].
+			% TOTAL is the total number of mock stimuli that are available to be generated.
+			% 
+			% SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
+			% INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
+			% using MOD).
+			% 
+                %1st test taken from demo script
+                %2nd test neuron not selective for speed
+                %3rd test neuron maximally selective for speed
+                %4th through 7th: tiling TF/SF space with TF-tuned
+                %cells
+                %8th through 11th: tiling TF/SF space with SF-tuned
+                %cells
+                %12th through 15th: tiling TF/SF space with speed-tuned
+                %cells
+                %16th: try a different peak neuron response?
+                %17th and 18th: skew temporal freq tuning curve in
+                %different directions?
+                %add more tests by adding to end of each parameter's vector
+                A = [50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,1,20,20]; %Peak response of the neuron
+                zeta = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,.5,-.5]; %Skew of the temporal freq tuning curve
+                xi = [.2,0,1,0,0,0,0,0,0,0,0,1,1,1,1,.5,.5,.5]; %speed tuning index (0 to 1)
+                sigma_sf = [1,1,1,1.2,1.2,1.2,1.2,.5,.5,.5,.5,1,1,1,1,1,1,1]; % Tuning width of the neuron for spatial frequency (Cycles per degree)
+                sigma_tf = [1,1,1,.5,.5,.5,.5,1.2,1.2,1.2,1.2,1,1,1,1,1,1,1]; % Tuning width of the neuron for temporal frequency (Cycles per second)
+                sf0 = [0.2,0.2,0.2,.2,.8,.2,.8,.2,.8,.2,.8,.2,.8,.2,.8,sqrt(2)/5,sqrt(2)/5,sqrt(2)/5]; %preferred spatial frequency averaged across temporal frequencies
+                tf0 = [2,2,2,2,2,16,16,2,2,16,16,2,2,16,16,4,4,4]; %preferred temporal frequency averaged across spatial frequencies
+                
+                %for trying out new tests:
+                % A = 20;
+                % zeta = 0;
+                % xi = .000009;
+                % sigma_sf = 1;
+                % sigma_tf = 1;
+                % sf0 = sqrt(2)/5;
+                % tf0 = 4;
+                P_ = [ A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)] ; 
+
+                % %1st test from spatial_frequency_tuning:
+                % sf_params = [1 1 0 1]; 
+                % %1st test from temporal_frequency_tuning:
+                % tf_params = [1 1 0 1];
+                % P_ = [sf_params tf_params];
+				total = size(P_,1);
+
+				actual_index = 1+mod(index-1,total);
+
+				% no dependence on scope for this stimulus type
+
+				P = P_(actual_index,:);
+		end; % generate_mock_parameters
 	end; % methods()
 end % speed_tuning

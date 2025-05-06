@@ -8,7 +8,6 @@ classdef hartley_calc < ndi.calculator
 			%
 			% Creates a HARTLEY_CALC ndi.calculator object
 			%
-				ndi.globals;
 				w = which('ndi.calc.vis.hartley_calc');
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
@@ -32,8 +31,8 @@ classdef hartley_calc < ndi.calculator
 				% Step 1: set up the output structure, and load the element_id and stimulus_presentation_doc
 				hartley_calc = parameters;
 
-				element_doc = ndi_calculator_obj.session.database_search(ndi.query('ndi_document.id','exact_number',...
-					vlt.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
+				element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
+					did.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
 				if numel(element_doc)~=1, 
 					error(['Could not find element doc..']);
 				end;
@@ -42,8 +41,10 @@ classdef hartley_calc < ndi.calculator
 
 				q1 = ndi.query('','isa','stimulus_presentation','');
 				stimulus_presentation_docs = ndi_calculator_obj.session.database_search(q1);
+                ndi_decoder = ndi.app.stimulus.decoder(ndi_calculator_obj.session);
 
 				for i=1:numel(stimulus_presentation_docs),
+                    presentation_time = ndi_decoder.load_presentation_time(stimulus_presentation_docs{i});
 					[b,stimids] = ndi.calc.vis.hartley_calc.ishartleystim(stimulus_presentation_docs{i});
 
 					if ~b, continue; end;
@@ -57,9 +58,9 @@ classdef hartley_calc < ndi.calculator
 
 					% ASSUMPTION: each stimulus epoch will overlap a single element epoch
 					stim_timeref = ndi.time.timereference(stimulus_element,...
-						ndi.time.clocktype(stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).clocktype),...
-						stimulus_presentation_docs{i}.document_properties.epochid,...
-						stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).onset);
+						ndi.time.clocktype(presentation_time(1).clocktype),...
+						stimulus_presentation_docs{i}.document_properties.epochid.epochid,...
+						presentation_time(1).onset);
 					[ts_epoch_t0_out, ts_epoch_timeref, msg] = ndi_calculator_obj.session.syncgraph.time_convert(stim_timeref,...
 						0, element, ndi.time.clocktype('dev_local_time'));
 					% time is 0 because stim_timeref is relative to 1st stim
@@ -77,15 +78,16 @@ classdef hartley_calc < ndi.calculator
 							'T_coords', parameters.input_parameters.T,...
 							'X_coords', 1:parameters.input_parameters.X_sample:hartley_reverse_correlation.stimulus_properties.M,...
 							'Y_coords', 1:parameters.input_parameters.Y_sample:hartley_reverse_correlation.stimulus_properties.M);
-						reverse_correlation.method = "Hartley";
+						reverse_correlation.method = 'Hartley';
+						reverse_correlation.dimension_labels = '';
 
 						% Step 3b: load the spike times and spike parameters
 
-						frameTimes_indexes = find(stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time.stimevents(:,2)==1);
-						frameTimes = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time.stimevents(frameTimes_indexes,1);
+						frameTimes_indexes = find(presentation_time.stimevents(:,2)==1);
+						frameTimes = presentation_time.stimevents(frameTimes_indexes,1);
 						[spike_values,spike_times] = element.readtimeseries(stim_timeref, ...
-							stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(1).onset, ...
-							stimulus_presentation_docs{i}.document_properties.stimulus_presentation.presentation_time(end).offset);
+							presentation_time(1).onset, ...
+							presentation_time(end).offset);
 
 						% load the hartley states
 						P = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.stimuli(stimids(1)).parameters;
@@ -112,7 +114,7 @@ classdef hartley_calc < ndi.calculator
 							mkdir(mypath);
 						end;
 						myfile = fullfile(mypath,...
-							[stimulus_presentation_docs{i}.document_properties.epochid '_' ...
+							[stimulus_presentation_docs{i}.document_properties.epochid.epochid '_' ...
 								element.elementstring() '_hartley.json']);
 						mystring = char(vlt.data.prettyjson(mystring));
 						vlt.file.str2text(myfile,mystring);
@@ -138,10 +140,12 @@ classdef hartley_calc < ndi.calculator
 								hartley_reverse_correlation.reconstruction_properties.X_coords(:); ...
 								hartley_reverse_correlation.reconstruction_properties.Y_coords(:)];
 
-							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},'hartley_calc',parameters,...
-								'hartley_reverse_correlation',hartley_reverse_correlation,'reverse_correlation',reverse_correlation,'ngrid',ngridp);
+							doc{end+1} = ndi.document(ndi_calculator_obj.doc_document_types{1},...
+								'hartley_calc',parameters,...
+								'hartley_reverse_correlation',hartley_reverse_correlation,...
+								'reverse_correlation',reverse_correlation,'ngrid',ngridp) + ndi_calculator_obj.newdocument();
 							doc{end} = doc{end}.set_dependency_value('element_id',element_doc.id());
-							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i});
+							doc{end} = doc{end}.set_dependency_value('stimulus_presentation_id', stimulus_presentation_docs{i}.id());
 
 							% open the ngrid file
 							 % TODO: update when new database available
@@ -156,6 +160,8 @@ classdef hartley_calc < ndi.calculator
 							% write the ngrid file
 							fwrite(fid,cat(4,sta,p_val),'double');
 							fclose(fid);
+
+							doc{end} = doc{end}.add_file('hartley_results.ngrid',myfile);
 						end;
 					end;
 				end;
@@ -174,7 +180,7 @@ classdef hartley_calc < ndi.calculator
 					'T', -0.100:0.010:0.250, ...
 					'X_sample', 1, ...
 					'Y_sample', 1);
-				parameters.depends_on = vlt.data.emptystruct('name','value');
+				parameters.depends_on = did.datastructures.emptystruct('name','value');
 				parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 					
 		end; % default_search_for_input_parameters
@@ -282,7 +288,7 @@ classdef hartley_calc < ndi.calculator
 			%
 			
 				if ischar(doc_or_id),
-					doc = ndi_calculator_obj.database_search(ndi.query('ndi_document.id','exact_string',doc_or_id,''));
+					doc = ndi_calculator_obj.database_search(ndi.query('base.id','exact_string',doc_or_id,''));
 					if numel(doc)~=1,
 						% there cannot be two documents with same id
 						error(['No document with id ' doc_or_id ' found.']);
@@ -292,16 +298,22 @@ classdef hartley_calc < ndi.calculator
 					doc = doc_or_id;
 				end;
 
-				mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
+				if 0,
+					mypath = fullfile(ndi_calculator_obj.session.path,'hartley');
 
-				myfile = fullfile(mypath,[doc.id() '.ngrid']);
-				fid = fopen(myfile,'r','ieee-le');
-				if fid<0,
-					error(['Could not open file ' myfile '.']);
+					myfile = fullfile(mypath,[doc.id() '.ngrid']);
+					fid = fopen(myfile,'r','ieee-le');
+					if fid<0,
+						error(['Could not open file ' myfile '.']);
+					end;
+					read the ngrid file
+
 				end;
-				% read the ngrid file
-				fulldata = fread(fid,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
-				fclose(fid);
+
+				myfile = ndi_calculator_obj.session.database_openbinarydoc(doc,'hartley_results.ngrid');
+				fulldata = fread(myfile,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
+				ndi_calculator_obj.session.database_closebinarydoc(myfile);
+
 				fulldata = reshape(fulldata,vlt.data.rowvec(doc.document_properties.ngrid.data_dim));
 				sta = fulldata(:,:,:,1);
 				pval = fulldata(:,:,:,2);
@@ -342,7 +354,7 @@ classdef hartley_calc < ndi.calculator
 			%
 				fields_out = {'M','L_max','K_max','sf_max','fps','color_high','color_low','rect'};
 				fields_names = {'M', 'L_absmax','K_absmax','sfmax','fps','chromhigh','chromlow','rect'};
-				hartleydocinfo = vlt.data.emptystruct(fields_out{:});
+				hartleydocinfo = did.datastructures.emptystruct(fields_out{:});
 				hartleydocinfo(1).M = stimstruct.M;
 				for i=1:numel(fields_out), 
 					if ~isfield(stimstruct,fields_names{i}),

@@ -1,0 +1,196 @@
+{
+	"classname": "contrastsensitivity_calc",
+	"superclasses":  [ "base" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_presentation_id", "mustbenotempty": 1},
+		{ "name": "stimulus_response_scalar_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"contrastsensitivity_calc": [
+		{
+			"name": "input_parameters",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The inputs to the calculator object."
+		},
+		{
+			"name": "depends_on",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Dependencies for the input"
+		},
+		{
+			"name": "spatial_frequencies",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Spatial frequencies over which contrast sensitivity was measured"
+		},
+		{
+			"name": "sensitivity_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Sensitivity using Naka Rushton Model"
+		},
+		{
+			"name": "sensitivity_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Sensitivity using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "sensitivity_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Sensitivity using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "relative_max_gain_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model"
+		},
+		{
+			"name": "relative_max_gain_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "relative_max_gain_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Relative maximum gain using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "empirical_c50_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model"
+		},
+		{
+			"name": "empirical_c50_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "empirical_c50_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Empirical c50 using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "saturation_index_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model"
+		},
+		{
+			"name": "saturation_index_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model with N in equation"
+		},
+		{
+			"name": "saturation_index_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Saturation index using Naka Rushton Model with N and saturation in equation"
+		},
+		{
+			"name": "parameters_RB",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model vs. spatial frequency"
+		},
+		{
+			"name": "parameters_RBN",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model with N in equation vs. spatial frequency"
+		},
+		{
+			"name": "parameters_RBNS",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "Full parameters of Naka Rushton Model with N and saturation in equation vs. spatial frequency"
+		},
+		{
+			"name": "fitless_interpolated_c50",
+			"type": "matrix",
+			"default_value": [],
+			"parameters": [NaN,NaN],
+			"queryable": 1,
+			"documentation": "fitless_interpolated_c50 of Naka Rushton Model vs. spatial frequency"
+		},
+		{
+			"name": "is_modulated_response",
+			"type": "integer",
+			"default_value": [],
+			"parameters": [0,1,0,0],
+			"queryable": 1,
+			"documentation": "0/1 Is this a modulated or mean response? 0=not modulated, 1=modulated"
+		},
+		{
+			"name": "visual_response_p_bonferroni",
+			"type": "double",
+			"default_value": [],
+			"parameters": [0,10,1,0],
+			"queryable": 1,
+			"documentation": "Did responses vary across visual stimuli and blank?"
+		},
+		{
+			"name": "response_varies_p_bonferroni",
+			"type": "double",
+			"default_value": [],
+			"parameters": [0,10,1,0],
+			"queryable": 1,
+			"documentation": "Did the response vary across stimuli? p-value"
+		},
+		{
+			"name": "response_type",
+			"type": "string",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Response type (mean, F1, etc)"
+		}
+	]
+}

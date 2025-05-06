@@ -1,12 +1,12 @@
 {
 	"document_class": {
-		"definition":						"$NDICALCDOCUMENTPATH\/vision\/contrast_tuning.json",
-		"validation":						"$NDICALCSCHEMAPATH\/vision\/contrast_tuning_schema.json",
+		"definition":		"$NDICALCDOCUMENTPATH\/vision\/contrast_tuning.json",
+		"validation":		"$NDICALCSCHEMAPATH\/vision\/contrast_tuning_schema.json",
 		"class_name":						"contrast_tuning",
         "property_list_name":                                   "contrast_tuning",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json"}
+			{ "definition":  "$NDIDOCUMENTPATH\/base.json"}
 		]
 	},
 	"depends_on": [

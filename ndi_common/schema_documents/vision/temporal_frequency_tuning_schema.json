@@ -1,0 +1,92 @@
+{
+	"classname": "temporal_frequency_tuning",
+	"superclasses":  [ "base" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"temporal_frequency_tuning": [
+		{
+			"name": "properties",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The units structure."
+		},
+		{
+			"name": "tuning_curve",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The tuning curve structure."
+		},
+		{
+			"name": "significance",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The significance structure."
+		},
+		{
+			"name": "fitless",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The fitless measures structure."
+		},
+		{
+			"name": "fit_dog",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The difference-of-gaussian fit structure."
+		},
+                {
+                        "name": "fit_movshon",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "The Movshon 2005 fit structure."
+                },
+                {
+                        "name": "fit_movshon_c",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "The Movshon 2005 fit structure with a constant term."
+                },
+		{
+			"name": "fit_spline",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The spline fit structure."
+		},
+		{
+			"name": "fit_gausslog",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The gaussian log fit structure."
+		},
+                {
+                        "name": "abs",
+                        "type": "structure",
+                        "default_value": "",
+                        "parameters": "",
+                        "queryable": 1,
+                        "documentation": "Fits with absolute values."
+                }
+
+	]
+}
