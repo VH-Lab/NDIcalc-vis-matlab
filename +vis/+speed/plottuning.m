@@ -28,7 +28,7 @@ function plottuning(SF,TF,R,varargin)
 marker = 'o';
 linestyle = 'none';
 do_surf = 1;
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 % On the left side
 subplot(1,2,1);
