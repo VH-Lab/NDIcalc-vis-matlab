@@ -61,7 +61,7 @@ cheby_order = 4;
 cheby_R = 0.5;
 cheby_cutoff = 300;
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 ndi.globals();
 

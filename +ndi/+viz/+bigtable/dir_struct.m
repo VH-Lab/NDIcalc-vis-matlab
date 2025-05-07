@@ -5,7 +5,7 @@ prefix = '';
 property_name = 'orientation_direction_tuning';
 x_axis_name = 'direction';
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 tune_info = getfield(fit_doc.document_properties, property_name);
 

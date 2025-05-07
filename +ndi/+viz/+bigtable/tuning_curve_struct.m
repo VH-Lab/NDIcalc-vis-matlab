@@ -24,7 +24,7 @@ element_type = 'spikes';
 search_query = [];
 acceptable_response_types = {'mean','F1'};
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 q1 = ndi.query('element.type','exact_string',element_type);
 q2 = ndi.query('element.name','contains_string',element_name,'');

@@ -5,7 +5,7 @@ prefix = '';
 property_name = 'contrast_tuning';
 x_axis_name = 'contrast';
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 tune_info = getfield(fit_doc.document_properties, property_name);
 

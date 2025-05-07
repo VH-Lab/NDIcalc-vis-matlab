@@ -355,7 +355,7 @@ classdef oridir_tuning < ndi.calculator
 			%
 				specific_test_inds = [];
 				generate_expected_docs = 0;
-				did.datastructures.assign(varargin{:});
+				vlt.data.assign(varargin{:});
 
 				docs = {};
 				doc_output = {};

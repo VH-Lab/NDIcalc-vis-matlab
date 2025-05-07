@@ -5,7 +5,7 @@ prefix = '';
 %property_name = 'temporal_frequency_tuning';
 %x_axis_name = 'temporal_frequency';
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 tune_info = getfield(tuning_doc.document_properties, property_name);
 

@@ -1,7 +1,7 @@
 function [bigtable] = tuning_curve(S, element_name, element_ref, table_func, varargin)
 
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 doc_struct = ndi.viz.bigtable.tuning_curve_struct(S,element_name,element_ref,varargin{:});
 

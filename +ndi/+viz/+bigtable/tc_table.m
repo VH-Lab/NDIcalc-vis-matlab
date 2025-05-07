@@ -3,7 +3,7 @@ function [t] = tc_table(tuning_doc, stimulus_response_doc, response_type, f1f0_s
 
 prefix = '';
 
-did.datastructures.assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 t_tuning_doc = tuning_doc.to_table();
 

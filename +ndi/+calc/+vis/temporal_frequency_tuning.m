@@ -146,7 +146,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 
 				x_axis = [0.01 120];
 				useAbsolute = 0;
-				did.datastructures.assign(varargin{:});
+				vlt.data.assign(varargin{:});
 
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});

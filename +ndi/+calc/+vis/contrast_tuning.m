@@ -149,7 +149,7 @@ classdef contrast_tuning < ndi.calculator
 				% call superclass plot method to set up axes
 				h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
                 Display_element_name = 1;
-                did.datastructures.assign(varargin{:});
+                vlt.data.assign(varargin{:});
 
 				if isa(doc_or_parameters,'ndi.document'),
 					doc = doc_or_parameters;
