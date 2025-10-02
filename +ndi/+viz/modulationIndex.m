@@ -152,6 +152,8 @@ for i = 1:num_groups
     
     if denominator ~= 0
         mi = numerator / denominator;
+    elseif mean_max_val == 0 && F1_max_val == 0
+        mi = 0;
     end
     
     % --- Update the main table with the calculated value for BOTH rows ---
