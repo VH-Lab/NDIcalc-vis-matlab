@@ -36,7 +36,7 @@ arguments
     T table
     NameValueArgs.modulationIndexColumn (1,:) char = ''
     NameValueArgs.responseTypeColumn (1,:) char = ''
-    NameValueArgs.allowMultipleModulationIndexFilters (1,1) logical = false
+    NameValueArgs.allowMultipleModulationIndexFilters (1,1) logical = true
 end
 
 if ~NameValueArgs.allowMultipleModulationIndexFilters
