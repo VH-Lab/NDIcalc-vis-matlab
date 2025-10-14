@@ -130,10 +130,13 @@ classdef triangleNode < handle
 
         function delete(obj)
             % DELETE - cleans up graphics objects
-            if isgraphics(obj.shapeHandle), delete(obj.shapeHandle); end
-            if isgraphics(obj.titleHandle), delete(obj.titleHandle); end
-            delete(obj.inputLines(isgraphics(obj.inputLines)));
-            if isgraphics(obj.outputLine), delete(obj.outputLine); end
+            % Per user request, we are no longer deleting the graphics handles
+            % when the object is deleted.
+            %
+            % if isgraphics(obj.shapeHandle), delete(obj.shapeHandle); end
+            % if isgraphics(obj.titleHandle), delete(obj.titleHandle); end
+            % delete(obj.inputLines(isgraphics(obj.inputLines)));
+            % if isgraphics(obj.outputLine), delete(obj.outputLine); end
         end
 
     end
