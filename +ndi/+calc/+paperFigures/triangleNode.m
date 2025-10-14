@@ -175,7 +175,8 @@ classdef triangleNode < handle
             else % Rectangle
                 x = pos(1) - w/2;
                 y = pos(2) - h/2;
-                obj.shapeHandle = rectangle('Position', [x, y, w, h], 'LineWidth', 2);
+                vertices = [x, y; x+w, y; x+w, y+h; x, y+h; x, y];
+                obj.shapeHandle = plot(vertices(:,1), vertices(:,2), 'k', 'LineWidth', 2);
             end
 
             % Input and Output ports
