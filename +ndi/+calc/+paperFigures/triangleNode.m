@@ -60,8 +60,18 @@ classdef triangleNode < handle
                 options.position (1,2) {mustBeNumeric} = [0 0];
             end
 
-            % Properties are automatically assigned by the arguments block.
-            % We just need to trigger the plotting.
+            % Assign properties from arguments block
+            obj.width = options.width;
+            obj.numberOfInputs = options.numberOfInputs;
+            obj.name = options.name;
+            obj.titleLocation = options.titleLocation;
+            obj.titleFontName = options.titleFontName;
+            obj.titleFontSize = options.titleFontSize;
+            obj.show = options.show;
+            obj.shape = options.shape;
+            obj.position = options.position;
+
+            % Explicitly plot the node
             obj.plotNode();
         end
 
