@@ -5,7 +5,7 @@ classdef triangleNode < handle
     % commonly used in diagrams like schematics. It allows for customization of
     % its appearance and behavior, such as size, number of inputs, and title.
     % The object is a handle, so any changes to its properties will automatically
-    - % update the drawing in the figure.
+    % update the drawing in the figure.
 
     properties
         width = 3;
