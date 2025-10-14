@@ -30,7 +30,7 @@ classdef triangleNode < handle
     end
 
     methods
-        function obj = triangleNode(varargin)
+        function obj = triangleNode(options)
             % TRIANGLENODE - Constructor for the triangleNode class.
             %
             %   OBJ = NDI.CALC.PAPERFIGURES.TRIANGLENODE(Name, Value, ...)
@@ -48,32 +48,30 @@ classdef triangleNode < handle
             %   'shape' - 'triangle' or 'rectangle'. Default is 'triangle'.
             %   'position' - The [x,y] center position of the node. Default is [0 0].
             %
+            arguments
+                options.width (1,1) {mustBeNumeric} = 3;
+                options.numberOfInputs (1,1) {mustBeNumeric} = 2;
+                options.name (1,:) char = '';
+                options.titleLocation (1,:) char {mustBeMember(options.titleLocation,{'middle','above','below'})} = 'middle';
+                options.titleFontName (1,:) char = 'Helvetica';
+                options.titleFontSize (1,1) {mustBeNumeric} = 12;
+                options.show (1,1) {mustBeNumericOrLogical} = true;
+                options.shape (1,:) char {mustBeMember(options.shape,{'triangle','rectangle'})} = 'triangle';
+                options.position (1,2) {mustBeNumeric} = [0 0];
+            end
 
-            p = inputParser;
-            p.addParameter('width', obj.width, @isnumeric);
-            p.addParameter('numberOfInputs', obj.numberOfInputs, @isnumeric);
-            p.addParameter('name', obj.name, @ischar);
-            p.addParameter('titleLocation', obj.titleLocation, @(x) ismember(x, {'middle', 'above', 'below'}));
-            p.addParameter('titleFontName', obj.titleFontName, @ischar);
-            p.addParameter('titleFontSize', obj.titleFontSize, @isnumeric);
-            p.addParameter('show', obj.show, @islogical);
-            p.addParameter('shape', obj.shape, @(x) ismember(x, {'triangle', 'rectangle'}));
-            p.addParameter('position', obj.position, @(x) isnumeric(x) && numel(x) == 2);
-
-            p.parse(varargin{:});
-
-            % Assign properties from parser
-            obj.width = p.Results.width;
-            obj.numberOfInputs = p.Results.numberOfInputs;
-            obj.name = p.Results.name;
-            obj.titleLocation = p.Results.titleLocation;
-            obj.titleFontName = p.Results.titleFontName;
-            obj.titleFontSize = p.Results.titleFontSize;
-            obj.shape = p.Results.shape;
-            obj.position = p.Results.position;
+            % Assign properties from arguments
+            obj.width = options.width;
+            obj.numberOfInputs = options.numberOfInputs;
+            obj.name = options.name;
+            obj.titleLocation = options.titleLocation;
+            obj.titleFontName = options.titleFontName;
+            obj.titleFontSize = options.titleFontSize;
+            obj.shape = options.shape;
+            obj.position = options.position;
 
             % Defer plotting until 'show' is set
-            obj.show = p.Results.show;
+            obj.show = options.show;
 
         end
 
