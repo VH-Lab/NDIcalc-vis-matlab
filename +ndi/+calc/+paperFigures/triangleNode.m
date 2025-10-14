@@ -73,6 +73,8 @@ classdef triangleNode < handle
             % Defer plotting until 'show' is set
             obj.show = options.show;
 
+            % Explicitly plot the node
+            obj.plotNode();
         end
 
         function set.width(obj, val)
@@ -151,6 +153,7 @@ classdef triangleNode < handle
     methods (Access = private)
         function plotNode(obj)
             % PLOTNODE - Draws or updates the node's graphical representation.
+            disp(['Plotting node: ' obj.name]);
 
             % Clean up old graphics
             if isgraphics(obj.shapeHandle), delete(obj.shapeHandle); end
