@@ -130,6 +130,24 @@ classdef triangleNode < handle
 
     end
 
+    methods (Static)
+        function plot_hvh_line(start_point, end_point)
+            % PLOT_HVH_LINE - plots a horizontal-vertical-horizontal line
+
+            x = [start_point(1), ...
+                 start_point(1) + (end_point(1)-start_point(1))/2, ...
+                 start_point(1) + (end_point(1)-start_point(1))/2, ...
+                 end_point(1)];
+
+            y = [start_point(2), ...
+                 start_point(2), ...
+                 end_point(2), ...
+                 end_point(2)];
+
+            plot(x,y,'k-');
+        end
+    end
+
     methods (Access = private)
         function plotNode(obj)
             % PLOTNODE - Draws or updates the node's graphical representation.
