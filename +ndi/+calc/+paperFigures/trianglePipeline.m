@@ -1,7 +1,7 @@
-function fh = trianglePipeline(options)
+function [fh, nodes] = trianglePipeline(options)
 % TRIANGLEPIPELINE - Create a figure demonstrating a processing pipeline
 %
-% FH = NDI.CALC.PAPERFIGURES.TRIANGLEPIPELINE(...)
+% [FH, NODES] = NDI.CALC.PAPERFIGURES.TRIANGLEPIPELINE(...)
 %
 % Creates a figure that illustrates a data processing pipeline using
 % ndi.calc.paperFigures.triangleNode objects.
@@ -14,6 +14,12 @@ function fh = trianglePipeline(options)
 % | 'rowSpacing' | Vertical distance between node centers | 5 |
 % | 'nodeWidth' | The width of the nodes | 3 |
 %
+% Outputs:
+% | Name | Description |
+% |---|---|
+% | FH | The figure handle. |
+% | NODES | A cell array of the ndi.calc.paperFigures.triangleNode objects. |
+%
     arguments
         options.columnSpacing (1,1) {mustBeNumeric} = 10;
         options.rowSpacing (1,1) {mustBeNumeric} = 5;
@@ -22,6 +28,8 @@ function fh = trianglePipeline(options)
 
     fh = figure();
     hold on;
+
+    nodes = {};
 
     % Define positions
     c1 = 0;
@@ -48,6 +56,7 @@ function fh = trianglePipeline(options)
         'name', 'spikes', ...
         'position', [c1 r1], ...
         'width', node_w);
+    nodes{end+1} = spikes;
 
     node2 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -55,6 +64,7 @@ function fh = trianglePipeline(options)
         'name', 'Select neurons', ...
         'position', [c2 r1], ...
         'width', node_w);
+    nodes{end+1} = node2;
 
     node3 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -62,6 +72,7 @@ function fh = trianglePipeline(options)
         'name', 'Select epoch', ...
         'position', [c3 r1], ...
         'width', node_w);
+    nodes{end+1} = node3;
 
     % Row 2
     index_node = ndi.calc.paperFigures.triangleNode(...
@@ -69,12 +80,14 @@ function fh = trianglePipeline(options)
         'name', 'index_12345', ...
         'position', [c1 r2], ...
         'width', node_w);
+    nodes{end+1} = index_node;
 
     epoch_node = ndi.calc.paperFigures.triangleNode(...
         'shape', 'rectangle', ...
         'name', 'epoch_xyz', ...
         'position', [c2 r2], ...
         'width', node_w);
+    nodes{end+1} = epoch_node;
 
     % Row 3
     stim_node = ndi.calc.paperFigures.triangleNode(...
@@ -82,6 +95,7 @@ function fh = trianglePipeline(options)
         'name', 'stimulator', ...
         'position', [c1 r3], ...
         'width', node_w);
+    nodes{end+1} = stim_node;
 
     node7 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -89,6 +103,7 @@ function fh = trianglePipeline(options)
         'name', 'Select epoch', ...
         'position', [c2 r3], ...
         'width', node_w);
+    nodes{end+1} = node7;
 
     % Draw connections
 
@@ -119,6 +134,7 @@ function fh = trianglePipeline(options)
             'name', 'Sort stimuli', ...
             'position', [c3 rows(r)], ...
             'width', node_w);
+        nodes{end+1} = sort_node;
         ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node.inputPorts(1,:));
     end
 
