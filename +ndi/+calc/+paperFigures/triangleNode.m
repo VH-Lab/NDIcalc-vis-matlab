@@ -9,6 +9,7 @@ classdef triangleNode < handle
 
     properties
         width = 3;
+        height = 3;
         numberOfInputs = 2;
         name = '';
         titleLocation = 'middle';
@@ -54,8 +55,9 @@ classdef triangleNode < handle
             %
             arguments
                 options.width (1,1) {mustBeNumeric} = 3;
+                options.height (1,1) {mustBeNumeric} = 3;
                 options.numberOfInputs (1,1) {mustBeNumeric} = 2;
-                options.name (1,:) char = '';
+                options.name {mustBeA(options.name,{'char','cell'})} = '';
                 options.titleLocation (1,:) char {mustBeMember(options.titleLocation,{'middle','above','below'})} = 'middle';
                 options.titleFontName (1,:) char = 'Helvetica';
                 options.titleFontSize (1,1) {mustBeNumeric} = 12;
@@ -68,6 +70,7 @@ classdef triangleNode < handle
 
             % Assign properties from arguments block
             obj.width = options.width;
+            obj.height = options.height;
             obj.numberOfInputs = options.numberOfInputs;
             obj.name = options.name;
             obj.titleLocation = options.titleLocation;
@@ -85,6 +88,11 @@ classdef triangleNode < handle
 
         function set.width(obj, val)
             obj.width = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
+        function set.height(obj, val)
+            obj.height = val;
             if ~obj.isConstructing, obj.plotNode(); end
         end
 
@@ -174,7 +182,7 @@ classdef triangleNode < handle
 
             % Node geometry
             w = obj.width;
-            h = w; % Height is same as width for a nice look
+            h = obj.height;
             pos = obj.position;
 
             if strcmpi(obj.shape, 'triangle')
@@ -230,7 +238,8 @@ classdef triangleNode < handle
             obj.titleHandle = text(title_pos(1), title_pos(2), obj.name, ...
                 'FontName', obj.titleFontName, ...
                 'FontSize', obj.titleFontSize, ...
-                'HorizontalAlignment', 'center');
+                'HorizontalAlignment', 'center', ...
+                'Interpreter', 'none');
 
         end
     end
