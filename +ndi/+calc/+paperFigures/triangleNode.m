@@ -29,6 +29,10 @@ classdef triangleNode < handle
         outputPort
     end
 
+    properties (Access = private)
+        isConstructing = false;
+    end
+
     methods
         function obj = triangleNode(options)
             % TRIANGLENODE - Constructor for the triangleNode class.
@@ -60,6 +64,8 @@ classdef triangleNode < handle
                 options.position (1,2) {mustBeNumeric} = [0 0];
             end
 
+            obj.isConstructing = true;
+
             % Assign properties from arguments block
             obj.width = options.width;
             obj.numberOfInputs = options.numberOfInputs;
@@ -71,53 +77,55 @@ classdef triangleNode < handle
             obj.shape = options.shape;
             obj.position = options.position;
 
+            obj.isConstructing = false;
+
             % Explicitly plot the node
             obj.plotNode();
         end
 
         function set.width(obj, val)
             obj.width = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.numberOfInputs(obj, val)
             obj.numberOfInputs = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.name(obj, val)
             obj.name = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.titleLocation(obj, val)
             obj.titleLocation = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.titleFontName(obj, val)
             obj.titleFontName = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.titleFontSize(obj, val)
             obj.titleFontSize = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.show(obj, val)
             obj.show = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.shape(obj, val)
             obj.shape = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function set.position(obj, val)
             obj.position = val;
-            obj.plotNode();
+            if ~obj.isConstructing, obj.plotNode(); end
         end
 
         function delete(obj)
