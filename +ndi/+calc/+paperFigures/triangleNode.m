@@ -229,6 +229,9 @@ classdef triangleNode < handle
             switch obj.titleLocation
                 case 'middle'
                     title_pos = [pos(1), pos(2)];
+                    if strcmpi(obj.shape, 'triangle')
+                        title_pos(1) = pos(1) - w/6;
+                    end
                 case 'above'
                     title_pos = [pos(1), pos(2) + h/2 + h*0.2];
                 case 'below'

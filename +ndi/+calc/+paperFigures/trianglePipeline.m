@@ -21,8 +21,8 @@ function [fh, nodes] = trianglePipeline(options)
 % | NODES | A cell array of the ndi.calc.paperFigures.triangleNode objects. |
 %
     arguments
-        options.columnSpacing (1,1) {mustBeNumeric} = 10;
-        options.rowSpacing (1,1) {mustBeNumeric} = 5;
+        options.columnSpacing (1,1) {mustBeNumeric} = 30;
+        options.rowSpacing (1,1) {mustBeNumeric} = 10;
         options.nodeWidth (1,1) {mustBeNumeric} = 3;
     end
 
