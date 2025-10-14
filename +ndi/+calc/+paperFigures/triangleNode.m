@@ -171,12 +171,10 @@ classdef triangleNode < handle
                 % Close the triangle
                 plot_verts = [vertices; vertices(1,:)];
                 obj.shapeHandle = plot(plot_verts(:,1), plot_verts(:,2), 'k', 'LineWidth', 2);
-                hold on;
             else % Rectangle
                 x = pos(1) - w/2;
                 y = pos(2) - h/2;
                 obj.shapeHandle = rectangle('Position', [x, y, w, h], 'LineWidth', 2);
-                hold on;
             end
 
             % Input and Output ports
@@ -220,8 +218,6 @@ classdef triangleNode < handle
                 'FontName', obj.titleFontName, ...
                 'FontSize', obj.titleFontSize, ...
                 'HorizontalAlignment', 'center');
-
-            hold off;
 
         end
     end
