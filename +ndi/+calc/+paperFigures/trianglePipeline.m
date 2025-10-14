@@ -27,10 +27,17 @@ function fh = trianglePipeline(options)
     c1 = 0;
     c2 = c1 + options.columnSpacing;
     c3 = c2 + options.columnSpacing;
+    c4 = c3 + options.columnSpacing;
+    c5 = c4 + options.columnSpacing;
+    c6 = c5 + options.columnSpacing;
 
     r1 = 0;
     r2 = r1 - options.rowSpacing;
     r3 = r2 - options.rowSpacing;
+    r4 = r3 - options.rowSpacing;
+    r5 = r4 - options.rowSpacing;
+    r6 = r5 - options.rowSpacing;
+    r7 = r6 - options.rowSpacing;
 
     node_w = options.nodeWidth;
 
@@ -102,6 +109,18 @@ function fh = trianglePipeline(options)
 
     % stimulator -> Node 7 (upper)
     ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_node.outputPort, node7.inputPorts(1,:));
+
+    % Add the "Sort stimuli" nodes
+    rows = [r4, r5, r6, r7];
+    for r = 1:numel(rows)
+        sort_node = ndi.calc.paperFigures.triangleNode(...
+            'shape', 'triangle', ...
+            'numberOfInputs', 1, ...
+            'name', 'Sort stimuli', ...
+            'position', [c3 rows(r)], ...
+            'width', node_w);
+        ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node.inputPorts(1,:));
+    end
 
     hold off;
     axis equal;
