@@ -10,10 +10,10 @@ function [fh, nodes] = trianglePipeline(options)
 %
 % | Name-Value Pair | Description | Default |
 % |---|---|---|
-% | 'columnSpacing' | Horizontal distance between node centers | 30 |
-% | 'rowSpacing' | Vertical distance between node centers | 10 |
-% | 'nodeWidth' | The width of the nodes | 3 |
-% | 'labelFontSize' | The font size of the node labels | 12 |
+% | 'columnSpacing' | Horizontal distance between node centers | 3 |
+% | 'rowSpacing' | Vertical distance between node centers | 2 |
+% | 'nodeWidth' | The width of the nodes | 0.5 |
+% | 'labelFontSize' | The font size of the node labels | 0.25 |
 %
 % Outputs:
 % | Name | Description |
@@ -22,10 +22,10 @@ function [fh, nodes] = trianglePipeline(options)
 % | NODES | A cell array of the ndi.calc.paperFigures.triangleNode objects. |
 %
     arguments
-        options.columnSpacing (1,1) {mustBeNumeric} = 2;
+        options.columnSpacing (1,1) {mustBeNumeric} = 3;
         options.rowSpacing (1,1) {mustBeNumeric} = 2;
-        options.nodeWidth (1,1) {mustBeNumeric} = 3;
-        options.labelFontSize (1,1) {mustBeNumeric} = 0.5;
+        options.nodeWidth (1,1) {mustBeNumeric} = 0.5;
+        options.labelFontSize (1,1) {mustBeNumeric} = 0.25;
     end
 
     fh = figure();
