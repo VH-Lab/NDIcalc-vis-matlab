@@ -25,7 +25,7 @@ function [fh, nodes] = trianglePipeline(options)
         options.columnSpacing (1,1) {mustBeNumeric} = 30;
         options.rowSpacing (1,1) {mustBeNumeric} = 10;
         options.nodeWidth (1,1) {mustBeNumeric} = 3;
-        options.labelFontSize (1,1) {mustBeNumeric} = 1.5;
+        options.labelFontSize (1,1) {mustBeNumeric} = 0.3;
     end
 
     fh = figure();
@@ -195,5 +195,23 @@ function [fh, nodes] = trianglePipeline(options)
     hold off;
     axis equal;
     axis off;
+
+    ax = gca;
+    ax.Units = 'normalized';
+    ax.Position = [0.1 0.1 0.8 0.8];
+
+    drawnow; % ensure everything is drawn
+
+    data_range_x = xlim;
+    data_range_y = ylim;
+
+    width_cm = data_range_x(2) - data_range_x(1);
+    height_cm = data_range_y(2) - data_range_y(1);
+
+    fh.Units = 'centimeters';
+    fh.Position = [fh.Position(1) fh.Position(2) width_cm/0.8 height_cm/0.8];
+    fh.PaperUnits = 'centimeters';
+    fh.PaperSize = [width_cm/0.8 height_cm/0.8];
+    fh.PaperPosition = [0 0 width_cm/0.8 height_cm/0.8];
 
 end % trianglePipeline()
