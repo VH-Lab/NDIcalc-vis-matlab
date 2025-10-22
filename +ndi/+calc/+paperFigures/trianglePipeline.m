@@ -10,9 +10,10 @@ function [fh, nodes] = trianglePipeline(options)
 %
 % | Name-Value Pair | Description | Default |
 % |---|---|---|
-% | 'columnSpacing' | Horizontal distance between node centers | 10 |
-% | 'rowSpacing' | Vertical distance between node centers | 5 |
+% | 'columnSpacing' | Horizontal distance between node centers | 30 |
+% | 'rowSpacing' | Vertical distance between node centers | 10 |
 % | 'nodeWidth' | The width of the nodes | 3 |
+% | 'labelFontSize' | The font size of the node labels | 12 |
 %
 % Outputs:
 % | Name | Description |
@@ -24,7 +25,7 @@ function [fh, nodes] = trianglePipeline(options)
         options.columnSpacing (1,1) {mustBeNumeric} = 30;
         options.rowSpacing (1,1) {mustBeNumeric} = 10;
         options.nodeWidth (1,1) {mustBeNumeric} = 3;
-        options.labelFontSize (1,1) {mustBeNumeric} = 12;
+        options.labelFontSize (1,1) {mustBeNumeric} = 1.5;
     end
 
     fh = figure();

@@ -14,7 +14,7 @@ classdef triangleNode < handle
         name = '';
         titleLocation = 'middle';
         titleFontName = 'Helvetica';
-        titleFontSize = 12;
+        titleFontSize = 1.5;
         show = true;
         shape = 'triangle';
         position = [0 0]; % Center position [x, y]
@@ -60,7 +60,7 @@ classdef triangleNode < handle
                 options.name {mustBeA(options.name,{'char','cell'})} = '';
                 options.titleLocation (1,:) char {mustBeMember(options.titleLocation,{'middle','above','below'})} = 'middle';
                 options.titleFontName (1,:) char = 'Helvetica';
-                options.titleFontSize (1,1) {mustBeNumeric} = 12;
+                options.titleFontSize (1,1) {mustBeNumeric} = 1.5;
                 options.show (1,1) {mustBeNumericOrLogical} = true;
                 options.shape (1,:) char {mustBeMember(options.shape,{'triangle','rectangle'})} = 'triangle';
                 options.position (1,2) {mustBeNumeric} = [0 0];
@@ -242,7 +242,8 @@ classdef triangleNode < handle
                 'FontName', obj.titleFontName, ...
                 'FontSize', obj.titleFontSize, ...
                 'HorizontalAlignment', 'center', ...
-                'Interpreter', 'none');
+                'Interpreter', 'none', ...
+                'FontUnits', 'data');
 
         end
     end
