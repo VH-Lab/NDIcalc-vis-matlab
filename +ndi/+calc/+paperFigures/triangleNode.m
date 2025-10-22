@@ -18,6 +18,9 @@ classdef triangleNode < handle
         show = true;
         shape = 'triangle';
         position = [0 0]; % Center position [x, y]
+        inputTerminalColor = [1 0 0]; % red
+        outputTerminalColor = [0 1 0]; % green
+        fillColor = 'none';
 
         % Graphics handles
         shapeHandle
@@ -64,6 +67,9 @@ classdef triangleNode < handle
                 options.show (1,1) {mustBeNumericOrLogical} = true;
                 options.shape (1,:) char {mustBeMember(options.shape,{'triangle','rectangle'})} = 'triangle';
                 options.position (1,2) {mustBeNumeric} = [0 0];
+                options.inputTerminalColor = [1 0 0];
+                options.outputTerminalColor = [0 1 0];
+                options.fillColor = 'none';
             end
 
             obj.isConstructing = true;
@@ -79,6 +85,18 @@ classdef triangleNode < handle
             obj.show = options.show;
             obj.shape = options.shape;
             obj.position = options.position;
+            obj.inputTerminalColor = options.inputTerminalColor;
+            obj.outputTerminalColor = options.outputTerminalColor;
+
+            if strcmp(options.fillColor,'none')
+                if strcmpi(obj.shape,'triangle')
+                    obj.fillColor = [1 1 0.9];
+                else
+                    obj.fillColor = [0.9 0.9 1];
+                end
+            else
+                obj.fillColor = options.fillColor;
+            end
 
             obj.isConstructing = false;
 
@@ -136,6 +154,21 @@ classdef triangleNode < handle
             if ~obj.isConstructing, obj.plotNode(); end
         end
 
+        function set.inputTerminalColor(obj, val)
+            obj.inputTerminalColor = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
+        function set.outputTerminalColor(obj, val)
+            obj.outputTerminalColor = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
+        function set.fillColor(obj, val)
+            obj.fillColor = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
         function delete(obj)
             % DELETE - cleans up graphics objects
             % Per user request, we are no longer deleting the graphics handles
@@ -150,7 +183,7 @@ classdef triangleNode < handle
     end
 
     methods (Static)
-        function plot_hvh_line(start_point, end_point)
+        function plot_hvh_line(start_point, end_point, color)
             % PLOT_HVH_LINE - plots a horizontal-vertical-horizontal line
 
             x = [start_point(1), ...
@@ -163,7 +196,7 @@ classdef triangleNode < handle
                  end_point(2), ...
                  end_point(2)];
 
-            plot(x,y,'k-');
+            plot(x,y,'Color',color);
         end
     end
 
@@ -188,14 +221,12 @@ classdef triangleNode < handle
             if strcmpi(obj.shape, 'triangle')
                 % Triangle vertices centered at obj.position
                 vertices = [pos(1)-w/2, pos(2)-h/2; pos(1)-w/2, pos(2)+h/2; pos(1)+w/2, pos(2)];
-                % Close the triangle
-                plot_verts = [vertices; vertices(1,:)];
-                obj.shapeHandle = plot(plot_verts(:,1), plot_verts(:,2), 'k', 'LineWidth', 2);
+                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3], 'FaceColor', obj.fillColor, 'EdgeColor', 'k', 'LineWidth', 2);
             else % Rectangle
                 x = pos(1) - w/2;
                 y = pos(2) - h/2;
-                vertices = [x, y; x+w, y; x+w, y+h; x, y+h; x, y];
-                obj.shapeHandle = plot(vertices(:,1), vertices(:,2), 'k', 'LineWidth', 2);
+                vertices = [x, y; x+w, y; x+w, y+h; x, y+h];
+                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3 4], 'FaceColor', obj.fillColor, 'EdgeColor', 'k', 'LineWidth', 2);
             end
 
             % Input and Output ports
@@ -217,12 +248,12 @@ classdef triangleNode < handle
             for i=1:obj.numberOfInputs
                 p_start = obj.inputPorts(i,:);
                 p_end = [p_start(1)-w/4, p_start(2)];
-                obj.inputLines(i) = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'k', 'LineWidth', 1);
+                obj.inputLines(i) = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.inputTerminalColor, 'LineWidth', 1);
             end
 
             p_start = obj.outputPort;
             p_end = [p_start(1)+w/4, p_start(2)];
-            obj.outputLine = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'k', 'LineWidth', 1);
+            obj.outputLine = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.outputTerminalColor, 'LineWidth', 1);
 
             % Title
             title_pos = [0, 0];
