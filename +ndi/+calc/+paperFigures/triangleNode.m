@@ -186,6 +186,10 @@ classdef triangleNode < handle
         function plot_hvh_line(start_point, end_point, color)
             % PLOT_HVH_LINE - plots a horizontal-vertical-horizontal line
 
+            % shorten the line by a small amount at each end
+            start_point(1) = start_point(1) + 0.1;
+            end_point(1) = end_point(1) - 0.1;
+
             x = [start_point(1), ...
                  start_point(1) + (end_point(1)-start_point(1))/2, ...
                  start_point(1) + (end_point(1)-start_point(1))/2, ...
@@ -247,13 +251,13 @@ classdef triangleNode < handle
             obj.inputLines = gobjects(obj.numberOfInputs, 1);
             for i=1:obj.numberOfInputs
                 p_start = obj.inputPorts(i,:);
-                p_end = [p_start(1)-w/4, p_start(2)];
-                obj.inputLines(i) = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.inputTerminalColor, 'LineWidth', 1);
+                p_end = [p_start(1)-w/8, p_start(2)];
+                obj.inputLines(i) = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.inputTerminalColor, 'LineWidth', 2);
             end
 
             p_start = obj.outputPort;
-            p_end = [p_start(1)+w/4, p_start(2)];
-            obj.outputLine = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.outputTerminalColor, 'LineWidth', 1);
+            p_end = [p_start(1)+w/8, p_start(2)];
+            obj.outputLine = plot([p_start(1) p_end(1)], [p_start(2) p_end(2)], 'Color', obj.outputTerminalColor, 'LineWidth', 2);
 
             % Title
             title_pos = [0, 0];
