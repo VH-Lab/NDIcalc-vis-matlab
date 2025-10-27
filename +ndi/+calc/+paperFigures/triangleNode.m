@@ -240,7 +240,11 @@ classdef triangleNode < handle
     methods (Access = private)
         function plotNode(obj)
             % PLOTNODE - Draws or updates the node's graphical representation.
-            disp(['Plotting node: ' obj.name]);
+            if iscell(obj.name)
+                disp(['Plotting node: ' strjoin(obj.name,' ')]);
+            else
+                disp(['Plotting node: ' obj.name]);
+            end
 
             % Clean up old graphics
             if isgraphics(obj.shapeHandle), delete(obj.shapeHandle); end
@@ -354,43 +358,36 @@ classdef triangleNode < handle
             w_outer = w + 2*flare;
             h_outer = h + 2*flare;
 
-            obj.chevronHandles = [];
+            all_x = [];
+            all_y = [];
 
             dir = 1;
             if strcmpi(obj.chevron, 'counterclockwise'), dir = -1; end
 
             % Top edge
-            for x_start = (x_outer+flare/2):spacing:(x_outer+w_outer-flare/2)
-                p1 = [x_start - dir*flare/2, y_outer+h_outer];
-                p2 = [x_start, y_outer+h_outer-flare];
-                p3 = [x_start + dir*flare/2, y_outer+h_outer];
-                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
-                obj.chevronHandles(end+1) = h;
+            for x_start = (x_outer+flare):spacing:(x_outer+w_outer-flare)
+                all_x = [all_x, x_start - dir*flare, x_start, x_start + dir*flare, NaN];
+                all_y = [all_y, y_outer+h_outer, y_outer+h_outer-flare, y_outer+h_outer, NaN];
             end
             % Bottom edge
-            for x_start = (x_outer+flare/2):spacing:(x_outer+w_outer-flare/2)
-                p1 = [x_start + dir*flare/2, y_outer];
-                p2 = [x_start, y_outer+flare];
-                p3 = [x_start - dir*flare/2, y_outer];
-                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
-                obj.chevronHandles(end+1) = h;
+            for x_start = (x_outer+flare):spacing:(x_outer+w_outer-flare)
+                all_x = [all_x, x_start + dir*flare, x_start, x_start - dir*flare, NaN];
+                all_y = [all_y, y_outer, y_outer+flare, y_outer, NaN];
             end
             % Left edge
-            for y_start = (y_outer+flare/2):spacing:(y_outer+h_outer-flare/2)
-                p1 = [x_outer, y_start - dir*flare/2];
-                p2 = [x_outer+flare, y_start];
-                p3 = [x_outer, y_start + dir*flare/2];
-                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
-                obj.chevronHandles(end+1) = h;
+            for y_start = (y_outer+flare):spacing:(y_outer+h_outer-flare)
+                all_x = [all_x, x_outer, x_outer+flare, x_outer, NaN];
+                all_y = [all_y, y_start - dir*flare, y_start, y_start + dir*flare, NaN];
             end
             % Right edge
-            for y_start = (y_outer+flare/2):spacing:(y_outer+h_outer-flare/2)
-                p1 = [x_outer+w_outer, y_start + dir*flare/2];
-                p2 = [x_outer+w_outer-flare, y_start];
-                p3 = [x_outer+w_outer, y_start - dir*flare/2];
-                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
-                obj.chevronHandles(end+1) = h;
+            for y_start = (y_outer+flare):spacing:(y_outer+h_outer-flare)
+                all_x = [all_x, x_outer+w_outer, x_outer+w_outer-flare, x_outer+w_outer, NaN];
+                all_y = [all_y, y_start + dir*flare, y_start, y_start - dir*flare, NaN];
             end
+
+            hold on;
+            obj.chevronHandles = plot(all_x, all_y, 'k-');
+            uistack(obj.chevronHandles, 'top');
         end
     end
 end
