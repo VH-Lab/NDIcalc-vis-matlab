@@ -137,22 +137,22 @@ function [fh, nodes] = trianglePipeline(options)
     % Draw connections
 
     % Spikes -> Node 2 (upper)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(spikes.outputPort, node2.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(spikes.outputPort, node2, 1, options.connectionColor);
 
     % Node 2 -> Node 3 (upper)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node2.outputPort, node3.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node2.outputPort, node3, 1, options.connectionColor);
 
     % index_12345 -> Node 2 (lower)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(index_node.outputPort, node2.inputPorts(2,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(index_node.outputPort, node2, 2, options.connectionColor);
 
     % epoch_xyz -> Node 3 (lower)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(epoch_node.outputPort, node3.inputPorts(2,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(epoch_node.outputPort, node3, 2, options.connectionColor);
 
     % epoch_xyz -> Node 7 (lower)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(epoch_node.outputPort, node7.inputPorts(2,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(epoch_node.outputPort, node7, 2, options.connectionColor);
 
     % stimulator -> Node 7 (upper)
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_node.outputPort, node7.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_node.outputPort, node7, 1, options.connectionColor);
 
     % Add the "Sort stimuli" nodes
 
@@ -167,7 +167,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = sort_node_1;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node_1.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node_1, 1, options.connectionColor);
 
     stim_resp_node_1 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -179,8 +179,8 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = stim_resp_node_1;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node3.outputPort, stim_resp_node_1.inputPorts(1,:), options.connectionColor);
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(sort_node_1.outputPort, stim_resp_node_1.inputPorts(2,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node3.outputPort, stim_resp_node_1, 1, options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(sort_node_1.outputPort, stim_resp_node_1, 2, options.connectionColor);
 
     fit_node_1 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -192,7 +192,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = fit_node_1;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_resp_node_1.outputPort, fit_node_1.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_resp_node_1.outputPort, fit_node_1, 1, options.connectionColor);
 
     plot_node_1 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -204,7 +204,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = plot_node_1;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_1.outputPort, plot_node_1.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_1.outputPort, plot_node_1, 1, options.connectionColor);
 
     stats_node_1 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -216,7 +216,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = stats_node_1;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_1.outputPort, stats_node_1.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_1.outputPort, stats_node_1, 1, options.connectionColor);
 
     % Row 5 (with extra space)
     r5_new = r4 - 2*options.rowSpacing;
@@ -230,7 +230,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = sort_node_2;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node_2.inputPorts(1,:), [1 0 1]);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node7.outputPort, sort_node_2, 1, options.connectionColor);
 
     stim_resp_node_2 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -242,8 +242,8 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = stim_resp_node_2;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node3.outputPort, stim_resp_node_2.inputPorts(1,:), options.connectionColor);
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(sort_node_2.outputPort, stim_resp_node_2.inputPorts(2,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(node3.outputPort, stim_resp_node_2, 1, options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(sort_node_2.outputPort, stim_resp_node_2, 2, options.connectionColor);
 
     fit_node_2 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -255,7 +255,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = fit_node_2;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_resp_node_2.outputPort, fit_node_2.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(stim_resp_node_2.outputPort, fit_node_2, 1, options.connectionColor);
 
     plot_node_2 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -267,7 +267,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = plot_node_2;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_2.outputPort, plot_node_2.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_2.outputPort, plot_node_2, 1, options.connectionColor);
 
     stats_node_2 = ndi.calc.paperFigures.triangleNode(...
         'shape', 'triangle', ...
@@ -279,7 +279,7 @@ function [fh, nodes] = trianglePipeline(options)
         'titleFontSize', options.labelFontSize, ...
         'inputTerminalColor', options.inputTerminalColor, 'outputTerminalColor', options.outputTerminalColor);
     nodes{end+1} = stats_node_2;
-    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_2.outputPort, stats_node_2.inputPorts(1,:), options.connectionColor);
+    ndi.calc.paperFigures.triangleNode.plot_hvh_line(fit_node_2.outputPort, stats_node_2, 1, options.connectionColor);
 
     hold off;
     axis equal;

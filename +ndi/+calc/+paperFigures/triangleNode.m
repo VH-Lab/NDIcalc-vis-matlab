@@ -183,22 +183,29 @@ classdef triangleNode < handle
     end
 
     methods (Static)
-        function plot_hvh_line(start_point, end_point, color)
+        function plot_hvh_line(start_point, dest_node, input_index, color)
             % PLOT_HVH_LINE - plots a horizontal-vertical-horizontal line
+
+            end_point = dest_node.inputPorts(input_index,:);
 
             % shorten the line by a small amount at each end
             start_point(1) = start_point(1) + 0.1;
             end_point(1) = end_point(1) - 0.1;
 
-            x = [start_point(1), ...
-                 start_point(1) + (end_point(1)-start_point(1))/2, ...
-                 start_point(1) + (end_point(1)-start_point(1))/2, ...
-                 end_point(1)];
+            D = end_point(1) - start_point(1);
+            N = dest_node.numberOfInputs;
+            n = input_index;
 
-            y = [start_point(2), ...
-                 start_point(2), ...
-                 end_point(2), ...
-                 end_point(2)];
+            if N > 1
+                x_intermediate = start_point(1) + D * (0.25 + 0.5 * ((n-1)/(N-1)));
+            elseif N==1
+                x_intermediate = start_point(1) + D * 0.5;
+            else % N==0, shouldn't happen but maybe
+                x_intermediate = start_point(1) + D * 0.5;
+            end
+
+            x = [start_point(1), x_intermediate, x_intermediate, end_point(1)];
+            y = [start_point(2), start_point(2), end_point(2), end_point(2)];
 
             plot(x,y,'Color',color);
         end
