@@ -361,28 +361,50 @@ classdef triangleNode < handle
             all_x = [];
             all_y = [];
 
-            dir = 1;
-            if strcmpi(obj.chevron, 'counterclockwise'), dir = -1; end
+            s = flare * 0.5; % size of chevron
+            % Canonical V-shape pointing down, centered at origin
+            canonical_vx = [-s, 0, s];
+            canonical_vy = [s, 0, s];
+            canonical_V = [canonical_vx; canonical_vy];
+
+            % Define rotation matrices
+            R_0     = [1 0; 0 1];   % 0 deg
+            R_90    = [0 -1; 1 0];  % +90 deg
+            R_180   = [-1 0; 0 -1]; % +180 deg
+            R_neg90 = [0 1; -1 0];  % -90 deg
+
+            if strcmpi(obj.chevron, 'clockwise')
+                R_top = R_90; R_right = R_0; R_bottom = R_neg90; R_left = R_180;
+            else % counterclockwise
+                R_top = R_neg90; R_right = R_180; R_bottom = R_90; R_left = R_0;
+            end
 
             % Top edge
-            for x_start = (x_outer+flare):spacing:(x_outer+w_outer-flare)
-                all_x = [all_x, x_start - dir*flare, x_start, x_start + dir*flare, NaN];
-                all_y = [all_y, y_outer+h_outer, y_outer+h_outer-flare, y_outer+h_outer, NaN];
+            V_top = R_top * canonical_V;
+            for cx = (x_outer + spacing):spacing:(x_outer + w_outer - spacing)
+                all_x = [all_x, V_top(1,:) + cx, NaN];
+                all_y = [all_y, V_top(2,:) + (y_outer + h_outer - s), NaN];
             end
+
             % Bottom edge
-            for x_start = (x_outer+flare):spacing:(x_outer+w_outer-flare)
-                all_x = [all_x, x_start + dir*flare, x_start, x_start - dir*flare, NaN];
-                all_y = [all_y, y_outer, y_outer+flare, y_outer, NaN];
+            V_bottom = R_bottom * canonical_V;
+            for cx = (x_outer + spacing):spacing:(x_outer + w_outer - spacing)
+                all_x = [all_x, V_bottom(1,:) + cx, NaN];
+                all_y = [all_y, V_bottom(2,:) + (y_outer + s), NaN];
             end
+
             % Left edge
-            for y_start = (y_outer+flare):spacing:(y_outer+h_outer-flare)
-                all_x = [all_x, x_outer, x_outer+flare, x_outer, NaN];
-                all_y = [all_y, y_start - dir*flare, y_start, y_start + dir*flare, NaN];
+            V_left = R_left * canonical_V;
+            for cy = (y_outer + spacing):spacing:(y_outer + h_outer - spacing)
+                all_x = [all_x, V_left(1,:) + (x_outer + s), NaN];
+                all_y = [all_y, V_left(2,:) + cy, NaN];
             end
+
             % Right edge
-            for y_start = (y_outer+flare):spacing:(y_outer+h_outer-flare)
-                all_x = [all_x, x_outer+w_outer, x_outer+w_outer-flare, x_outer+w_outer, NaN];
-                all_y = [all_y, y_start + dir*flare, y_start, y_start - dir*flare, NaN];
+            V_right = R_right * canonical_V;
+            for cy = (y_outer + spacing):spacing:(y_outer + h_outer - spacing)
+                all_x = [all_x, V_right(1,:) + (x_outer + w_outer - s), NaN];
+                all_y = [all_y, V_right(2,:) + cy, NaN];
             end
 
             hold on;
