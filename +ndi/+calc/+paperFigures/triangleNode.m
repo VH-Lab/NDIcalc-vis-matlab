@@ -21,9 +21,14 @@ classdef triangleNode < handle
         inputTerminalColor = [1 0 0]; % red
         outputTerminalColor = [0 1 0]; % green
         fillColor = 'none';
+        chevron = 'none';
+        chevronFlare = 0.2;
+        chevronSpacing = 0.5;
 
         % Graphics handles
         shapeHandle
+        chevronBorderHandle
+        chevronHandles
         inputLines
         outputLine
         titleHandle
@@ -70,6 +75,9 @@ classdef triangleNode < handle
                 options.inputTerminalColor = [1 0 0];
                 options.outputTerminalColor = [0 1 0];
                 options.fillColor = 'none';
+                options.chevron (1,:) char {mustBeMember(options.chevron,{'none','clockwise','counterclockwise'})} = 'none';
+                options.chevronFlare (1,1) {mustBeNumeric} = 0.2;
+                options.chevronSpacing (1,1) {mustBeNumeric} = 0.5;
             end
 
             obj.isConstructing = true;
@@ -87,6 +95,9 @@ classdef triangleNode < handle
             obj.position = options.position;
             obj.inputTerminalColor = options.inputTerminalColor;
             obj.outputTerminalColor = options.outputTerminalColor;
+            obj.chevron = options.chevron;
+            obj.chevronFlare = options.chevronFlare;
+            obj.chevronSpacing = options.chevronSpacing;
 
             if strcmp(options.fillColor,'none')
                 if strcmpi(obj.shape,'triangle')
@@ -169,6 +180,21 @@ classdef triangleNode < handle
             if ~obj.isConstructing, obj.plotNode(); end
         end
 
+        function set.chevron(obj, val)
+            obj.chevron = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
+        function set.chevronFlare(obj, val)
+            obj.chevronFlare = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
+        function set.chevronSpacing(obj, val)
+            obj.chevronSpacing = val;
+            if ~obj.isConstructing, obj.plotNode(); end
+        end
+
         function delete(obj)
             % DELETE - cleans up graphics objects
             % Per user request, we are no longer deleting the graphics handles
@@ -218,6 +244,8 @@ classdef triangleNode < handle
 
             % Clean up old graphics
             if isgraphics(obj.shapeHandle), delete(obj.shapeHandle); end
+            if isgraphics(obj.chevronBorderHandle), delete(obj.chevronBorderHandle); end
+            if isgraphics(obj.chevronHandles), delete(obj.chevronHandles); end
             if isgraphics(obj.titleHandle), delete(obj.titleHandle); end
             if isgraphics(obj.inputLines), delete(obj.inputLines); end
             if isgraphics(obj.outputLine), delete(obj.outputLine); end
@@ -229,15 +257,34 @@ classdef triangleNode < handle
             h = obj.height;
             pos = obj.position;
 
+            edge_color = 'k';
+            line_width = 2;
+
+            if strcmpi(obj.shape, 'rectangle') && ~strcmpi(obj.chevron, 'none')
+                edge_color = 'none'; % No border on the main shape
+            end
+
             if strcmpi(obj.shape, 'triangle')
                 % Triangle vertices centered at obj.position
                 vertices = [pos(1)-w/2, pos(2)-h/2; pos(1)-w/2, pos(2)+h/2; pos(1)+w/2, pos(2)];
-                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3], 'FaceColor', obj.fillColor, 'EdgeColor', 'k', 'LineWidth', 2);
+                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3], 'FaceColor', obj.fillColor, 'EdgeColor', edge_color, 'LineWidth', line_width);
             else % Rectangle
                 x = pos(1) - w/2;
                 y = pos(2) - h/2;
                 vertices = [x, y; x+w, y; x+w, y+h; x, y+h];
-                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3 4], 'FaceColor', obj.fillColor, 'EdgeColor', 'k', 'LineWidth', 2);
+                obj.shapeHandle = patch('Vertices', vertices, 'Faces', [1 2 3 4], 'FaceColor', obj.fillColor, 'EdgeColor', edge_color, 'LineWidth', line_width);
+            end
+
+            if strcmpi(obj.shape, 'rectangle') && ~strcmpi(obj.chevron, 'none')
+                flare = obj.chevronFlare;
+                x = pos(1) - w/2 - flare;
+                y = pos(2) - h/2 - flare;
+                w_flare = w + 2*flare;
+                h_flare = h + 2*flare;
+                vertices_flare = [x, y; x+w_flare, y; x+w_flare, y+h_flare; x, y+h_flare];
+                obj.chevronBorderHandle = patch('Vertices', vertices_flare, 'Faces', [1 2 3 4], 'FaceColor', 'w', 'EdgeColor', 'k', 'LineWidth', 1);
+                uistack(obj.shapeHandle,'top');
+                obj.drawChevrons();
             end
 
             % Input and Output ports
@@ -288,6 +335,62 @@ classdef triangleNode < handle
                 'HorizontalAlignment', 'center', ...
                 'Interpreter', 'none');
 
+        end
+
+        function drawChevrons(obj)
+            % DRAWCHEVRONS - Draws the chevrons on the border of the node.
+
+            flare = obj.chevronFlare;
+            spacing = obj.chevronSpacing;
+            w = obj.width;
+            h = obj.height;
+            pos = obj.position;
+
+            x_inner = pos(1) - w/2;
+            y_inner = pos(2) - h/2;
+
+            x_outer = x_inner - flare;
+            y_outer = y_inner - flare;
+            w_outer = w + 2*flare;
+            h_outer = h + 2*flare;
+
+            obj.chevronHandles = [];
+
+            dir = 1;
+            if strcmpi(obj.chevron, 'counterclockwise'), dir = -1; end
+
+            % Top edge
+            for x_start = (x_outer+flare/2):spacing:(x_outer+w_outer-flare/2)
+                p1 = [x_start - dir*flare/2, y_outer+h_outer];
+                p2 = [x_start, y_outer+h_outer-flare];
+                p3 = [x_start + dir*flare/2, y_outer+h_outer];
+                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
+                obj.chevronHandles(end+1) = h;
+            end
+            % Bottom edge
+            for x_start = (x_outer+flare/2):spacing:(x_outer+w_outer-flare/2)
+                p1 = [x_start + dir*flare/2, y_outer];
+                p2 = [x_start, y_outer+flare];
+                p3 = [x_start - dir*flare/2, y_outer];
+                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
+                obj.chevronHandles(end+1) = h;
+            end
+            % Left edge
+            for y_start = (y_outer+flare/2):spacing:(y_outer+h_outer-flare/2)
+                p1 = [x_outer, y_start - dir*flare/2];
+                p2 = [x_outer+flare, y_start];
+                p3 = [x_outer, y_start + dir*flare/2];
+                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
+                obj.chevronHandles(end+1) = h;
+            end
+            % Right edge
+            for y_start = (y_outer+flare/2):spacing:(y_outer+h_outer-flare/2)
+                p1 = [x_outer+w_outer, y_start + dir*flare/2];
+                p2 = [x_outer+w_outer-flare, y_start];
+                p3 = [x_outer+w_outer, y_start - dir*flare/2];
+                h = plot([p1(1) p2(1) p3(1)], [p1(2) p2(2) p3(2)],'k-');
+                obj.chevronHandles(end+1) = h;
+            end
         end
     end
 end
