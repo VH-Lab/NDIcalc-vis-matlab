@@ -9,6 +9,47 @@ An `ndi.calculator` is a mini-app in the NDI (Neuroscience Data Interface) syste
 - Allowing queries to find and reuse existing calculations
 - Supporting both simple and complex multi-step analyses
 
+## Repository Structure
+
+External calculators (those not in the core NDI-matlab repository) are typically organized in repositories following the naming convention **`NDIcalc-REPONAME-matlab`**, where `REPONAME` describes the domain or purpose of the calculators. For example:
+
+- `NDIcalc-vis-matlab` - Calculators for vision research
+- `NDIcalc-extracellular-matlab` - Calculators for extracellular recordings (future)
+
+### Standard Folder Structure
+
+Each calculator repository contains three main folders:
+
+```
+NDIcalc-REPONAME-matlab/
+├── +ndi/
+│   └── +calc/
+│       └── +category/
+│           ├── calculator1.m
+│           ├── calculator2.m
+│           └── ...
+├── ndi_common/
+│   ├── database_documents/
+│   │   └── calc/
+│   │       ├── calculator1_calc.json
+│   │       ├── calculator2_calc.json
+│   │       └── ...
+│   └── schema_documents/
+│       └── calc/
+│           ├── calculator1_calc_schema.json
+│           ├── calculator2_calc_schema.json
+│           └── ...
+└── docs/
+```
+
+**Key directories**:
+
+- **`+ndi/+calc/`** - Contains the MATLAB calculator class files organized by category (e.g., `+vis`, `+extracellular`)
+- **`ndi_common/database_documents/calc/`** - Contains JSON files that define the structure of blank calculator output documents
+- **`ndi_common/schema_documents/calc/`** - Contains JSON schema files for validating calculator documents
+
+This structure ensures consistency across calculator packages and allows NDI to automatically discover and validate calculator document types.
+
 ## Architecture
 
 Each calculator consists of two main components:
@@ -40,6 +81,14 @@ Defines the structure of the output document, including:
 - Output fields (results to be stored)
 
 **Location**: `ndi_common/database_documents/calc/[calculator_name]_calc.json`
+
+### 3. JSON Schema Definition (Optional)
+
+A JSON schema file validates the structure of calculator documents, ensuring they conform to the expected format. While optional, schemas are recommended for production calculators.
+
+**Location**: `ndi_common/schema_documents/calc/[calculator_name]_calc_schema.json`
+
+The schema defines validation rules for all fields in your calculator document. Refer to existing schema files in the repository for examples.
 
 ## Step-by-Step Guide
 
