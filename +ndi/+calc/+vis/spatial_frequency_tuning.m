@@ -1,9 +1,5 @@
 classdef spatial_frequency_tuning < ndi.calculator
 
-	properties
-		numberOfSelfTests = 23;
-	end
-
 	methods
 		function spatial_frequency_tuning_obj = spatial_frequency_tuning(session)
 			% SPATIAL_FREQUENCY_TUNING - a spatial_frequency_tuning demonstration of an ndi.calculator object
@@ -16,6 +12,7 @@ classdef spatial_frequency_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calculator(session,'spatial_frequency_tuning_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','spatial_frequency_tuning_calc.json'));
+				spatial_frequency_tuning_obj.numberOfSelfTests = 23;
 		end; % spatial_frequency_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)

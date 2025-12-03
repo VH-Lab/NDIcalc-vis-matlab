@@ -1,9 +1,5 @@
 classdef speed_tuning < ndi.calculator
 
-    properties
-        numberOfSelfTests = 18;
-    end
-
     methods
         function speed_tuning_obj = speed_tuning(session)
             % SPEED_TUNING - a speed_tuning demonstration of an ndi.calculator object
@@ -16,6 +12,7 @@ classdef speed_tuning < ndi.calculator
             parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
             speed_tuning_obj = speed_tuning_obj@ndi.calculator(session, 'speedtuning_calc', ...
                 fullfile(parparparpar, 'ndi_common', 'database_documents', 'calc', 'speedtuning_calc.json'));
+            speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
 
         function doc = calculate(obj, parameters)

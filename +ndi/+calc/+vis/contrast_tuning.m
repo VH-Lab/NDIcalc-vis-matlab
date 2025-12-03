@@ -1,9 +1,5 @@
 classdef contrast_tuning < ndi.calculator
 
-	properties
-		numberOfSelfTests = 9;
-	end
-
 	methods
 		function contrast_tuning_obj = contrast_tuning(session)
 			% CONTRAST_TUNING - a contrast_tuning demonstration of an ndi.calculator object
@@ -16,6 +12,7 @@ classdef contrast_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				contrast_tuning_obj = contrast_tuning_obj@ndi.calculator(session,'contrasttuning_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','contrasttuning_calc.json'));
+				contrast_tuning_obj.numberOfSelfTests = 9;
 		end; % contrast_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)

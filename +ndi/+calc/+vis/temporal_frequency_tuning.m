@@ -1,9 +1,5 @@
 classdef temporal_frequency_tuning < ndi.calculator
 
-	properties
-		numberOfSelfTests = 8;
-	end
-
 	methods
 		function temporal_frequency_tuning_obj = temporal_frequency_tuning(session)
 			% TEMPORAL_FREQUENCY_TUNING - a temporal_frequency_tuning demonstration of an ndi.calculator object
@@ -16,6 +12,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','temporal_frequency_tuning_calc.json'));
+				temporal_frequency_tuning_obj.numberOfSelfTests = 8;
 		end; % temporal_frequency_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
