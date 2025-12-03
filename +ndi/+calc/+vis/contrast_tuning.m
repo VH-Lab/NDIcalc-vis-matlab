@@ -278,7 +278,7 @@ classdef contrast_tuning < ndi.calculator
 		end; % calculate_contrast_indexes()
         % TESTING METHODS
 
-		function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, varargin)
+		function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, kwargs)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(CONTRAST_CALC_OBJ, ...
@@ -309,8 +309,13 @@ classdef contrast_tuning < ndi.calculator
 			% |--------------------------|---------------------------------------------------|
 			%
 
-				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				arguments
+					contrast_calc_obj
+					scope
+					number_of_tests
+					kwargs.generate_expected_docs (1,1) logical = false
+				end
+				generate_expected_docs = kwargs.generate_expected_docs;
 
 				docs = {};
 				doc_output = {};

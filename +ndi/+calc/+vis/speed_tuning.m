@@ -302,7 +302,7 @@ classdef speed_tuning < ndi.calculator
 
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, varargin)
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
             % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
             %
             % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, ...
@@ -332,8 +332,13 @@ classdef speed_tuning < ndi.calculator
             % |--------------------------|---------------------------------------------------|
             %
 
-            generate_expected_docs = 0;
-            vlt.data.assign(varargin{:});
+            arguments
+                obj
+                scope
+                number_of_tests
+                kwargs.generate_expected_docs (1,1) logical = false
+            end
+            generate_expected_docs = kwargs.generate_expected_docs;
 
             docs = {};
             doc_output = {};
