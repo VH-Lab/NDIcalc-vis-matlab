@@ -22,7 +22,7 @@ The `generate_mock_docs` method is a testing utility present in NDI visualizatio
 | Argument | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `generate_expected_docs` | logical | `false` | If `true`, the method saves the current output as the "expected" output for future tests. Use this when updating the calculator logic or creating new tests. |
-| `specific_test_inds` | double vector | `[]` | (Only in `oridir_tuning`) Allows specifying a subset of test indices to run (e.g., `[1 5]`). |
+| `specific_test_inds` | double vector | `[]` | Allows specifying a subset of test indices to run (e.g., `[1 5]`). If empty, all `number_of_tests` are run. |
 
 ## Outputs
 

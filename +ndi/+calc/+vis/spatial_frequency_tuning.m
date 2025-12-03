@@ -331,15 +331,25 @@ classdef spatial_frequency_tuning < ndi.calculator
 					scope
 					number_of_tests
 					kwargs.generate_expected_docs (1,1) logical = false
+					kwargs.specific_test_inds double = []
 				end
+				specific_test_inds = kwargs.specific_test_inds;
 				generate_expected_docs = kwargs.generate_expected_docs;
 
 				docs = {};
 				doc_output = {};
 				doc_expected_output = {};
 
-				for i=1:number_of_tests,
-					docs{i} = {};
+				if numel(specific_test_inds) == 0
+					specific_test_inds = 1:number_of_tests;
+				end
+
+				for i=specific_test_inds,
+					if i > numel(docs)
+						docs{i} = {};
+					else
+						docs{i} = {};
+					end
                     S = spatial_freq_calc_obj.session;
                     [function_params, function_choice] = spatial_freq_calc_obj.generate_mock_parameters(scope, i);
                     numsteps = 100; %sets size of x
