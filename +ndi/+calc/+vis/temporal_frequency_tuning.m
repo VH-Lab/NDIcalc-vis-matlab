@@ -12,6 +12,7 @@ classdef temporal_frequency_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','temporal_frequency_tuning_calc.json'));
+				temporal_frequency_tuning_obj.numberOfSelfTests = 8;
 		end; % temporal_frequency_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -300,7 +301,7 @@ classdef temporal_frequency_tuning < ndi.calculator
         
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(temporal_freq_calc_obj, scope, number_of_tests, varargin)
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(temporal_freq_calc_obj, scope, number_of_tests, kwargs)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(TEMPORAL_FREQ_CALC_OBJ, ...
@@ -330,15 +331,30 @@ classdef temporal_frequency_tuning < ndi.calculator
 			% |--------------------------|---------------------------------------------------|
 			%
 
-				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				arguments
+					temporal_freq_calc_obj
+					scope
+					number_of_tests
+					kwargs.generate_expected_docs (1,1) logical = false
+					kwargs.specific_test_inds double = []
+				end
+				specific_test_inds = kwargs.specific_test_inds;
+				generate_expected_docs = kwargs.generate_expected_docs;
 
 				docs = {};
 				doc_output = {};
 				doc_expected_output = {};
 
-				for i=1:number_of_tests,
-					docs{i} = {};
+				if numel(specific_test_inds) == 0
+					specific_test_inds = 1:number_of_tests;
+				end
+
+				for i=specific_test_inds,
+					if i > numel(docs)
+						docs{i} = {};
+					else
+						docs{i} = {};
+					end
                     S = temporal_freq_calc_obj.session;
                     function_params = temporal_freq_calc_obj.generate_mock_parameters(scope, i);
                     numsteps = 100; %sets size of x

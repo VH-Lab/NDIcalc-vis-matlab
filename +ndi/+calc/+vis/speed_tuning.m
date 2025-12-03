@@ -12,6 +12,7 @@ classdef speed_tuning < ndi.calculator
             parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
             speed_tuning_obj = speed_tuning_obj@ndi.calculator(session, 'speedtuning_calc', ...
                 fullfile(parparparpar, 'ndi_common', 'database_documents', 'calc', 'speedtuning_calc.json'));
+            speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
 
         function doc = calculate(obj, parameters)
@@ -302,7 +303,7 @@ classdef speed_tuning < ndi.calculator
 
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, varargin)
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
             % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
             %
             % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, ...
@@ -332,15 +333,30 @@ classdef speed_tuning < ndi.calculator
             % |--------------------------|---------------------------------------------------|
             %
 
-            generate_expected_docs = 0;
-            vlt.data.assign(varargin{:});
+            arguments
+                obj
+                scope
+                number_of_tests
+                kwargs.generate_expected_docs (1,1) logical = false
+                kwargs.specific_test_inds double = []
+            end
+            specific_test_inds = kwargs.specific_test_inds;
+            generate_expected_docs = kwargs.generate_expected_docs;
 
             docs = {};
             doc_output = {};
             doc_expected_output = {};
 
-            for i = 1:number_of_tests
-                docs{i} = {};
+            if numel(specific_test_inds) == 0
+                specific_test_inds = 1:number_of_tests;
+            end
+
+            for i = specific_test_inds
+                if i > numel(docs)
+                    docs{i} = {};
+                else
+                    docs{i} = {};
+                end
                 S = obj.session;
 
                 %taken from calculate_speed_indexes method:

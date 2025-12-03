@@ -12,6 +12,7 @@ classdef contrast_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
 				contrast_tuning_obj = contrast_tuning_obj@ndi.calculator(session,'contrasttuning_calc',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','contrasttuning_calc.json'));
+				contrast_tuning_obj.numberOfSelfTests = 9;
 		end; % contrast_tuning()
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -278,7 +279,7 @@ classdef contrast_tuning < ndi.calculator
 		end; % calculate_contrast_indexes()
         % TESTING METHODS
 
-		function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, varargin)
+		function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, kwargs)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(CONTRAST_CALC_OBJ, ...
@@ -309,15 +310,30 @@ classdef contrast_tuning < ndi.calculator
 			% |--------------------------|---------------------------------------------------|
 			%
 
-				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				arguments
+					contrast_calc_obj
+					scope
+					number_of_tests
+					kwargs.generate_expected_docs (1,1) logical = false
+					kwargs.specific_test_inds double = []
+				end
+				specific_test_inds = kwargs.specific_test_inds;
+				generate_expected_docs = kwargs.generate_expected_docs;
 
 				docs = {};
 				doc_output = {};
 				doc_expected_output = {};
 
-				for i=1:number_of_tests,
-					docs{i} = {};
+				if numel(specific_test_inds) == 0
+					specific_test_inds = 1:number_of_tests;
+				end
+
+				for i=specific_test_inds,
+					if i > numel(docs)
+						docs{i} = {};
+					else
+						docs{i} = {};
+					end
                     S = contrast_calc_obj.session;
 					[rmax,c50,N,s] = contrast_calc_obj.generate_mock_parameters(scope, i);
                     numsteps = 10; %sets size of x

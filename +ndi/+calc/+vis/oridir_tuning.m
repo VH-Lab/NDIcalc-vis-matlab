@@ -14,6 +14,7 @@ classdef oridir_tuning < ndi.calculator
 				parparparpar = fileparts(fileparts(fileparts(fileparts(w))));                
 				oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
 					fullfile(parparparpar,'ndi_common','database_documents','calc','oridirtuning_calc.json'));
+				oridir_tuning_obj.numberOfSelfTests = 9;
 		end; % oridir_tuning() creator
 
 		function doc = calculate(ndi_calculator_obj, parameters)
@@ -323,7 +324,7 @@ classdef oridir_tuning < ndi.calculator
 
 		% TESTING METHODS
 
-		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, varargin)
+		function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, kwargs)
 			% GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
 			%
 			% [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(ORIDIR_CALC_OBJ, ...
@@ -353,9 +354,15 @@ classdef oridir_tuning < ndi.calculator
 			% | specific_test_inds([])     | Should we specify which tests to run?             |
 			% |--------------------------|---------------------------------------------------|
 			%
-				specific_test_inds = [];
-				generate_expected_docs = 0;
-				vlt.data.assign(varargin{:});
+				arguments
+					oridir_calc_obj
+					scope
+					number_of_tests
+					kwargs.generate_expected_docs (1,1) logical = false
+					kwargs.specific_test_inds double = []
+				end
+				specific_test_inds = kwargs.specific_test_inds;
+				generate_expected_docs = kwargs.generate_expected_docs;
 
 				docs = {};
 				doc_output = {};
