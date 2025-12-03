@@ -1,5 +1,9 @@
 classdef temporal_frequency_tuning < ndi.calculator
 
+	properties
+		numberOfSelfTests = 8;
+	end
+
 	methods
 		function temporal_frequency_tuning_obj = temporal_frequency_tuning(session)
 			% TEMPORAL_FREQUENCY_TUNING - a temporal_frequency_tuning demonstration of an ndi.calculator object

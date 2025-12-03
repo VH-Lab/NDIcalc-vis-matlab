@@ -1,5 +1,9 @@
 classdef oridir_tuning < ndi.calculator
 
+	properties
+		numberOfSelfTests = 9;
+	end
+
 	methods
 		function oridir_tuning_obj = oridir_tuning(session)
 			% oridir_tuning - ndi.calculator object that

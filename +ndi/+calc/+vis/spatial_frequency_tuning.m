@@ -1,5 +1,9 @@
 classdef spatial_frequency_tuning < ndi.calculator
 
+	properties
+		numberOfSelfTests = 23;
+	end
+
 	methods
 		function spatial_frequency_tuning_obj = spatial_frequency_tuning(session)
 			% SPATIAL_FREQUENCY_TUNING - a spatial_frequency_tuning demonstration of an ndi.calculator object

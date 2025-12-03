@@ -1,5 +1,9 @@
 classdef contrast_tuning < ndi.calculator
 
+	properties
+		numberOfSelfTests = 9;
+	end
+
 	methods
 		function contrast_tuning_obj = contrast_tuning(session)
 			% CONTRAST_TUNING - a contrast_tuning demonstration of an ndi.calculator object
