@@ -13,7 +13,7 @@ errormsg_ = cell(1,56);
 
 % establish scope-dependent tolerances
 switch(scope),
-    case 'standard',
+    case 'highSNR',
     
       tolerance.tuning_curve.temporal_frequency = 0.5;    
       tolerance.tuning_curve.mean = 0.5;
@@ -70,64 +70,7 @@ switch(scope),
       tolerance.fit_gausslog.H50 = 0.5;
       tolerance.fit_gausslog.bandwidth = 0.5;
 
-    case 'low_noise',
-
-      tolerance.tuning_curve.temporal_frequency = 0.5;    
-      tolerance.tuning_curve.mean = 0.5;
-      tolerance.tuning_curve.stddev = 0.5;
-      tolerance.tuning_curve.stderr = 0.5;
-      tolerance.tuning_curve.individual = 0.5;
-      tolerance.tuning_curve.control_mean = 0.5;
-      tolerance.tuning_curve.control_stddev = 0.5;
-      tolerance.tuning_curve.control_stderr = 0.5;
-      tolerance.tuning_curve.control_mean_stddev = 0.5;
-      tolerance.tuning_curve.control_mean_stderr = 0.5;
-      tolerance.significance.visual_response_anova_p = 0.5;
-      tolerance.significance.across_stimuli_anova_p = 0.5;
-      tolerance.fitless.L50 = 0.5;
-      tolerance.fitless.Pref = 0.5;
-      tolerance.fitless.H50 = 0.5;
-      tolerance.fitless.bandwidth = 0.5;
-      tolerance.fitless.low_pass_index = 0.5;
-      tolerance.fitless.high_pass_index = 0.5;
-      tolerance.fit_dog.parameters = 0.5;
-      tolerance.fit_dog.values = 0.5;
-      tolerance.fit_dog.fit = 0.5;
-      tolerance.fit_dog.L50 = 0.5;
-      tolerance.fit_dog.Pref = 0.5;
-      tolerance.fit_dog.H50 = 0.5;
-      tolerance.fit_dog.bandwidth = 0.5;
-      tolerance.fit_movshon.parameters = 0.5;
-      tolerance.fit_movshon.values = 0.5;
-      tolerance.fit_movshon.fit = 0.5;
-      tolerance.fit_movshon.L50 = 0.5;
-      tolerance.fit_movshon.Pref = 0.5;
-      tolerance.fit_movshon.H50 = 0.5;
-      tolerance.fit_movshon.R2 = 0.5;
-      tolerance.fit_movshon.bandwidth = 0.5;
-      tolerance.fit_movshon_c.parameters = 0.5;
-      tolerance.fit_movshon_c.values = 0.5;
-      tolerance.fit_movshon_c.fit = 0.5;
-      tolerance.fit_movshon_c.L50 = 0.5;
-      tolerance.fit_movshon_c.Pref = 0.5;
-      tolerance.fit_movshon_c.H50 = 0.5;
-      tolerance.fit_movshon_c.R2 = 0.5;
-      tolerance.fit_movshon_c.bandwidth = 0.5;
-      tolerance.fit_spline.values = 0.5;
-      tolerance.fit_spline.fit = 0.5;
-      tolerance.fit_spline.L50 = 0.5;
-      tolerance.fit_spline.Pref = 0.5;
-      tolerance.fit_spline.H50 = 0.5;
-      tolerance.fit_spline.bandwidth = 0.5;
-      tolerance.fit_gausslog.parameters = 0.5;
-      tolerance.fit_gausslog.values = 0.5;
-      tolerance.fit_gausslog.fit = 0.5;
-      tolerance.fit_gausslog.L50 = 0.5;
-      tolerance.fit_gausslog.Pref = 0.5;
-      tolerance.fit_gausslog.H50 = 0.5;
-      tolerance.fit_gausslog.bandwidth = 0.5;
-
-    case 'high_noise',
+    case 'lowSNR',
 
       tolerance.tuning_curve.temporal_frequency = 0.5;    
       tolerance.tuning_curve.mean = 0.5;

@@ -13,7 +13,7 @@ The `generate_mock_docs` method is a testing utility present in NDI visualizatio
 | Input Argument | Type | Description |
 | :--- | :--- | :--- |
 | `obj` | `ndi.calculator` | The instance of the calculator object (e.g., `contrast_tuning_obj`). |
-| `scope` | String | Defines the testing conditions, primarily affecting noise levels and repetition counts. Common values:<br>- `'standard'`: Standard conditions.<br>- `'low_noise'`: Low noise, high repetitions.<br>- `'high_noise'`: High noise. |
+| `scope` | String | Defines the testing conditions, primarily affecting noise levels and repetition counts. Allowed values:<br>- `'highSNR'`: High signal-to-noise ratio (standard conditions).<br>- `'lowSNR'`: Low signal-to-noise ratio (high noise). |
 | `number_of_tests` | Integer | The number of distinct test cases to generate. The method will loop from 1 to `number_of_tests`, generating different parameters for each iteration via `generate_mock_parameters`. |
 | `Name, Value` | Key/Value pairs | Optional parameters to modify behavior. These are defined in an `arguments` block. |
 

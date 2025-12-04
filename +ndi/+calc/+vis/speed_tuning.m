@@ -311,7 +311,7 @@ classdef speed_tuning < ndi.calculator
             %
             % Creates a set of documents to test ndi.calc.vis.speed_tuning.
             %
-            % SCOPE is the scope to be tested: 'standard', 'low_noise', 'high_noise'
+            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
             % NUMBER_OF_TESTS indicates the number of tests to be performed.
             %
             % DOCS{i} is the set of helper documents that may have been created
@@ -335,7 +335,7 @@ classdef speed_tuning < ndi.calculator
 
             arguments
                 obj
-                scope
+                scope {mustBeMember(scope,{'highSNR','lowSNR'})}
                 number_of_tests
                 kwargs.generate_expected_docs (1,1) logical = false
                 kwargs.specific_test_inds double = []
@@ -384,13 +384,10 @@ classdef speed_tuning < ndi.calculator
                 r(end + 1, 1) = 0;
 
                 switch scope
-                    case 'standard'
+                    case 'highSNR'
                         reps = 5; % need reps to test significance measures
                         noise = 0;
-                    case 'low_noise'
-                        reps = 10;
-                        noise = 0.1;
-                    case 'high_noise'
+                    case 'lowSNR'
                         reps = 10;
                         noise = 1;
                     otherwise

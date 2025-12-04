@@ -12,7 +12,7 @@ errormsg_ = cell(1,19);
 
  % establish scope-dependent tolerances
 switch(scope),
-    case 'standard',
+    case 'highSNR',
     
        tolerance.tuning_curve.spatial_frequency = 1e-6;				
        tolerance.tuning_curve.temporal_frequency = 1e-6;				
@@ -32,27 +32,7 @@ switch(scope),
        tolerance.fit.Priebe_fit_spatial_frequency_preference = 1e-6;
        tolerance.fit.Priebe_fit_temporal_frequency_preference = 1e-6;
 
-    case 'low_noise',
-
-       tolerance.tuning_curve.spatial_frequency = 1e-6;				
-       tolerance.tuning_curve.temporal_frequency = 1e-6;				
-       tolerance.tuning_curve.mean = 1e-6;					
-       tolerance.tuning_curve.stddev = 1e-6;			
-       tolerance.tuning_curve.stderr = 1e-6;			
-       tolerance.tuning_curve.individual = 1e-6;					
-       tolerance.tuning_curve.control_stddev = 1e-6;
-       tolerance.tuning_curve.control_stderr = 1e-6;
-       tolerance.significance.visual_response_anova_p = 1e-6;	
-       tolerance.significance.across_stimuli_anova_p = 1e-6;	
-       tolerance.fit.Priebe_fit_parameters = [1e-3 1e-3 1 1e-1 1e-2 1e-3 1e-2];
-       tolerance.fit.Priebe_fit_spatial_frequencies = 1e-6;
-       tolerance.fit.Priebe_fit_temporal_frequencies = 1e-6;
-       tolerance.fit.Priebe_fit_values = 1e-6;
-       tolerance.fit.Priebe_fit_speed_tuning_index = 1e-6;
-       tolerance.fit.Priebe_fit_spatial_frequency_preference = 1e-6;
-       tolerance.fit.Priebe_fit_temporal_frequency_preference = 1e-6;
-
-    case 'high_noise',
+    case 'lowSNR',
 
        tolerance.tuning_curve.spatial_frequency = 1e-6;				
        tolerance.tuning_curve.temporal_frequency = 1e-6;				

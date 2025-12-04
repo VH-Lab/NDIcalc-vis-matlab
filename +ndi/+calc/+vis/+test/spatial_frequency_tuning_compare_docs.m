@@ -13,7 +13,7 @@ errormsg_ = cell(1,39);
 
  % establish scope-dependent tolerances
 switch(scope),
-    case 'standard',
+    case 'highSNR',
     
        tol_tuning_curve.spatial_frequency = 1e-6;
        tol_tuning_curve.mean = 1e-6;
@@ -88,80 +88,7 @@ switch(scope),
        
        %tol_fit_abs still needs to be added
 
-    case 'low_noise',
-    
-       tol_tuning_curve.spatial_frequency = 1e-6;
-       tol_tuning_curve.mean = 3;
-       tol_tuning_curve.stddev = 3;
-       tol_tuning_curve.stderr = 1;
-       tol_tuning_curve.individual = 9; %responses in units of Hz
-       tol_tuning_curve.control_mean = 3;
-       tol_tuning_curve.control_stddev = 3;
-       tol_tuning_curve.control_stderr = 1;
-       tol_tuning_curve.control_mean_stddev = 1;
-       tol_tuning_curve.control_mean_stderr = .3;
-       tol_significance.visual_response_anova_p = .1;
-       tol_significance.across_stimuli_anova_p = .1;
-       tol_fitless.H50 = 2; %spatial freq range: 10^-2 to 60
-       tol_fitless.Pref = 2;
-       tol_fitless.L50 = 2;
-       tol_fitless.bandwidth = 2;
-       tol_fitless.low_pass_index = 1;
-       tol_fitless.high_pass_index = 1;
-       tol_fit_spline.fit = 2;
-       tol_fit_spline.H50 = 2;
-       tol_fit_spline.Pref = 2;
-       tol_fit_spline.L50 = 2;
-       tol_fit_spline.values = 2;
-       tol_fit_spline.bandwidth = 2;
-       tol_fit_dog.fit = 4; %double the tolerance for fits because fits can look different even for the same underlying data
-       tol_fit_dog.H50 = 4;
-       tol_fit_dog.Pref = 4;
-       tol_fit_dog.L50 = 4;
-       tol_fit_dog.values = 4;
-       tol_fit_dog.bandwidth = 4;
-       tol_fit_dog.parameters(1) = 4;
-       tol_fit_dog.parameters(2) = 4;
-       tol_fit_dog.parameters(3) = 4;
-       tol_fit_dog.parameters(4) = 4;
-       tol_fit_gausslog.fit = 4;
-       tol_fit_gausslog.H50 = 4;
-       tol_fit_gausslog.Pref = 4;
-       tol_fit_gausslog.L50 = 4;
-       tol_fit_gausslog.values = 4;
-       tol_fit_gausslog.bandwidth = 4;
-       tol_fit_gausslog.parameters(1) = 2; %offset: about -5 to 5
-       tol_fit_gausslog.parameters(2) = 4; %height above offset: about 10 to 100
-       tol_fit_gausslog.parameters(3) = 4; %peak location: 0 to 60, but shouldn't vary much
-       tol_fit_gausslog.parameters(4) = 4; %width: 0 to 60
-       %tol_fit_gausslog.parameters(5) = 0.1; %not included in output
-       %document for some reason
-       tol_fit_movshon.fit = 4;
-       tol_fit_movshon.H50 = 4;
-       tol_fit_movshon.Pref = 4;
-       tol_fit_movshon.L50 = 4;
-       tol_fit_movshon.values = 4;
-       tol_fit_movshon.parameters(1) = 4; %scaling factor
-       tol_fit_movshon.parameters(2) = 4; %characteristic spatial frequency
-       tol_fit_movshon.parameters(3) = 4; %corner frequency of low-frequency limb
-       tol_fit_movshon.parameters(4) = 4; %slope of low-frequency limb
-       tol_fit_movshon.R2 = .2;
-       tol_fit_movshon.bandwidth = 1.2; % about 0 to 6
-       
-       tol_fit_movshon_c.fit = 4;
-       tol_fit_movshon_c.H50 = 4;
-       tol_fit_movshon_c.Pref = 4;
-       tol_fit_movshon_c.L50 = 4;
-       tol_fit_movshon_c.values = 4;
-       tol_fit_movshon_c.parameters(1) = 4;
-       tol_fit_movshon_c.parameters(2) = 4;
-       tol_fit_movshon_c.parameters(3) = 4;
-       tol_fit_movshon_c.parameters(4) = 4;
-       tol_fit_movshon_c.parameters(5) = 3;
-       tol_fit_movshon_c.R2 = 0.2;
-       tol_fit_movshon_c.bandwidth = 1.2;
-
-    case 'high_noise',
+    case 'lowSNR',
     
        tol_tuning_curve.spatial_frequency = 1e-6;
        tol_tuning_curve.mean = 6;
