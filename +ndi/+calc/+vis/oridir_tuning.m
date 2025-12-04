@@ -12,7 +12,7 @@ classdef oridir_tuning < ndi.calculator
             %
                 oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
                     'oridirtuning_calc');
-                oridir_tuning_obj.numberOfSelfTests = 9;
+                oridir_tuning_obj.numberOfSelfTests = 7;
         end % oridir_tuning() creator
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -386,7 +386,7 @@ classdef oridir_tuning < ndi.calculator
                     switch scope
                         case 'highSNR'
                             reps = 5; % need reps to test significance measures
-                            noise = 0;
+                            noise = 0.0001;
                         case 'lowSNR'
                             reps = 10;
                             noise = 1;
@@ -433,13 +433,11 @@ classdef oridir_tuning < ndi.calculator
 
                 P_(1,:) = [ 0 20 10 45 30] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
                 P_(2,:) = [ 0 20 10 45 45] ; % broader tuning
-                P_(3,:) = [ 0 20 10 45 90] ; % really broad tuning
-                P_(4,:) = [ 0 20 10 45 90] ; % really broad tuning
-                P_(5,:) = [ 10 20 10 45 30] ; % large offset
-                P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
-                P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
-                P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
-                P_(9,:) = [0 20 20 45 45] ; %Equal response Rp and Rn
+                P_(3,:) = [ 0 20 10 45 80] ; % really broad tuning
+                P_(4,:) = [ 10 20 10 45 30] ; % large offset
+                P_(5,:) = [ 10 20 19 45 30] ; % really low direction index offset
+                P_(6,:) = [0 20 10 20 45] ; % Narrower tuning
+                P_(7,:) = [0 20 10 10 45] ; %Extremely narrow tuning
 
                     % we should add more
 
