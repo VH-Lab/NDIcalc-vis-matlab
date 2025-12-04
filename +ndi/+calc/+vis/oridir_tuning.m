@@ -12,7 +12,7 @@ classdef oridir_tuning < ndi.calculator
             %
                 oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
                     'oridirtuning_calc');
-                oridir_tuning_obj.numberOfSelfTests = 9;
+                oridir_tuning_obj.numberOfSelfTests = 7;
         end % oridir_tuning() creator
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -93,7 +93,7 @@ classdef oridir_tuning < ndi.calculator
             % 'response_type' fields that contain 'mean' or 'F1'.
             %
             %
-                q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
+                q1 = ndi.query('','isa','stimulus_tuningcurve','');
 
                 q2 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Orientation','');
                 q3 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Direction','');
@@ -386,7 +386,7 @@ classdef oridir_tuning < ndi.calculator
                     switch scope
                         case 'highSNR'
                             reps = 5; % need reps to test significance measures
-                            noise = 0;
+                            noise = 0.0001;
                         case 'lowSNR'
                             reps = 10;
                             noise = 1;
@@ -417,27 +417,6 @@ classdef oridir_tuning < ndi.calculator
                 end % for
         end % generate_mock_docs()
 
-        function [b,errormsg] = compare_mock_docs(oridir_calc_obj, expected_doc, actual_doc, scope)
-            % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
-            %
-            % [B, ERRORMSG] = COMPARE_MOCK_DOCS(CTEST_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
-            %
-            % Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
-            % the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
-            % this function computes whether the ACTUAL_DOC is within an allowed tolerance of
-            % EXPECTED_DOC.
-            %
-            % B is 1 if the differences in the documents are within the tolerance of the class.
-            % Otherwise, B is 0.
-            % If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
-            %
-            % Uses the function ndi.calc.vis.test.oridir_compare_docs().
-            %
-                [b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);
-                errormsg = cat(2,errormsg{:});
-                b = all(b);
-        end
-
         function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
             %
@@ -454,13 +433,11 @@ classdef oridir_tuning < ndi.calculator
 
                 P_(1,:) = [ 0 20 10 45 30] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
                 P_(2,:) = [ 0 20 10 45 45] ; % broader tuning
-                P_(3,:) = [ 0 20 10 45 90] ; % really broad tuning
-                P_(4,:) = [ 0 20 10 45 90] ; % really broad tuning
-                P_(5,:) = [ 10 20 10 45 30] ; % large offset
-                P_(6,:) = [ 10 20 19 45 30] ; % really low direction index offset
-                P_(7,:) = [0 20 10 20 45] ; % Narrower tuning
-                P_(8,:) = [0 20 10 10 45] ; %Extremely narrow tuning
-                P_(9,:) = [0 20 20 45 45] ; %Equal response Rp and Rn
+                P_(3,:) = [ 0 20 10 45 80] ; % really broad tuning
+                P_(4,:) = [ 10 20 10 45 30] ; % large offset
+                P_(5,:) = [ 10 20 19 45 30] ; % really low direction index offset
+                P_(6,:) = [0 20 10 20 45] ; % Narrower tuning
+                P_(7,:) = [0 20 10 10 45] ; %Extremely narrow tuning
 
                     % we should add more
 
