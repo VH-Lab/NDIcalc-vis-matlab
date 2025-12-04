@@ -24,8 +24,7 @@ classdef oridir_tuning < ndi.calculator
             % Creates a oridir_tuning_direction_tuning_calc document given input parameters.
                 arguments
                     ndi_calculator_obj
-                    parameters.input_parameters
-                    parameters.depends_on
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
                 end
 
                 % Step 2. Set up output structure

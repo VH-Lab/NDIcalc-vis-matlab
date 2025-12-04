@@ -24,8 +24,7 @@ classdef temporal_frequency_tuning < ndi.calculator
             % by the input parameters.
                 arguments
                     ndi_calculator_obj
-                    parameters.input_parameters
-                    parameters.depends_on
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
                 end
 
                 % Step 1: set up the output structure

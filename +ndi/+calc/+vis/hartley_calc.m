@@ -23,8 +23,7 @@ classdef hartley_calc < ndi.calculator
             % by the input parameters.
                 arguments
                     ndi_calculator_obj
-                    parameters.input_parameters
-                    parameters.depends_on
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
                 end
 
                 doc = {};
