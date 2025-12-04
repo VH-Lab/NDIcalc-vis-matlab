@@ -14,7 +14,7 @@ errormsg_ = cell(1,39);
 
 % establish scope-dependent tolerances
 switch(scope),
-    case 'standard',
+    case 'highSNR',
     
        tolerance.tuning_curve.contrast = 1e-6;
        tolerance.tuning_curve.mean = 1e-6;
@@ -60,52 +60,7 @@ switch(scope),
        tolerance.fit.naka_rushton_RBNS_saturation_index = 0.1;
        tolerance.fit.naka_rushton_RBNS_sensitivity = 10;
      
-       
-    case 'low_noise',
-       tolerance.tuning_curve.contrast = 1e-6;%units of contrast but doesn't vary due to noise
-       tolerance.tuning_curve.mean = 15; %units of spikes/second (mean from 0 to ~50), 3 standard errors
-       tolerance.tuning_curve.stddev = 15; %standard deviation set based on trial and error for low_noise
-       tolerance.tuning_curve.stderr = 5; %standard error is around 1/3 of standard deviation
-       tolerance.tuning_curve.individual = 45; %3 standard deviations
-       tolerance.tuning_curve.control_stddev = 15;
-       tolerance.tuning_curve.control_stderr = 5;
-       tolerance.significance.visual_response_anova_p = 0.1; 
-       tolerance.significance.across_stimuli_anova_p = 0.1; 
-       tolerance.fitless.interpolated_c50 = 0.3; %contrast at half-max (0 to 1)
-       tolerance.fit.naka_rushton_RB_parameters(1) = 10; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RB_parameters(2) = 0.5; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RB_contrast = 1e-6; %0 to 1
-       tolerance.fit.naka_rushton_RB_values = 20; %responses (0 to ~50)
-       tolerance.fit.naka_rushton_RB_pref = 1e-6;	%0 to 1, should be 1 if no supersaturation
-       tolerance.fit.naka_rushton_RB_empirical_c50 = 0.3; %0 to 1
-       tolerance.fit.naka_rushton_RB_r2 = 0.2; %0 to 1
-       tolerance.fit.naka_rushton_RB_relative_max_gain = 10; %max(dr/dc) where dc is <1 and dr can be up to ~50
-       tolerance.fit.naka_rushton_RB_saturation_index = 1e-6; %(Rmax - R(100)) / (Rmax - R(0)), should always be 0
-       tolerance.fit.naka_rushton_RB_sensitivity = inf; %units of 1/contrast (1 to up to 1000), set to inf for now since it's very noisy
-       tolerance.fit.naka_rushton_RBN_parameters(1) = 10; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBN_parameters(2) = 0.2; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBN_parameters(3) = 1; %range 0.1 to 5 according to naka_rushton_fit
-       tolerance.fit.naka_rushton_RBN_contrast = 1e-6; %should not change from expected to actual
-       tolerance.fit.naka_rushton_RBN_values = 20;
-       tolerance.fit.naka_rushton_RBN_pref = 1e-6; %should be 1 when no supersaturation
-       tolerance.fit.naka_rushton_RBN_empirical_c50 = 0.2;
-       tolerance.fit.naka_rushton_RBN_r2 = 0.2;
-       tolerance.fit.naka_rushton_RBN_relative_max_gain = 10;
-       tolerance.fit.naka_rushton_RBN_saturation_index = 1e-6; %(Rmax - R(100)) / (Rmax - R(0)), should always be 0
-       tolerance.fit.naka_rushton_RBN_sensitivity = inf;
-       tolerance.fit.naka_rushton_RBNS_parameters(1) = 10; %max response (0 to ~50)
-       tolerance.fit.naka_rushton_RBNS_parameters(2) = 0.75; %value of contrasts (0 to 1) such that R(C50) = 0.5 * max(R)
-       tolerance.fit.naka_rushton_RBNS_parameters(3) = 1; %range 0.1 to 5 according to naka_rushton_fit
-       tolerance.fit.naka_rushton_RBNS_parameters(4) = 2; %supersaturation, ~1 to ~2.5
-       tolerance.fit.naka_rushton_RBNS_contrast = 1e-6;
-       tolerance.fit.naka_rushton_RBNS_values = 20;
-       tolerance.fit.naka_rushton_RBNS_pref = 0.2; 
-       tolerance.fit.naka_rushton_RBNS_empirical_c50 = 0.3;
-       tolerance.fit.naka_rushton_RBNS_r2 = 0.2;
-       tolerance.fit.naka_rushton_RBNS_relative_max_gain = 10;
-       tolerance.fit.naka_rushton_RBNS_saturation_index = 0.2;%(Rmax - R(100)) / (Rmax - R(0)), 0 to 1 if R100 > R0, otherwise can theoretically go up to inf. 0 if R(100)==Rmax
-       tolerance.fit.naka_rushton_RBNS_sensitivity = inf;
-    case 'high_noise',
+    case 'lowSNR',
         tolerance.tuning_curve.contrast = 1e-6;%units of contrast but doesn't vary due to noise
        tolerance.tuning_curve.mean = 60; %units of spikes/second (mean from 0 to ~50), 3 standard errors should cover 99.7% of means
        tolerance.tuning_curve.stddev = 60; %standard deviation is around 3*standard error because 10 reps are used
