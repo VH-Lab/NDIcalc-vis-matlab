@@ -10,10 +10,8 @@ classdef oridir_tuning < ndi.calculator
             %
             % Creates a oridir_tuning ndi.calculator object
             %
-                w = which('ndi.calc.vis.contrast_tuning');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','oridirtuning_calc.json'));
+                    'oridirtuning_calc');
                 oridir_tuning_obj.numberOfSelfTests = 9;
         end % oridir_tuning() creator
 
@@ -24,13 +22,9 @@ classdef oridir_tuning < ndi.calculator
             % DOC = CALCULATE(NDI_CALCULATION_OBJ, PARAMETERS)
             %
             % Creates a oridir_tuning_direction_tuning_calc document given input parameters.
-
-                % Step 1. Check inputs
-                if ~isfield(parameters,'input_parameters')
-                    error('parameters structure lacks ''input_parameters.''');
-                end
-                if ~isfield(parameters,'depends_on')
-                    error('parameters structure lacks ''depends_on.''');
+                arguments
+                    ndi_calculator_obj
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
                 end
 
                 % Step 2. Set up output structure

@@ -8,10 +8,8 @@ classdef spatial_frequency_tuning < ndi.calculator
             %
             % Creates a SPATIAL_FREQUENCY_TUNING ndi.calculator object
             %
-                w = which('ndi.calc.vis.spatial_frequency_tuning');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calculator(session,'spatial_frequency_tuning_calc',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','spatial_frequency_tuning_calc.json'));
+                    'spatial_frequency_tuning_calc');
                 spatial_frequency_tuning_obj.numberOfSelfTests = 23;
         end % spatial_frequency_tuning()
 
@@ -24,9 +22,10 @@ classdef spatial_frequency_tuning < ndi.calculator
             %
             % The document that is created spatial_frequency_tuning
             % by the input parameters.
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+                arguments
+                    ndi_calculator_obj
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+                end
 
                 % Step 1: set up the output structure
                 spatial_frequency_tuning_calc = parameters;

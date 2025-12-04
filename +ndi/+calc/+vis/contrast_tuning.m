@@ -8,10 +8,8 @@ classdef contrast_tuning < ndi.calculator
             %
             % Creates a CONTRAST_TUNING ndi.calculator object
             %
-                w = which('ndi.calc.vis.contrast_tuning');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 contrast_tuning_obj = contrast_tuning_obj@ndi.calculator(session,'contrasttuning_calc',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','contrasttuning_calc.json'));
+                    'contrasttuning_calc');
                 contrast_tuning_obj.numberOfSelfTests = 9;
         end % contrast_tuning()
 
@@ -24,9 +22,10 @@ classdef contrast_tuning < ndi.calculator
             %
             % The document that is created contrast_tuning
             % by the input parameters.
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+                arguments
+                    ndi_calculator_obj
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+                end
 
                 % Step 1: set up the output structure
                 contrast_tuning_calc = parameters;

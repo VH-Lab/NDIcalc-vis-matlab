@@ -9,10 +9,8 @@ classdef spike_shape < ndi.calculator
             %
             % Creates a SPIKE_SHAPE_CALC ndi.calculator object
             %
-                                w = which('ndi.calc.vis.spike_shape');
-                                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 spike_shape_obj = spike_shape_obj@ndi.calculator(session,'spike_shape_calc',...
-                                        fullfile(parparparpar,'ndi_common','database_documents','calc','spike_shape_calc.json'));
+                                        'spike_shape_calc');
         end % spike_shape()
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -24,9 +22,10 @@ classdef spike_shape < ndi.calculator
             %
             % The document that is created spike_shape has an 'answer' that is given
             % by the input parameters.
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters.'''); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on.'''); end
+                arguments
+                    ndi_calculator_obj
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+                end
 
                 % Step 1: set up
                 element_id = did.db.struct_name_value_search(parameters.depends_on,'element_id');

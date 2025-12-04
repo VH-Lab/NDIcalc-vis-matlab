@@ -8,10 +8,8 @@ classdef temporal_frequency_tuning < ndi.calculator
             %
             % Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
             %
-                w = which('ndi.calc.vis.temporal_frequency_tuning');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','temporal_frequency_tuning_calc.json'));
+                    'temporal_frequency_tuning_calc');
                 temporal_frequency_tuning_obj.numberOfSelfTests = 8;
         end % temporal_frequency_tuning()
 
@@ -24,9 +22,10 @@ classdef temporal_frequency_tuning < ndi.calculator
             %
             % The document that is created temporal_frequency_tuning
             % by the input parameters.
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+                arguments
+                    ndi_calculator_obj
+                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+                end
 
                 % Step 1: set up the output structure
                 temporal_frequency_tuning_calc = parameters;

@@ -8,30 +8,29 @@ classdef speed_tuning < ndi.calculator
             %
             % Creates a SPEED_TUNING ndi.calculator object
             %
-            w = which('ndi.calc.vis.speed_tuning');
-            parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
             speed_tuning_obj = speed_tuning_obj@ndi.calculator(session, 'speedtuning_calc', ...
-                fullfile(parparparpar, 'ndi_common', 'database_documents', 'calc', 'speedtuning_calc.json'));
+                'speedtuning_calc');
             speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
 
-        function doc = calculate(obj, parameters)
+        function doc = calculate(ndi_calculator_obj, parameters)
             % CALCULATE - perform the calculator for ndi.calc.example.speed_tuning
             %
-            % DOC = CALCULATE(OBJ, PARAMETERS)
+            % DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)
             %
             % Creates a speed_tuning_calc document given input parameters.
             %
             % The document that is created speed_tuning
             % by the input parameters.
-            % check inputs
-            if ~isfield(parameters, 'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-            if ~isfield(parameters, 'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+            arguments
+                ndi_calculator_obj
+                parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+            end
 
             % Step 1: set up the output structure
             speed_tuning_calc = parameters;
 
-            tuning_response_doc = obj.session.database_search(ndi.query('base.id', 'exact_string', ...
+            tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id', 'exact_string', ...
                 did.db.struct_name_value_search(parameters.depends_on, 'stimulus_tuningcurve_id'), ''));
             if numel(tuning_response_doc) ~= 1
                 error('Could not find stimulus tuning doc..');
@@ -39,11 +38,11 @@ classdef speed_tuning < ndi.calculator
             tuning_response_doc = tuning_response_doc{1};
 
             % Step 2: perform the calculator, which here creates a speed_tuning doc
-            doc = obj.calculate_speed_indexes(tuning_response_doc) + ...
-                obj.newdocument();
+            doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc) + ...
+                ndi_calculator_obj.newdocument();
 
             if ~isempty(doc)
-                doc = ndi.document(obj.doc_document_types{1}, 'speedtuning_calc', speed_tuning_calc) + doc;
+                doc = ndi.document(ndi_calculator_obj.doc_document_types{1}, 'speedtuning_calc', speed_tuning_calc) + doc;
                 doc = doc.set_dependency_value('stimulus_tuningcurve_id', tuning_response_doc.id());
                 doc = doc.set_dependency_value('element_id', tuning_response_doc.dependency_value('element_id'));
             end
