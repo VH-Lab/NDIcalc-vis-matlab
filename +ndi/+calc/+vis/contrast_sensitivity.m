@@ -24,8 +24,8 @@ classdef contrast_sensitivity < ndi.calculator
             % The document that is created contrast_sensitivity
             % by the input parameters.
                 % check inputs
-                if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters''.']); end
-                if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on''.']); end
+                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
+                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
 
                 % Step 1: set up the output structure
                 contrastsensitivity_calc = parameters;
@@ -33,7 +33,7 @@ classdef contrast_sensitivity < ndi.calculator
                 element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
                     did.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
                 if numel(element_doc)~=1
-                    error(['Could not find element doc..']);
+                    error('Could not find element doc..');
                 end
                 element_doc = element_doc{1};
 
@@ -140,7 +140,7 @@ classdef contrast_sensitivity < ndi.calculator
                                 contrast_tuning_props = ndi_calculator_obj.session.database_search(q6&q7);
 
                                 if numel(contrast_tuning_props)>1
-                                    error(['Found multiple contrast tuning property records for a single tuning curve.']);
+                                    error('Found multiple contrast tuning property records for a single tuning curve.');
                                 elseif numel(contrast_tuning_props)==0
                                     error(['Found contrast tuning curve but no contrast tuning curve properties for element with id ' element_doc.id()]);
                                 else
@@ -153,7 +153,7 @@ classdef contrast_sensitivity < ndi.calculator
                                 if isfield(params_here,'sFrequency')
                                     spatial_frequencies(end+1) = getfield(params_here,'sFrequency');
                                 else
-                                    error(['Expected spatial frequency information.']); % should this be an error or just a skip?
+                                    error('Expected spatial frequency information.'); % should this be an error or just a skip?
                                 end
 
                                 ctp = contrast_tuning_props.document_properties.contrast_tuning;
@@ -306,7 +306,7 @@ classdef contrast_sensitivity < ndi.calculator
                 if isa(doc_or_parameters,'ndi.document')
                     doc = doc_or_parameters;
                 else
-                    error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
                 end
 
                 cs = doc.document_properties.contrastsensitivity_calc; % shorten our typing

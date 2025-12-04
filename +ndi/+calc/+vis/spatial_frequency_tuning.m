@@ -25,8 +25,8 @@ classdef spatial_frequency_tuning < ndi.calculator
             % The document that is created spatial_frequency_tuning
             % by the input parameters.
                 % check inputs
-                if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters''.']); end
-                if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on''.']); end
+                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
+                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
 
                 % Step 1: set up the output structure
                 spatial_frequency_tuning_calc = parameters;
@@ -34,7 +34,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                 tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
                     did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
                 if numel(tuning_response_doc)~=1
-                    error(['Could not find stimulus tuning doc..']);
+                    error('Could not find stimulus tuning doc..');
                 end
                 tuning_response_doc = tuning_response_doc{1};
 
@@ -153,7 +153,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                 if isa(doc_or_parameters,'ndi.document')
                     doc = doc_or_parameters;
                 else
-                    error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
                 end
 
                 sft = doc.document_properties.spatial_frequency_tuning; % shorten our typing
@@ -235,7 +235,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                 stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
                     'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
                 if numel(stim_response_doc)~=1
-                    error(['Could not find stimulus response scalar document.']);
+                    error('Could not find stimulus response scalar document.');
                 end
                 if iscell(stim_response_doc)
                     stim_response_doc = stim_response_doc{1};
@@ -356,7 +356,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                     numsteps = 100; %sets size of x
                     %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
                     spatial_freq_values = logspace(-2,log10(60),numsteps);
-                    switch (function_choice)
+                    switch function_choice
                         case 'dog'
                             r = vlt.math.dog(spatial_freq_values,function_params);
                         case 'movshon' %function_params should have 4 values 
@@ -376,7 +376,7 @@ classdef spatial_frequency_tuning < ndi.calculator
                     x(end+1,1) = NaN;
                     r(end+1,1) = 0;
 
-                    switch (scope)
+                    switch scope
                         case 'standard'
                             reps = 5; % need reps to test significance measures
                             noise = 0;
@@ -401,9 +401,9 @@ classdef spatial_frequency_tuning < ndi.calculator
                     %%doesn't seem to be used
                     doc_output{i} = spatial_freq_calc_obj.run('Replace',calcparameters);
                     if numel(doc_output{i})>1
-                        error(['Generated more than one output doc when one was expected.']);
+                        error('Generated more than one output doc when one was expected.');
                     elseif numel(doc_output{i})==0
-                        error(['Generated no output docs when one was expected.']);
+                        error('Generated no output docs when one was expected.');
                     end
                     doc_output{i} = doc_output{i}{1};
 

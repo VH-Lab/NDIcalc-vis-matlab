@@ -25,8 +25,8 @@ classdef spike_shape < ndi.calculator
             % The document that is created spike_shape has an 'answer' that is given
             % by the input parameters.
                 % check inputs
-                if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters.''']); end
-                if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on.''']); end
+                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters.'''); end
+                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on.'''); end
 
                 % Step 1: set up
                 element_id = did.db.struct_name_value_search(parameters.depends_on,'element_id');
@@ -172,7 +172,7 @@ classdef spike_shape < ndi.calculator
                 if isa(doc_or_parameters,'ndi.document')
                     doc = doc_or_parameters;
                 else
-                    error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
                 end
 
                 [mean_waves,std_waves,sample_times] = ndi_calculator_obj.load(doc);

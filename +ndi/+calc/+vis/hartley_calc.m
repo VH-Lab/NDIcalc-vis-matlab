@@ -25,8 +25,8 @@ classdef hartley_calc < ndi.calculator
             % by the input parameters.
                 doc = {};
                 % check inputs
-                if ~isfield(parameters,'input_parameters'), error(['parameters structure lacks ''input_parameters''.']); end
-                if ~isfield(parameters,'depends_on'), error(['parameters structure lacks ''depends_on''.']); end
+                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
+                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
 
                 % Step 1: set up the output structure, and load the element_id and stimulus_presentation_doc
                 hartley_calc = parameters;
@@ -34,7 +34,7 @@ classdef hartley_calc < ndi.calculator
                 element_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
                     did.db.struct_name_value_search(parameters.depends_on,'element_id'),''));
                 if numel(element_doc)~=1
-                    error(['Could not find element doc..']);
+                    error('Could not find element doc..');
                 end
                 element_doc = element_doc{1};
                 element = ndi.database.fun.ndi_document2ndi_object(element_doc, ndi_calculator_obj.session);
@@ -230,7 +230,7 @@ classdef hartley_calc < ndi.calculator
                 if isa(doc_or_parameters,'ndi.document')
                     doc = doc_or_parameters;
                 else
-                    error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
                 end
 
                 plotrows = 6;

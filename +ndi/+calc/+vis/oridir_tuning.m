@@ -27,10 +27,10 @@ classdef oridir_tuning < ndi.calculator
 
                 % Step 1. Check inputs
                 if ~isfield(parameters,'input_parameters')
-                    error(['parameters structure lacks ''input_parameters.''']);
+                    error('parameters structure lacks ''input_parameters.''');
                 end
                 if ~isfield(parameters,'depends_on')
-                    error(['parameters structure lacks ''depends_on.''']);
+                    error('parameters structure lacks ''depends_on.''');
                 end
 
                 % Step 2. Set up output structure
@@ -40,7 +40,7 @@ classdef oridir_tuning < ndi.calculator
                     'exact_string',...
                     did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
                 if numel(tuning_doc)~=1
-                    error(['Could not find stimulus tuning curve doc..']);
+                    error('Could not find stimulus tuning curve doc..');
                 end
                 tuning_doc = tuning_doc{1};
 
@@ -163,7 +163,7 @@ classdef oridir_tuning < ndi.calculator
                 stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
                     'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
                 if numel(stim_response_doc)~=1
-                    error(['Could not find stimulus response scalar document.']);
+                    error('Could not find stimulus response scalar document.');
                 end
                 if iscell(stim_response_doc)
                     stim_response_doc = stim_response_doc{1};
@@ -276,7 +276,7 @@ classdef oridir_tuning < ndi.calculator
                 if isa(doc_or_parameters,'ndi.document')
                     doc = doc_or_parameters;
                 else
-                    error(['Do not know how to proceed without an ndi document for doc_or_parameters.']);
+                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
                 end
            
                 ot = doc.document_properties.orientation_direction_tuning;  % set variable for less typing
@@ -389,7 +389,7 @@ classdef oridir_tuning < ndi.calculator
                     x(end+1,1) = NaN;
                     r(end+1,1) = 0;
 
-                    switch (scope)
+                    switch scope
                         case 'standard'
                             reps = 5; % need reps to test significance measures
                             noise = 0;
@@ -411,9 +411,9 @@ classdef oridir_tuning < ndi.calculator
                         ndi.query('','depends_on','element_id',docs{end}{3}.id());
                     doc_output{end+1} = oridir_calc_obj.run('Replace',calcparameters);
                     if numel(doc_output{end})>1
-                        error(['Generated more than one output doc when one was expected.']);
+                        error('Generated more than one output doc when one was expected.');
                     elseif numel(doc_output{end})==0
-                        error(['Generated no output docs when one was expected.']);
+                        error('Generated no output docs when one was expected.');
                     end
                     doc_output{end} = doc_output{end}{1}; %what's the point of this?
 
