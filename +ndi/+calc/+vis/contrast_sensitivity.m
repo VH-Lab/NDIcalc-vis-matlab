@@ -8,10 +8,8 @@ classdef contrast_sensitivity < ndi.calculator
             %
             % Creates a CONTRAST_TUNING ndi.calculator object
             %
-                w = which('ndi.calc.vis.contrast_sensitivity');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 contrast_sensitivity_obj = contrast_sensitivity_obj@ndi.calculator(session,'contrastsensitivity_calc',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','contrastsensitivity_calc.json'));
+                    'contrastsensitivity_calc');
         end % contrast_sensitivity()
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -23,9 +21,11 @@ classdef contrast_sensitivity < ndi.calculator
             %
             % The document that is created contrast_sensitivity
             % by the input parameters.
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+                arguments
+                    ndi_calculator_obj
+                    parameters.input_parameters
+                    parameters.depends_on
+                end
 
                 % Step 1: set up the output structure
                 contrastsensitivity_calc = parameters;

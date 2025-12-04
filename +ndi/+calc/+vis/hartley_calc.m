@@ -8,10 +8,8 @@ classdef hartley_calc < ndi.calculator
             %
             % Creates a HARTLEY_CALC ndi.calculator object
             %
-                w = which('ndi.calc.vis.hartley_calc');
-                parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
                 hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
-                    fullfile(parparparpar,'ndi_common','database_documents','calc','hartley_calc.json'));
+                    'hartley_calc');
         end % hartley_calc()
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -23,10 +21,13 @@ classdef hartley_calc < ndi.calculator
             %
             % The document that is created hartley_calc
             % by the input parameters.
+                arguments
+                    ndi_calculator_obj
+                    parameters.input_parameters
+                    parameters.depends_on
+                end
+
                 doc = {};
-                % check inputs
-                if ~isfield(parameters,'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-                if ~isfield(parameters,'depends_on'), error('parameters structure lacks ''depends_on''.'); end
 
                 % Step 1: set up the output structure, and load the element_id and stimulus_presentation_doc
                 hartley_calc = parameters;

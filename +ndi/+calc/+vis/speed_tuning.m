@@ -8,10 +8,8 @@ classdef speed_tuning < ndi.calculator
             %
             % Creates a SPEED_TUNING ndi.calculator object
             %
-            w = which('ndi.calc.vis.speed_tuning');
-            parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
             speed_tuning_obj = speed_tuning_obj@ndi.calculator(session, 'speedtuning_calc', ...
-                fullfile(parparparpar, 'ndi_common', 'database_documents', 'calc', 'speedtuning_calc.json'));
+                'speedtuning_calc');
             speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
 
@@ -24,9 +22,11 @@ classdef speed_tuning < ndi.calculator
             %
             % The document that is created speed_tuning
             % by the input parameters.
-            % check inputs
-            if ~isfield(parameters, 'input_parameters'), error('parameters structure lacks ''input_parameters''.'); end
-            if ~isfield(parameters, 'depends_on'), error('parameters structure lacks ''depends_on''.'); end
+            arguments
+                obj
+                parameters.input_parameters
+                parameters.depends_on
+            end
 
             % Step 1: set up the output structure
             speed_tuning_calc = parameters;
