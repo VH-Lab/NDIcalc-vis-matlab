@@ -153,7 +153,7 @@ classdef speed_tuning < ndi.calculator
             hold on;
 
             %h_baseline = plot([min(tc.speed) max(tc.speed)],...
-            %	[0 0],'k--','linewidth',1.0001);
+            %    [0 0],'k--','linewidth',1.0001);
             %h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
 
             % now call the plot routine
