@@ -93,7 +93,7 @@ classdef oridir_tuning < ndi.calculator
             % 'response_type' fields that contain 'mean' or 'F1'.
             %
             %
-                q1 = ndi.query('','isa','stimulus_tuningcurve.json','');
+                q1 = ndi.query('','isa','stimulus_tuningcurve','');
 
                 q2 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Orientation','');
                 q3 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Direction','');
@@ -416,27 +416,6 @@ classdef oridir_tuning < ndi.calculator
 
                 end % for
         end % generate_mock_docs()
-
-        function [b,errormsg] = compare_mock_docs(oridir_calc_obj, expected_doc, actual_doc, scope)
-            % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
-            %
-            % [B, ERRORMSG] = COMPARE_MOCK_DOCS(CTEST_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
-            %
-            % Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
-            % the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
-            % this function computes whether the ACTUAL_DOC is within an allowed tolerance of
-            % EXPECTED_DOC.
-            %
-            % B is 1 if the differences in the documents are within the tolerance of the class.
-            % Otherwise, B is 0.
-            % If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
-            %
-            % Uses the function ndi.calc.vis.test.oridir_compare_docs().
-            %
-                [b,errormsg] = ndi.calc.vis.test.oridir_compare_docs(expected_doc,actual_doc,scope);
-                errormsg = cat(2,errormsg{:});
-                b = all(b);
-        end
 
         function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
