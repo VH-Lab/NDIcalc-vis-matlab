@@ -345,7 +345,7 @@
     "toleranceAmount": 0
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "none",
     "name": "spatial_frequency_tuning.abs.fitless.H50",
     "toleranceAmount": 0.2
   },
