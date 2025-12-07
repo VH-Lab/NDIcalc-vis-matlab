@@ -323,6 +323,10 @@ classdef spatial_frequency_tuning < ndi.calculator
             % |--------------------------|---------------------------------------------------|
             % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
             % |                          |   generate the "right answer"?) Use carefully.    |
+            % | specific_test_inds([])   | A vector of test indices to run. If empty, all    |
+            % |                          |   tests are run. DOCS and DOC_OUTPUT will have    |
+            % |                          |   empty entries for skipped tests, but            |
+            % |                          |   DOC_EXPECTED_OUTPUT will be populated.          |
             % |--------------------------|---------------------------------------------------|
             %
 
@@ -396,10 +400,10 @@ classdef spatial_frequency_tuning < ndi.calculator
                             error('Generated no output docs when one was expected.');
                         end
                         doc_output{i} = doc_output{i}{1};
-                    end                    
 
-                    if generate_expected_docs
-                        spatial_freq_calc_obj.write_mock_expected_output(i,doc_output{i});
+                        if generate_expected_docs
+                            spatial_freq_calc_obj.write_mock_expected_output(i,doc_output{i});
+                        end
                     end
 
                     doc_expected_output{i} = spatial_freq_calc_obj.load_mock_expected_output(i);
