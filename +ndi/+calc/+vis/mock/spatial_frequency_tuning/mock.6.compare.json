@@ -1,0 +1,562 @@
+{"comparisonStruct": [
+  {
+    "comparisonMethod": "none",
+    "name": "app.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.url",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.session_id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.datestamp",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.properties.response_units",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.properties.response_type",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.tuning_curve.spatial_frequency",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.tuning_curve.mean",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.tuning_curve.stddev",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.tuning_curve.stderr",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.individual",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.control_mean",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.control_stddev",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.control_stderr",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.control_mean_stddev",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.tuning_curve.control_mean_stderr",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.significance.visual_response_anova_p",
+    "toleranceAmount": 0.01
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.significance.across_stimuli_anova_p",
+    "toleranceAmount": 0.01
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fitless.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fitless.Pref",
+    "toleranceAmount": 0.1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fitless.H50",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fitless.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fitless.low_pass_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fitless.high_pass_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_dog.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_dog.values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_dog.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_dog.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_dog.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_dog.H50",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_dog.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon.values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon.H50",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon.R2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon_c.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon_c.values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon_c.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon_c.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon_c.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon_c.H50",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_movshon_c.R2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_movshon_c.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_spline.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_spline.fit",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_spline.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_spline.Pref",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_spline.H50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_spline.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.fit_gausslog.fit",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.Pref",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.H50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.fit_gausslog.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fitless.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fitless.Pref",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fitless.H50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fitless.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fitless.low_pass_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fitless.high_pass_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_dog.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.H50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_dog.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.H50",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.R2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.H50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.R2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_movshon_c.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_spline.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_spline.fit",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_spline.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_spline.Pref",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_spline.H50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_spline.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.values",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.fit",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.L50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.Pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.H50",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning.abs.fit_gausslog.bandwidth",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning_calc.input_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning_calc.depends_on.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "spatial_frequency_tuning_calc.depends_on.value",
+    "toleranceAmount": 0
+  }
+]}
