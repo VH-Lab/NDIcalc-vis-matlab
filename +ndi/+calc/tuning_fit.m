@@ -126,8 +126,30 @@ classdef tuning_fit < ndi.calculator
                 end % for
         end % generate_mock_docs()
 
-        % Subclasses must implement generate_mock_parameters with this signature:
-        % function [param_struct, independent_variable, x, r] = generate_mock_parameters(obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(obj, scope, index)
+            % GENERATE_MOCK_PARAMETERS - generate mock parameters for testing
+            %
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
+            %
+            % This method is used by GENERATE_MOCK_DOCS to generate parameters for creating
+            % mock stimulus response documents for testing purposes. It must be overridden by
+            % subclasses.
+            %
+            % Inputs:
+            %   obj - the calculator object
+            %   scope - the scope of the test ('highSNR' or 'lowSNR')
+            %   index - the index of the test (integer)
+            %
+            % Outputs:
+            %   param_struct - a structure of parameters for the stimulus response document.
+            %                  See ndi.mock.fun.stimulus_response for details.
+            %   independent_variable - a cell array of strings indicating the independent variables.
+            %   x - the independent variable values (MxN matrix where M is steps and N is dimensions)
+            %   r - the response values (Mx1 vector)
+            %
+
+            error('Subclasses must override generate_mock_parameters');
+        end
 
     end % methods
 end % classdef
