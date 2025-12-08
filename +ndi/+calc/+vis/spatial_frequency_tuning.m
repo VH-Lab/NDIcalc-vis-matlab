@@ -296,6 +296,26 @@ classdef spatial_frequency_tuning < ndi.calc.tuning_fit
         end % calculate_spatial_frequency_indexes()
         % TESTING METHODS
 
+        function [b,errormsg] = compare_mock_docs(spatial_freq_calc_obj, expected_doc, actual_doc, scope)
+            % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
+            %
+            % [B, ERRORMSG] = COMPARE_MOCK_DOCS(CTEST_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
+            %
+            % Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
+            % the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
+            % this function computes whether the ACTUAL_DOC is within an allowed tolerance of
+            % EXPECTED_DOC.
+            %
+            % B is 1 if the differences in the documents are within the tolerance of the class.
+            % Otherwise, B is 0.
+            % If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
+            %
+
+                [b_,errormsg] = ndi.calc.vis.test.spatial_frequency_tuning_compare_docs(expected_doc,actual_doc,scope);
+                b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors - can also use b = all(b)
+                errormsg = cat(2,errormsg{:}); %removes extra errormsg cells
+        end
+
         function [param_struct, independent_variable, x, r] = generate_mock_parameters(spatial_freq_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.spatial_frequency_tuning
             %
