@@ -1,4 +1,4 @@
-classdef oridir_tuning < ndi.calculator
+classdef oridir_tuning < ndi.calc.tuning_fit
 
     methods
         function oridir_tuning_obj = oridir_tuning(session)
@@ -10,7 +10,7 @@ classdef oridir_tuning < ndi.calculator
             %
             % Creates a oridir_tuning ndi.calculator object
             %
-                oridir_tuning_obj = oridir_tuning_obj@ndi.calculator(session,'oridir_tuning',...
+                oridir_tuning_obj = oridir_tuning_obj@ndi.calc.tuning_fit(session,'oridir_tuning',...
                     'oridirtuning_calc');
                 oridir_tuning_obj.numberOfSelfTests = 7;
         end % oridir_tuning() creator
@@ -318,119 +318,16 @@ classdef oridir_tuning < ndi.calculator
 
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(oridir_calc_obj, scope, number_of_tests, kwargs)
-            % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
-            %
-            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(ORIDIR_CALC_OBJ, ...
-            %    SCOPE, NUMBER_OF_TESTS, ...)
-            %
-            % Creates a set of documents to test ndi.calc.vis.oridir_tuning.
-            %
-            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
-            % NUMBER_OF_TESTS indicates the number of tests to be performed.
-            %
-            % DOCS{i} is the set of helper documents that may have been created
-            %   in generating the ith test.
-            % DOC_OUTPUT{i} is the actual output of the calculator when operating on
-            %   DOCS{i} (the ith test).
-            % DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-            %   were no noise.
-            %
-            % The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
-            % as part of the TEST function for ndi.calculator objects.
-            %
-            % This function's behavior can be modified by name/value pairs.
-            % --------------------------------------------------------------------------------
-            % | Parameter (default):     | Description:                                      |
-            % |--------------------------|---------------------------------------------------|
-            % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
-            % |                          |   generate the "right answer"?) Use carefully.    |
-            % | specific_test_inds([])   | A vector of test indices to run. If empty, all    |
-            % |                          |   tests are run. DOCS and DOC_OUTPUT will have    |
-            % |                          |   empty entries for skipped tests, but            |
-            % |                          |   DOC_EXPECTED_OUTPUT will be populated.          |
-            % |--------------------------|---------------------------------------------------|
-            %
-                arguments
-                    oridir_calc_obj
-                    scope {mustBeMember(scope,{'highSNR','lowSNR'})}
-                    number_of_tests
-                    kwargs.generate_expected_docs (1,1) logical = false
-                    kwargs.specific_test_inds double = []
-                end
-                specific_test_inds = kwargs.specific_test_inds;
-                generate_expected_docs = kwargs.generate_expected_docs;
-
-                if numel(specific_test_inds) == 0
-                    specific_test_inds = 1:number_of_tests;
-                end
-
-                docs = cell(oridir_calc_obj.numberOfSelfTests,1);
-                doc_output = cell(oridir_calc_obj.numberOfSelfTests,1);
-                doc_expected_output = cell(oridir_calc_obj.numberOfSelfTests,1);
-
-                for i=1:oridir_calc_obj.numberOfSelfTests
-                    docs{i} = {};
-                    if ismember(i, specific_test_inds)
-                        parameters = oridir_calc_obj.generate_mock_parameters(scope, i);
-
-                        angles = 0:30:360-30; % use these angles
-                        r = vis.oridir.doublegaussianfunc(angles,parameters);
-
-                        param_struct = struct('sFrequency',0.5,'tFrequency',2);
-                        independent_variable = {'angle'};
-                        x = angles(:); % column
-                        r = r(:); % column
-                        x(end+1,1) = NaN;
-                        r(end+1,1) = 0;
-
-                        switch scope
-                            case 'highSNR'
-                                reps = 5; % need reps to test significance measures
-                                noise = 0.0001;
-                            case 'lowSNR'
-                                reps = 10;
-                                noise = 1;
-                            otherwise
-                                error(['Unknown scope ' scope '.']);
-                        end % switch
-                        docs{i} = ndi.mock.fun.stimulus_response(oridir_calc_obj.session,...
-                            param_struct, independent_variable, x, r, noise, reps);
-
-                        calcparameters = oridir_calc_obj.default_search_for_input_parameters();
-                        calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
-                        calcparameters.query.query = calcparameters.query.query & ...
-                            ndi.query('','depends_on','element_id',docs{i}{3}.id());
-                        doc_output{i} = oridir_calc_obj.run('Replace',calcparameters);
-                        if numel(doc_output{i})>1
-                            error('Generated more than one output doc when one was expected.');
-                        elseif numel(doc_output{i})==0
-                            error('Generated no output docs when one was expected.');
-                        end
-                        doc_output{i} = doc_output{i}{1}; %what's the point of this?
-
-                        if generate_expected_docs
-                            oridir_calc_obj.write_mock_expected_output(i,doc_output{i});
-                        end
-                    end
-
-                    doc_expected_output{i} = oridir_calc_obj.load_mock_expected_output(i);
-
-                end % for
-        end % generate_mock_docs()
-
-        function [P, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(oridir_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
             %
-            % [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
             %
             % Generates a parameter set for generating a mock document with a given index value.
             % P will be a row vector of parameters [Rsp Rp Rn theta sigma].
-            % TOTAL is the total number of mock stimuli that are available to be generated.
             %
-            % SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
-            % INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
-            % using MOD).
+            % SCOPE can be 'highSNR', or 'lowSNR'.
+            % INDEX selects which parameters are used to generate a mock document
             %
 
                 P_(1,:) = [ 0 20 10 45 30] ; % response of 20 in preferred direction of 45 degrees, 10 opposite
@@ -450,6 +347,16 @@ classdef oridir_tuning < ndi.calculator
                 % no dependence on scope for this stimulus type
 
                 P = P_(actual_index,:);
+
+                angles = 0:30:360-30; % use these angles
+                r = vis.oridir.doublegaussianfunc(angles,P);
+
+                param_struct = struct('sFrequency',0.5,'tFrequency',2);
+                independent_variable = {'angle'};
+                x = angles(:); % column
+                r = r(:); % column
+                x(end+1,1) = NaN;
+                r(end+1,1) = 0;
 
         end % generate_mock_parameters
 

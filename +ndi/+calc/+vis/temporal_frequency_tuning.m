@@ -1,4 +1,4 @@
-classdef temporal_frequency_tuning < ndi.calculator
+classdef temporal_frequency_tuning < ndi.calc.tuning_fit
 
     methods
         function temporal_frequency_tuning_obj = temporal_frequency_tuning(session)
@@ -8,7 +8,7 @@ classdef temporal_frequency_tuning < ndi.calculator
             %
             % Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
             %
-                temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calculator(session,'temporal_frequency_tuning_calc',...
+                temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calc.tuning_fit(session,'temporal_frequency_tuning_calc',...
                     'temporal_frequency_tuning_calc');
                 temporal_frequency_tuning_obj.numberOfSelfTests = 8;
         end % temporal_frequency_tuning()
@@ -298,114 +298,6 @@ classdef temporal_frequency_tuning < ndi.calculator
 
         end % calculate_temporal_frequency_indexes()
         
-        % TESTING METHODS
-
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(temporal_freq_calc_obj, scope, number_of_tests, kwargs)
-            % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
-            %
-            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(TEMPORAL_FREQ_CALC_OBJ, ...
-            %    SCOPE, NUMBER_OF_TESTS, ...)
-            %
-            % Creates a set of documents to test ndi.calc.vis.temporal_frequency_tuning.
-            %
-            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
-            % NUMBER_OF_TESTS indicates the number of tests to be performed.
-            %
-            % DOCS{i} is the set of helper documents that may have been created
-            %   in generating the ith test.
-            % DOC_OUTPUT{i} is the actual output of the calculator when operating on
-            %   DOCS{i} (the ith test).
-            % DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-            %   were no noise.
-            %
-            % The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
-            % as part of the TEST function for ndi.calculator objects.
-            %
-            % This function's behavior can be modified by name/value pairs.
-            % --------------------------------------------------------------------------------
-            % | Parameter (default):     | Description:                                      |
-            % |--------------------------|---------------------------------------------------|
-            % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
-            % |                          |   generate the "right answer"?) Use carefully.    |
-            % |--------------------------|---------------------------------------------------|
-            %
-
-                arguments
-                    temporal_freq_calc_obj
-                    scope {mustBeMember(scope,{'highSNR','lowSNR'})}
-                    number_of_tests
-                    kwargs.generate_expected_docs (1,1) logical = false
-                    kwargs.specific_test_inds double = []
-                end
-                specific_test_inds = kwargs.specific_test_inds;
-                generate_expected_docs = kwargs.generate_expected_docs;
-
-                docs = {};
-                doc_output = {};
-                doc_expected_output = {};
-
-                if numel(specific_test_inds) == 0
-                    specific_test_inds = 1:number_of_tests;
-                end
-
-                for i=specific_test_inds
-                    if i > numel(docs)
-                        docs{i} = {};
-                    else
-                        docs{i} = {};
-                    end
-                    S = temporal_freq_calc_obj.session;
-                    function_params = temporal_freq_calc_obj.generate_mock_parameters(scope, i);
-                    numsteps = 100; %sets size of x
-                    %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
-                    temporal_freq_values = logspace(-2,log10(60),numsteps);
-                    r = vlt.math.dog(temporal_freq_values,function_params);
-                    %param_struct = struct([]); %this didn't work - need at
-                    %least one parameter?
-                    param_struct = struct('spatial_frequency',.5);
-                    independent_variable = {'temporal_frequency'}; % is the underscore required?
-                    x = temporal_freq_values(:); % column
-                    r = r(:); % column
-                    %why do we have these?
-                    x(numsteps+1,1) = NaN;
-                    r(numsteps+1,1) = 0;
-
-                    switch scope
-                        case 'highSNR'
-                            reps = 5; % need reps to test significance measures
-                            noise = 0;
-                        case 'lowSNR'
-                            reps = 10;
-                            noise = 1;
-                        otherwise
-                            error(['Unknown scope ' scope '.']);
-                    end % switch
-
-                    docs{i} = ndi.mock.fun.stimulus_response(S,...
-                        param_struct, independent_variable, x, r, noise, reps);
-
-                    calcparameters = temporal_freq_calc_obj.default_search_for_input_parameters();
-                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
-                    calcparameters.query.query = calcparameters.query.query & ...
-                        ndi.query('','depends_on','element_id',docs{i}{3}.id());
-                    I = temporal_freq_calc_obj.search_for_input_parameters(calcparameters);
-                    doc_output{i} = temporal_freq_calc_obj.run('Replace',calcparameters);
-                    if numel(doc_output{i})>1
-                        error('Generated more than one output doc when one was expected.');
-                    elseif numel(doc_output{i})==0
-                        error('Generated no output docs when one was expected.');
-                    end
-                    doc_output{i} = doc_output{i}{1};
-
-                    if generate_expected_docs
-                        temporal_freq_calc_obj.write_mock_expected_output(i,doc_output{i});
-                    end
-
-                    doc_expected_output{i} = temporal_freq_calc_obj.load_mock_expected_output(i);
-
-                end % for
-        end % generate_mock_docs()
-
         function [b,errormsg] = compare_mock_docs(temporal_freq_calc_obj, expected_doc, actual_doc, scope)
             % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
             %
@@ -426,18 +318,16 @@ classdef temporal_frequency_tuning < ndi.calculator
                 errormsg = cat(2,errormsg{:}); %turn into a string
         end
 
-        function [P, total] = generate_mock_parameters(temporal_freq_calc_obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(temporal_freq_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
             %
-            % [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
             %
             % Generates a parameter set for generating a mock document with a given index value.
             % P will be a row vector of parameters [a1 b1 a2 b2].
-            % TOTAL is the total number of mock stimuli that are available to be generated.
             %
             % SCOPE can be 'standard', 'low_noise', or 'high_noise'.
-            % INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
-            % using MOD).
+            % INDEX selects which parameters are used to generate a mock document
             %
                 % add options for different scopes - see issue #27
                 P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
@@ -455,6 +345,21 @@ classdef temporal_frequency_tuning < ndi.calculator
                 % no dependence on scope for this stimulus type
 
                 P = P_(actual_index,:);
+
+                numsteps = 100; %sets size of x
+                %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
+                temporal_freq_values = logspace(-2,log10(60),numsteps);
+                r = vlt.math.dog(temporal_freq_values,P);
+                %param_struct = struct([]); %this didn't work - need at
+                %least one parameter?
+                param_struct = struct('spatial_frequency',.5);
+                independent_variable = {'temporal_frequency'}; % is the underscore required?
+                x = temporal_freq_values(:); % column
+                r = r(:); % column
+                %why do we have these?
+                x(numsteps+1,1) = NaN;
+                r(numsteps+1,1) = 0;
+
         end % generate_mock_parameters
     end % methods()
 end % temporal_frequency_tuning

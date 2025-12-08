@@ -1,4 +1,4 @@
-classdef contrast_tuning < ndi.calculator
+classdef contrast_tuning < ndi.calc.tuning_fit
 
     methods
         function contrast_tuning_obj = contrast_tuning(session)
@@ -8,7 +8,7 @@ classdef contrast_tuning < ndi.calculator
             %
             % Creates a CONTRAST_TUNING ndi.calculator object
             %
-                contrast_tuning_obj = contrast_tuning_obj@ndi.calculator(session,'contrasttuning_calc',...
+                contrast_tuning_obj = contrast_tuning_obj@ndi.calc.tuning_fit(session,'contrasttuning_calc',...
                     'contrasttuning_calc');
                 contrast_tuning_obj.numberOfSelfTests = 9;
         end % contrast_tuning()
@@ -276,113 +276,6 @@ classdef contrast_tuning < ndi.calculator
                 contrast_props_doc = contrast_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 
         end % calculate_contrast_indexes()
-        % TESTING METHODS
-
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(contrast_calc_obj, scope, number_of_tests, kwargs)
-            % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
-            %
-            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(CONTRAST_CALC_OBJ, ...
-            %    SCOPE, NUMBER_OF_TESTS, ...)
-            %
-            % Creates a set of documents to test ndi.calc.vis.contrast_tuning.
-            %
-            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
-            % NUMBER_OF_TESTS indicates the number of tests to be performed.
-            %
-            % DOCS{i} is the set of helper documents that may have been created
-            %   in generating the ith test.
-            % DOC_OUTPUT{i} is the actual output of the calculator when operating on
-            %   DOCS{i} (the ith test).
-            % DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-            %   were no noise. If these documents are plotted, they must be plotted
-            %   with Display_element_name set to 0 in PLOT.            %   
-            %
-            % The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
-            % as part of the TEST function for ndi.calculator objects.
-            %
-            % This function's behavior can be modified by name/value pairs.
-            % --------------------------------------------------------------------------------
-            % | Parameter (default):     | Description:                                      |
-            % |--------------------------|---------------------------------------------------|
-            % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
-            % |                          |   generate the "right answer"?) Use carefully.    |
-            % |--------------------------|---------------------------------------------------|
-            %
-
-                arguments
-                    contrast_calc_obj
-                    scope {mustBeMember(scope,{'highSNR','lowSNR'})}
-                    number_of_tests
-                    kwargs.generate_expected_docs (1,1) logical = false
-                    kwargs.specific_test_inds double = []
-                end
-                specific_test_inds = kwargs.specific_test_inds;
-                generate_expected_docs = kwargs.generate_expected_docs;
-
-                docs = {};
-                doc_output = {};
-                doc_expected_output = {};
-
-                if numel(specific_test_inds) == 0
-                    specific_test_inds = 1:number_of_tests;
-                end
-
-                for i=specific_test_inds
-                    if i > numel(docs)
-                        docs{i} = {};
-                    else
-                        docs{i} = {};
-                    end
-                    S = contrast_calc_obj.session;
-                    [rmax,c50,N,s] = contrast_calc_obj.generate_mock_parameters(scope, i);
-                    numsteps = 10; %sets size of x
-                    contrasts = logspace(-1,0,numsteps); % generates a row vector of 'numsteps' logarithmically equally spaced points between 10^-1 and 10^0
-
-                    r = rmax * vlt.fit.naka_rushton_func(contrasts,c50,N,s);
-                    %param_struct = struct([]); %this didn't work - need at
-                    %least one parameter?
-                    param_struct = struct('spatial_frequency',0.5);
-                    independent_variable = {'contrast'};
-                    x = contrasts(:); % column
-                    r = r(:); % column
-                    x(end+1,1) = NaN;
-                    r(end+1,1) = 0;
-
-                    switch scope
-                        case 'highSNR'
-                            reps = 5; % need reps to test significance measures
-                            noise = 0;
-                        case 'lowSNR'
-                            reps = 10;
-                            noise = 1;
-                        otherwise
-                            error(['Unknown scope ' scope '.']);
-                    end % switch
-
-                    docs{i} = ndi.mock.fun.stimulus_response(S,...
-                        param_struct, independent_variable, x, r, noise, reps);
-
-                    calcparameters = contrast_calc_obj.default_search_for_input_parameters();
-                    calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','contrast','');
-                    calcparameters.query.query = calcparameters.query.query & ...
-                        ndi.query('','depends_on','element_id',docs{i}{3}.id());
-                    I = contrast_calc_obj.search_for_input_parameters(calcparameters);
-                    doc_output{i} = contrast_calc_obj.run('Replace',calcparameters);
-                    if numel(doc_output{i})>1
-                        error('Generated more than one output doc when one was expected.');
-                    elseif numel(doc_output{i})==0
-                        error('Generated no output docs when one was expected.');
-                    end
-                    doc_output{i} = doc_output{i}{1};
-
-                    if generate_expected_docs
-                        contrast_calc_obj.write_mock_expected_output(i,doc_output{i});
-                    end
-
-                    doc_expected_output{i} = contrast_calc_obj.load_mock_expected_output(i);
-
-                end % for
-        end % generate_mock_docs()
 
         function [b,errormsg] = compare_mock_docs(oridir_calc_obj, expected_doc, actual_doc, scope)
             % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
@@ -404,17 +297,16 @@ classdef contrast_tuning < ndi.calculator
                 b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors - can also use b = all(b)
         end
 
-        function [rmax, c50, N, s, total] = generate_mock_parameters(oridir_calc_obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(oridir_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.contrast_tuning
             %
-            % [RMAX, C50, N, S, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
             %
             % Generates a parameter set for generating a mock document with a given index value.
             % RMAX is the maximum response
             % C50 is the half-maximum contrast
             % N is the exponent parameter that sets the shape
             % S is the degree of supersaturation
-            % TOTAL is the total number of mock stimuli that are available to be generated.
             %
             % INDEX selects which parameters are used to generate a mock document (from 1...TOTAL).
             %
@@ -440,6 +332,20 @@ classdef contrast_tuning < ndi.calculator
                 c50 = P(2);
                 N = P(3);
                 s = P(4);
+
+                numsteps = 10; %sets size of x
+                contrasts = logspace(-1,0,numsteps); % generates a row vector of 'numsteps' logarithmically equally spaced points between 10^-1 and 10^0
+
+                r = rmax * vlt.fit.naka_rushton_func(contrasts,c50,N,s);
+                %param_struct = struct([]); %this didn't work - need at
+                %least one parameter?
+                param_struct = struct('spatial_frequency',0.5);
+                independent_variable = {'contrast'};
+                x = contrasts(:); % column
+                r = r(:); % column
+                x(end+1,1) = NaN;
+                r(end+1,1) = 0;
+
         end % generate_mock_parameters
     end % methods()
 end % contrast_tuning

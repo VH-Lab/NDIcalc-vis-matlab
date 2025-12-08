@@ -1,4 +1,4 @@
-classdef speed_tuning < ndi.calculator
+classdef speed_tuning < ndi.calc.tuning_fit
 
     methods
         function speed_tuning_obj = speed_tuning(session)
@@ -8,7 +8,7 @@ classdef speed_tuning < ndi.calculator
             %
             % Creates a SPEED_TUNING ndi.calculator object
             %
-            speed_tuning_obj = speed_tuning_obj@ndi.calculator(session, 'speedtuning_calc', ...
+            speed_tuning_obj = speed_tuning_obj@ndi.calc.tuning_fit(session, 'speedtuning_calc', ...
                 'speedtuning_calc');
             speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
@@ -302,124 +302,6 @@ classdef speed_tuning < ndi.calculator
 
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
-            % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
-            %
-            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, ...
-            %    SCOPE, NUMBER_OF_TESTS, ...)
-            %
-            % Creates a set of documents to test ndi.calc.vis.speed_tuning.
-            %
-            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
-            % NUMBER_OF_TESTS indicates the number of tests to be performed.
-            %
-            % DOCS{i} is the set of helper documents that may have been created
-            %   in generating the ith test.
-            % DOC_OUTPUT{i} is the actual output of the calculator when operating on
-            %   DOCS{i} (the ith test).
-            % DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-            %   were no noise.
-            %
-            % The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
-            % as part of the TEST function for ndi.calculator objects.
-            %
-            % This function's behavior can be modified by name/value pairs.
-            % --------------------------------------------------------------------------------
-            % | Parameter (default):     | Description:                                      |
-            % |--------------------------|---------------------------------------------------|
-            % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
-            % |                          |   generate the "right answer"?) Use carefully.    |
-            % |--------------------------|---------------------------------------------------|
-            %
-
-            arguments
-                obj
-                scope {mustBeMember(scope,{'highSNR','lowSNR'})}
-                number_of_tests
-                kwargs.generate_expected_docs (1,1) logical = false
-                kwargs.specific_test_inds double = []
-            end
-            specific_test_inds = kwargs.specific_test_inds;
-            generate_expected_docs = kwargs.generate_expected_docs;
-
-            docs = {};
-            doc_output = {};
-            doc_expected_output = {};
-
-            if numel(specific_test_inds) == 0
-                specific_test_inds = 1:number_of_tests;
-            end
-
-            for i = specific_test_inds
-                if i > numel(docs)
-                    docs{i} = {};
-                else
-                    docs{i} = {};
-                end
-                S = obj.session;
-
-                %taken from calculate_speed_indexes method:
-                numsteps = 5;
-                %sfs = logspace(log10(0.01),log10(60),numsteps);
-                sfs = [0.05 0.08 0.1 0.2 0.4 0.8 1.2]; %taken from demo
-                %tfs = logspace(log10(0.01),log10(120),numsteps);
-                tfs = [0.5 1 2 4 8 16 32]; %taken from demo
-                [SFs, TFs] = meshgrid(sfs, tfs);
-                function_params = obj.generate_mock_parameters(scope, i);
-                r_ = vlt.neuro.vision.speed.tuningfunc(SFs, TFs, function_params);
-
-                %r = vlt.math.dog(speed_values,function_params);
-                %param_struct = struct([]); %this didn't work - need at
-                %least one parameter?
-                param_struct = struct('contrast', .5); %random choice, can be anything between 0 and 1
-                independent_variable = {'temporal_frequency', 'spatial_frequency'};
-                x = [SFs(:), TFs(:)]; % columns
-                r = r_(:); % columns
-                %why do we have these? Set control (blank) stimulus to
-                %firing rate = 0?
-                %should we have just one blank stimulus row or
-                %multiple? Add nan to end of x or end of sfs and tfs?
-                x(end + 1, :) = NaN;
-                r(end + 1, 1) = 0;
-
-                switch scope
-                    case 'highSNR'
-                        reps = 5; % need reps to test significance measures
-                        noise = 0;
-                    case 'lowSNR'
-                        reps = 10;
-                        noise = 1;
-                    otherwise
-                        error(['Unknown scope ' scope '.']);
-                end % switch
-
-                docs{i} = ndi.mock.fun.stimulus_response(S, ...
-                    param_struct, independent_variable, x, r, noise, reps);
-
-                calcparameters = obj.default_search_for_input_parameters();
-                calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label', 'contains_string', 'temporal_frequency', '');
-                calcparameters.query.query = calcparameters.query.query & ...
-                    ndi.query('stimulus_tuningcurve.independent_variable_label', 'contains_string', 'spatial_frequency', '');
-                calcparameters.query.query = calcparameters.query.query & ...
-                    ndi.query('', 'depends_on', 'element_id', docs{i}{3}.id());
-                %I = obj.search_for_input_parameters(calcparameters);
-                doc_output{i} = obj.run('Replace', calcparameters);
-                if numel(doc_output{i}) > 1
-                    error('Generated more than one output doc when one was expected.');
-                elseif numel(doc_output{i}) == 0
-                    error('Generated no output docs when one was expected.');
-                end
-                doc_output{i} = doc_output{i}{1};
-
-                if generate_expected_docs
-                    obj.write_mock_expected_output(i, doc_output{i});
-                end
-
-                doc_expected_output{i} = obj.load_mock_expected_output(i);
-
-            end % for
-        end % generate_mock_docs()
-
         function [b, errormsg] = compare_mock_docs(obj, expected_doc, actual_doc, scope)
             % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
             %
@@ -440,14 +322,13 @@ classdef speed_tuning < ndi.calculator
             errormsg = cat(2, errormsg{:}); %turn into a string
         end
 
-        function [P, total] = generate_mock_parameters(obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
             %
-            % [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
             %
             % Generates a parameter set for generating a mock document with a given index value.
             % P will be a row vector of parameters [a1 b1 a2 b2].
-            % TOTAL is the total number of mock stimuli that are available to be generated.
             %
             % SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
             % INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
@@ -496,6 +377,31 @@ classdef speed_tuning < ndi.calculator
             % no dependence on scope for this stimulus type
 
             P = P_(actual_index, :);
+
+            %taken from calculate_speed_indexes method:
+            numsteps = 5;
+            %sfs = logspace(log10(0.01),log10(60),numsteps);
+            sfs = [0.05 0.08 0.1 0.2 0.4 0.8 1.2]; %taken from demo
+            %tfs = logspace(log10(0.01),log10(120),numsteps);
+            tfs = [0.5 1 2 4 8 16 32]; %taken from demo
+            [SFs, TFs] = meshgrid(sfs, tfs);
+            function_params = P;
+            r_ = vlt.neuro.vision.speed.tuningfunc(SFs, TFs, function_params);
+
+            %r = vlt.math.dog(speed_values,function_params);
+            %param_struct = struct([]); %this didn't work - need at
+            %least one parameter?
+            param_struct = struct('contrast', .5); %random choice, can be anything between 0 and 1
+            independent_variable = {'temporal_frequency', 'spatial_frequency'};
+            x = [SFs(:), TFs(:)]; % columns
+            r = r_(:); % columns
+            %why do we have these? Set control (blank) stimulus to
+            %firing rate = 0?
+            %should we have just one blank stimulus row or
+            %multiple? Add nan to end of x or end of sfs and tfs?
+            x(end + 1, :) = NaN;
+            r(end + 1, 1) = 0;
+
         end % generate_mock_parameters
     end % methods()
 end % speed_tuning
