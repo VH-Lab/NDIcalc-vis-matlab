@@ -1,4 +1,4 @@
-classdef spatial_frequency_tuning < ndi.calculator
+classdef spatial_frequency_tuning < ndi.calc.tuning_fit
 
     methods
         function spatial_frequency_tuning_obj = spatial_frequency_tuning(session)
@@ -8,7 +8,7 @@ classdef spatial_frequency_tuning < ndi.calculator
             %
             % Creates a SPATIAL_FREQUENCY_TUNING ndi.calculator object
             %
-                spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calculator(session,'spatial_frequency_tuning_calc',...
+                spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calc.tuning_fit(session,'spatial_frequency_tuning_calc',...
                     'spatial_frequency_tuning_calc');
                 spatial_frequency_tuning_obj.numberOfSelfTests = 22;
         end % spatial_frequency_tuning()
@@ -296,133 +296,16 @@ classdef spatial_frequency_tuning < ndi.calculator
         end % calculate_spatial_frequency_indexes()
         % TESTING METHODS
 
-        function [docs, doc_output, doc_expected_output] = generate_mock_docs(spatial_freq_calc_obj, scope, number_of_tests, kwargs)
-            % GENERATE_MOCK_DOCS - generate mock documents and expected answers for tests
-            %
-            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(SPATIAL_FREQ_CALC_OBJ, ...
-            %    SCOPE, NUMBER_OF_TESTS, ...)
-            %
-            % Creates a set of documents to test ndi.calc.vis.spatial_frequency_tuning.
-            %
-            % SCOPE is the scope to be tested: 'highSNR' or 'lowSNR'
-            % NUMBER_OF_TESTS indicates the number of tests to be performed.
-            %
-            % DOCS{i} is the set of helper documents that may have been created
-            %   in generating the ith test.
-            % DOC_OUTPUT{i} is the actual output of the calculator when operating on
-            %   DOCS{i} (the ith test).
-            % DOC_EXPECTED_OUTPUT{i} is what the output of the calculator should be, if there
-            %   were no noise.
-            %
-            % The quality of these outputs are evaluted using the function COMPARE_MOCK_DOCS
-            % as part of the TEST function for ndi.calculator objects.
-            %
-            % This function's behavior can be modified by name/value pairs.
-            % --------------------------------------------------------------------------------
-            % | Parameter (default):     | Description:                                      |
-            % |--------------------------|---------------------------------------------------|
-            % | generate_expected_docs(0)| Should we generate the expected docs? (That is,   |
-            % |                          |   generate the "right answer"?) Use carefully.    |
-            % | specific_test_inds([])   | A vector of test indices to run. If empty, all    |
-            % |                          |   tests are run. DOCS and DOC_OUTPUT will have    |
-            % |                          |   empty entries for skipped tests, but            |
-            % |                          |   DOC_EXPECTED_OUTPUT will be populated.          |
-            % |--------------------------|---------------------------------------------------|
-            %
-
-                arguments
-                    spatial_freq_calc_obj
-                    scope {mustBeMember(scope,{'highSNR','lowSNR'})}
-                    number_of_tests
-                    kwargs.generate_expected_docs (1,1) logical = false
-                    kwargs.specific_test_inds double = []
-                end
-                specific_test_inds = kwargs.specific_test_inds;
-                generate_expected_docs = kwargs.generate_expected_docs;
-
-                if numel(specific_test_inds) == 0
-                    specific_test_inds = 1:number_of_tests;
-                end
-
-                docs = cell(spatial_freq_calc_obj.numberOfSelfTests,1);
-                doc_output = cell(spatial_freq_calc_obj.numberOfSelfTests,1);
-                doc_expected_output = cell(spatial_freq_calc_obj.numberOfSelfTests,1);
-
-                for i=1:spatial_freq_calc_obj.numberOfSelfTests
-                    docs{i} = {};
-                    if ismember(i,specific_test_inds)
-                        S = spatial_freq_calc_obj.session;
-                        [function_params, function_choice] = spatial_freq_calc_obj.generate_mock_parameters(scope, i);
-                        numsteps = 100; %sets size of x
-                        %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
-                        spatial_freq_values = logspace(-2,log10(60),numsteps);
-                        switch function_choice
-                            case 'dog'
-                                r = vlt.math.dog(spatial_freq_values,function_params);
-                            case 'movshon' %function_params should have 4 values 
-                                r = vis.frequency.movshon2005_func(spatial_freq_values,function_params);
-                            case 'movshon_c' %function_params should have 5 params 
-                                r = vis.frequency.movshon2005_func(spatial_freq_values,function_params);
-                            otherwise
-                                error(['Unkown function ' function_choice '.']);
-                        end
-                        %param_struct = struct([]); %this didn't work - need at
-                        %least one parameter?
-                        param_struct = struct('temporal_frequency',2);
-                        independent_variable = {'spatial_frequency'}; % is the underscore required?
-                        x = [ spatial_freq_values(:); NaN]; % x variables plus a blank, column form
-                        r = [r(:); 0]; % responses plus a blank response, column form
-    
-                        switch scope
-                            case 'highSNR'
-                                reps = 5; % need reps to test significance measures
-                                noise = 0.001; % need a little noise to avoid round-off errors in significance measures in Matlab
-                            case 'lowSNR'
-                                reps = 10;
-                                noise = 1;
-                            otherwise
-                                error(['Unknown scope ' scope '.']);
-                        end % switch
-    
-                        docs{i} = ndi.mock.fun.stimulus_response(S,...
-                            param_struct, independent_variable, x, r, noise, reps);
-    
-                        calcparameters = spatial_freq_calc_obj.default_search_for_input_parameters();
-                        calcparameters.query.query = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','spatial_frequency','');
-                        calcparameters.query.query = calcparameters.query.query & ...
-                            ndi.query('','depends_on','element_id',docs{i}{3}.id());
-                        %I = spatial_freq_calc_obj.search_for_input_parameters(calcparameters);
-                        %%doesn't seem to be used
-                        doc_output{i} = spatial_freq_calc_obj.run('Replace',calcparameters);
-                        if numel(doc_output{i})>1
-                            error('Generated more than one output doc when one was expected.');
-                        elseif numel(doc_output{i})==0
-                            error('Generated no output docs when one was expected.');
-                        end
-                        doc_output{i} = doc_output{i}{1};
-
-                        if generate_expected_docs
-                            spatial_freq_calc_obj.write_mock_expected_output(i,doc_output{i});
-                        end
-                    end
-
-                    doc_expected_output{i} = spatial_freq_calc_obj.load_mock_expected_output(i);
-
-                end % for
-        end % generate_mock_docs()
-
-        function [P, function_choice, total] = generate_mock_parameters(spatial_freq_calc_obj, scope, index)
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(spatial_freq_calc_obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.spatial_frequency_tuning
             %
-            % [P, TOTAL] = ndi.calc.vis.generate_mock_parameters(scope, index)
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
             %
             % Generates a parameter set for generating a mock document with a given index value.
             % P will be a row vector of parameters
-            % TOTAL is the total number of mock stimuli that are available to be generated.
             %
-            % SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'.
-            % INDEX selects which parameters are used to generate a mock document (from 1..TOTAL, wrapped
-            % using MOD).
+            % SCOPE can be 'highSNR', or 'lowSNR'.
+            % INDEX selects which parameters are used to generate a mock document
             %
                 %plot is using dog, movshon, and movshon_c fits - let's use
                 %those here
@@ -465,6 +348,27 @@ classdef spatial_frequency_tuning < ndi.calculator
 
                 P = P_{actual_index};
                 function_choice = function_choice_{actual_index};
+
+                numsteps = 100; %sets size of x
+                %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
+                spatial_freq_values = logspace(-2,log10(60),numsteps);
+                switch function_choice
+                    case 'dog'
+                        r = vlt.math.dog(spatial_freq_values,P);
+                    case 'movshon' %function_params should have 4 values
+                        r = vis.frequency.movshon2005_func(spatial_freq_values,P);
+                    case 'movshon_c' %function_params should have 5 params
+                        r = vis.frequency.movshon2005_func(spatial_freq_values,P);
+                    otherwise
+                        error(['Unkown function ' function_choice '.']);
+                end
+                %param_struct = struct([]); %this didn't work - need at
+                %least one parameter?
+                param_struct = struct('temporal_frequency',2);
+                independent_variable = {'spatial_frequency'}; % is the underscore required?
+                x = [ spatial_freq_values(:); NaN]; % x variables plus a blank, column form
+                r = [r(:); 0]; % responses plus a blank response, column form
+
         end % generate_mock_parameters
     end % methods()
 end % spatial_frequency_tuning
