@@ -95,9 +95,9 @@ classdef oridir_tuning < ndi.calc.tuning_fit
             %
                 q1 = ndi.query('','isa','stimulus_tuningcurve','');
 
-                q2 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Orientation','');
-                q3 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','Direction','');
-                q4 = ndi.query('tuning_curve.independent_variable_label','exact_string_anycase','angle','');
+                q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Orientation','');
+                q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Direction','');
+                q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','angle','');
                 q234 = q2 | q3 | q4;
                 q_total = q1 & q234;
 
