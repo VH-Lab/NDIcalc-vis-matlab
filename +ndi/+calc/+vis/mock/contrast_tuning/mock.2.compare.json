@@ -1,0 +1,267 @@
+{"comparisonStruct": [
+  {
+    "comparisonMethod": "none",
+    "name": "app.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.url",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.session_id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.datestamp",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.properties.response_units",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.properties.response_type",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.tuning_curve.contrast",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.tuning_curve.mean",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.tuning_curve.stddev",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.tuning_curve.stderr",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.tuning_curve.individual",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.tuning_curve.control_stddev",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.tuning_curve.control_stderr",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "pValueConsistent",
+    "name": "contrast_tuning.significance.visual_response_anova_p",
+    "toleranceAmount": 0.05
+  },
+  {
+    "comparisonMethod": "pValueConsistent",
+    "name": "contrast_tuning.significance.across_stimuli_anova_p",
+    "toleranceAmount": 0.05
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fitless.interpolated_c50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.fit.naka_rushton_RB_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_contrast",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_empirical_c50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_r2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs percent difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_relative_max_gain",
+    "toleranceAmount": 50
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_saturation_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RB_sensitivity",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_contrast",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_empirical_c50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_r2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs percent difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_relative_max_gain",
+    "toleranceAmount": 50
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_saturation_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBN_sensitivity",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_contrast",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_values",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_pref",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_empirical_c50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_r2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs percent difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_relative_max_gain",
+    "toleranceAmount": 50
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_saturation_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrast_tuning.fit.naka_rushton_RBNS_sensitivity",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrasttuning_calc.input_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrasttuning_calc.depends_on.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrasttuning_calc.depends_on.value",
+    "toleranceAmount": 0
+  }
+]}
