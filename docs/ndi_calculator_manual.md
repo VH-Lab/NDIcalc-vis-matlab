@@ -585,6 +585,16 @@ Ensure your JSON document definition file is named identically to the document t
 - Describe output fields and their meaning
 - Include usage examples
 
+## Special Class: `ndi.calc.tuning_fit`
+
+The `ndi.calc.tuning_fit` class is a specialized subclass of `ndi.calculator` that is designed to help implementing calculators that fit a function to data, such as a tuning curve.
+
+It provides a standard implementation for generating mock documents and expected outputs, which streamlines the testing process. If your calculator fits a curve to data, consider inheriting from `ndi.calc.tuning_fit`.
+
+To use `ndi.calc.tuning_fit`:
+1.  Inherit from `ndi.calc.tuning_fit` instead of `ndi.calculator`.
+2.  Implement the `generate_mock_parameters` method, which `generate_mock_docs` relies on.
+
 ## Testing
 
 ### Basic Test
@@ -602,17 +612,57 @@ assert(isfield(docs{1}.document_properties.my_calculator_calc, ...
     'output_field1'), 'Missing output field');
 ```
 
-### Advanced Testing
-For production calculators, implement:
-- `generate_mock_docs()` - Create synthetic test data
-- `compare_mock_docs()` - Validate results against expected output
+### Advanced Testing with Mock Documents
 
-When implementing `generate_mock_docs`, you should support two "scopes" for producing mock documents:
+For production calculators, it is essential to perform robust testing using synthetic data ("mock documents"). This ensures the calculator behaves correctly under known conditions.
 
-*   **`highSNR`**: This scope corresponds to a high signal-to-noise ratio condition (previously known as "standard"). In this scope, the test checks to make sure that the document produced is highly accurate and matches the output one expects.
-*   **`lowSNR`**: This scope corresponds to a high noise condition (previously known as "high noise"). In this scope, the test makes sure that a document is produced successfully and that an error is not generated.
+#### Generating Mock Documents
 
-See `contrast_tuning.m` lines 281-393 for examples.
+The `generate_mock_docs` method creates synthetic input data, runs the calculator, and compares the result to an expected output.
+
+To generate mock documents for testing:
+
+```matlab
+[docs, doc_output, doc_expected_output] = obj.generate_mock_docs(scope, number_of_tests, Name, Value);
+```
+
+*   `scope`: Defines the test conditions.
+    *   `'highSNR'`: High signal-to-noise ratio (easy case).
+    *   `'lowSNR'`: High noise (stress test).
+*   `number_of_tests`: The number of test iterations to run.
+
+#### Generating "Gold Standard" Documents
+
+To create the "gold standard" or expected output documents (against which future runs will be compared), you must run `generate_mock_docs` with the `generate_expected_docs` flag set to `true`.
+
+```matlab
+% Generate 5 high SNR tests and save the output as expected results
+[docs, doc_output, doc_expected_output] = obj.generate_mock_docs('highSNR', 5, 'generate_expected_docs', true);
+```
+
+**Where are they stored?**
+The mock documents and expected outputs are stored in the calculator's test directory (usually `+ndi/+calc/+category/test/`). You will need to locate these files to inspect them or use them for defining comparison rules.
+
+#### Comparing Mock Documents
+
+After generating the mock documents, you need to verify that the mock documents (which represent the "gold standard" or "expected" output) are correct and can be used for automated testing.
+
+You should perform a "doc comparison interview" for each mock document. This process allows you to inspect the document structure and content and define rules for comparison.
+
+```matlab
+% 1. Load the mock document
+% You need to locate the generated .json file in the test directory (e.g., 'mock.1.json')
+mock_doc_json = fileread('mock.1.json');
+doc = ndi.document(jsondecode(mock_doc_json));
+
+% 2. Run the interview to define comparison rules
+dc_out = ndi.database.doctools.docComparison.interview(doc);
+
+% 3. Save the comparison rules to a file
+vlt.file.str2text('mock.1.comparison.json', dc_out.toJson);
+```
+
+This generates a comparison JSON file that the testing framework uses to validate future calculator runs.
 
 ## Common Patterns
 
