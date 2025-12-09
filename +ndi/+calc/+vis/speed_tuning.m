@@ -302,26 +302,6 @@ classdef speed_tuning < ndi.calc.tuning_fit
 
         % TESTING METHODS
 
-        function [b, errormsg] = compare_mock_docs(obj, expected_doc, actual_doc, scope)
-            % COMPARE_MOCK_DOCS - compare an expected calculation answer with an actual answer
-            %
-            % [B, ERRORMSG] = COMPARE_MOCK_DOCS(OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE)
-            %
-            % Given an NDI document with the expected answer to a calculation (EXPECTED_DOC),
-            % the ACTUAL_DOC computed, and the SCOPE (a string: 'standard', 'low_noise','high_noise'),
-            % this function computes whether the ACTUAL_DOC is within an allowed tolerance of
-            % EXPECTED_DOC.
-            %
-            % B is 1 if the differences in the documents are within the tolerance of the class.
-            % Otherwise, B is 0.
-            % If B is 0, ERRORMSG is a string that indicates where the ACTUAL_DOC is out of tolerance.
-            %
-
-            [b_, errormsg] = ndi.calc.vis.test.speed_tuning_compare_docs(expected_doc, actual_doc, scope);
-            b = ~isempty(find(b_, 1)); %b is 1 if b_ has no 0s, i.e. there are no errors. Alternative: b = all(b_);
-            errormsg = cat(2, errormsg{:}); %turn into a string
-        end
-
         function [param_struct, independent_variable, x, r] = generate_mock_parameters(obj, scope, index)
             % generate_mock_parameters - generate mock parameters for testing ndi.calc.vis.oridir_tuning
             %
@@ -347,9 +327,9 @@ classdef speed_tuning < ndi.calc.tuning_fit
             %17th and 18th: skew temporal freq tuning curve in
             %different directions?
             %add more tests by adding to end of each parameter's vector
-            A = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 1, 20, 20]; %Peak response of the neuron
+            A = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 2, 2]; %Peak response of the neuron
             zeta = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5, -.5]; %Skew of the temporal freq tuning curve
-            xi = [.2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, .5, .5, .5]; %speed tuning index (0 to 1)
+            xi = [.2, 0.0001, 1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 1, 1, 1, 1, .5, .5, .5]; %speed tuning index (0 to 1)
             sigma_sf = [1, 1, 1, 1.2, 1.2, 1.2, 1.2, .5, .5, .5, .5, 1, 1, 1, 1, 1, 1, 1]; % Tuning width of the neuron for spatial frequency (Cycles per degree)
             sigma_tf = [1, 1, 1, .5, .5, .5, .5, 1.2, 1.2, 1.2, 1.2, 1, 1, 1, 1, 1, 1, 1]; % Tuning width of the neuron for temporal frequency (Cycles per second)
             sf0 = [0.2, 0.2, 0.2, .2, .8, .2, .8, .2, .8, .2, .8, .2, .8, .2, .8, sqrt(2) / 5, sqrt(2) / 5, sqrt(2) / 5]; %preferred spatial frequency averaged across temporal frequencies
