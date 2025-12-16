@@ -59,11 +59,8 @@ classdef contrast_sensitivity < ndi.calculator
                     continue;
                 end
 
-                % Create Temporary Session
-                session_dir = [tempname '_test_session'];
-                if isfolder(session_dir), rmdir(session_dir,'s'); end
-                S = ndi.session.dir('test_session', session_dir);
-                cleanup_obj = onCleanup(@() rmdir(session_dir,'s'));
+                % Use Object Session
+                S = obj.session;
 
                 % Mock Data Generation
                 % 1. Element
