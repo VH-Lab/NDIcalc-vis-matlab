@@ -12,6 +12,167 @@ classdef contrast_sensitivity < ndi.calculator
                     'contrastsensitivity_calc');
         end % contrast_sensitivity()
 
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
+            % GENERATE_MOCK_DOCS - generate mock documents for testing
+            %
+            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, SCOPE, NUMBER_OF_TESTS, ...)
+            %
+            % Generates mock documents and runs the calculator for testing purposes.
+            %
+            % Inputs:
+            %   OBJ - the calculator object
+            %   SCOPE - 'highSNR' or 'lowSNR'
+            %   NUMBER_OF_TESTS - number of tests to run (only 1 supported for now)
+            %   KWARGS - keyword arguments:
+            %     'generate_expected_docs' (boolean, default false) - if true, save expected output
+            %     'specific_test_inds' (vector, default []) - run only specific test indices
+            %
+
+            arguments
+                obj
+                scope
+                number_of_tests
+                kwargs.generate_expected_docs (1,1) logical = false
+                kwargs.specific_test_inds (1,:) double = []
+            end
+
+            docs = cell(1,number_of_tests);
+            doc_output = cell(1,number_of_tests);
+            doc_expected_output = cell(1,number_of_tests);
+
+            % Define Mock Directory
+            p = fileparts(mfilename('fullpath'));
+            mock_dir = fullfile(p, 'mock', 'contrast_sensitivity');
+            if ~isfolder(mock_dir)
+                mkdir(mock_dir);
+            end
+
+            % Define Noise based on Scope
+            if strcmpi(scope, 'lowSNR')
+                noise_level = 1.0;
+            else
+                noise_level = 0.1;
+            end
+
+            for i = 1:number_of_tests
+                if ~isempty(kwargs.specific_test_inds) && ~ismember(i, kwargs.specific_test_inds)
+                    continue;
+                end
+
+                % Create Temporary Session
+                session_dir = [tempname '_test_session'];
+                if isfolder(session_dir), rmdir(session_dir,'s'); end
+                S = ndi.session.dir('test_session', session_dir);
+                cleanup_obj = onCleanup(@() rmdir(session_dir,'s'));
+
+                % Mock Data Generation
+                % 1. Element
+                element_doc = ndi.document('ndi_document', 'element', ...
+                    struct('elementstring', 'mock_element', 'type', 'spikes')) + ...
+                              ndi.document('ndi_document', 'element_spikes', struct());
+                S.database_add(element_doc);
+
+                current_docs = {element_doc};
+
+                % Parameters
+                sFrequencies = [0.05, 0.1, 0.2];
+                contrasts = 0:0.1:1;
+                Rm_base = 10;
+                b = 2;
+                c50 = 0.3;
+
+                % Adjust parameters based on SF
+                % SF 0.05: High response
+                % SF 0.1: Lower response
+                % SF 0.2: Very low response
+
+                scale_factors = [1, 0.5, 0.1];
+
+                for j = 1:numel(sFrequencies)
+                    sf = sFrequencies(j);
+                    Rm = Rm_base * scale_factors(j);
+
+                    % Naka Rushton Response
+                    resp_mean = Rm * (contrasts.^b) ./ (c50^b + contrasts.^b);
+
+                    % 2. Stimulus Presentation
+                    stim_params = struct();
+                    stim_params.stimuli(1).parameters.sFrequency = sf;
+                    stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
+
+                    stim_pres_doc = ndi.document('ndi_document', 'stimulus_presentation', stim_params);
+                    S.database_add(stim_pres_doc);
+                    current_docs{end+1} = stim_pres_doc;
+
+                    % 3. Stimulus Response Scalar
+                    stim_resp_struct.response_type = 'mean';
+                    stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct);
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', element_doc.id());
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
+                    S.database_add(stim_resp_scalar_doc);
+                    current_docs{end+1} = stim_resp_scalar_doc;
+
+                    % 4. Stimulus Tuning Curve
+                    tuning_struct.independent_variable_label = 'Contrast';
+                    tuning_struct.independent_variable_value = contrasts;
+                    tuning_struct.stimid = 1;
+                    tuning_struct.response_units = 'Hz';
+                    tuning_struct.mean = resp_mean;
+                    tuning_struct.stddev = resp_mean * noise_level; % Use noise level
+                    tuning_struct.stderr = resp_mean * (noise_level * 0.5);
+                    % Add individual responses if possible, but leaving empty might work if calculator handles it
+                    % But let's add dummy individual responses
+                    n_trials = 5;
+                    tuning_struct.individual = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
+                    tuning_struct.control_stddev = 0;
+                    tuning_struct.control_stderr = 0;
+
+                    stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct);
+                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('element_id', element_doc.id());
+                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('stimulus_response_scalar_id', stim_resp_scalar_doc.id());
+                    S.database_add(stim_tuning_doc);
+                    current_docs{end+1} = stim_tuning_doc;
+                end
+
+                docs{i} = current_docs;
+
+                % Run Contrast Tuning Calculator
+                ct = ndi.calc.vis.contrast_tuning(S);
+                ct.run('Replace');
+
+                % Run Contrast Sensitivity Calculator (Target)
+                ccc = ndi.calc.vis.contrast_sensitivity(S);
+
+                parameters = ccc.default_search_for_input_parameters();
+                parameters.query.query = ndi.query('element.type','exact_string','spikes','');
+
+                ccc.run('Replace', parameters);
+
+                % Get Output
+                q = ndi.query('','isa','contrastsensitivity_calc','');
+                out_docs = S.database_search(q);
+
+                if ~isempty(out_docs)
+                    doc_output{i} = out_docs{1};
+                else
+                    error('No output document generated.');
+                end
+
+                % Handle Expected Docs
+                 if kwargs.generate_expected_docs
+                    doc_expected_output{i} = doc_output{i};
+                    vlt.file.str2text(fullfile(mock_dir, ['mock.' int2str(i) '.json']), jsonencode(doc_expected_output{i}.document_properties));
+                else
+                    expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
+                    if isfile(expected_file)
+                         doc_expected_output{i} = ndi.document(jsondecode(fileread(expected_file)));
+                    else
+                         doc_expected_output{i} = [];
+                    end
+                end
+            end
+        end
+
         function doc = calculate(ndi_calculator_obj, parameters)
             % CALCULATE - perform the calculator for ndi.calc.example.contrast_sensitivity
             %
