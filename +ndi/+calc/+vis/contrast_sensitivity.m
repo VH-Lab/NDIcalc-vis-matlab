@@ -75,9 +75,10 @@ classdef contrast_sensitivity < ndi.calculator
                 S.database_add(subdoc);
 
                 % Step 2 and 3: make our stimulator object and spiking neuron object
+                nde_stim = ndi.element.timeseries(S,'mock stimulator',refNum,'stimulator',[],0,subdoc_id);
                 nde = ndi.element.timeseries(S,'mock spikes',refNum,'spikes',[],0,subdoc_id);
 
-                current_docs = {subdoc, nde.load_element_doc()};
+                current_docs = {subdoc, nde_stim.load_element_doc(), nde.load_element_doc()};
 
                 % Parameters
                 sFrequencies = [0.05, 0.1, 0.2];
@@ -107,6 +108,7 @@ classdef contrast_sensitivity < ndi.calculator
 
                     stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
                         obj.session.newdocument();
+                    stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
                     S.database_add(stim_pres_doc);
                     current_docs{end+1} = stim_pres_doc;
 
