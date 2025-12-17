@@ -10,6 +10,7 @@ classdef contrast_sensitivity < ndi.calculator
             %
                 contrast_sensitivity_obj = contrast_sensitivity_obj@ndi.calculator(session,'contrastsensitivity_calc',...
                     'contrastsensitivity_calc');
+                contrast_sensitivity_obj.numberOfSelfTests = 1;
         end % contrast_sensitivity()
 
         function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
@@ -64,12 +65,19 @@ classdef contrast_sensitivity < ndi.calculator
 
                 % Mock Data Generation
                 % 1. Element
-                element_doc = ndi.document('ndi_document', 'element', ...
-                    struct('elementstring', 'mock_element', 'type', 'spikes')) + ...
-                              ndi.document('ndi_document', 'element_spikes', struct());
-                S.database_add(element_doc);
+                refNum = 20000+randi(1000);
 
-                current_docs = {element_doc};
+                % Step 1: set up mock subject
+
+                ms = ndi.subject(['mock' int2str(refNum) '@nosuchlab.org'],'A mock subject for testing purposes');
+                subdoc = ms.newdocument();
+                subdoc_id = subdoc.id();
+                S.database_add(subdoc);
+
+                % Step 2 and 3: make our stimulator object and spiking neuron object
+                nde = ndi.element.timeseries(S,'mock spikes',refNum,'spikes',[],0,subdoc_id);
+
+                current_docs = {subdoc, nde.load_element_doc()};
 
                 % Parameters
                 sFrequencies = [0.05, 0.1, 0.2];
@@ -97,14 +105,14 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_params.stimuli(1).parameters.sFrequency = sf;
                     stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
 
-                    stim_pres_doc = ndi.document('ndi_document', 'stimulus_presentation', stim_params);
+                    stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params);
                     S.database_add(stim_pres_doc);
                     current_docs{end+1} = stim_pres_doc;
 
                     % 3. Stimulus Response Scalar
                     stim_resp_struct.response_type = 'mean';
                     stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct);
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', element_doc.id());
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
                     S.database_add(stim_resp_scalar_doc);
                     current_docs{end+1} = stim_resp_scalar_doc;
@@ -125,7 +133,7 @@ classdef contrast_sensitivity < ndi.calculator
                     tuning_struct.control_stderr = 0;
 
                     stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct);
-                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('element_id', element_doc.id());
+                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('element_id', nde.id());
                     stim_tuning_doc = stim_tuning_doc.set_dependency_value('stimulus_response_scalar_id', stim_resp_scalar_doc.id());
                     S.database_add(stim_tuning_doc);
                     current_docs{end+1} = stim_tuning_doc;
