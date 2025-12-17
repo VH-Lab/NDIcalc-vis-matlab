@@ -65,20 +65,11 @@ classdef contrast_sensitivity < ndi.calculator
 
                 % Mock Data Generation
                 % 1. Element
-                refNum = 20000+randi(1000);
+                mock_data = ndi.mock.fun.subject_stimulator_neuron(S);
+                nde = mock_data.mock_spikes;
+                nde_stim = mock_data.mock_stimulator;
 
-                % Step 1: set up mock subject
-
-                ms = ndi.subject(['mock' int2str(refNum) '@nosuchlab.org'],'A mock subject for testing purposes');
-                subdoc = ms.newdocument();
-                subdoc_id = subdoc.id();
-                S.database_add(subdoc);
-
-                % Step 2 and 3: make our stimulator object and spiking neuron object
-                nde_stim = ndi.element.timeseries(S,'mock stimulator',refNum,'stimulator',[],0,subdoc_id);
-                nde = ndi.element.timeseries(S,'mock spikes',refNum,'spikes',[],0,subdoc_id);
-
-                current_docs = {subdoc, nde_stim.load_element_doc(), nde.load_element_doc()};
+                current_docs = {mock_data.mock_subject, nde_stim.load_element_doc(), nde.load_element_doc()};
 
                 % Parameters
                 sFrequencies = [0.05, 0.1, 0.2];
@@ -105,6 +96,14 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_params = struct();
                     stim_params.stimuli(1).parameters.sFrequency = sf;
                     stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
+                    stim_params.presentation_order = 1;
+                    stim_params.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');
+                    stim_params.presentation_time(1).clocktype = 'no_time';
+                    stim_params.presentation_time(1).stimopen = 0;
+                    stim_params.presentation_time(1).onset = 0;
+                    stim_params.presentation_time(1).offset = 0;
+                    stim_params.presentation_time(1).stimclose = 0;
+                    stim_params.presentation_time(1).stimevents = [];
 
                     stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
                         obj.session.newdocument();
