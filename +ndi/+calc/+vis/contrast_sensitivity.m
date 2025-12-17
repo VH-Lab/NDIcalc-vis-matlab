@@ -31,7 +31,7 @@ classdef contrast_sensitivity < ndi.calculator
 
             arguments
                 obj
-                scope
+                scope (1,:) char {mustBeMember(scope,{'highSNR','lowSNR'})}
                 number_of_tests
                 kwargs.generate_expected_docs (1,1) logical = false
                 kwargs.specific_test_inds (1,:) double = []
