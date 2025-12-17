@@ -105,13 +105,15 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_params.stimuli(1).parameters.sFrequency = sf;
                     stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
 
-                    stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params);
+                    stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
+                        obj.session.newdocument();
                     S.database_add(stim_pres_doc);
                     current_docs{end+1} = stim_pres_doc;
 
                     % 3. Stimulus Response Scalar
                     stim_resp_struct.response_type = 'mean';
-                    stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct);
+                    stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
+                        obj.session.newdocument();
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
                     S.database_add(stim_resp_scalar_doc);
@@ -132,7 +134,8 @@ classdef contrast_sensitivity < ndi.calculator
                     tuning_struct.control_stddev = 0;
                     tuning_struct.control_stderr = 0;
 
-                    stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct);
+                    stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct) + ...
+                        obj.session.newdocument();
                     stim_tuning_doc = stim_tuning_doc.set_dependency_value('element_id', nde.id());
                     stim_tuning_doc = stim_tuning_doc.set_dependency_value('stimulus_response_scalar_id', stim_resp_scalar_doc.id());
                     S.database_add(stim_tuning_doc);
