@@ -98,6 +98,7 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_params = struct();
                     stim_params.stimuli(1).parameters.sFrequency = sf;
                     stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
+                    stim_params.stimuli(2).parameters.is_blank = 1;
                     stim_params.presentation_order = 1;
 
                     stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
@@ -126,19 +127,25 @@ classdef contrast_sensitivity < ndi.calculator
                     current_docs{end+1} = stim_resp_scalar_doc;
 
                     % 4. Stimulus Tuning Curve
+                    n_trials = 5;
                     tuning_struct.independent_variable_label = 'Contrast';
                     tuning_struct.independent_variable_value = contrasts;
-                    tuning_struct.stimid = 1;
+                    tuning_struct.stimid = ones(size(contrasts));
+                    tuning_struct.stimulus_presentation_number = 1;
                     tuning_struct.response_units = 'Hz';
-                    tuning_struct.mean = resp_mean;
-                    tuning_struct.stddev = resp_mean * noise_level; % Use noise level
-                    tuning_struct.stderr = resp_mean * (noise_level * 0.5);
-                    % Add individual responses if possible, but leaving empty might work if calculator handles it
-                    % But let's add dummy individual responses
-                    n_trials = 5;
-                    tuning_struct.individual = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
-                    tuning_struct.control_stddev = 0;
-                    tuning_struct.control_stderr = 0;
+                    tuning_struct.response_mean = resp_mean;
+                    tuning_struct.response_stddev = resp_mean * noise_level; % Use noise level
+                    tuning_struct.response_stderr = resp_mean * (noise_level * 0.5);
+
+                    tuning_struct.individual_responses_real = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
+                    tuning_struct.individual_responses_imaginary = 0 * tuning_struct.individual_responses_real;
+
+                    tuning_struct.control_stimid = 2;
+                    tuning_struct.control_response_mean = 0;
+                    tuning_struct.control_response_stddev = 0;
+                    tuning_struct.control_response_stderr = 0;
+                    tuning_struct.control_individual_responses_real = zeros(n_trials,1);
+                    tuning_struct.control_individual_responses_imaginary = zeros(n_trials,1);
 
                     stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct) + ...
                         obj.session.newdocument();
