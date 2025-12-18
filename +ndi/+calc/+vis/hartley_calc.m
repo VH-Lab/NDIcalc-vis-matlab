@@ -119,7 +119,7 @@ classdef hartley_calc < ndi.calculator
                         mystring = char(vlt.data.prettyjson(mystring));
                         vlt.file.str2text(myfile,mystring);
 
-                        [sta,p_val, rescale, cmap] = revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers.S,...
+                        [sta,p_val, rescale, cmap] = vis.revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers.S,...
                             hartley_reverse_correlation.hartley_numbers.KXV, ...
                             hartley_reverse_correlation.hartley_numbers.KYV, ...
                             hartley_reverse_correlation.frameTimes, ...
@@ -238,8 +238,8 @@ classdef hartley_calc < ndi.calculator
 
                 [sta,pval] = read_sta(ndi_calculator_obj, doc);
                 clim = [-1 1] * max(abs([min(sta(:)) max(sta(:))]));
-                significance_plot = revcorr.rescale_p_image(pval);
-                cmap = revcorr.get_cmap();
+                significance_plot = vis.revcorr.rescale_p_image(pval);
+                cmap = vis.revcorr.get_cmap();
 
                 size_param = min(36,size(sta,3));
                 H = vlt.image.stack2tile(sta(:,:,1:size_param),plotrows,plotcols);
@@ -256,8 +256,8 @@ classdef hartley_calc < ndi.calculator
                 linkaxes([ax(1) ax(2)]);
 
                 rp = doc.document_properties.hartley_reverse_correlation.reconstruction_properties;
-                [theta,sta_r,pval_r] = revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
-                [t_profile,t_profile_pval] = revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
+                [theta,sta_r,pval_r] = vis.revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
+                [t_profile,t_profile_pval] = vis.revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
 
                 ax(3) = subplot(2,2,2);
                 imshow(t_profile,clim,'XData',rp.T_coords,'YData',rp.Y_coords);

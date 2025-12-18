@@ -1,7 +1,7 @@
 function [rescale] = rescale_p_image(cdf_image, varargin)
 %RESCALE_P_IMAGE - rescale the P-value image so that only very significant points are plotted
 %
-% RESCALE = RESCALE_P_IMAGE(CDF_IMAGE, ...)
+% RESCALE = vis.revcorr.rescale_p_image(CDF_IMAGE, ...)
 %
 % Rescales an image of CDF values so that highly significant pixels are colorized.
 % 

@@ -1,6 +1,11 @@
 function rf = setRF()
-%SETRF Summary of this function goes here
-%   Detailed explanation goes here
+%SETRF - set the receptive field for the simulation
+%
+% RF = vis.revcorr.setRF()
+%
+% OUTPUTS:
+%  RF - the receptive field (MxMxTmax)
+
 x = 0:199;
 y = 0:199;
 [X,~] = meshgrid(x,y);

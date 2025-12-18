@@ -1,7 +1,7 @@
 function cmap = get_cmap()
 %GET_CMAP Summary - generate the color map for plotting the p_value
 %
-% CMAP = GET_CMAP();
+% CMAP = vis.revcorr.get_cmap();
 %
 % Returns a 256-entry color map where the first 64 entries are blue
 % going from strong (values near 0) to weak (entry 64), the middle values

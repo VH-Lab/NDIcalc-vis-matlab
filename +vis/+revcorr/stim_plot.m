@@ -1,6 +1,12 @@
 function stim_plot(B,cmap)
-%STIM_PLOT Summary of this function goes here
-%   Detailed explanation goes here
+%STIM_PLOT - plot the stimulus reconstruction
+%
+% vis.revcorr.stim_plot(B,CMAP)
+%
+% Inputs:
+%  B - the stimulus reconstruction (MxMxTmax)
+%  CMAP - the colormap to use (optional)
+
 figure();
 ax = [];
 for i = 1:size(B,3)

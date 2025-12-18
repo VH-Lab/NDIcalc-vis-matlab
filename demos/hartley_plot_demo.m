@@ -88,12 +88,12 @@ for i=1:numel(elements),
 
 	% read Hartley reconstruction
 	[sta,pval] = hc.read_sta(h);
-	significance_plot = revcorr.rescale_p_image(pval);
-	cmap = revcorr.get_cmap();
+	significance_plot = vis.revcorr.rescale_p_image(pval);
+	cmap = vis.revcorr.get_cmap();
 
 	rp = h.document_properties.hartley_reverse_correlation.reconstruction_properties;
-	[theta,sta_r,pval_r] = revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
-	[t_profile,t_profile_pval] = revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
+	[theta,sta_r,pval_r] = vis.revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
+	[t_profile,t_profile_pval] = vis.revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
 
 	if isempty(Y_axis),
 		Y_axis_here = 0.5 * size(sta,2); % height is second axis in images

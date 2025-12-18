@@ -13,15 +13,15 @@ parfor i = 1:size(t_start, 1)
     t_e = t_end(i);
     cur_tp = [i, t_s, t_e];
     disp(cur_tp);
-    [hartley_stimulus_parameters, hartley_stimulus_times] = revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
-    [b,t] = revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, tmax);
+    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, tmax);
 %     if (i == 1)
 %         reconstruction_block = zeros(size(b));
 %     end
     reconstruction_block = reconstruction_block + b;  
 end
 sta = reconstruction_block / size(spiketimes, 1);
-% revcorr.stim_plot(sta);
+% vis.revcorr.stim_plot(sta);
 % file_name = strsplit(input_filename, "/");
 % file_name = strsplit(file_name(end), ".");
 % file_name = file_name(1);
