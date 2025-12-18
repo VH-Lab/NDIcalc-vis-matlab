@@ -110,6 +110,7 @@ classdef contrast_sensitivity < ndi.calculator
                         obj.session.newdocument();
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
                     S.database_add(stim_resp_scalar_doc);
                     current_docs{end+1} = stim_resp_scalar_doc;
 
