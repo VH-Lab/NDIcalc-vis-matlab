@@ -97,13 +97,6 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_params.stimuli(1).parameters.sFrequency = sf;
                     stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
                     stim_params.presentation_order = 1;
-                    stim_params.presentation_time = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');
-                    stim_params.presentation_time(1).clocktype = 'no_time';
-                    stim_params.presentation_time(1).stimopen = 0;
-                    stim_params.presentation_time(1).onset = 0;
-                    stim_params.presentation_time(1).offset = 0;
-                    stim_params.presentation_time(1).stimclose = 0;
-                    stim_params.presentation_time(1).stimevents = [];
 
                     stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
                         obj.session.newdocument();
