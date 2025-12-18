@@ -107,6 +107,12 @@ classdef contrast_sensitivity < ndi.calculator
                     current_docs{end+1} = stim_pres_doc;
 
                     % 3. Stimulus Response Scalar
+                    stim_resp_param_struct = struct();
+                    stim_resp_param_doc = ndi.document('stimulus_response_scalar_parameters', 'stimulus_response_scalar_parameters', stim_resp_param_struct) + ...
+                        obj.session.newdocument();
+                    S.database_add(stim_resp_param_doc);
+                    current_docs{end+1} = stim_resp_param_doc;
+
                     stim_resp_struct.response_type = 'mean';
                     stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
                         obj.session.newdocument();
@@ -114,6 +120,7 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_control_id', nde_control.id());
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_response_scalar_parameters_id', stim_resp_param_doc.id());
                     S.database_add(stim_resp_scalar_doc);
                     current_docs{end+1} = stim_resp_scalar_doc;
 
