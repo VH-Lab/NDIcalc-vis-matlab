@@ -114,6 +114,7 @@ classdef contrast_sensitivity < ndi.calculator
                     current_docs{end+1} = stim_resp_param_doc;
 
                     stim_resp_struct.response_type = 'mean';
+                    stim_resp_struct.responses = [];
                     stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
                         obj.session.newdocument();
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
