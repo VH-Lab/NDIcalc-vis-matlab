@@ -68,8 +68,10 @@ classdef contrast_sensitivity < ndi.calculator
                 mock_data = ndi.mock.fun.subject_stimulator_neuron(S);
                 nde = mock_data.mock_spikes;
                 nde_stim = mock_data.mock_stimulator;
+                refNum = nde.reference;
+                nde_control = ndi.element.timeseries(S, 'mock control', refNum, 'stimulus_control', [], 0, mock_data.mock_subject.id());
 
-                current_docs = {mock_data.mock_subject, nde_stim.load_element_doc(), nde.load_element_doc()};
+                current_docs = {mock_data.mock_subject, nde_stim.load_element_doc(), nde.load_element_doc(), nde_control.load_element_doc()};
 
                 % Parameters
                 sFrequencies = [0.05, 0.1, 0.2];
@@ -111,6 +113,7 @@ classdef contrast_sensitivity < ndi.calculator
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
                     stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
+                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_control_id', nde_control.id());
                     S.database_add(stim_resp_scalar_doc);
                     current_docs{end+1} = stim_resp_scalar_doc;
 
