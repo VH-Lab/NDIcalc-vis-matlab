@@ -128,7 +128,7 @@ classdef contrast_sensitivity < ndi.calculator
 
                     % 4. Stimulus Tuning Curve
                     n_trials = 5;
-                    tuning_struct.independent_variable_label = 'Contrast';
+                    tuning_struct.independent_variable_label = {'Contrast'};
                     tuning_struct.independent_variable_value = contrasts;
                     tuning_struct.stimid = ones(size(contrasts));
                     tuning_struct.stimulus_presentation_number = 1;
