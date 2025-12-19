@@ -1,7 +1,7 @@
 function [theta,sta,prob_sta] = rotate_sta(T_coords,sta,prob_sta)
 % ROTATE_STA - rotate the spike-triggered average to the prevailing orientation
 %
-% [THETA,STA,PROB_STA] = ROTATE_STA(T_COORDS,STA,PROB_STA)
+% [THETA,STA,PROB_STA] = vis.revcorr.rotate_sta(T_COORDS,STA,PROB_STA)
 %
 % Find the prevailing orientation THETA (in radians) for a spike-triggered
 % average. T_COORDS are the time coordinates (in seconds) of the spike-triggered% average and STA is an XxYxT matrix with the STA. PROB_STA is an XxYxT matrix

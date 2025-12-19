@@ -44,9 +44,9 @@ mgrid = reshape([x_col, y_col, t_col], 240000, 1, 3);
 Upper = [ Inf; Inf; Inf; Inf; Inf; Inf; Inf; ];
 Lower = [ -Inf; -Inf; -Inf; -Inf; -Inf; -Inf; 0];
 
-revcorr.mvnpdf_3(StartPoint,mgrid),
+vis.revcorr.mvnpdf_3(StartPoint,mgrid),
 
-x = lsqcurvefit(@(x,xdata) revcorr.mvnpdf_3(x,xdata),StartPoint,mgrid,response(:), Lower, Upper);
+x = lsqcurvefit(@(x,xdata) vis.revcorr.mvnpdf_3(x,xdata),StartPoint,mgrid,response(:), Lower, Upper);
 
 mu = [x(1) x(2) x(3)];
 C = [x(4) x(5) x(6); x(5) x(7) x(8); x(6) x(8) x(9)];

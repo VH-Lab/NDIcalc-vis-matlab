@@ -1,7 +1,7 @@
 function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t0, t1, tmax)
 % HARTLEY_STIMULUS_RESAMPLED_TIME - generate a space-time picture of the stimulus in a time interval
 %
-% [B,T] = HARTLEY_STIMULUS_RESAMPLED_TIME(M, HARTLEY_STIMULUS_PARAMETERS, HARTLEY_STIMULUS_TIMES, T0, T1, DELTAT)
+% [B,T] = vis.revcorr.hartley_stimulus_resampled_time(M, HARTLEY_STIMULUS_PARAMETERS, HARTLEY_STIMULUS_TIMES, T0, T1, DELTAT)
 %
 % Inputs:
 %  M - the size of the Hartley stimulus 

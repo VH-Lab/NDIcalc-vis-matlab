@@ -7,19 +7,19 @@ input_filename = "/Users/cxy/Reverse Correlation/data/hartley_data/t00005_leftco
 % M = 200;
 
 %%
-[s,kx_v, ky_v, frameTimes, spiketimes, T_coords, Y_coords] = revcorr.json_file_processor(input_filename);
+[s,kx_v, ky_v, frameTimes, spiketimes, T_coords, Y_coords] = vis.revcorr.json_file_processor(input_filename);
 %%
-[sta,p_val, rescale, cmap] = revcorr.sta_pipeline(s,kx_v, ky_v, frameTimes, spiketimes, T_coords, Y_coords, Y_coords);
+[sta,p_val, rescale, cmap] = vis.revcorr.sta_pipeline(s,kx_v, ky_v, frameTimes, spiketimes, T_coords, Y_coords, Y_coords);
 %%
-% revcorr.stim_plot(rescale, cmap);
+% vis.revcorr.stim_plot(rescale, cmap);
 %%
 [X,Y,T] = meshgrid(Y_coords,Y_coords, T_coords);
-[a, mu, C] = revcorr.gauss3fit(X, Y, T, sta, 1);
+[a, mu, C] = vis.revcorr.gauss3fit(X, Y, T, sta, 1);
 r = a * mvnpdf([x_col y_col t_col], mu, C);
 r_on = reshape(r, 200, 200, size(T_coords, 1));
-[a, mu, C] = revcorr.gauss3fit(X, Y, T, sta, 0);
+[a, mu, C] = vis.revcorr.gauss3fit(X, Y, T, sta, 0);
 r = a * mvnpdf([x_col y_col t_col], mu, C);
 r_off = reshape(r, 200, 200, size(T_coords, 1));
 sta_fit = cat(3, sta, r_on, r_off);
-revcorr.stim_plot(sta_fit);
+vis.revcorr.stim_plot(sta_fit);
 % imagesc(X(1, :, 1), Y(:, 1, 1)', r_(:, :, 2));

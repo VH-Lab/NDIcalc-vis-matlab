@@ -1,6 +1,20 @@
 function [hartley_stimulus_parameters, hartley_stimulus_times] = get_frames(s,kx_v, ky_v, frameTimes, t0, t1)
-%GET_FRAMES Summary of this function goes here
-%   Detailed explanation goes here
+%GET_FRAMES - extract the hartley stimulus parameters and time points
+% in a given interval [t0, t1]
+%
+% [HARTLEY_STIMULUS_PARAMETERS, HARTLEY_STIMULUS_TIMES] = vis.revcorr.get_frames(S, KX_V, KY_V, FRAMETIMES, T0, T1)
+%
+% Inputs:
+%  S - the s parameters of the hartley stimulus
+%  KX_V - the kx parameters of the hartley stimulus
+%  KY_V - the ky parameters of the hartley stimulus
+%  FRAMETIMES - the time points of the hartley stimulus
+%  T0 - the start time of the interval
+%  T1 - the end time of the interval
+%
+% OUTPUTS:
+%  HARTLEY_STIMULUS_PARAMETERS - a structure containing the s, kx, and ky parameters
+%  HARTLEY_STIMULUS_TIMES - the time points of the hartley stimulus in the interval
     
    idx = frameTimes >= t0 & frameTimes <= t1;
    hartley_stimulus_parameters = struct("s", s(idx), "kx_v", kx_v(idx), "ky_v", ky_v(idx));

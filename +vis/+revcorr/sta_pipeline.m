@@ -2,7 +2,7 @@ function [sta,p_val, rescale, cmap] = sta_pipeline(s,kx_v, ky_v, frameTimes, spi
 %STA_PIPELINE - generate the sta, p-value array, rescaled matrix
 %for plotting and corresponding color map. 
 %
-% [STA,P_VAL, RESCALE, CMAP] = STA_PIPELINE(S,KX_V, KY_V, FRAMETIMES, SPIKETIMES, T_COORDS, X_COORDS, Y_COORDS)
+% [STA,P_VAL, RESCALE, CMAP] = vis.revcorr.sta_pipeline(S,KX_V, KY_V, FRAMETIMES, SPIKETIMES, T_COORDS, X_COORDS, Y_COORDS)
 %
 % Inputs:
 % s - an array of the values of S for each stimulus
@@ -28,8 +28,8 @@ rf_range = T_coords(end) - T_coords(1);
 tmax = round(rf_range/deltaT) + 1;
 M = size(X_coords(:), 1);
 spike_num = size(spiketimes, 1);
-sta = revcorr.generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M);
-[p_val_adjusted, p_val, rescale] = revcorr.calc_significance(sta,spike_num);
-cmap = revcorr.get_cmap();
+sta = vis.revcorr.generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M);
+[p_val_adjusted, p_val, rescale] = vis.revcorr.calc_significance(sta,spike_num);
+cmap = vis.revcorr.get_cmap();
 end
 

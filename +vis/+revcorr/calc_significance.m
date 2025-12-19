@@ -21,7 +21,7 @@ rescale = zeros(size(sta, 1), size(sta, 2), size(sta, 3));
 for i = 1:size(sta,1)
 	for j = 1:size(sta, 2)
 		for k = 1:size(sta, 3)
-			cdf(i,j,k) = revcorr.get_cdf_val(sta(i,j,k), spike_num);
+			cdf(i,j,k) = vis.revcorr.get_cdf_val(sta(i,j,k), spike_num);
 			if cdf(i,j,k) >= 0.5
 				p_val(i,j,k) = -1 * log10(2 * (1 - cdf(i,j,k)));
 			else

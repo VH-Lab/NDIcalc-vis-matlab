@@ -1,6 +1,16 @@
 function r = mvnpdf_3(x, xdata)
+% MVNPDF_3 - fit the data to a mvnpdf function
+%
+% R = vis.revcorr.mvnpdf_3(X, XDATA)
+%
+% Inputs:
+%  X - parameters for the gaussian [mu_x mu_y mu_t sigma_1 ... sigma_3 scale]
+%  XDATA - the data points [X Y T]
+%
+% Output:
+%  R - the evaluated function values
+%
 % ERROR: this function is not working
-% MVNPDF_3 fit the data to a mvnpdf function
 
 error("ERROR: this function is not working");
 

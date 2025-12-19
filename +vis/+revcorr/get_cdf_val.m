@@ -1,7 +1,7 @@
 function p = get_cdf_val(x, spike_num)
 %GET_CDF_VAL - generate the cdf value at position x
 %
-% P = GET_CDF_VAL(X, SPIKE_NUM)
+% P = vis.revcorr.get_cdf_val(X, SPIKE_NUM)
 %
 % Inputs:
 %  X - where the cdf value will be evaluated at

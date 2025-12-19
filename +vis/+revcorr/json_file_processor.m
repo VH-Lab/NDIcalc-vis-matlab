@@ -2,7 +2,7 @@ function [s,kx_v, ky_v, frameTimes, spiketimes, T_coords, Y_coords] = json_file_
 % JSON_FILE_PROCESSOR - generate a list of useful data for reverse
 % correlation from the json file.
 %
-% [S,KX_V, KY_V, FRAMETIMES, SPIKETIMES] = JSON_FILE_PROCESSOR(FILENAME)
+% [S,KX_V, KY_V, FRAMETIMES, SPIKETIMES] = vis.revcorr.json_file_processor(FILENAME)
 %
 % Inputs:
 %  FILENAME - the directory of JSON file to be processed

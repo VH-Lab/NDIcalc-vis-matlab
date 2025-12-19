@@ -1,7 +1,7 @@
 function [t_profile,t_profile_pval] = peak_time_profile(T_coords,sta,pval_sta)
 % PEAK_TIME_PROFILE - compute a space x time profile for a receptive field
 %
-% [T_PROFILE,T_PROFILE_PVAL] = revcorr.peak_time_profile(T_COORDS,STA,PVAL_STA)
+% [T_PROFILE,T_PROFILE_PVAL] = vis.revcorr.peak_time_profile(T_COORDS,STA,PVAL_STA)
 %
 % Computes a space x time slice through an STA. The first dimension is
 % exampled for a peak location. The signal is first blurred by sliding a
