@@ -83,18 +83,23 @@ classdef contrast_sensitivity < ndi.calculator
 
                 % 2. Stimulus Presentation (One for all)
                 stim_params = struct();
-                stim_params.presentation_order = 1;
 
                 default_p = struct('sFrequency', [], 'contrast', [], 'is_blank', 0);
+                k = 1;
                 for j=1:numel(sFrequencies)
-                    p = default_p;
-                    p.sFrequency = sFrequencies(j);
-                    p.contrast = contrasts;
-                    stim_params.stimuli(j).parameters = p;
+                    for c=1:numel(contrasts)
+                        p = default_p;
+                        p.sFrequency = sFrequencies(j);
+                        p.contrast = contrasts(c);
+                        stim_params.stimuli(k).parameters = p;
+                        k = k + 1;
+                    end
                 end
                 p = default_p;
                 p.is_blank = 1;
-                stim_params.stimuli(4).parameters = p;
+                stim_params.stimuli(k).parameters = p;
+
+                stim_params.presentation_order = 1:k;
 
                 stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
                     obj.session.newdocument();
@@ -132,7 +137,11 @@ classdef contrast_sensitivity < ndi.calculator
                     n_trials = 5;
                     tuning_struct.independent_variable_label = {'Contrast'};
                     tuning_struct.independent_variable_value = contrasts;
-                    tuning_struct.stimid = repmat(j, size(contrasts));
+
+                    start_idx = (j-1)*numel(contrasts) + 1;
+                    end_idx = j*numel(contrasts);
+                    tuning_struct.stimid = start_idx:end_idx;
+
                     tuning_struct.stimulus_presentation_number = 1;
                     tuning_struct.response_units = 'Hz';
                     tuning_struct.response_mean = resp_mean;
@@ -142,7 +151,7 @@ classdef contrast_sensitivity < ndi.calculator
                     tuning_struct.individual_responses_real = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
                     tuning_struct.individual_responses_imaginary = 0 * tuning_struct.individual_responses_real;
 
-                    tuning_struct.control_stimid = 4;
+                    tuning_struct.control_stimid = 34;
                     tuning_struct.control_response_mean = zeros(size(resp_mean));
                     tuning_struct.control_response_stddev = zeros(size(resp_mean));
                     tuning_struct.control_response_stderr = zeros(size(resp_mean));
