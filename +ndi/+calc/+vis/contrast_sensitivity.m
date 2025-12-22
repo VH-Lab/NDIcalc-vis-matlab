@@ -10,7 +10,200 @@ classdef contrast_sensitivity < ndi.calculator
             %
                 contrast_sensitivity_obj = contrast_sensitivity_obj@ndi.calculator(session,'contrastsensitivity_calc',...
                     'contrastsensitivity_calc');
+                contrast_sensitivity_obj.numberOfSelfTests = 1;
         end % contrast_sensitivity()
+
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
+            % GENERATE_MOCK_DOCS - generate mock documents for testing
+            %
+            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, SCOPE, NUMBER_OF_TESTS, ...)
+            %
+            % Generates mock documents and runs the calculator for testing purposes.
+            %
+            % Inputs:
+            %   OBJ - the calculator object
+            %   SCOPE - 'highSNR' or 'lowSNR'
+            %   NUMBER_OF_TESTS - number of tests to run (only 1 supported for now)
+            %   KWARGS - keyword arguments:
+            %     'generate_expected_docs' (boolean, default false) - if true, save expected output
+            %     'specific_test_inds' (vector, default []) - run only specific test indices
+            %
+
+            arguments
+                obj
+                scope (1,:) char {mustBeMember(scope,{'highSNR','lowSNR'})}
+                number_of_tests
+                kwargs.generate_expected_docs (1,1) logical = false
+                kwargs.specific_test_inds (1,:) double = []
+            end
+
+            docs = cell(1,number_of_tests);
+            doc_output = cell(1,number_of_tests);
+            doc_expected_output = cell(1,number_of_tests);
+
+            % Define Mock Directory
+            p = fileparts(mfilename('fullpath'));
+            mock_dir = fullfile(p, 'mock', 'contrast_sensitivity');
+            if ~isfolder(mock_dir)
+                mkdir(mock_dir);
+            end
+
+            % Define Noise based on Scope
+            if strcmpi(scope, 'lowSNR')
+                noise_level = 1.0;
+            else
+                noise_level = 0.1;
+            end
+
+            for i = 1:number_of_tests
+                if ~isempty(kwargs.specific_test_inds) && ~ismember(i, kwargs.specific_test_inds)
+                    continue;
+                end
+
+                % Use Object Session
+                S = obj.session;
+
+                % Mock Data Generation
+                % 1. Element
+                mock_data = ndi.mock.fun.subject_stimulator_neuron(S);
+                nde = mock_data.mock_spikes;
+                nde_stim = mock_data.mock_stimulator;
+                refNum = nde.reference;
+                nde_control = ndi.element.timeseries(S, 'mock control', refNum, 'stimulus_control', [], 0, mock_data.mock_subject.id());
+
+                current_docs = {mock_data.mock_subject, nde_stim.load_element_doc(), nde.load_element_doc(), nde_control.load_element_doc()};
+
+                % Parameters
+                sFrequencies = [0.05, 0.1, 0.2];
+                contrasts = 0:0.1:1;
+                Rm_base = 10;
+                b = 2;
+                c50 = 0.3;
+                scale_factors = [1, 0.5, 0.1];
+
+                % 2. Stimulus Presentation (One for all)
+                stim_params = struct();
+
+                default_p = struct('sFrequency', [], 'contrast', [], 'is_blank', 0);
+                k = 1;
+                for j=1:numel(sFrequencies)
+                    for c=1:numel(contrasts)
+                        p = default_p;
+                        p.sFrequency = sFrequencies(j);
+                        p.contrast = contrasts(c);
+                        stim_params.stimuli(k).parameters = p;
+                        k = k + 1;
+                    end
+                end
+                p = default_p;
+                p.is_blank = 1;
+                stim_params.stimuli(k).parameters = p;
+
+                stim_params.presentation_order = 1:k;
+
+                stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
+                    obj.session.newdocument();
+                stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
+                S.database_add(stim_pres_doc);
+                current_docs{end+1} = stim_pres_doc;
+
+                % 3. Stimulus Response Scalar (One for all)
+                stim_resp_param_struct = struct();
+                stim_resp_param_doc = ndi.document('stimulus_response_scalar_parameters', 'stimulus_response_scalar_parameters', stim_resp_param_struct) + ...
+                    obj.session.newdocument();
+                S.database_add(stim_resp_param_doc);
+                current_docs{end+1} = stim_resp_param_doc;
+
+                stim_resp_struct.response_type = 'mean';
+                stim_resp_struct.responses = [];
+                stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
+                    obj.session.newdocument();
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_control_id', nde_control.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_response_scalar_parameters_id', stim_resp_param_doc.id());
+                S.database_add(stim_resp_scalar_doc);
+                current_docs{end+1} = stim_resp_scalar_doc;
+
+                for j = 1:numel(sFrequencies)
+                    sf = sFrequencies(j);
+                    Rm = Rm_base * scale_factors(j);
+
+                    % Naka Rushton Response
+                    resp_mean = Rm * (contrasts.^b) ./ (c50^b + contrasts.^b);
+
+                    % 4. Stimulus Tuning Curve
+                    n_trials = 5;
+                    tuning_struct.independent_variable_label = {'Contrast'};
+                    tuning_struct.independent_variable_value = contrasts;
+
+                    start_idx = (j-1)*numel(contrasts) + 1;
+                    end_idx = j*numel(contrasts);
+                    tuning_struct.stimid = start_idx:end_idx;
+
+                    tuning_struct.stimulus_presentation_number = 1;
+                    tuning_struct.response_units = 'Hz';
+                    tuning_struct.response_mean = resp_mean;
+                    tuning_struct.response_stddev = resp_mean * noise_level; % Use noise level
+                    tuning_struct.response_stderr = resp_mean * (noise_level * 0.5);
+
+                    tuning_struct.individual_responses_real = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
+                    tuning_struct.individual_responses_imaginary = 0 * tuning_struct.individual_responses_real;
+
+                    tuning_struct.control_stimid = 34;
+                    tuning_struct.control_response_mean = zeros(size(resp_mean));
+                    tuning_struct.control_response_stddev = zeros(size(resp_mean));
+                    tuning_struct.control_response_stderr = zeros(size(resp_mean));
+                    tuning_struct.control_individual_responses_real = zeros(size(tuning_struct.individual_responses_real));
+                    tuning_struct.control_individual_responses_imaginary = zeros(size(tuning_struct.individual_responses_real));
+
+                    stim_tuning_doc = ndi.document('stimulus_tuningcurve', 'stimulus_tuningcurve', tuning_struct) + ...
+                        obj.session.newdocument();
+                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('element_id', nde.id());
+                    stim_tuning_doc = stim_tuning_doc.set_dependency_value('stimulus_response_scalar_id', stim_resp_scalar_doc.id());
+                    S.database_add(stim_tuning_doc);
+                    current_docs{end+1} = stim_tuning_doc;
+                end
+
+                docs{i} = current_docs;
+
+                % Run Contrast Tuning Calculator
+                ct = ndi.calc.vis.contrast_tuning(S);
+                ct.run('Replace');
+
+                % Run Contrast Sensitivity Calculator (Target)
+                ccc = ndi.calc.vis.contrast_sensitivity(S);
+
+                parameters = ccc.default_search_for_input_parameters();
+                parameters.query.query = ndi.query('element.type','exact_string','spikes','');
+
+                ccc.run('Replace', parameters);
+
+                % Get Output
+                q = ndi.query('','isa','contrastsensitivity_calc','');
+                out_docs = S.database_search(q);
+
+                if ~isempty(out_docs)
+                    doc_output{i} = out_docs{1};
+                else
+                    error('No output document generated.');
+                end
+
+                % Handle Expected Docs
+                 if kwargs.generate_expected_docs
+                    doc_expected_output{i} = doc_output{i};
+                    vlt.file.str2text(fullfile(mock_dir, ['mock.' int2str(i) '.json']), jsonencode(doc_expected_output{i}.document_properties));
+                else
+                    expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
+                    if isfile(expected_file)
+                         doc_expected_output{i} = ndi.document(jsondecode(fileread(expected_file)));
+                    else
+                         doc_expected_output{i} = [];
+                    end
+                end
+            end
+        end
 
         function doc = calculate(ndi_calculator_obj, parameters)
             % CALCULATE - perform the calculator for ndi.calc.example.contrast_sensitivity
@@ -82,6 +275,8 @@ classdef contrast_sensitivity < ndi.calculator
                     if good
                         if numel(stim_resp_doc_indexes)==1% we're okay, just use the one choice
                             stim_resp_index_value = 1;
+                            response_type_here = 'mean';
+                            b = 0;
                         else
                             [b,r,dummy,dummy,mean_i,mod_i] = ndi.app.stimulus.tuning_response.modulated_or_mean(stim_resp_scalar(stim_resp_doc_indexes));
                             if b==-1
