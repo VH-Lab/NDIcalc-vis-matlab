@@ -79,13 +79,47 @@ classdef contrast_sensitivity < ndi.calculator
                 Rm_base = 10;
                 b = 2;
                 c50 = 0.3;
-
-                % Adjust parameters based on SF
-                % SF 0.05: High response
-                % SF 0.1: Lower response
-                % SF 0.2: Very low response
-
                 scale_factors = [1, 0.5, 0.1];
+
+                % 2. Stimulus Presentation (One for all)
+                stim_params = struct();
+                stim_params.presentation_order = 1;
+
+                default_p = struct('sFrequency', [], 'contrast', [], 'is_blank', 0);
+                for j=1:numel(sFrequencies)
+                    p = default_p;
+                    p.sFrequency = sFrequencies(j);
+                    p.contrast = contrasts;
+                    stim_params.stimuli(j).parameters = p;
+                end
+                p = default_p;
+                p.is_blank = 1;
+                stim_params.stimuli(4).parameters = p;
+
+                stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
+                    obj.session.newdocument();
+                stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
+                S.database_add(stim_pres_doc);
+                current_docs{end+1} = stim_pres_doc;
+
+                % 3. Stimulus Response Scalar (One for all)
+                stim_resp_param_struct = struct();
+                stim_resp_param_doc = ndi.document('stimulus_response_scalar_parameters', 'stimulus_response_scalar_parameters', stim_resp_param_struct) + ...
+                    obj.session.newdocument();
+                S.database_add(stim_resp_param_doc);
+                current_docs{end+1} = stim_resp_param_doc;
+
+                stim_resp_struct.response_type = 'mean';
+                stim_resp_struct.responses = [];
+                stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
+                    obj.session.newdocument();
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_control_id', nde_control.id());
+                stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_response_scalar_parameters_id', stim_resp_param_doc.id());
+                S.database_add(stim_resp_scalar_doc);
+                current_docs{end+1} = stim_resp_scalar_doc;
 
                 for j = 1:numel(sFrequencies)
                     sf = sFrequencies(j);
@@ -94,43 +128,11 @@ classdef contrast_sensitivity < ndi.calculator
                     % Naka Rushton Response
                     resp_mean = Rm * (contrasts.^b) ./ (c50^b + contrasts.^b);
 
-                    % 2. Stimulus Presentation
-                    stim_params = struct();
-                    stim_params.stimuli(1).parameters.sFrequency = sf;
-                    stim_params.stimuli(1).parameters.contrast = contrasts; % Optional but good for completeness
-                    stim_params.stimuli(2).parameters.is_blank = 1;
-                    stim_params.presentation_order = 1;
-
-                    stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
-                        obj.session.newdocument();
-                    stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
-                    S.database_add(stim_pres_doc);
-                    current_docs{end+1} = stim_pres_doc;
-
-                    % 3. Stimulus Response Scalar
-                    stim_resp_param_struct = struct();
-                    stim_resp_param_doc = ndi.document('stimulus_response_scalar_parameters', 'stimulus_response_scalar_parameters', stim_resp_param_struct) + ...
-                        obj.session.newdocument();
-                    S.database_add(stim_resp_param_doc);
-                    current_docs{end+1} = stim_resp_param_doc;
-
-                    stim_resp_struct.response_type = 'mean';
-                    stim_resp_struct.responses = [];
-                    stim_resp_scalar_doc = ndi.document('stimulus_response_scalar', 'stimulus_response_scalar', stim_resp_struct) + ...
-                        obj.session.newdocument();
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('element_id', nde.id());
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_presentation_id', stim_pres_doc.id());
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulator_id', nde_stim.id());
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_control_id', nde_control.id());
-                    stim_resp_scalar_doc = stim_resp_scalar_doc.set_dependency_value('stimulus_response_scalar_parameters_id', stim_resp_param_doc.id());
-                    S.database_add(stim_resp_scalar_doc);
-                    current_docs{end+1} = stim_resp_scalar_doc;
-
                     % 4. Stimulus Tuning Curve
                     n_trials = 5;
                     tuning_struct.independent_variable_label = {'Contrast'};
                     tuning_struct.independent_variable_value = contrasts;
-                    tuning_struct.stimid = ones(size(contrasts));
+                    tuning_struct.stimid = repmat(j, size(contrasts));
                     tuning_struct.stimulus_presentation_number = 1;
                     tuning_struct.response_units = 'Hz';
                     tuning_struct.response_mean = resp_mean;
@@ -140,7 +142,7 @@ classdef contrast_sensitivity < ndi.calculator
                     tuning_struct.individual_responses_real = repmat(resp_mean, n_trials, 1) + randn(n_trials, numel(resp_mean)) * noise_level;
                     tuning_struct.individual_responses_imaginary = 0 * tuning_struct.individual_responses_real;
 
-                    tuning_struct.control_stimid = 2;
+                    tuning_struct.control_stimid = 4;
                     tuning_struct.control_response_mean = zeros(size(resp_mean));
                     tuning_struct.control_response_stddev = zeros(size(resp_mean));
                     tuning_struct.control_response_stderr = zeros(size(resp_mean));
