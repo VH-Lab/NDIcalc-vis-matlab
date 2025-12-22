@@ -275,6 +275,8 @@ classdef contrast_sensitivity < ndi.calculator
                     if good
                         if numel(stim_resp_doc_indexes)==1% we're okay, just use the one choice
                             stim_resp_index_value = 1;
+                            response_type_here = 'mean';
+                            b = 0;
                         else
                             [b,r,dummy,dummy,mean_i,mod_i] = ndi.app.stimulus.tuning_response.modulated_or_mean(stim_resp_scalar(stim_resp_doc_indexes));
                             if b==-1

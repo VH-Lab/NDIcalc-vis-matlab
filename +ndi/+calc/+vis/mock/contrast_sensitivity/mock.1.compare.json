@@ -1,0 +1,172 @@
+{"comparisonStruct": [
+  {
+    "comparisonMethod": "none",
+    "name": "app.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.url",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.session_id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.datestamp",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.input_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.depends_on",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.spatial_frequencies",
+    "toleranceAmount": 0.1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.sensitivity_RB",
+    "toleranceAmount": 5
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.sensitivity_RBN",
+    "toleranceAmount": 5
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.sensitivity_RBNS",
+    "toleranceAmount": 5
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.relative_max_gain_RB",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.relative_max_gain_RBN",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.relative_max_gain_RBNS",
+    "toleranceAmount": 2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.empirical_c50_RB",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.empirical_c50_RBN",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.empirical_c50_RBNS",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.saturation_index_RB",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.saturation_index_RBN",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.saturation_index_RBNS",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.fitless_interpolated_c50",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.parameters_RB",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.parameters_RBN",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.parameters_RBNS",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "contrastsensitivity_calc.is_modulated_response",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "pValueConsistent",
+    "name": "contrastsensitivity_calc.visual_response_p_bonferroni",
+    "toleranceAmount": 0.05
+  },
+  {
+    "comparisonMethod": "pValueConsistent",
+    "name": "contrastsensitivity_calc.response_varies_p_bonferroni",
+    "toleranceAmount": 0.05
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "contrastsensitivity_calc.response_type",
+    "toleranceAmount": 0
+  }
+]}
