@@ -141,9 +141,9 @@ classdef contrast_sensitivity < ndi.calculator
                     tuning_struct.individual_responses_imaginary = 0 * tuning_struct.individual_responses_real;
 
                     tuning_struct.control_stimid = 2;
-                    tuning_struct.control_response_mean = 0;
-                    tuning_struct.control_response_stddev = 0;
-                    tuning_struct.control_response_stderr = 0;
+                    tuning_struct.control_response_mean = zeros(size(resp_mean));
+                    tuning_struct.control_response_stddev = zeros(size(resp_mean));
+                    tuning_struct.control_response_stderr = zeros(size(resp_mean));
                     tuning_struct.control_individual_responses_real = zeros(size(tuning_struct.individual_responses_real));
                     tuning_struct.control_individual_responses_imaginary = zeros(size(tuning_struct.individual_responses_real));
 
