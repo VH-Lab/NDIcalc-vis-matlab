@@ -11,7 +11,7 @@ function sta = test(kwargs)
 %  rf_range - time range for RF simulation (default: 0.2)
 
 arguments
-    kwargs.filename (1,:) string = fullfile(ndi.fun.ndiCalcVisPath(),'test','+ndi','+unittest','+calc','+vis','1_hartley.json');
+    kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
     kwargs.M (1,1) double = 200;
     kwargs.reconstruction_range (1,1) double = 0.5;
     kwargs.reconstruction_t (1,1) double = 0.01;
