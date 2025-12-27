@@ -30,9 +30,9 @@ max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 deltaT = 0.005;
 
 %% main
-rf = vis.revcorr.setRF(M, 42, deltaT);
+[rf,rfTimeLags] = vis.revcorr.setRF(M, 42, deltaT);
 [M,~,rfTimeSteps] = size(rf);
-vis.revcorr.stim_plot(rf);
+vis.revcorr.stim_plot(rf,[],rfTimeLags);
 [s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
 reconstruction_TimeBlock_StartTimes = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes,1)) + rf_range;
 reconstructionTimeBlock_EndTimes = reconstruction_TimeBlock_StartTimes + rf_range;
