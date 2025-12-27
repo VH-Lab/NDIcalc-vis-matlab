@@ -7,24 +7,28 @@ reconstruction_range = 0.5;
 reconstruction_t = 0.01;
 %% main
 rf = vis.revcorr.setRF();
+[M,~,rfTimeSteps] = size(rf);
 vis.revcorr.stim_plot(rf);
 [s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
-t_start = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes)) + rf_range;
+t_start = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes,1)) + rf_range;
 t_end = t_start + rf_range;
 [t0,t1] = vis.revcorr.get_t0(spiketimes,rf_range);
 
-response = [];
-for i = 1:size(t_start, 2)
+numTimeSteps = size(t_start,2);
+
+response = zeros(numTimeSteps,1);
+parfor i = 1:numTimeSteps
+    if mod(i,100) == 0
+        disp([num2str(100*i/numTimeSteps) '%']);
+    end
     cur_tp = [i, t_start(i), t_end(i)];
-    disp(cur_tp);
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_start(i), t_end(i));
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_start(i), t_end(i), deltaT);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_start(i), t_end(i), rfTimeSteps);
 
     product = b .* rf;
-    response(end+1) = sum(product,'all');
-    if isnan(response(end))
+    response(i) = sum(product,'all');
+    if isnan(response(i))
         error('Error. \n NaN at idx %d.', i)
-        
     end
 end
 
