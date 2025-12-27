@@ -7,7 +7,7 @@ function sta = test(kwargs)
 %  filename - path to the json file (default: test file in repository)
 %  M - spatial dimension (default: 200)
 %  reconstruction_range - time range for reconstruction (default: 0.5)
-%  reconstruction_t - time step for reconstruction (default: 0.01)
+%  reconstruction_deltat - time step for reconstruction (default: 0.01)
 %  rf_range - time range for RF simulation (default: 0.2)
 %  rfDeltaT - time step for RF (default: 0.005)
 %  rfNumTimeSteps - number of time steps for RF (default: 42)
@@ -19,7 +19,7 @@ arguments
     kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
     kwargs.M (1,1) double = 200;
     kwargs.reconstruction_range (1,1) double = 0.5;
-    kwargs.reconstruction_t (1,1) double = 0.01;
+    kwargs.reconstruction_deltat (1,1) double = 0.01;
     kwargs.rf_range (1,1) double = 0.2;
     kwargs.max_TimeBlock_StartTime (1,1) double = 500;
     kwargs.rfDeltaT (1,1) double = 0.005;
@@ -33,7 +33,7 @@ end
 filename = kwargs.filename;
 M = kwargs.M;
 reconstruction_range = kwargs.reconstruction_range;
-reconstruction_t = kwargs.reconstruction_t;
+reconstruction_deltat = kwargs.reconstruction_deltat;
 rf_range = kwargs.rf_range;
 max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 rfDeltaT = kwargs.rfDeltaT;
@@ -101,7 +101,7 @@ for i = 1:size(t_values, 2)
     cur_tp = [i, t_s, t_e];
     disp(cur_tp);
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, reconstruction_t);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, reconstruction_deltat);
     reconstruction_block = cat(4, reconstruction_block, b);  
 end
 sta = vis.revcorr.recover_sta(reconstruction_block);
