@@ -32,20 +32,20 @@ rf = vis.revcorr.setRF(M, 42, deltaT);
 [M,~,rfTimeSteps] = size(rf);
 vis.revcorr.stim_plot(rf);
 [s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
-t_start = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes,1)) + rf_range;
-t_end = t_start + rf_range;
+reconstruction_TimeBlock_StartTimes = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes,1)) + rf_range;
+reconstructionTimeBlock_EndTimes = reconstruction_TimeBlock_StartTimes + rf_range;
 [t0,t1] = vis.revcorr.get_t0(spiketimes,rf_range);
 
-numTimeSteps = size(t_start,2);
+numTimeSteps = size(reconstruction_TimeBlock_StartTimes,2);
 
 response = zeros(numTimeSteps,1);
 parfor i = 1:numTimeSteps
     if mod(i,100) == 0
         disp([num2str(100*i/numTimeSteps) '%']);
     end
-    cur_tp = [i, t_start(i), t_end(i)];
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_start(i), t_end(i));
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_start(i), t_end(i), rfTimeSteps);
+    cur_tp = [i, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i)];
+    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i));
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i), rfTimeSteps);
 
     product = b .* rf;
     response(i) = sum(product,'all');
@@ -55,9 +55,9 @@ parfor i = 1:numTimeSteps
 end
 
 peak_idx = find(response > 1e6);
-t_values = t_start(peak_idx);
+t_values = reconstruction_TimeBlock_StartTimes(peak_idx);
 figure;
-plot(t_start, response, 'b-')
+plot(reconstruction_TimeBlock_StartTimes, response, 'b-')
 hold on 
 plot(t_values, response(peak_idx), 'ro')
 hold off
