@@ -6,7 +6,7 @@ M = 200;
 reconstruction_range = 0.5;
 reconstruction_t = 0.01;
 %% main
-rf = vis.revcorr.setRF();
+rf = vis.revcorr.setRF(M, 42, deltaT);
 [M,~,rfTimeSteps] = size(rf);
 vis.revcorr.stim_plot(rf);
 [s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
