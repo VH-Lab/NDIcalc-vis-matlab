@@ -1,23 +1,34 @@
-function stim_plot(B,cmap)
+function stim_plot(B,cmap,timelags)
 %STIM_PLOT - plot the stimulus reconstruction
 %
-% vis.revcorr.stim_plot(B,CMAP)
+% vis.revcorr.stim_plot(B,CMAP,TIMELAGS)
 %
 % Inputs:
 %  B - the stimulus reconstruction (MxMxTmax)
-%  CMAP - the colormap to use (optional)
+%  CMAP - the colormap to use (optional, default [])
+%  TIMELAGS - the time lag of each frame (optional, default [])
+
+if nargin < 2
+    cmap = [];
+end
+if nargin < 3
+    timelags = [];
+end
 
 figure();
 ax = [];
 for i = 1:size(B,3)
-    if nargin == 1
-        ax(end+1) = subplot(7,8,i);
-	imshow(B(:,:,i), []);
+    ax(end+1) = subplot(7,8,i);
+    if isempty(cmap)
+        imshow(B(:,:,i), []);
     else
-        ax(end+1) = subplot(7,8,i);
-	imshow(B(:,:,i), cmap);
+        imshow(B(:,:,i), cmap);
+    end
+    if ~isempty(timelags)
+        if i <= length(timelags)
+            xlabel(sprintf('%.3f', timelags(i)));
+        end
     end
 end
 linkaxes(ax);
 end
-
