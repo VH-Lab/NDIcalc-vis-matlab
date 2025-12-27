@@ -10,6 +10,8 @@ classdef speed_tuning < ndi.calc.tuning_fit
             %
             speed_tuning_obj = speed_tuning_obj@ndi.calc.tuning_fit(session, 'speedtuning_calc', ...
                 'speedtuning_calc');
+            speed_tuning_obj.defaultParametersCanFunction = true;
+
             speed_tuning_obj.numberOfSelfTests = 18;
         end % speed_tuning()
 

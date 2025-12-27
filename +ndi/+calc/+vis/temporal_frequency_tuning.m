@@ -8,9 +8,11 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             %
             % Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
             %
-                temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calc.tuning_fit(session,'temporal_frequency_tuning_calc',...
-                    'temporal_frequency_tuning_calc');
-                temporal_frequency_tuning_obj.numberOfSelfTests = 8;
+            temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calc.tuning_fit(session,'temporal_frequency_tuning_calc',...
+                'temporal_frequency_tuning_calc');
+            temporal_frequency_tuning_obj.defaultParametersCanFunction = true;
+
+            temporal_frequency_tuning_obj.numberOfSelfTests = 8;
         end % temporal_frequency_tuning()
 
         function doc = calculate(ndi_calculator_obj, parameters)
@@ -22,28 +24,28 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             %
             % The document that is created temporal_frequency_tuning
             % by the input parameters.
-                arguments
-                    ndi_calculator_obj
-                    parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
-                end
+            arguments
+                ndi_calculator_obj
+                parameters (1,1) struct {ndi.validators.mustHaveFields(parameters,{'input_parameters','depends_on'})}
+            end
 
-                % Step 1: set up the output structure
-                temporal_frequency_tuning_calc = parameters;
+            % Step 1: set up the output structure
+            temporal_frequency_tuning_calc = parameters;
 
-                tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
-                    did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
-                if numel(tuning_response_doc)~=1
-                    error('Could not find stimulus tuning doc..');
-                end
-                tuning_response_doc = tuning_response_doc{1};
+            tuning_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',...
+                did.db.struct_name_value_search(parameters.depends_on,'stimulus_tuningcurve_id'),''));
+            if numel(tuning_response_doc)~=1
+                error('Could not find stimulus tuning doc..');
+            end
+            tuning_response_doc = tuning_response_doc{1};
 
-                % Step 2: perform the calculator, which here creates a temporal_frequency_tuning doc
-                doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc) + ...
-                    ndi_calculator_obj.newdocument();
+            % Step 2: perform the calculator, which here creates a temporal_frequency_tuning doc
+            doc = ndi_calculator_obj.calculate_temporal_frequency_indexes(tuning_response_doc) + ...
+                ndi_calculator_obj.newdocument();
 
-                if ~isempty(doc)
-                    doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'temporal_frequency_tuning_calc',temporal_frequency_tuning_calc) + doc;
-                end
+            if ~isempty(doc)
+                doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'temporal_frequency_tuning_calc',temporal_frequency_tuning_calc) + doc;
+            end
         end % calculate
 
         function parameters = default_search_for_input_parameters(ndi_calculator_obj)
@@ -55,13 +57,13 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % to the calculator. For temporal_frequency_tuning_calc, there is no appropriate default parameters
             % so this search will yield empty.
             %
-                parameters.input_parameters = struct([]);
-                parameters.depends_on = did.datastructures.emptystruct('name','value');
-                parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
+            parameters.input_parameters = struct([]);
+            parameters.depends_on = did.datastructures.emptystruct('name','value');
+            parameters.query = ndi_calculator_obj.default_parameters_query(parameters);
 
         end % default_search_for_input_parameters
 
-                function query = default_parameters_query(ndi_calculator_obj, parameters_specification)
+        function query = default_parameters_query(ndi_calculator_obj, parameters_specification)
             % DEFAULT_PARAMETERS_QUERY - what queries should be used to search for input parameters if none are provided?
             %
             % QUERY = DEFAULT_PARAMETERS_QUERY(NDI_CALCULATOR_OBJ, PARAMETERS_SPECIFICATION)
@@ -83,17 +85,17 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % the contain 'mean' or 'F1'.
             %
             %
-                q1 = ndi.query('','isa','stimulus_tuningcurve','');
-                q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal_Frequency','');
-                q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
-                q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL_FREQUENCY','');
-                q22 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal Frequency','');
-                q32 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal frequency','');
-                q42 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL FREQUENCY','');
-                q234 = q2 | q3 | q4 | q22 | q32 | q42;
-                q_total = q1 & q234;
+            q1 = ndi.query('','isa','stimulus_tuningcurve','');
+            q2 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal_Frequency','');
+            q3 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal_frequency','');
+            q4 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL_FREQUENCY','');
+            q22 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','Temporal Frequency','');
+            q32 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','temporal frequency','');
+            q42 = ndi.query('stimulus_tuningcurve.independent_variable_label','contains_string','TEMPORAL FREQUENCY','');
+            q234 = q2 | q3 | q4 | q22 | q32 | q42;
+            q_total = q1 & q234;
 
-                query = struct('name','stimulus_tuningcurve_id','query',q_total);
+            query = struct('name','stimulus_tuningcurve_id','query',q_total);
         end % default_parameters_query()
 
         function b = is_valid_dependency_input(ndi_calculator_obj, name, value)
@@ -109,32 +111,32 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % can be overriden if additional criteria beyond an ndi.query are needed to
             % assess if a document is an appropriate input for the calculator.
             %
-                b = 1;
-                return;
+            b = 1;
+            return;
 
-                % could also use the below, but will require an extra query operation
+            % could also use the below, but will require an extra query operation
 
-                switch lower(name)
-                    case lower('stimulus_tuningcurve_id')
-                        q = ndi.query('base.id','exact_string',value,'');
-                        d = ndi_calculator_obj.S.database_search(q);
-                        b = (numel(d.document_properties.independent_variable_label) ==1);
-                    case lower('element_id')
-                        b = 1;
-                end
+            switch lower(name)
+                case lower('stimulus_tuningcurve_id')
+                    q = ndi.query('base.id','exact_string',value,'');
+                    d = ndi_calculator_obj.S.database_search(q);
+                    b = (numel(d.document_properties.independent_variable_label) ==1);
+                case lower('element_id')
+                    b = 1;
+            end
         end % is_valid_dependency_input()
 
         function h=plot(ndi_calculator_obj, doc_or_parameters, varargin)
-                        % PLOT - provide a diagnostic plot to show the results of the calculator
-                        %
-                        % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
-                        %
-                        % Produce a plot of the tuning curve.
+                    % PLOT - provide a diagnostic plot to show the results of the calculator
+                    %
+                    % H=PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)
+                    %
+                    % Produce a plot of the tuning curve.
             %
-                        % Handles to the figure, the axes, and any objects created are returned in H.
+                    % Handles to the figure, the axes, and any objects created are returned in H.
             %
-                        % This function takes additional input arguments as name/value pairs.
-                        % See ndi.calculator.plot_parameters for a description of many parameters.
+                    % This function takes additional input arguments as name/value pairs.
+                    % See ndi.calculator.plot_parameters for a description of many parameters.
             % Also takes:
             % |----------------------|-------------------------------------------------------|
             % | Parameter (default)  | Description                                           |
@@ -144,82 +146,82 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % |----------------------|-------------------------------------------------------|
             %
 
-                x_axis = [0.01 120];
-                useAbsolute = 0;
-                vlt.data.assign(varargin{:});
+            x_axis = [0.01 120];
+            useAbsolute = 0;
+            vlt.data.assign(varargin{:});
 
-                % call superclass plot method to set up axes
-                h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
+            % call superclass plot method to set up axes
+            h=plot@ndi.calculator(ndi_calculator_obj, doc_or_parameters, varargin{:});
 
-                if isa(doc_or_parameters,'ndi.document')
-                    doc = doc_or_parameters;
-                else
-                    error('Do not know how to proceed without an ndi document for doc_or_parameters.');
+            if isa(doc_or_parameters,'ndi.document')
+                doc = doc_or_parameters;
+            else
+                error('Do not know how to proceed without an ndi document for doc_or_parameters.');
+            end
+
+            tft = doc.document_properties.temporal_frequency_tuning; % shorten our typing
+            tc = tft.tuning_curve; % shorten our typing
+
+            % First plot responses
+            hold on;
+            h_baseline = plot([min(tft.fit_spline.values) max(tft.fit_spline.values)],...
+                [0 0],'k--','linewidth',1.0001);
+            h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
+            h.objects(end+1) = h_baseline;
+            [v,sortorder] = sort(tc.temporal_frequency);
+
+            myfun = @(x) x;
+            if useAbsolute
+                myfun = @(x) abs(x);
+            end
+
+            h_errorbar = errorbar(tc.temporal_frequency(sortorder(:)),...
+                myfun(tc.mean(sortorder(:))),...
+                tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
+            set(h_errorbar,'color',[0 0 0],'linewidth',1,'linestyle','none');
+            set(gca,'xscale','log');
+            h.objects = cat(2,h.objects,h_errorbar);
+
+            % Second plot all fits
+
+            linestyle = '--';
+            if tft.significance.visual_response_anova_p<0.05
+                linestyle = '-';
+            end
+            tft_o = tft;
+
+            if useAbsolute
+                tft = doc.document_properties.temporal_frequency_tuning.abs;
+            end
+
+                % drop spline, gausslog because not good
+            %h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
+            %h.objects = cat(2,h.objects,h_fit);
+            h_fit = plot(tft.fit_dog.values,tft.fit_dog.fit,['m' linestyle]);
+            h.objects = cat(2,h.objects,h_fit);
+            h_fit = plot(tft.fit_movshon.values,tft.fit_movshon.fit,['b' linestyle],'linewidth',2);
+            h.objects = cat(2,h.objects,h_fit);
+            h_fit = plot(tft.fit_movshon_c.values,tft.fit_movshon_c.fit,['g' linestyle],'linewidth',2);
+            h.objects = cat(2,h.objects,h_fit);
+            %h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
+            %h.objects = cat(2,h.objects,h_fit);
+
+            if ~h.params.suppress_x_label
+                h.xlabel = xlabel('Temporal frequency');
+            end
+            if ~h.params.suppress_y_label
+                h.ylabel = ylabel(['Response (' tft_o.properties.response_type ', ' tft_o.properties.response_units ')']);
+            end
+
+            set(gca,'xlim',x_axis);
+
+            if 0% when database is faster :-/
+                if ~h.params.suppress_title
+                    element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
+                    h.title = title(element.elementstring(), 'interp','none');
                 end
-
-                tft = doc.document_properties.temporal_frequency_tuning; % shorten our typing
-                tc = tft.tuning_curve; % shorten our typing
-
-                % First plot responses
-                hold on;
-                h_baseline = plot([min(tft.fit_spline.values) max(tft.fit_spline.values)],...
-                    [0 0],'k--','linewidth',1.0001);
-                h_baseline.Annotation.LegendInformation.IconDisplayStyle = 'off';
-                h.objects(end+1) = h_baseline;
-                [v,sortorder] = sort(tc.temporal_frequency);
-
-                myfun = @(x) x;
-                if useAbsolute
-                    myfun = @(x) abs(x);
-                end
-
-                h_errorbar = errorbar(tc.temporal_frequency(sortorder(:)),...
-                    myfun(tc.mean(sortorder(:))),...
-                    tc.stderr(sortorder(:)),tc.stderr(sortorder(:)));
-                set(h_errorbar,'color',[0 0 0],'linewidth',1,'linestyle','none');
-                set(gca,'xscale','log');
-                h.objects = cat(2,h.objects,h_errorbar);
-
-                % Second plot all fits
-
-                linestyle = '--';
-                if tft.significance.visual_response_anova_p<0.05
-                    linestyle = '-';
-                end
-                tft_o = tft;
-
-                if useAbsolute
-                    tft = doc.document_properties.temporal_frequency_tuning.abs;
-                end
-
-                    % drop spline, gausslog because not good
-                %h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
-                %h.objects = cat(2,h.objects,h_fit);
-                h_fit = plot(tft.fit_dog.values,tft.fit_dog.fit,['m' linestyle]);
-                h.objects = cat(2,h.objects,h_fit);
-                h_fit = plot(tft.fit_movshon.values,tft.fit_movshon.fit,['b' linestyle],'linewidth',2);
-                h.objects = cat(2,h.objects,h_fit);
-                h_fit = plot(tft.fit_movshon_c.values,tft.fit_movshon_c.fit,['g' linestyle],'linewidth',2);
-                h.objects = cat(2,h.objects,h_fit);
-                %h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
-                %h.objects = cat(2,h.objects,h_fit);
-
-                if ~h.params.suppress_x_label
-                    h.xlabel = xlabel('Temporal frequency');
-                end
-                if ~h.params.suppress_y_label
-                    h.ylabel = ylabel(['Response (' tft_o.properties.response_type ', ' tft_o.properties.response_units ')']);
-                end
-
-                set(gca,'xlim',x_axis);
-
-                if 0% when database is faster :-/
-                    if ~h.params.suppress_title
-                        element = ndi.database.fun.ndi_document2ndi_object(doc.dependency_value('element_id'),ndi_calculator_obj.session);
-                        h.title = title(element.elementstring(), 'interp','none');
-                    end
-                end
-                box off;
+            end
+            box off;
 
         end % plot()
 
@@ -232,69 +234,69 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % parameters and stores them in TEMPORAL_FREQUENCY_TUNING document TEMPORAL_FREQUENCY_PROPS_DOC.
             %
             %
-                properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
+            properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 
-                stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
-                    'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
-                if numel(stim_response_doc)~=1
-                    error('Could not find stimulus response scalar document.');
-                end
-                if iscell(stim_response_doc)
-                    stim_response_doc = stim_response_doc{1};
-                end
+            stim_response_doc = ndi_calculator_obj.session.database_search(ndi.query('base.id',...
+                'exact_string',tuning_doc.dependency_value('stimulus_response_scalar_id'),''));
+            if numel(stim_response_doc)~=1
+                error('Could not find stimulus response scalar document.');
+            end
+            if iscell(stim_response_doc)
+                stim_response_doc = stim_response_doc{1};
+            end
 
-                properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
+            properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
 
-                resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
+            resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
 
-                stc = tuning_doc.document_properties.stimulus_tuningcurve;
+            stc = tuning_doc.document_properties.stimulus_tuningcurve;
 
-                tuning_curve = struct(...
-                    'temporal_frequency', ...
-                        vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
-                    'mean', vlt.data.colvec(resp.curve(2,:)), ...
-                    'stddev', vlt.data.colvec(resp.curve(3,:)), ...
-                    'stderr', vlt.data.colvec(resp.curve(4,:)), ...
-                    'individual', vlt.data.cellarray2mat(resp.ind), ...
-                    'control_mean', vlt.data.colvec(stc.control_response_mean),...
-                    'control_stddev', vlt.data.colvec(stc.control_response_stddev),...
-                    'control_stderr', vlt.data.colvec(stc.control_response_stderr),...
-                    'control_mean_stddev', resp.blankresp(2),...
-                    'control_mean_stderr', resp.blankresp(3));
+            tuning_curve = struct(...
+                'temporal_frequency', ...
+                    vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value), ...
+                'mean', vlt.data.colvec(resp.curve(2,:)), ...
+                'stddev', vlt.data.colvec(resp.curve(3,:)), ...
+                'stderr', vlt.data.colvec(resp.curve(4,:)), ...
+                'individual', vlt.data.cellarray2mat(resp.ind), ...
+                'control_mean', vlt.data.colvec(stc.control_response_mean),...
+                'control_stddev', vlt.data.colvec(stc.control_response_stddev),...
+                'control_stderr', vlt.data.colvec(stc.control_response_stderr),...
+                'control_mean_stddev', resp.blankresp(2),...
+                'control_mean_stderr', resp.blankresp(3));
 
-                [anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
+            [anova_across_stims, anova_across_stims_blank] = neural_response_significance(resp);
 
-                significance = struct('visual_response_anova_p',anova_across_stims_blank,...
-                    'across_stimuli_anova_p', anova_across_stims);
+            significance = struct('visual_response_anova_p',anova_across_stims_blank,...
+                'across_stimuli_anova_p', anova_across_stims);
 
-                tf_props = vis.frequency.temporal_frequency_analysis(resp);
+            tf_props = vis.frequency.temporal_frequency_analysis(resp);
 
-                temporal_frequency_tuning.properties = properties;
-                temporal_frequency_tuning.tuning_curve = tuning_curve;
-                temporal_frequency_tuning.significance = significance;
-                temporal_frequency_tuning.fitless = tf_props.fitless;
-                temporal_frequency_tuning.fit_dog = tf_props.fit_dog;
-                temporal_frequency_tuning.fit_movshon = tf_props.fit_movshon;
-                temporal_frequency_tuning.fit_movshon_c = tf_props.fit_movshon_c;
-                temporal_frequency_tuning.fit_spline = tf_props.fit_spline;
-                temporal_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
+            temporal_frequency_tuning.properties = properties;
+            temporal_frequency_tuning.tuning_curve = tuning_curve;
+            temporal_frequency_tuning.significance = significance;
+            temporal_frequency_tuning.fitless = tf_props.fitless;
+            temporal_frequency_tuning.fit_dog = tf_props.fit_dog;
+            temporal_frequency_tuning.fit_movshon = tf_props.fit_movshon;
+            temporal_frequency_tuning.fit_movshon_c = tf_props.fit_movshon_c;
+            temporal_frequency_tuning.fit_spline = tf_props.fit_spline;
+            temporal_frequency_tuning.fit_gausslog = tf_props.fit_gausslog;
 
-                resp_abs = resp;
-                resp_abs.curve(2,:) = abs(resp_abs.curve(2,:));
-                abs_tf_props = vis.frequency.temporal_frequency_analysis(resp_abs);
+            resp_abs = resp;
+            resp_abs.curve(2,:) = abs(resp_abs.curve(2,:));
+            abs_tf_props = vis.frequency.temporal_frequency_analysis(resp_abs);
 
-                temporal_frequency_tuning.abs.fitless = abs_tf_props.fitless;
-                temporal_frequency_tuning.abs.fit_dog = abs_tf_props.fit_dog;
-                temporal_frequency_tuning.abs.fit_movshon = abs_tf_props.fit_movshon;
-                temporal_frequency_tuning.abs.fit_movshon_c = abs_tf_props.fit_movshon_c;
-                temporal_frequency_tuning.abs.fit_spline = abs_tf_props.fit_spline;
-                temporal_frequency_tuning.abs.fit_gausslog = abs_tf_props.fit_gausslog;
+            temporal_frequency_tuning.abs.fitless = abs_tf_props.fitless;
+            temporal_frequency_tuning.abs.fit_dog = abs_tf_props.fit_dog;
+            temporal_frequency_tuning.abs.fit_movshon = abs_tf_props.fit_movshon;
+            temporal_frequency_tuning.abs.fit_movshon_c = abs_tf_props.fit_movshon_c;
+            temporal_frequency_tuning.abs.fit_spline = abs_tf_props.fit_spline;
+            temporal_frequency_tuning.abs.fit_gausslog = abs_tf_props.fit_gausslog;
 
-                temporal_frequency_props_doc = ndi.document('temporal_frequency_tuning',...
-                    'temporal_frequency_tuning',temporal_frequency_tuning);
-                temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('element_id', ...
-                    tuning_doc.dependency_value('element_id'));
-                temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
+            temporal_frequency_props_doc = ndi.document('temporal_frequency_tuning',...
+                'temporal_frequency_tuning',temporal_frequency_tuning);
+            temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('element_id', ...
+                tuning_doc.dependency_value('element_id'));
+            temporal_frequency_props_doc = temporal_frequency_props_doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
 
         end % calculate_temporal_frequency_indexes()
         
@@ -309,36 +311,36 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             % SCOPE can be 'standard', 'low_noise', or 'high_noise'.
             % INDEX selects which parameters are used to generate a mock document
             %
-                % add options for different scopes - see issue #27
-                P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
-                P_(2,:) = [1 1 .5 1];
-                P_(3,:) = [1 1 .5 2 ];
-                P_(4,:) = [1 1 2 .5] ;
-                P_(5,:) = [1 1 1 .5];
-                P_(6,:) = [2 1 2 .5];
-                P_(7,:) = [1 2 1 1];
-                P_(8,:) = [1 2 -1 1];
-                total = size(P_,1);
+            % add options for different scopes - see issue #27
+            P_(1,:) = [ 1 1 0 1 ] ; %regular gaussian with peak 1 and width parameter set to 1
+            P_(2,:) = [1 1 .5 1];
+            P_(3,:) = [1 1 .5 2 ];
+            P_(4,:) = [1 1 2 .5] ;
+            P_(5,:) = [1 1 1 .5];
+            P_(6,:) = [2 1 2 .5];
+            P_(7,:) = [1 2 1 1];
+            P_(8,:) = [1 2 -1 1];
+            total = size(P_,1);
 
-                actual_index = 1+mod(index-1,total);
+            actual_index = 1+mod(index-1,total);
 
-                % no dependence on scope for this stimulus type
+            % no dependence on scope for this stimulus type
 
-                P = P_(actual_index,:);
+            P = P_(actual_index,:);
 
-                numsteps = 100; %sets size of x
-                %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
-                temporal_freq_values = logspace(-2,log10(60),numsteps);
-                r = vlt.math.dog(temporal_freq_values,P);
-                %param_struct = struct([]); %this didn't work - need at
-                %least one parameter?
-                param_struct = struct('spatial_frequency',.5);
-                independent_variable = {'temporal_frequency'}; % is the underscore required?
-                x = temporal_freq_values(:); % column
-                r = r(:); % column
-                %why do we have these?
-                x(numsteps+1,1) = NaN;
-                r(numsteps+1,1) = 0;
+            numsteps = 100; %sets size of x
+            %spatial_freq_values = [.05, .1, .15, .2, .3, .5, .8]; %spatial frequency values commonly used in experiments, in units of cpd (cycles per degree)
+            temporal_freq_values = logspace(-2,log10(60),numsteps);
+            r = vlt.math.dog(temporal_freq_values,P);
+            %param_struct = struct([]); %this didn't work - need at
+            %least one parameter?
+            param_struct = struct('spatial_frequency',.5);
+            independent_variable = {'temporal_frequency'}; % is the underscore required?
+            x = temporal_freq_values(:); % column
+            r = r(:); % column
+            %why do we have these?
+            x(numsteps+1,1) = NaN;
+            r(numsteps+1,1) = 0;
 
         end % generate_mock_parameters
     end % methods()
