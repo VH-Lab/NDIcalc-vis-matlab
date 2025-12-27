@@ -73,8 +73,8 @@ for i = 1:5
     t_s = t_values(i);
     cur_tp = [i, t_s, t_s + rf_range];
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_s + rf_range);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_s + rf_range, deltaT);
-    vis.revcorr.stim_plot(b)
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_s + rf_range, rfTimeSteps);
+    vis.revcorr.stim_plot(b,[],t);
 end
 
 %% reconstruction
