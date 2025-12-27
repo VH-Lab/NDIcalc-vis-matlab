@@ -16,6 +16,7 @@ arguments
     kwargs.reconstruction_range (1,1) double = 0.5;
     kwargs.reconstruction_t (1,1) double = 0.01;
     kwargs.rf_range (1,1) double = 0.2;
+    kwargs.max_TimeBlock_StartTime (1,1) double = 500;
 end
 
 % Extract parameters
@@ -24,6 +25,7 @@ M = kwargs.M;
 reconstruction_range = kwargs.reconstruction_range;
 reconstruction_t = kwargs.reconstruction_t;
 rf_range = kwargs.rf_range;
+max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 
 deltaT = 0.005;
 
@@ -34,6 +36,11 @@ vis.revcorr.stim_plot(rf);
 [s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
 reconstruction_TimeBlock_StartTimes = frameTimes(1) - rf_range : deltaT: frameTimes(size(frameTimes,1)) + rf_range;
 reconstructionTimeBlock_EndTimes = reconstruction_TimeBlock_StartTimes + rf_range;
+
+I = reconstruction_TimeBlock_StartTimes < max_TimeBlock_StartTime;
+reconstruction_TimeBlock_StartTimes = reconstruction_TimeBlock_StartTimes(I);
+reconstructionTimeBlock_EndTimes = reconstructionTimeBlock_EndTimes(I);
+
 [t0,t1] = vis.revcorr.get_t0(spiketimes,rf_range);
 
 numTimeSteps = size(reconstruction_TimeBlock_StartTimes,2);
