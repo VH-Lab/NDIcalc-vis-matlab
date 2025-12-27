@@ -1,10 +1,32 @@
-%% set the parameters
-filename = "/Users/cxy/Reverse Correlation/data/hartley_data/t00005_leftcortex_1 | 1_hartley.json";
-rf_range = 0.2;
+function sta = test(kwargs)
+% TEST - run the reverse correlation test
+%
+% STA = vis.revcorr.test('NAME', VALUE, ...)
+%
+% Optional Name-Value pairs:
+%  filename - path to the json file (default: test file in repository)
+%  M - spatial dimension (default: 200)
+%  reconstruction_range - time range for reconstruction (default: 0.5)
+%  reconstruction_t - time step for reconstruction (default: 0.01)
+%  rf_range - time range for RF simulation (default: 0.2)
+
+arguments
+    kwargs.filename (1,:) string = fullfile(ndi.fun.ndiCalcVisPath(),'test','+ndi','+unittest','+calc','+vis','1_hartley.json');
+    kwargs.M (1,1) double = 200;
+    kwargs.reconstruction_range (1,1) double = 0.5;
+    kwargs.reconstruction_t (1,1) double = 0.01;
+    kwargs.rf_range (1,1) double = 0.2;
+end
+
+% Extract parameters
+filename = kwargs.filename;
+M = kwargs.M;
+reconstruction_range = kwargs.reconstruction_range;
+reconstruction_t = kwargs.reconstruction_t;
+rf_range = kwargs.rf_range;
+
 deltaT = 0.005;
-M = 200;
-reconstruction_range = 0.5;
-reconstruction_t = 0.01;
+
 %% main
 rf = vis.revcorr.setRF(M, 42, deltaT);
 [M,~,rfTimeSteps] = size(rf);
@@ -64,3 +86,4 @@ end
 sta = vis.revcorr.recover_sta(reconstruction_block);
 vis.revcorr.stim_plot(sta);
 
+end
