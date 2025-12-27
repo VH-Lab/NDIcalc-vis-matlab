@@ -6,19 +6,21 @@ function sta = test(kwargs)
 % Optional Name-Value pairs:
 %  filename - path to the json file (default: test file in repository)
 %  M - spatial dimension (default: 200)
-%  reconstruction_range - time range for reconstruction (default: 0.5)
+%  reconstructionT0 - start time for reconstruction (default: -0.5)
+%  reconstructionT1 - end time for reconstruction (default: 0.5)
 %  reconstruction_deltat - time step for reconstruction (default: 0.01)
 %  rf_range - time range for RF simulation (default: 0.2)
 %  rfDeltaT - time step for RF (default: 0.005)
 %  rfNumTimeSteps - number of time steps for RF (default: 42)
 %  stimPlotT0 - start time for stimulus plotting (default: -0.500)
 %  stimPlotT1 - end time for stimulus plotting (default: 0.5)
-%  stimPlotDeltaT - time step for stimulus plotting (default: 0.050)
+%  stimPlotDeltaT - time step for stimulus plotting (default: 0.005)
 
 arguments
     kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
     kwargs.M (1,1) double = 200;
-    kwargs.reconstruction_range (1,1) double = 0.5;
+    kwargs.reconstructionT0 (1,1) double = -0.5;
+    kwargs.reconstructionT1 (1,1) double = 0.5;
     kwargs.reconstruction_deltat (1,1) double = 0.01;
     kwargs.rf_range (1,1) double = 0.2;
     kwargs.max_TimeBlock_StartTime (1,1) double = 500;
@@ -26,13 +28,14 @@ arguments
     kwargs.rfNumTimeSteps (1,1) double = 42;
     kwargs.stimPlotT0 (1,1) double = -0.500;
     kwargs.stimPlotT1 (1,1) double = 0.5;
-    kwargs.stimPlotDeltaT (1,1) double = 0.050;
+    kwargs.stimPlotDeltaT (1,1) double = 0.005;
 end
 
 % Extract parameters
 filename = kwargs.filename;
 M = kwargs.M;
-reconstruction_range = kwargs.reconstruction_range;
+reconstructionT0 = kwargs.reconstructionT0;
+reconstructionT1 = kwargs.reconstructionT1;
 reconstruction_deltat = kwargs.reconstruction_deltat;
 rf_range = kwargs.rf_range;
 max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
@@ -95,16 +98,19 @@ end
 %% reconstruction
 reconstruction_block = [];
 
+reconstructionTimeBins = (reconstructionT1 - reconstructionT0) / reconstruction_deltat;
+reconstructionTimeBase = linspace(reconstructionT0, reconstructionT1, reconstructionTimeBins);
+
 for i = 1:size(t_values, 2)
-    t_s = t_values(i);
-    t_e = t_s + reconstruction_range;
+    t_s = t_values(i) + reconstructionT0;
+    t_e = t_values(i) + reconstructionT1;
     cur_tp = [i, t_s, t_e];
     disp(cur_tp);
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, reconstruction_deltat);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, reconstructionTimeBins);
     reconstruction_block = cat(4, reconstruction_block, b);  
 end
 sta = vis.revcorr.recover_sta(reconstruction_block);
-vis.revcorr.stim_plot(sta);
+vis.revcorr.stim_plot(sta, [], reconstructionTimeBase);
 
 end
