@@ -81,7 +81,6 @@ end
 reconstruction_block = [];
 
 for i = 1:size(t_values, 2)
-% for i = 202:203
     t_s = t_values(i);
     t_e = t_s + reconstruction_range;
     cur_tp = [i, t_s, t_e];
