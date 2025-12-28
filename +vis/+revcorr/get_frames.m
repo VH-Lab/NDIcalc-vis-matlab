@@ -21,6 +21,15 @@ function [hartley_stimulus_parameters, hartley_stimulus_times] = get_frames(s,kx
    hartley_stimulus_times = frameTimes(idx);
 
    %% check the corner cases
+
+   if t0 < frameTimes(1) && t1 < frameTimes(1)
+       hartley_stimulus_parameters.s = [0; 0];
+       hartley_stimulus_parameters.kx_v = [0; 0];
+       hartley_stimulus_parameters.ky_v = [0; 0];
+       hartley_stimulus_times = [t0; t1];
+       return;
+   end
+
    if t0 < frameTimes(1)
        hartley_stimulus_parameters.s = vertcat(0,hartley_stimulus_parameters.s);
        hartley_stimulus_parameters.kx_v = vertcat(0,hartley_stimulus_parameters.kx_v);
@@ -64,4 +73,3 @@ function [hartley_stimulus_parameters, hartley_stimulus_times] = get_frames(s,kx
        hartley_stimulus_times = vertcat(hartley_stimulus_times,frameTimes(i + 1));
    end
 end
-

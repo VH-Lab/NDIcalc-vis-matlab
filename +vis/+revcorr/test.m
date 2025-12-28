@@ -15,6 +15,7 @@ function sta = test(kwargs)
 %  stimPlotT0 - start time for stimulus plotting (default: -0.500)
 %  stimPlotT1 - end time for stimulus plotting (default: 0.5)
 %  stimPlotDeltaT - time step for stimulus plotting (default: 0.005)
+%  responseDeltaT - the time step for response reconstruction
 
 arguments
     kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
@@ -22,13 +23,14 @@ arguments
     kwargs.reconstructionT0 (1,1) double = -0.5;
     kwargs.reconstructionT1 (1,1) double = 0.5;
     kwargs.reconstruction_deltat (1,1) double = 0.01;
-    kwargs.rf_range (1,1) double = 0.2;
+    kwargs.rfTimeRange (1,1) double = 0.2;
     kwargs.max_TimeBlock_StartTime (1,1) double = 500;
     kwargs.rfDeltaT (1,1) double = 0.005;
-    kwargs.rfNumTimeSteps (1,1) double = 42;
-    kwargs.stimPlotT0 (1,1) double = -0.500;
-    kwargs.stimPlotT1 (1,1) double = 0.5;
-    kwargs.stimPlotDeltaT (1,1) double = 0.005;
+    kwargs.rfNumTimeSteps (1,1) double = 40;
+    kwargs.stimPlotT0 (1,1) double = -0.100;
+    kwargs.stimPlotT1 (1,1) double = 0.100;
+    kwargs.stimPlotDeltaT (1,1) double = 0.01;
+    kwargs.responseDeltaT (1,1) double = 0.01;
 end
 
 % Extract parameters
@@ -37,13 +39,14 @@ M = kwargs.M;
 reconstructionT0 = kwargs.reconstructionT0;
 reconstructionT1 = kwargs.reconstructionT1;
 reconstruction_deltat = kwargs.reconstruction_deltat;
-rf_range = kwargs.rf_range;
+rfTimeRange = kwargs.rfTimeRange;
 max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 rfDeltaT = kwargs.rfDeltaT;
 rfNumTimeSteps = kwargs.rfNumTimeSteps;
 stimPlotT0 = kwargs.stimPlotT0;
 stimPlotT1 = kwargs.stimPlotT1;
 stimPlotDeltaT = kwargs.stimPlotDeltaT;
+responseDeltaT = kwargs.responseDeltaT;
 
 stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 
@@ -51,28 +54,24 @@ stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 [rf,rfTimeLags] = vis.revcorr.setRF(M, rfNumTimeSteps, rfDeltaT);
 [M,~,rfTimeSteps] = size(rf);
 vis.revcorr.stim_plot(rf,[],rfTimeLags);
-[s,kx_v, ky_v, frameTimes, spiketimes] = vis.revcorr.json_file_processor(filename);
-reconstruction_TimeBlock_StartTimes = frameTimes(1) - rf_range : rfDeltaT: frameTimes(size(frameTimes,1)) + rf_range;
-reconstructionTimeBlock_EndTimes = reconstruction_TimeBlock_StartTimes + rf_range;
+[s,kx_v, ky_v, frameTimes, ~] = vis.revcorr.json_file_processor(filename);
+responseTimes = frameTimes(1): responseDeltaT: frameTimes(size(frameTimes,1)) + rfTimeRange;
 
-I = reconstruction_TimeBlock_StartTimes < max_TimeBlock_StartTime;
-reconstruction_TimeBlock_StartTimes = reconstruction_TimeBlock_StartTimes(I);
-reconstructionTimeBlock_EndTimes = reconstructionTimeBlock_EndTimes(I);
+I = responseTimes < max_TimeBlock_StartTime;
+responseTimes = responseTimes(I);
 
-[t0,t1] = vis.revcorr.get_t0(spiketimes,rf_range);
-
-numTimeSteps = size(reconstruction_TimeBlock_StartTimes,2);
+numTimeSteps = size(responseTimes,2);
 
 response = zeros(numTimeSteps,1);
-parfor i = 1:numTimeSteps
+rf_backwards = rf(:,:,end:-1:1);
+for i = 1:numTimeSteps
     if mod(i,100) == 0
         disp([num2str(100*i/numTimeSteps) '%']);
     end
-    cur_tp = [i, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i)];
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i));
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, reconstruction_TimeBlock_StartTimes(i), reconstructionTimeBlock_EndTimes(i), rfTimeSteps);
+    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, responseTimes(i), responseTimes(i)-rfTimeRange);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, responseTimes(i), responseTimes(i)-rfTimeRange, rfTimeSteps);
 
-    product = b .* rf;
+    product = b .* rf_backwards; % rf goes backward in time
     response(i) = mean(product,'all');
     if isnan(response(i))
         error('Error. \n NaN at idx %d.', i)
@@ -81,18 +80,17 @@ end
 
 threshold = 1;
 peak_idx = find(response > threshold);
-t_values = reconstruction_TimeBlock_StartTimes(peak_idx);
+t_values = responseTimes(peak_idx);
 figure;
-plot(reconstruction_TimeBlock_StartTimes, response, 'b-')
+plot(responseTimes, response, 'b-')
 hold on 
 plot(t_values, response(peak_idx), 'ro')
 hold off
 
 for i = 1:5 
-    cur_tp = [i, t_values(i) + stimPlotT0, t_values(i) + stimPlotT1];
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_values(i) + stimPlotT0, t_values(i) + stimPlotT1);
     [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_values(i) + stimPlotT0, t_values(i) + stimPlotT1, stimReconstructionSteps);
-    vis.revcorr.stim_plot(b,[],t);
+    vis.revcorr.stim_plot(b,[],t-t_values(i));
 end
 
 %% reconstruction

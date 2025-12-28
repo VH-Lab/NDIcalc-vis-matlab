@@ -15,10 +15,20 @@ if nargin < 3
     timelags = [];
 end
 
+num_plots = size(B,3);
+
+if num_plots <= 56
+    num_rows = 7;
+    num_cols = 8;
+else
+    num_cols = 8;
+    num_rows = ceil(num_plots / num_cols);
+end
+
 figure();
 ax = [];
-for i = 1:size(B,3)
-    ax(end+1) = subplot(7,8,i);
+for i = 1:num_plots
+    ax(end+1) = subplot(num_rows,num_cols,i);
     if isempty(cmap)
         imshow(B(:,:,i), []);
     else
