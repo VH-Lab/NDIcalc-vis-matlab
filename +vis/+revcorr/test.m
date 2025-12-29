@@ -64,13 +64,12 @@ numTimeSteps = size(responseTimes,2);
 
 response = zeros(numTimeSteps,1);
 rf_backwards = rf(:,:,end:-1:1);
-for i = 1:numTimeSteps
+parfor i = 1:numTimeSteps
     if mod(i,100) == 0
         disp([num2str(100*i/numTimeSteps) '%']);
     end
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, responseTimes(i), responseTimes(i)-rfTimeRange);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, responseTimes(i), responseTimes(i)-rfTimeRange, rfTimeSteps);
-
+    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, responseTimes(i)-rfTimeRange, responseTimes(i));
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, responseTimes(i)-rfTimeRange, responseTimes(i), rfTimeSteps);
     product = b .* rf_backwards; % rf goes backward in time
     response(i) = mean(product,'all');
     if isnan(response(i))
