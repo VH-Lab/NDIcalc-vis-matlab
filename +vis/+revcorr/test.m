@@ -17,6 +17,7 @@ function sta = test(kwargs)
 %  stimPlotDeltaT - time step for stimulus plotting (default: 0.005)
 %  responseDeltaT - the time step for response reconstruction
 %  threshold - threshold for detecting spikes (default: 1)
+%  Verbose - verbose output (default: true)
 
 arguments
     kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
@@ -33,6 +34,7 @@ arguments
     kwargs.stimPlotDeltaT (1,1) double = 0.01;
     kwargs.responseDeltaT (1,1) double = 0.01;
     kwargs.threshold (1,1) double = 1;
+    kwargs.Verbose (1,1) logical = true;
 end
 
 % Extract parameters
@@ -50,6 +52,7 @@ stimPlotT1 = kwargs.stimPlotT1;
 stimPlotDeltaT = kwargs.stimPlotDeltaT;
 responseDeltaT = kwargs.responseDeltaT;
 threshold = kwargs.threshold;
+Verbose = kwargs.Verbose;
 
 stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 
@@ -61,7 +64,7 @@ vis.revcorr.stim_plot(rf,[],rfTimeLags);
 
 [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
     'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
-    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange);
+    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, 'Verbose', Verbose);
 
 % Plot response
 responseTimes = frameTimes(1):responseDeltaT:frameTimes(end) + rfTimeRange;
