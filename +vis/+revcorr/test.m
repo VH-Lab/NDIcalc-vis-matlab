@@ -16,6 +16,7 @@ function sta = test(kwargs)
 %  stimPlotT1 - end time for stimulus plotting (default: 0.5)
 %  stimPlotDeltaT - time step for stimulus plotting (default: 0.005)
 %  responseDeltaT - the time step for response reconstruction
+%  threshold - threshold for detecting spikes (default: 1)
 
 arguments
     kwargs.filename (1,:) char = fullfile(ndi.fun.ndiCalcVisPath(),'tests','+ndi','+unittest','+calc','+vis','1_hartley.json');
@@ -31,6 +32,7 @@ arguments
     kwargs.stimPlotT1 (1,1) double = 0.100;
     kwargs.stimPlotDeltaT (1,1) double = 0.01;
     kwargs.responseDeltaT (1,1) double = 0.01;
+    kwargs.threshold (1,1) double = 1;
 end
 
 % Extract parameters
@@ -47,6 +49,7 @@ stimPlotT0 = kwargs.stimPlotT0;
 stimPlotT1 = kwargs.stimPlotT1;
 stimPlotDeltaT = kwargs.stimPlotDeltaT;
 responseDeltaT = kwargs.responseDeltaT;
+threshold = kwargs.threshold;
 
 stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 
@@ -55,35 +58,40 @@ stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 [M,~,rfTimeSteps] = size(rf);
 vis.revcorr.stim_plot(rf,[],rfTimeLags);
 [s,kx_v, ky_v, frameTimes, ~] = vis.revcorr.json_file_processor(filename);
-responseTimes = frameTimes(1): responseDeltaT: frameTimes(size(frameTimes,1)) + rfTimeRange;
 
+[response, t_values] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
+    'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
+    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange);
+
+% Plot response
+responseTimes = frameTimes(1):responseDeltaT:frameTimes(end) + rfTimeRange;
 I = responseTimes < max_TimeBlock_StartTime;
 responseTimes = responseTimes(I);
 
-numTimeSteps = size(responseTimes,2);
+% Ensure response matches filtered times length if necessary, though calculateHartleyResponse does filtering too.
+% calculateHartleyResponse returns continuous response. We need to plot it against time.
+% The calculateHartleyResponse function does the filtering internally and returns the filtered response.
+% So we should match the time base used there.
+% calculateHartleyResponse defines responseTimes internally.
+% We can reconstruct it here or return it from calculateHartleyResponse?
+% The user request said: "it should return response and spikeTimes (t_values)."
+% It didn't ask to return the time vector for the response trace, but we need it for plotting.
+% I will use the same logic here to reconstruct responseTimes for plotting.
 
-response = zeros(numTimeSteps,1);
-rf_backwards = rf(:,:,end:-1:1);
-parfor i = 1:numTimeSteps
-    if mod(i,100) == 0
-        disp([num2str(100*i/numTimeSteps) '%']);
-    end
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, responseTimes(i)-rfTimeRange, responseTimes(i));
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, responseTimes(i)-rfTimeRange, responseTimes(i), rfTimeSteps);
-    product = b .* rf_backwards; % rf goes backward in time
-    response(i) = mean(product,'all');
-    if isnan(response(i))
-        error('Error. \n NaN at idx %d.', i)
-    end
-end
-
-threshold = 1;
-peak_idx = find(response > threshold);
-t_values = responseTimes(peak_idx);
 figure;
-plot(responseTimes, response, 'b-')
+plot(responseTimes(1:length(response)), response, 'b-')
 hold on 
-plot(t_values, response(peak_idx), 'ro')
+% Find indices of spike times in the response vector for plotting 'ro' is harder without exact indices.
+% However, t_values are the times. We can plot them directly against the threshold/response value?
+% The user code had: plot(t_values, response(peak_idx), 'ro')
+% Since t_values are the times, we need the corresponding response values.
+% Or we can just plot (t_values, threshold*ones..., 'ro')?
+% The user code used `response(peak_idx)`.
+% I can interpolate or find indices again.
+% Actually, `t_values` IS `spikeTimes`.
+% Let's find indices in our local `responseTimes` that match `t_values` (approximately).
+peak_vals = interp1(responseTimes(1:length(response)), response, t_values, 'nearest');
+plot(t_values, peak_vals, 'ro')
 hold off
 
 for i = 1:5 
