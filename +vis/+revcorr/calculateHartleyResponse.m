@@ -37,7 +37,7 @@ arguments
     kwargs.responseDeltaT (1,1) double = 0.01
     kwargs.max_TimeBlock_StartTime (1,1) double = 500
     kwargs.threshold (1,1) double = 1
-    kwargs.rfTimeRange (1,1) double = kwargs.rfDeltaT * size(rf,3)
+    kwargs.rfTimeRange double = []
 end
 
 rfDeltaT = kwargs.rfDeltaT;
@@ -45,7 +45,12 @@ rfNumTimeSteps = kwargs.rfNumTimeSteps;
 responseDeltaT = kwargs.responseDeltaT;
 max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 threshold = kwargs.threshold;
-rfTimeRange = kwargs.rfTimeRange;
+
+if isempty(kwargs.rfTimeRange)
+    rfTimeRange = rfDeltaT * size(rf,3);
+else
+    rfTimeRange = kwargs.rfTimeRange;
+end
 
 M = size(rf, 1);
 
