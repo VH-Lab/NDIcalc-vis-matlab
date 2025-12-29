@@ -59,7 +59,7 @@ stimReconstructionSteps = ceil((stimPlotT1 - stimPlotT0) / stimPlotDeltaT);
 vis.revcorr.stim_plot(rf,[],rfTimeLags);
 [s,kx_v, ky_v, frameTimes, ~] = vis.revcorr.json_file_processor(filename);
 
-[response, t_values] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
+[response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
     'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
     'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange);
 
@@ -68,43 +68,28 @@ responseTimes = frameTimes(1):responseDeltaT:frameTimes(end) + rfTimeRange;
 I = responseTimes < max_TimeBlock_StartTime;
 responseTimes = responseTimes(I);
 
-% Ensure response matches filtered times length if necessary, though calculateHartleyResponse does filtering too.
-% calculateHartleyResponse returns continuous response. We need to plot it against time.
-% The calculateHartleyResponse function does the filtering internally and returns the filtered response.
-% So we should match the time base used there.
-% calculateHartleyResponse defines responseTimes internally.
-% We can reconstruct it here or return it from calculateHartleyResponse?
-% The user request said: "it should return response and spikeTimes (t_values)."
-% It didn't ask to return the time vector for the response trace, but we need it for plotting.
-% I will use the same logic here to reconstruct responseTimes for plotting.
-
 figure;
 plot(responseTimes(1:length(response)), response, 'b-')
 hold on 
 % Find indices of spike times in the response vector for plotting 'ro' is harder without exact indices.
-% However, t_values are the times. We can plot them directly against the threshold/response value?
-% The user code had: plot(t_values, response(peak_idx), 'ro')
-% Since t_values are the times, we need the corresponding response values.
-% Or we can just plot (t_values, threshold*ones..., 'ro')?
-% The user code used `response(peak_idx)`.
-% I can interpolate or find indices again.
-% Actually, `t_values` IS `spikeTimes`.
-% Let's find indices in our local `responseTimes` that match `t_values` (approximately).
-peak_vals = interp1(responseTimes(1:length(response)), response, t_values, 'nearest');
-plot(t_values, peak_vals, 'ro')
+% However, spiketimes are the times. We can plot them directly against the threshold/response value?
+% Since spiketimes are the times, we need the corresponding response values.
+% Let's find indices in our local `responseTimes` that match `spiketimes` (approximately).
+peak_vals = interp1(responseTimes(1:length(response)), response, spiketimes, 'nearest');
+plot(spiketimes, peak_vals, 'ro')
 hold off
 
 for i = 1:5 
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_values(i) + stimPlotT0, t_values(i) + stimPlotT1);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_values(i) + stimPlotT0, t_values(i) + stimPlotT1, stimReconstructionSteps);
-    vis.revcorr.stim_plot(b,[],t-t_values(i));
+    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, spiketimes(i) + stimPlotT0, spiketimes(i) + stimPlotT1);
+    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, spiketimes(i) + stimPlotT0, spiketimes(i) + stimPlotT1, stimReconstructionSteps);
+    vis.revcorr.stim_plot(b,[],t-spiketimes(i));
 end
 
 %% reconstruction
 reconstructionTimeBins = (reconstructionT1 - reconstructionT0) / reconstruction_deltat;
 reconstructionTimeBase = linspace(reconstructionT0, reconstructionT1, reconstructionTimeBins);
 
-sta = vis.revcorr.generate_STA(s, kx_v, ky_v, frameTimes, t_values, rfTimeRange, reconstructionTimeBase, reconstructionTimeBins, M);
+sta = vis.revcorr.generate_STA(s, kx_v, ky_v, frameTimes, spiketimes, rfTimeRange, reconstructionTimeBase, reconstructionTimeBins, M);
 vis.revcorr.stim_plot(sta, [], reconstructionTimeBase);
 
 end
