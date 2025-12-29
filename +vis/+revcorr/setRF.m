@@ -23,11 +23,8 @@ rf = zeros(M, M, num_timesteps);
 % Place the RF impulse roughly in the middle or at a fixed index
 % The original code used index 20 out of 42.
 % We will use round(num_timesteps/2) as a default position for the impulse.
-impulse_idx = max(1, round(num_timesteps / 2));
-% Or should we stick to 20 if possible?
-% Let's use 20 if num_timesteps allows, to be closer to original logic if large enough,
-% but scaling is better. Let's stick to ratio ~ 20/42.
-impulse_idx = max(1, round(num_timesteps * (20/42)));
+
+impulse_idx = max(1, round(num_timesteps * (1/4)));
 
 rf(:, :, impulse_idx) = rf_;
 
