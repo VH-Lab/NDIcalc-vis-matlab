@@ -21,6 +21,7 @@ function [response, spikeTimes] = calculateHartleyResponse(s, kx_v, ky_v, frameT
 %  max_TimeBlock_StartTime - maximum start time to consider for response calculation (default: 500)
 %  threshold - threshold for detecting spikes in the response (default: 1)
 %  rfTimeRange - the total duration of the receptive field (default: rfDeltaT * rfNumTimeSteps)
+%  Verbose - if true, print progress (default: true)
 %
 % Outputs:
 %  RESPONSE - the continuous response trace of the model cell
@@ -38,6 +39,7 @@ arguments
     kwargs.max_TimeBlock_StartTime (1,1) double = 500
     kwargs.threshold (1,1) double = 1
     kwargs.rfTimeRange double = []
+    kwargs.Verbose (1,1) logical = true
 end
 
 rfDeltaT = kwargs.rfDeltaT;
@@ -45,6 +47,7 @@ rfNumTimeSteps = kwargs.rfNumTimeSteps;
 responseDeltaT = kwargs.responseDeltaT;
 max_TimeBlock_StartTime = kwargs.max_TimeBlock_StartTime;
 threshold = kwargs.threshold;
+Verbose = kwargs.Verbose;
 
 if isempty(kwargs.rfTimeRange)
     rfTimeRange = rfDeltaT * size(rf,3);
@@ -77,19 +80,14 @@ parfor i = 1:numTimeSteps
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s, kx_v, ky_v, frameTimes, t_start, t_end);
 
     % Resample the stimulus to match the RF time steps
-    % Note: hartley_stimulus_resampled_time expects the number of time steps (rfNumTimeSteps)
-    % derived from rfDeltaT logic in the caller usually, but here we pass rfNumTimeSteps explicitly?
-    % The previous code used rfTimeSteps which was size(rf,3) from setRF.
-    % We should use kwargs.rfNumTimeSteps or calculate it.
-    % Wait, hartley_stimulus_resampled_time signature is (M, params, times, t0, t1, dt_or_steps?)
-    % Looking at previous edits, the last argument was changed to 'rfTimeSteps' (count) or 'deltaT'.
-    % The user prompt said: "[b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, ..., rfTimeSteps);"
-    % So we pass the count of time steps.
-
     [b, ~] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_start, t_end, rfNumTimeSteps);
 
     product = b .* rf_backwards;
     response(i) = mean(product, 'all');
+
+    if Verbose && mod(i, 1000) == 0
+        disp([num2str(100*i/numTimeSteps) '%']);
+    end
 
     if isnan(response(i))
         error('Error. \n NaN at idx %d.', i)
