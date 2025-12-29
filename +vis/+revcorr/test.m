@@ -101,21 +101,10 @@ for i = 1:5
 end
 
 %% reconstruction
-reconstruction_block = [];
-
 reconstructionTimeBins = (reconstructionT1 - reconstructionT0) / reconstruction_deltat;
 reconstructionTimeBase = linspace(reconstructionT0, reconstructionT1, reconstructionTimeBins);
 
-for i = 1:size(t_values, 2)
-    t_s = t_values(i) + reconstructionT0;
-    t_e = t_values(i) + reconstructionT1;
-    cur_tp = [i, t_s, t_e];
-    disp(cur_tp);
-    [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
-    [b,t] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, reconstructionTimeBins);
-    reconstruction_block = cat(4, reconstruction_block, b);  
-end
-sta = vis.revcorr.recover_sta(reconstruction_block);
+sta = vis.revcorr.generate_STA(s, kx_v, ky_v, frameTimes, t_values, rfTimeRange, reconstructionTimeBase, reconstructionTimeBins, M);
 vis.revcorr.stim_plot(sta, [], reconstructionTimeBase);
 
 end
