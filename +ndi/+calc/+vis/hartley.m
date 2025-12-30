@@ -1,23 +1,204 @@
-classdef hartley_calc < ndi.calculator
+classdef hartley < ndi.calculator
 
     methods
-        function hartley_calc_obj = hartley_calc(session)
-            % HARTLEY_CALC - a hartley_calc demonstration of an ndi.calculator object
+        function hartley_obj = hartley(session)
+            % HARTLEY - a hartley demonstration of an ndi.calculator object
             %
-            % HARTLEY_CALC_OBJ = HARTLEY_CALC(SESSION)
+            % HARTLEY_OBJ = HARTLEY(SESSION)
             %
-            % Creates a HARTLEY_CALC ndi.calculator object
+            % Creates a HARTLEY ndi.calculator object
             %
-            hartley_calc_obj = hartley_calc_obj@ndi.calculator(session,'hartley_calc',...
+            hartley_obj = hartley_obj@ndi.calculator(session,'hartley',...
                 'hartley_calc');
-        end % hartley_calc()
+            hartley_obj.numberOfSelfTests = 1;
+        end % hartley()
+
+        function [docs, doc_output, doc_expected_output] = generate_mock_docs(obj, scope, number_of_tests, kwargs)
+            % GENERATE_MOCK_DOCS - generate mock documents for testing
+            %
+            % [DOCS, DOC_OUTPUT, DOC_EXPECTED_OUTPUT] = GENERATE_MOCK_DOCS(OBJ, SCOPE, NUMBER_OF_TESTS, ...)
+            %
+            % Generates mock documents and runs the calculator for testing purposes.
+            %
+            % Inputs:
+            %   OBJ - the calculator object
+            %   SCOPE - 'highSNR' or 'lowSNR'
+            %   NUMBER_OF_TESTS - number of tests to run (only 1 supported for now)
+            %   KWARGS - keyword arguments:
+            %     'generate_expected_docs' (boolean, default false) - if true, save expected output
+            %     'specific_test_inds' (vector, default []) - run only specific test indices
+            %
+
+            arguments
+                obj
+                scope (1,:) char {mustBeMember(scope,{'highSNR','lowSNR'})}
+                number_of_tests
+                kwargs.generate_expected_docs (1,1) logical = false
+                kwargs.specific_test_inds (1,:) double = []
+            end
+
+            docs = cell(1,number_of_tests);
+            doc_output = cell(1,number_of_tests);
+            doc_expected_output = cell(1,number_of_tests);
+
+            p = fileparts(mfilename('fullpath'));
+            mock_dir = fullfile(p, 'mock', 'hartley');
+            if ~isfolder(mock_dir)
+                mkdir(mock_dir);
+            end
+
+            for i = 1:number_of_tests
+                if ~isempty(kwargs.specific_test_inds) && ~ismember(i, kwargs.specific_test_inds)
+                    continue;
+                end
+
+                % Use Object Session
+                S = obj.session;
+
+                % 1. Create mock elements (Subject, Stimulator, Spikes)
+                mock_data = ndi.mock.fun.subject_stimulator_neuron(S);
+                nde = mock_data.mock_spikes;
+                nde_stim = mock_data.mock_stimulator;
+
+                current_docs = {mock_data.mock_subject, nde_stim.load_element_doc(), nde.load_element_doc()};
+
+                % 2. Calculate Hartley Response (imitating vis.revcorr.test)
+
+                % Default parameters from vis.revcorr.test
+                % Resolve path relative to this file
+                % +ndi/+calc/+vis/hartley.m -> root/+ndi/+calc/+vis
+                % We want root/tests/+ndi/+unittest/+calc/+vis/1_hartley.json
+
+                path_to_root = fileparts(fileparts(fileparts(p)));
+                filename = fullfile(path_to_root, 'tests', '+ndi', '+unittest', '+calc', '+vis', '1_hartley.json');
+
+                % Try to read stimulus_properties manually since json_file_processor doesn't return it
+                json_txt = fileread(filename);
+                json_data = jsondecode(json_txt);
+
+                M = 200;
+                rfTimeRange = 0.2;
+                max_TimeBlock_StartTime = 500;
+                rfDeltaT = 0.005;
+                rfNumTimeSteps = 40;
+                responseDeltaT = 0.01;
+                threshold = 1;
+                Verbose = true;
+
+                [rf,rfTimeLags] = vis.revcorr.setRF(M, rfNumTimeSteps, rfDeltaT);
+                [s,kx_v, ky_v, frameTimes, ~] = vis.revcorr.json_file_processor(filename);
+
+                [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
+                    'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
+                    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, 'Verbose', Verbose);
+
+                % 3. Update the spikes element and stimulator with the epoch
+
+                % Define epoch
+                epoch_name = 'mockepoch';
+                clock_type = 'dev_local_time,utc';
+
+                % Time range
+                t_start = frameTimes(1) - 1;
+                t_end = frameTimes(end) + 5;
+                t0_t1 = [t_start t_end; t_start t_end];
+
+                nde.addepoch(epoch_name, clock_type, t0_t1, spiketimes(:), ones(size(spiketimes(:))));
+                nde_stim.addepoch(epoch_name, clock_type, t0_t1, [], []);
+
+                % 4. Generate Stimulus Presentation Document
+
+                % Construct P from JSON data (stimulus_properties)
+                % Fields needed by ishartleystim: M, chromhigh, K_absmax
+                % Fields needed by hartleystim: M, L_absmax, K_absmax, sfmax, fps, chromhigh, chromlow, rect
+
+                % From JSON inspection:
+                % L_max -> L_absmax
+                % K_max -> K_absmax
+                % sf_max -> sfmax
+                % color_high -> chromhigh
+                % color_low -> chromlow
+
+                sp = json_data.stimulus_properties;
+                P = struct();
+                P.M = sp.M;
+                P.L_absmax = sp.L_max;
+                P.K_absmax = sp.K_max;
+                P.sfmax = sp.sf_max;
+                P.fps = sp.fps;
+                P.chromhigh = sp.color_high;
+                P.chromlow = sp.color_low;
+                P.rect = sp.rect;
+
+                % Create stimulus presentation structure
+                stim_pres_struct = struct();
+                stim_pres_struct.presentation_order = 1; % One big stimulus? Or sequence?
+                % The calculator expects one stimulus entry that describes the whole Hartley sequence
+                stim_pres_struct.stimuli(1).parameters = P;
+
+                % Create presentation_time structure
+                pt_struct = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');
+                pt_struct(1).clocktype = 'dev_local_time';
+                pt_struct(1).onset = frameTimes(1);
+                pt_struct(1).offset = frameTimes(end);
+                pt_struct(1).stimopen = frameTimes(1);
+                pt_struct(1).stimclose = frameTimes(end);
+                pt_struct(1).stimevents = [frameTimes(:), ones(size(frameTimes(:)))];
+
+                % Write presentation time to binary file
+                pt_filename = ndi.file.temp_name();
+                ndi.database.fun.write_presentation_time_structure(pt_filename, pt_struct);
+
+                epochid_struct.epochid = epoch_name;
+
+                stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_pres_struct, 'epochid', epochid_struct) + ...
+                    obj.session.newdocument();
+                stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
+                stim_pres_doc = stim_pres_doc.add_file('presentation_time.bin', pt_filename);
+
+                S.database_add(stim_pres_doc);
+                current_docs{end+1} = stim_pres_doc;
+
+                docs{i} = current_docs;
+
+                % 6. Run the calculator
+                hc = ndi.calc.vis.hartley(S);
+                parameters = hc.default_search_for_input_parameters();
+                parameters.query.query = ndi.query('element.type','exact_string','spikes','');
+
+                hc.run('Replace', parameters);
+
+                % Get Output
+                q = ndi.query('','isa','hartley_calc','');
+                out_docs = S.database_search(q);
+
+                if ~isempty(out_docs)
+                    doc_output{i} = out_docs{1};
+                else
+                    error('No output document generated.');
+                end
+
+                % Handle Expected Docs
+                if kwargs.generate_expected_docs
+                    doc_expected_output{i} = doc_output{i};
+                    vlt.file.str2text(fullfile(mock_dir, ['mock.' int2str(i) '.json']), jsonencode(doc_expected_output{i}.document_properties));
+                else
+                    expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
+                    if isfile(expected_file)
+                        doc_expected_output{i} = ndi.document(jsondecode(fileread(expected_file)));
+                    else
+                        doc_expected_output{i} = [];
+                    end
+                end
+            end
+        end
 
         function doc = calculate(ndi_calculator_obj, parameters)
-            % CALCULATE - perform the calculator for ndi.calc.example.hartley_calc
+            % CALCULATE - perform the calculator for ndi.calc.vis.hartley
             %
             % DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)
             %
-            % Creates a hartley_calc_calc document given input parameters.
+            % Creates a hartley_calc document given input parameters.
             %
             % The document that is created hartley_calc
             % by the input parameters.
@@ -45,7 +226,7 @@ classdef hartley_calc < ndi.calculator
 
             for i=1:numel(stimulus_presentation_docs)
                 presentation_time = ndi_decoder.load_presentation_time(stimulus_presentation_docs{i});
-                [b,stimids] = ndi.calc.vis.hartley_calc.ishartleystim(stimulus_presentation_docs{i});
+                [b,stimids] = ndi.calc.vis.hartley.ishartleystim(stimulus_presentation_docs{i});
 
                 if ~b, continue; end
 
@@ -72,7 +253,7 @@ classdef hartley_calc < ndi.calculator
                     % Step 3a: set up variables for returning
 
                             % EDIT THIS SO IT TAKES ALL STIMIDS, MORE THAN JUST THE FIRST HARTLEY STIM
-                    hartley_reverse_correlation.stimulus_properties = ndi.calc.vis.hartley_calc.hartleystimdocstruct(...
+                    hartley_reverse_correlation.stimulus_properties = ndi.calc.vis.hartley.hartleystimdocstruct(...
                         stimulus_presentation_docs{i}.document_properties.stimulus_presentation.stimuli(stimids(1)).parameters);
                     hartley_reverse_correlation.reconstruction_properties = struct(...
                         'T_coords', parameters.input_parameters.T,...
@@ -173,7 +354,7 @@ classdef hartley_calc < ndi.calculator
             % PARAMETERS = DEFAULT_SEARCH_FOR_INPUT_PARAMETERS(NDI_CALCULATOR_OBJ)
             %
             % Returns a list of the default search parameters for finding appropriate inputs
-            % to the calculator. For hartley_calc_calc, there is no appropriate default parameters
+            % to the calculator. For hartley_calc, there is no appropriate default parameters
             % so this search will yield empty.
             %
             parameters.input_parameters = struct(...
@@ -202,7 +383,7 @@ classdef hartley_calc < ndi.calculator
             % |                       |   in the PARAMETERS output.                  |
             % |-----------------------|-----------------------------------------------
             %
-            % For the ndi.calc.stimulus.hartley_calc_calc class, this looks for
+            % For the ndi.calc.stimulus.hartley_calc class, this looks for
             % documents of type 'stimulus_response_scalar.json' with 'response_type' fields
             % the contain 'mean' or 'F1'.
             %
@@ -282,7 +463,7 @@ classdef hartley_calc < ndi.calculator
             % [STA, PVAL] = READ_STA(NDI_CALCULATOR_OBJ, DOC_OR_ID)
             %
             % Reads the spike-triggered average and p-values from disk.
-            % NDI_CALCULATOR_OBJ should be an ndi.calc.vis.hartley_calc object and
+            % NDI_CALCULATOR_OBJ should be an ndi.calc.vis.hartley object and
             % DOC_OR_ID should either be an ndi.document or the id of the hartley
             % document object to be read.
             %
@@ -325,7 +506,7 @@ classdef hartley_calc < ndi.calculator
         function [b,stimids] = ishartleystim(stim_presentation_doc)
             % ISHARTLEYSTIM - does a stimulus presentation doc contain a Hartley stimulus?
             %
-            % [B,STIMIDS] = ndi.calc.hartley_calc.ishartleystim(STIM_PRESENTATION_DOC)
+            % [B,STIMIDS] = ndi.calc.vis.hartley.ishartleystim(STIM_PRESENTATION_DOC)
             %
             % Returns 1 iff STIM_PRESENTATION_DOC contains Hartley stimuli. Returns
             % the STIMIDS of any Hartley stimuli.
@@ -366,4 +547,4 @@ classdef hartley_calc < ndi.calculator
 
     end % static methods
 
-end % hartley_calc
+end % hartley
