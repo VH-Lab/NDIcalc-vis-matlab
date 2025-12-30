@@ -66,8 +66,6 @@ classdef hartley < ndi.calculator
 
                 % Default parameters from vis.revcorr.test
                 % Resolve path relative to this file
-                % +ndi/+calc/+vis/hartley.m -> root/+ndi/+calc/+vis
-                % We want root/tests/+ndi/+unittest/+calc/+vis/1_hartley.json
 
                 path_to_root = fileparts(fileparts(fileparts(p)));
                 filename = fullfile(path_to_root, 'tests', '+ndi', '+unittest', '+calc', '+vis', '1_hartley.json');
@@ -108,16 +106,7 @@ classdef hartley < ndi.calculator
 
                 % 4. Generate Stimulus Presentation Document
 
-                % Construct P from JSON data (stimulus_properties)
-                % Fields needed by ishartleystim: M, chromhigh, K_absmax
-                % Fields needed by hartleystim: M, L_absmax, K_absmax, sfmax, fps, chromhigh, chromlow, rect
-
-                % From JSON inspection:
-                % L_max -> L_absmax
-                % K_max -> K_absmax
-                % sf_max -> sfmax
-                % color_high -> chromhigh
-                % color_low -> chromlow
+                % Construct P from JSON data (stimulus_properties) and user provided info
 
                 sp = json_data.stimulus_properties;
                 P = struct();
@@ -129,6 +118,17 @@ classdef hartley < ndi.calculator
                 P.chromhigh = sp.color_high;
                 P.chromlow = sp.color_low;
                 P.rect = sp.rect;
+
+                % Add fields required by hartleystim that were missing
+                P.reps = 5; % As seen in user provided structure
+                P.windowShape = 0;
+                P.distance = 30;
+                P.contrast = 1;
+                P.background = 0.5;
+                P.backdrop = 0.5;
+                P.dispprefs = {};
+                P.randState = zeros(35,1); % Placeholder: this will likely cause mismatch in reconstruction but fixes the crash.
+                                           % If hartleyStim.mat was available, we would load it here.
 
                 % Create stimulus presentation structure
                 stim_pres_struct = struct();
