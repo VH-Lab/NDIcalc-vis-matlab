@@ -64,17 +64,39 @@ classdef hartley < ndi.calculator
 
                 % 2. Calculate Hartley Response (imitating vis.revcorr.test)
 
-                % Default parameters from vis.revcorr.test
-                % Resolve path relative to this file
+                % Construct P from valid defaults (ignoring 1_hartley.json sequence to ensure consistency)
+                P = struct();
+                P.M = 200;
+                P.L_absmax = 20;
+                P.K_absmax = 20;
+                P.sfmax = 3;
+                P.fps = 10;
+                P.chromhigh = [255 255 255];
+                P.chromlow = [0 0 0];
+                P.rect = [0 -100 800 700];
+                P.reps = 5;
+                P.windowShape = 0;
+                P.distance = 30;
+                P.contrast = 1;
+                P.background = 0.5;
+                P.backdrop = 0.5;
+                P.dispprefs = {};
 
-                path_to_root = fileparts(fileparts(fileparts(p)));
-                filename = fullfile(path_to_root, 'tests', '+ndi', '+unittest', '+calc', '+vis', '1_hartley.json');
+                % Generate a random state. Note: exact format depends on hartleystim requirements.
+                % Assuming it accepts the standard MATLAB 'state' vector (35x1) or similar.
+                % We will generate a dummy 35x1 vector.
+                P.randState = rand(35,1);
 
-                % Try to read stimulus_properties manually since json_file_processor doesn't return it
-                json_txt = fileread(filename);
-                json_data = jsondecode(json_txt);
+                % Generate the consistent stimulus sequence
+                hartleys = hartleystim(P);
+                [s, kx_v, ky_v, ORDER] = hartleynumbers(hartleys);
 
-                M = 200;
+                % Generate frame times
+                % s has one entry per frame.
+                num_frames = numel(s);
+                frameTimes = (0:num_frames-1)' / P.fps;
+
+                % RF parameters
                 rfTimeRange = 0.2;
                 max_TimeBlock_StartTime = 500;
                 rfDeltaT = 0.005;
@@ -83,9 +105,9 @@ classdef hartley < ndi.calculator
                 threshold = 1;
                 Verbose = true;
 
-                [rf,rfTimeLags] = vis.revcorr.setRF(M, rfNumTimeSteps, rfDeltaT);
-                [s,kx_v, ky_v, frameTimes, ~] = vis.revcorr.json_file_processor(filename);
+                [rf,rfTimeLags] = vis.revcorr.setRF(P.M, rfNumTimeSteps, rfDeltaT);
 
+                % Calculate Spike Times
                 [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
                     'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
                     'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, 'Verbose', Verbose);
@@ -106,34 +128,9 @@ classdef hartley < ndi.calculator
 
                 % 4. Generate Stimulus Presentation Document
 
-                % Construct P from JSON data (stimulus_properties) and user provided info
-
-                sp = json_data.stimulus_properties;
-                P = struct();
-                P.M = sp.M;
-                P.L_absmax = sp.L_max;
-                P.K_absmax = sp.K_max;
-                P.sfmax = sp.sf_max;
-                P.fps = sp.fps;
-                P.chromhigh = sp.color_high;
-                P.chromlow = sp.color_low;
-                P.rect = sp.rect;
-
-                % Add fields required by hartleystim that were missing
-                P.reps = 5; % As seen in user provided structure
-                P.windowShape = 0;
-                P.distance = 30;
-                P.contrast = 1;
-                P.background = 0.5;
-                P.backdrop = 0.5;
-                P.dispprefs = {};
-                P.randState = zeros(35,1); % Placeholder: this will likely cause mismatch in reconstruction but fixes the crash.
-                                           % If hartleyStim.mat was available, we would load it here.
-
                 % Create stimulus presentation structure
                 stim_pres_struct = struct();
-                stim_pres_struct.presentation_order = 1; % One big stimulus? Or sequence?
-                % The calculator expects one stimulus entry that describes the whole Hartley sequence
+                stim_pres_struct.presentation_order = 1;
                 stim_pres_struct.stimuli(1).parameters = P;
 
                 % Create presentation_time structure
