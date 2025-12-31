@@ -130,7 +130,8 @@ classdef hartley < ndi.calculator
 
                 % Create stimulus presentation structure
                 stim_pres_struct = struct();
-                stim_pres_struct.presentation_order = 1;
+                stim_pres_struct.presentation_order = 1; % One big stimulus? Or sequence?
+                % The calculator expects one stimulus entry that describes the whole Hartley sequence
                 stim_pres_struct.stimuli(1).parameters = P;
 
                 % Create presentation_time structure
@@ -489,17 +490,39 @@ classdef hartley < ndi.calculator
             end
 
             myfile = ndi_calculator_obj.session.database_openbinarydoc(doc,'hartley_results.ngrid');
-            fulldata = fread(myfile,prod(doc.document_properties.ngrid.data_dim),doc.document_properties.ngrid.data_type);
+            [sta,pval] = ndi.calc.vis.hartley.readStaFromFile(myfile, doc.document_properties.ngrid.data_dim, doc.document_properties.ngrid.data_type);
             ndi_calculator_obj.session.database_closebinarydoc(myfile);
-
-            fulldata = reshape(fulldata,vlt.data.rowvec(doc.document_properties.ngrid.data_dim));
-            sta = fulldata(:,:,:,1);
-            pval = fulldata(:,:,:,2);
         end % read_sta()
 
     end % methods()
 
     methods (Static)
+        function [sta,pval] = readStaFromFile(fileid_or_obj, data_dim, data_type)
+            % READSTAFROMFILE - read STA and PVAL from a file identifier or object
+            %
+            % [STA, PVAL] = READSTAFROMFILE(FILEID_OR_OBJ, DATA_DIM, DATA_TYPE)
+            %
+            % Reads the spike-triggered average (STA) and p-value (PVAL) data from
+            % a file identifier or object.
+            %
+            % Inputs:
+            %   FILEID_OR_OBJ - A file identifier (integer) or a file object (e.g.,
+            %                   did.file.fileobj or vlt.file.fileobj) that supports fread.
+            %   DATA_DIM - The dimensions of the data to be read.
+            %   DATA_TYPE - The precision of the data (e.g., 'double', 'single').
+            %
+            % Outputs:
+            %   STA - The spike-triggered average data.
+            %   PVAL - The p-values associated with the STA.
+            %
+
+            fulldata = fread(fileid_or_obj, prod(data_dim), data_type);
+
+            fulldata = reshape(fulldata, vlt.data.rowvec(data_dim));
+            sta = fulldata(:,:,:,1);
+            pval = fulldata(:,:,:,2);
+        end % readStaFromFile
+
         function [b,stimids] = ishartleystim(stim_presentation_doc)
             % ISHARTLEYSTIM - does a stimulus presentation doc contain a Hartley stimulus?
             %
