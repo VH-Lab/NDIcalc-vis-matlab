@@ -64,38 +64,17 @@ classdef hartley < ndi.calculator
 
                 % 2. Calculate Hartley Response (imitating vis.revcorr.test)
 
-                % Construct P fully inline to ensure reproducibility and remove external dependencies
-                P = struct();
-                P.M = 200;
-                P.L_absmax = 20;
-                P.K_absmax = 20;
-                P.sfmax = 3;
-                P.fps = 10;
-                P.chromhigh = [255 255 255];
-                P.chromlow = [0 0 0];
-                P.rect = [0 -100 800 700];
-                P.reps = 5;
-                P.windowShape = 0;
-                P.distance = 30;
-                P.contrast = 1;
-                P.background = 0.5;
-                P.backdrop = 0.5;
-                P.dispprefs = {};
+                % Default parameters from vis.revcorr.test
+                % Resolve path relative to this file
 
-                % Use a deterministic random state for reproducibility
-                rng(1);
-                P.randState = rand(35,1);
+                path_to_root = fileparts(fileparts(fileparts(p)));
+                filename = fullfile(path_to_root, 'tests', '+ndi', '+unittest', '+calc', '+vis', '1_hartley.json');
 
-                % Generate the consistent stimulus sequence
-                hartleys = hartleystim(P);
-                [s, kx_v, ky_v, ORDER] = hartleynumbers(hartleys);
+                % Try to read stimulus_properties manually since json_file_processor doesn't return it
+                json_txt = fileread(filename);
+                json_data = jsondecode(json_txt);
 
-                % Generate frame times
-                % s has one entry per frame.
-                num_frames = numel(s);
-                frameTimes = (0:num_frames-1)' / P.fps;
-
-                % RF parameters
+                M = 200;
                 rfTimeRange = 0.2;
                 max_TimeBlock_StartTime = 500;
                 rfDeltaT = 0.005;
@@ -105,6 +84,40 @@ classdef hartley < ndi.calculator
                 Verbose = true;
 
                 [rf,rfTimeLags] = vis.revcorr.setRF(P.M, rfNumTimeSteps, rfDeltaT);
+
+                % Calculate Spike Times
+                % Construct P from JSON data (stimulus_properties) and user provided info
+                sp = json_data.stimulus_properties;
+                P = struct();
+                P.M = sp.M;
+                P.L_absmax = sp.L_max;
+                P.K_absmax = sp.K_max;
+                P.sfmax = sp.sf_max;
+                P.fps = sp.fps;
+                P.chromhigh = sp.color_high;
+                P.chromlow = sp.color_low;
+                P.rect = sp.rect;
+
+                % Add fields required by hartleystim that were missing
+                P.reps = 5; % As seen in user provided structure
+                P.windowShape = 0;
+                P.distance = 30;
+                P.contrast = 1;
+                P.background = 0.5;
+                P.backdrop = 0.5;
+                P.dispprefs = {};
+
+                % Use the specific random state provided by the user
+                P.randState = [0.83010614792406711704;0.67049577652008318651;0.084498675378608334441;0.068616664844903030307;0.037087814691835085945;0.38543046292856619761;0.16532903544109134319;0.37524412910710525093;0.7297479613289076239;0.45343661042043559295;0.85958193223649248527;0.56853924287677437555;0.98482523982115344197;0.37423162154930766921;0.37145836075024529777;0.94990815571897457836;0.9774076259623937224;0.7427609474048580962;0.49582125124247100612;0.41567584477442054425;0.077747009657162524654;0.32992450636971693001;0.94287569097460066647;0.090634204453761468834;0.30912124362839821234;0.55178476374197804599;0.035024315427357621822;0.0017715080123419379987;0.98539961256330210748;0.8229417186138704432;0.45855695113763428328;0.97099492768831252576;0;0;4.76837158203125e-07];
+
+                % Generate the consistent stimulus sequence
+                hartleys = hartleystim(P);
+                [s, kx_v, ky_v, ORDER] = hartleynumbers(hartleys);
+
+                % Generate frame times
+                % s has one entry per frame.
+                num_frames = numel(s);
+                frameTimes = (0:num_frames-1)' / P.fps;
 
                 % Calculate Spike Times
                 [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
