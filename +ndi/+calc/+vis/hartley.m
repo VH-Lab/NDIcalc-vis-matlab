@@ -94,9 +94,9 @@ classdef hartley < ndi.calculator
                 P.K_absmax = sp.K_max;
                 P.sfmax = sp.sf_max;
                 P.fps = sp.fps;
-                P.chromhigh = sp.color_high;
-                P.chromlow = sp.color_low;
-                P.rect = sp.rect;
+                P.chromhigh = sp.color_high(:)';
+                P.chromlow = sp.color_low(:)';
+                P.rect = sp.rect(:)';
 
                 % Add fields required by hartleystim that were missing
                 P.reps = 5; % As seen in user provided structure
