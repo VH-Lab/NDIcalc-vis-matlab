@@ -64,7 +64,7 @@ classdef hartley < ndi.calculator
 
                 % 2. Calculate Hartley Response (imitating vis.revcorr.test)
 
-                % Construct P from valid defaults (ignoring 1_hartley.json sequence to ensure consistency)
+                % Construct P fully inline to ensure reproducibility and remove external dependencies
                 P = struct();
                 P.M = 200;
                 P.L_absmax = 20;
@@ -82,9 +82,8 @@ classdef hartley < ndi.calculator
                 P.backdrop = 0.5;
                 P.dispprefs = {};
 
-                % Generate a random state. Note: exact format depends on hartleystim requirements.
-                % Assuming it accepts the standard MATLAB 'state' vector (35x1) or similar.
-                % We will generate a dummy 35x1 vector.
+                % Use a deterministic random state for reproducibility
+                rng(1);
                 P.randState = rand(35,1);
 
                 % Generate the consistent stimulus sequence
@@ -130,7 +129,7 @@ classdef hartley < ndi.calculator
 
                 % Create stimulus presentation structure
                 stim_pres_struct = struct();
-                stim_pres_struct.presentation_order = 1; % One big stimulus? Or sequence?
+                stim_pres_struct.presentation_order = 1; % One big stimulus
                 % The calculator expects one stimulus entry that describes the whole Hartley sequence
                 stim_pres_struct.stimuli(1).parameters = P;
 
@@ -180,6 +179,15 @@ classdef hartley < ndi.calculator
                 if kwargs.generate_expected_docs
                     doc_expected_output{i} = doc_output{i};
                     vlt.file.str2text(fullfile(mock_dir, ['mock.' int2str(i) '.json']), jsonencode(doc_expected_output{i}.document_properties));
+
+                    % Also copy the binary results file
+                    % Try to locate it in `obj.session.path/hartley`.
+                    generated_file = fullfile(obj.session.path, 'hartley', [doc_output{i}.id() '.ngrid']);
+                    if isfile(generated_file)
+                        expected_binary_name = ['mock_' int2str(i) '_hartley_results.ngrid'];
+                        expected_binary_path = fullfile(mock_dir, expected_binary_name);
+                        copyfile(generated_file, expected_binary_path);
+                    end
                 else
                     expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
                     if isfile(expected_file)
@@ -188,6 +196,73 @@ classdef hartley < ndi.calculator
                         doc_expected_output{i} = [];
                     end
                 end
+            end
+        end
+
+        function [b, report] = compare_mock_docs(ndi_calculator_obj, expected_doc, actual_doc, scope, docCompare)
+            % COMPARE_MOCK_DOCS - compare expected and actual documents
+            %
+            % [B, REPORT] = COMPARE_MOCK_DOCS(NDI_CALCULATOR_OBJ, EXPECTED_DOC, ACTUAL_DOC, SCOPE, DOCCOMPARE)
+            %
+            % Compares the EXPECTED_DOC and ACTUAL_DOC.
+
+            % Call parent method first
+            [b, report] = compare_mock_docs@ndi.calculator(ndi_calculator_obj, expected_doc, actual_doc, scope, docCompare);
+
+            if ~b
+                return;
+            end
+
+            % Compare binary data
+            p = fileparts(mfilename('fullpath'));
+            mock_dir = fullfile(p, 'mock', 'hartley');
+
+            % Assuming test index 1 for now.
+            % Ideally we should infer index from expected_doc filename if possible,
+            % but standard ndi.mock framework doesn't explicitly pass it.
+            % Given user instructions for this task, checking 'mock_1_hartley_results.ngrid' is the target.
+            expected_binary_path = fullfile(mock_dir, 'mock_1_hartley_results.ngrid');
+
+            if ~isfile(expected_binary_path)
+                % If we can't find specific file, warn but don't fail basic doc check
+                warning(['Expected binary file ' expected_binary_path ' not found. Skipping binary comparison.']);
+                return;
+            end
+
+            % Read expected data
+            fid_exp = fopen(expected_binary_path, 'r', 'ieee-le');
+            if fid_exp < 0
+                error(['Could not open expected binary file ' expected_binary_path]);
+            end
+            % We need dimensions. Expected doc should have them.
+            dims_exp = expected_doc.document_properties.ngrid.data_dim;
+            type_exp = expected_doc.document_properties.ngrid.data_type;
+
+            [sta_exp, ~] = ndi.calc.vis.hartley.readStaFromFile(fid_exp, dims_exp, type_exp);
+            fclose(fid_exp);
+
+            % Read actual data
+            [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc);
+
+            % Compare 10th frame (3rd dimension)
+            if size(sta_exp, 3) < 10 || size(sta_act, 3) < 10
+                b = 0;
+                report = 'STA data has fewer than 10 frames.';
+                return;
+            end
+
+            frame_exp = sta_exp(:, :, 10);
+            frame_act = sta_act(:, :, 10);
+
+            diff = abs(frame_exp - frame_act);
+            max_diff = max(diff(:));
+
+            if max_diff > 1e-2
+                b = 0;
+                report = sprintf('STA data mismatch at frame 10. Max diff: %g', max_diff);
+            else
+                b = 1;
+                report = ''; % Success
             end
         end
 
