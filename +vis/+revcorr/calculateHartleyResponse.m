@@ -71,7 +71,7 @@ response = zeros(numTimeSteps, 1);
 rf_backwards = rf(:, :, end:-1:1);
 
 % Calculate response
-parfor i = 1:numTimeSteps
+for i = 1:numTimeSteps
     % Determine the time interval for the current response point
     % We need stimulus history of length rfTimeRange ending at responseTimes(i)
     t_end = responseTimes(i);

@@ -121,7 +121,7 @@ classdef hartley < ndi.calculator
                 % Time range
                 t_start = frameTimes(1) - 1;
                 t_end = frameTimes(end) + 5;
-                t0_t1 = [t_start t_end; t_start t_end];
+                t0_t1 = [ [t_start t_end]' [t_start t_end]'];
 
                 nde.addepoch(epoch_name, clock_type, t0_t1, spiketimes(:), ones(size(spiketimes(:))));
                 nde_stim.addepoch(epoch_name, clock_type, t0_t1, [], []);
@@ -136,7 +136,7 @@ classdef hartley < ndi.calculator
 
                 % Create presentation_time structure
                 pt_struct = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');
-                pt_struct(1).clocktype = 'dev_local_time';
+                pt_struct(1).clocktype = 'utc';
                 pt_struct(1).onset = frameTimes(1);
                 pt_struct(1).offset = frameTimes(end);
                 pt_struct(1).stimopen = frameTimes(1);
@@ -149,8 +149,8 @@ classdef hartley < ndi.calculator
 
                 epochid_struct.epochid = epoch_name;
 
-                stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_pres_struct, 'epochid', epochid_struct) + ...
-                    obj.session.newdocument();
+                stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_pres_struct, ...
+                    'epochid', epochid_struct) + obj.session.newdocument();
                 stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
                 stim_pres_doc = stim_pres_doc.add_file('presentation_time.bin', pt_filename);
 
