@@ -83,7 +83,7 @@ classdef hartley < ndi.calculator
                 threshold = 1;
                 Verbose = true;
 
-                [rf,rfTimeLags] = vis.revcorr.setRF(P.M, rfNumTimeSteps, rfDeltaT);
+                [rf,rfTimeLags] = vis.revcorr.setRF(M, rfNumTimeSteps, rfDeltaT);
 
                 % Calculate Spike Times
                 % Construct P from JSON data (stimulus_properties) and user provided info
