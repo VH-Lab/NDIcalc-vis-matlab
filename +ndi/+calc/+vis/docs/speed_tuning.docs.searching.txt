@@ -2,6 +2,12 @@ By default, this ndi.calc.vis.speed object looks for stimulus_tuningcurve docume
 
 If one wished to restrict this further, one might add an additional condition to the default query.
 
+The parameters structure returned by default_search_for_input_parameters() also contains an 'input_parameters' field that controls the calculation itself.
+
+input_parameters:
+	min_xi: (double, default 0) The lower bound for the speed index (xi) parameter during the fit.
+	max_xi: (double, default 1) The upper bound for the speed index (xi) parameter during the fit.
+
 Example:
 % Only perform the operation on the element called myelement
 
