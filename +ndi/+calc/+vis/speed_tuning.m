@@ -60,6 +60,7 @@ classdef speed_tuning < ndi.calc.tuning_fit
             % so this search will yield empty.
             %
             parameters.input_parameters = struct([]);
+            parameters.input_parameters.min_xi
             parameters.depends_on = did.datastructures.emptystruct('name', 'value');
             parameters.query = obj.default_parameters_query(parameters);
 
