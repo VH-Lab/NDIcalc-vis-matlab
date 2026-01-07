@@ -197,7 +197,7 @@ classdef hartley < ndi.calculator
                     % Try to locate it in `obj.session.path/hartley`.
                     generated_file = fullfile(obj.session.path, 'hartley', [doc_output{i}.id() '.ngrid']);
                     if isfile(generated_file)
-                        expected_binary_name = ['mock_' int2str(i) '_hartley_results.ngrid'];
+                        expected_binary_name = ['mock.' int2str(i) '_hartley_results.ngrid'];
                         expected_binary_path = fullfile(mock_dir, expected_binary_name);
                         copyfile(generated_file, expected_binary_path);
                     end
@@ -233,8 +233,8 @@ classdef hartley < ndi.calculator
             % Assuming test index 1 for now.
             % Ideally we should infer index from expected_doc filename if possible,
             % but standard ndi.mock framework doesn't explicitly pass it.
-            % Given user instructions for this task, checking 'mock_1_hartley_results.ngrid' is the target.
-            expected_binary_path = fullfile(mock_dir, 'mock_1_hartley_results.ngrid');
+            % Given user instructions for this task, checking 'mock.1_hartley_results.ngrid' is the target.
+            expected_binary_path = fullfile(mock_dir, 'mock.1_hartley_results.ngrid');
 
             if ~isfile(expected_binary_path)
                 % If we can't find specific file, warn but don't fail basic doc check
