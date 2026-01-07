@@ -77,7 +77,6 @@ Based on the provided code, the following calculator classes are available (assu
 | `ndi.calc.vis.oridir_tuning`         | Analyzes orientation/direction tuning     | `stimulus_tuningcurve_id` (angle/direction)              | `oridirtuning_calc`               | Yes          |
 | `ndi.calc.vis.spatial_frequency_tuning`| Analyzes spatial frequency tuning       | `stimulus_tuningcurve_id` (spatial frequency)            | `spatial_frequency_tuning_calc`   | Yes          |
 | `ndi.calc.vis.speed_tuning`          | Analyzes speed tuning (SF+TF interaction) | `stimulus_tuningcurve_id` (SF & TF)                        | `speedtuning_calc`                | Yes          |
-| `ndi.calc.vis.spike_shape`           | Calculates average spike waveforms over time| `element_id`                                                 | `spike_shape_calc`                | Yes          |
 | `ndi.calc.vis.temporal_frequency_tuning`| Analyzes temporal frequency tuning      | `stimulus_tuningcurve_id` (temporal frequency)           | `temporal_frequency_tuning_calc`  | Yes          |
 
 ## 5. Key Output Document Fields (Examples)
@@ -108,7 +107,7 @@ The `_calc` documents store rich information. Refer back to the documentation sn
 
 ## 6. Associated Document Types Defined
 
-This add-on defines the primary calculator output documents (e.g., `contrastsensitivity_calc`, `contrasttuning_calc`, `hartley_calc`, `oridirtuning_calc`, `spatial_frequency_tuning_calc`, `speedtuning_calc`, `spike_shape_calc`, `temporal_frequency_tuning_calc`).
+This add-on defines the primary calculator output documents (e.g., `contrastsensitivity_calc`, `contrasttuning_calc`, `hartley_calc`, `oridirtuning_calc`, `spatial_frequency_tuning_calc`, `speedtuning_calc`, `temporal_frequency_tuning_calc`).
 
 It also defines several intermediate or base document types that are likely used as superclasses or components within the calculator outputs (e.g., `contrast_tuning`, `hartley_reverse_correlation`, `reverse_correlation`, `spatial_frequency_tuning`, `speed_tuning`, `temporal_frequency_tuning`). Understanding these base types can help in interpreting the structure of the final `_calc` documents.
 

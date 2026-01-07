@@ -551,9 +551,9 @@ value1 = results.output_field1;
 ## Best Practices
 
 ### 1. Naming Conventions
-- **Class file**: lowercase with underscores (e.g., `spike_shape.m`)
-- **Document type**: class name + `_calc` (e.g., `spike_shape_calc`)
-- **JSON file**: same as document type (e.g., `spike_shape_calc.json`)
+- **Class file**: lowercase with underscores (e.g., `my_calculator.m`)
+- **Document type**: class name + `_calc` (e.g., `my_calculator_calc`)
+- **JSON file**: same as document type (e.g., `my_calculator_calc.json`)
 
 ### 2. Design Decisions
 - **Granularity**: Create separate documents per epoch/trial if data may be added later

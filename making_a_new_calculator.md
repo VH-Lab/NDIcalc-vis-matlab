@@ -1,6 +1,6 @@
 # Today I made a new calculator. This is what I did.
 
-My calculator is going to be named 'spike_shape'. It computes the mean spike shape for a neuron_extracellular object in all of its recorded epochs, and at regular intervals within epochs.
+My calculator is going to be named 'example_calculator'. It computes the mean spike shape for a neuron_extracellular object in all of its recorded epochs, and at regular intervals within epochs.
 
 # 1. Thinking before coding
 
@@ -16,15 +16,15 @@ For the binary file format, I am going to choose `vhlspikewaveformfile` from our
 
 # 2. Setting things up
 
-I know I need a `spike_shape_calc` document type and a `spike_shape.m` file with the code.
+I know I need a `example_calculator_calc` document type and a `example_calculator.m` file with the code.
 
 I am going to design in NDIcalc-vis-matlab. Really, we ought to make a new NDIcalc-extracellular-matlab package because this has applications well beyond vision. I will pledge to do it but I have a grant deadline right now.
 
 I make copies of the `simple` calculator so I have templates to start from.  
 
-1. I copy `[...]/NDI-matlab/+ndi/+calc/+example/simple.m` to `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/spike_shape.m`
-2. I copy `[...]/NDI-matlab/+ndi/+calc/+example/docs/simple.docs*.txt .m` to a new directory that I made `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/docs`. Then I rename them all so that instead of simple.docs._something_ it says spike_shape.docs._something_.
-3. I copy `[...]/NDI-matlab/ndi_common/database_documents/apps/calculators/simple_calc.json` to `[...]/NDIcalc-vis-matlab/ndi_common/database_documents/calc/spike_shape_calc.json` 
+1. I copy `[...]/NDI-matlab/+ndi/+calc/+example/simple.m` to `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/example_calculator.m`
+2. I copy `[...]/NDI-matlab/+ndi/+calc/+example/docs/simple.docs*.txt .m` to a new directory that I made `[...]/NDIcalc-vis-matlab/+ndi/+calc/+extracellular/docs`. Then I rename them all so that instead of simple.docs._something_ it says example_calculator.docs._something_.
+3. I copy `[...]/NDI-matlab/ndi_common/database_documents/apps/calculators/simple_calc.json` to `[...]/NDIcalc-vis-matlab/ndi_common/database_documents/calc/example_calculator_calc.json`
 
 # 3. Designing the output document type
 
@@ -33,10 +33,10 @@ I want to start with the output document. I want to have fields for selecting ho
 ```json
 {
         "document_class": {
-                "definition":                                           "$NDICALCDOCUMENTPATH\/calc\/spike_shape_calc.json",
-                "validation":                                           "$NDICALCSCHEMAPATH\/calc\/spike_shape_calc_shema.json",
-                "class_name":                                           "spike_shape_calc",
-                "property_list_name":                                   "spike_shape_calc",
+                "definition":                                           "$NDICALCDOCUMENTPATH\/calc\/example_calculator_calc.json",
+                "validation":                                           "$NDICALCSCHEMAPATH\/calc\/example_calculator_calc_shema.json",
+                "class_name":                                           "example_calculator_calc",
+                "property_list_name":                                   "example_calculator_calc",
                 "class_version":                                        1,
                 "superclasses": [
                         { "definition":                                 "$NDIDOCUMENTPATH\/ndi_document.json" },
@@ -51,7 +51,7 @@ I want to start with the output document. I want to have fields for selecting ho
                         "value": 0,
                 }
         ],
-        "spike_shape_calc": {
+        "example_calculator_calc": {
                 "input_parameters": {
                         "spike_window_before_time":                                     -0.001,
                         "spike_window_after_time":                                      0.002,
@@ -65,21 +65,21 @@ I want to start with the output document. I want to have fields for selecting ho
 
 # 4. Writing the code
 
-1. First, I start with my template, and I just do a find and replace on "simple" to change it to "spike_shape".
+1. First, I start with my template, and I just do a find and replace on "simple" to change it to "example_calculator".
 2. Next, I update the creator with some documentation and add code that adds the database document type to the object by calling the superclass creator:
 ```matlab
-                function spike_shape_obj = spike_shape(session)
+                function example_calculator_obj = example_calculator(session)
                         % SPIKE_SHAPE_CALC - calculator that produces spike waveform shapes in an epoch 
                         %
                         % SPIKE_SHAPE_CALC_OBJ = SPIKE_SHAPE_CALC(SESSION)
                         %
                         % Creates a SPIKE_SHAPE_CALC ndi.calculator object
                         %
-                                w = which('ndi.calc.vis.spike_shape');
+                                w = which('ndi.calc.vis.example_calculator');
                                 parparparpar = fileparts(fileparts(fileparts(fileparts(w))));
-                                spike_shape_obj = spike_shape_obj@ndi.calculator(session,'spike_shape_calc',...
-                                        fullfile(parparparpar,'ndi_common','database_documents','calc','spike_shape_calc.json'));
-                end; % spike_shape()
+                                example_calculator_obj = example_calculator_obj@ndi.calculator(session,'example_calculator_calc',...
+                                        fullfile(parparparpar,'ndi_common','database_documents','calc','example_calculator_calc.json'));
+                end; % example_calculator()
 ```
 3. The next function I edit is the function that searches for input parameters. Here I want it to find all spiking neurons as input:
 ```matlab
