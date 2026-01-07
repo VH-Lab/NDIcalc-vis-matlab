@@ -40,10 +40,8 @@ if ~isa(S,'ndi.session'),
 end;
 
 hc = ndi.calc.vis.hartley_calc(S);
-shc = ndi.calc.vis.spike_shape(S);
 
 q1 = ndi.query('','isa','hartley_calc');
-q2 = ndi.query('','isa','spike_shape_calc');
 
 p_q = ndi.query('','isa','stimulus_presentation') & ndi.query('epochid.epochid','exact_string',epoch_id);
 
@@ -55,7 +53,6 @@ p_obj = p_obj{1};
 
 xy_axes = {};
 rt_axes = {};
-sp_axes = {};
 
 if write_files,
 	ts = ndi.fun.timestamp;
@@ -70,19 +67,12 @@ end;
 for i=1:numel(elements),
 	h_q1 = ndi.query('','depends_on','element_id',elements{i}.id());
 	h_q2 = ndi.query('','depends_on','stimulus_presentation_id',p_obj.id());
-	element_epoch = S.database_search(ndi.query('','isa','element_epoch') ...
-		& h_q1 & ndi.query('epochid.epochid','exact_string',epoch_id));
-	if numel(element_epoch)~=1, error('wrong number of element_epochs.'); end;
-	s_q2 = ndi.query('','depends_on','element_epoch_id',element_epoch{1}.id());
 
 	h = S.database_search(q1 & h_q1 & h_q2);
-	sh = S.database_search(q2 & h_q1 & s_q2); 
 
 	if numel(h)~=1, error(['Found wrong number of hartley_calc docs: ' int2str(numel(h)) '.']); end;
-	if numel(sh)~=1, error(['Found wrong number of spike_shape_calc docs: ' int2str(numel(sh)) '.']); end;
 
 	h = h{1};
-	sh = sh{1};
 
 	frame_index = vlt.data.findclosest(h.document_properties.hartley_reverse_correlation.reconstruction_properties.T_coords,latency_xy);
 
@@ -116,7 +106,7 @@ for i=1:numel(elements),
 	end;
 
 	figure(fig);
-	xy_axes{i} = subplot(numel(elements), 3, 1+(i-1)*3);
+	xy_axes{i} = subplot(numel(elements), 2, 1+(i-1)*2);
 	
 	image(significance_plot(:,:,frame_index));
 	colormap(xy_axes{i},cmap);
@@ -127,7 +117,7 @@ for i=1:numel(elements),
 	plot(X_axis_here*[1 1],[0 size(sta,2)],'-','color',axis_color);
 	plot([0 size(sta,1)],Y_axis_here*[1 1],'-','color',axis_color);
 
-	rt_axes{i} = subplot(numel(elements), 3, 2+(i-1)*3);
+	rt_axes{i} = subplot(numel(elements), 2, 2+(i-1)*2);
 	image(t_profile_pval,'XData',rp.T_coords,'YData',rp.Y_coords);
 	colormap(rt_axes{i},cmap);
 	axis normal on
@@ -135,19 +125,6 @@ for i=1:numel(elements),
 	hold on;
 	dt = median(diff(rp.T_coords));
 	plot(rp.T_coords(frame_index)*[1 1],[0 numel(rp.Y_coords)],'-','color',axis_color);
-
-	sp_axes{i} = subplot(numel(elements), 3, 3+(i-1)*3);
-	[mean_waves,std_waves,sample_times] = shc.load(sh);
-
-	if isempty(site_map),
-		site_map = 1:size(mean_waves,2);
-	end;
-
-	if 1,
-		ndi.fun.plot.multichan(mean_waves(:,site_map,1),sample_times,30);
-	else,
-		plot(sample_times,mean_waves(:,:,1));
-	end;
 
 	if write_files,
 		fname1 = [write_directory filesep elements{i}.elementstring '_' epoch_id '_xy.tiff'];
