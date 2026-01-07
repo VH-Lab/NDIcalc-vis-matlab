@@ -176,11 +176,7 @@ classdef hartley < ndi.calculator
                 parameters = hc.default_search_for_input_parameters();
                 parameters.query.query = ndi.query('element.type','exact_string','spikes','');
 
-                hc.run('Replace', parameters);
-
-                % Get Output
-                q = ndi.query('','isa','hartley_calc','');
-                out_docs = S.database_search(q);
+                out_docs = hc.run('Replace', parameters);
 
                 if ~isempty(out_docs)
                     doc_output{i} = out_docs{1};
@@ -239,9 +235,7 @@ classdef hartley < ndi.calculator
                 search_result = ndi_calculator_obj.session.database_search(q);
 
                 if isempty(search_result)
-                    docStruct = actual_doc.document_properties;
-                    docStruct.base.session_id = ndi_calculator_obj.session.id();
-                    actual_doc_to_read = ndi.document(docStruct);
+                    actual_doc_to_read = actual_doc_to_read.set_session_id(ndi_calculator_obj.session.id());
                     ndi_calculator_obj.session.database_add(actual_doc_to_read);
                     doc_added = true;
                 end
