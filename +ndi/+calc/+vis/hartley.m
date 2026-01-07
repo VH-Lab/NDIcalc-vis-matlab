@@ -231,13 +231,18 @@ classdef hartley < ndi.calculator
             % to find associated binary files if they are not absolute paths.
 
             doc_added = false;
+            actual_doc_to_read = actual_doc;
+
             try
                 % Check if doc exists in session
                 q = ndi.query('base.id', 'exact_string', actual_doc.id(), '');
                 search_result = ndi_calculator_obj.session.database_search(q);
 
                 if isempty(search_result)
-                    ndi_calculator_obj.session.database_add(actual_doc);
+                    docStruct = actual_doc.document_properties;
+                    docStruct.base.session_id = ndi_calculator_obj.session.id();
+                    actual_doc_to_read = ndi.document(docStruct);
+                    ndi_calculator_obj.session.database_add(actual_doc_to_read);
                     doc_added = true;
                 end
 
@@ -246,9 +251,6 @@ classdef hartley < ndi.calculator
                 mock_dir = fullfile(p, 'mock', 'hartley');
 
                 % Assuming test index 1 for now.
-                % Ideally we should infer index from expected_doc filename if possible,
-                % but standard ndi.mock framework doesn't explicitly pass it.
-                % Given user instructions for this task, checking 'mock.1_hartley_results.ngrid' is the target.
                 expected_binary_path = fullfile(mock_dir, 'mock.1_hartley_results.ngrid');
 
                 if ~isfile(expected_binary_path)
@@ -256,7 +258,7 @@ classdef hartley < ndi.calculator
                     warning(['Expected binary file ' expected_binary_path ' not found. Skipping binary comparison.']);
                     % Clean up if needed
                     if doc_added
-                        ndi_calculator_obj.session.database_rm(actual_doc.id());
+                        ndi_calculator_obj.session.database_rm(actual_doc_to_read.id());
                     end
                     return;
                 end
@@ -265,7 +267,7 @@ classdef hartley < ndi.calculator
                 fid_exp = fopen(expected_binary_path, 'r', 'ieee-le');
                 if fid_exp < 0
                     if doc_added
-                        ndi_calculator_obj.session.database_rm(actual_doc.id());
+                        ndi_calculator_obj.session.database_rm(actual_doc_to_read.id());
                     end
                     error(['Could not open expected binary file ' expected_binary_path]);
                 end
@@ -277,11 +279,11 @@ classdef hartley < ndi.calculator
                 fclose(fid_exp);
 
                 % Read actual data
-                [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc);
+                [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
 
                 % Clean up if we added the document
                 if doc_added
-                    ndi_calculator_obj.session.database_rm(actual_doc.id());
+                    ndi_calculator_obj.session.database_rm(actual_doc_to_read.id());
                 end
 
                 % Compare 10th frame (3rd dimension)
@@ -308,7 +310,7 @@ classdef hartley < ndi.calculator
             catch ME
                 % Ensure we clean up even if an error occurs
                 if doc_added
-                    ndi_calculator_obj.session.database_rm(actual_doc.id());
+                    ndi_calculator_obj.session.database_rm(actual_doc_to_read.id());
                 end
                 rethrow(ME);
             end
