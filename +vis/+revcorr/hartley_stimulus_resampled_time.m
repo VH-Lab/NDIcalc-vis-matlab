@@ -1,7 +1,7 @@
-function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t0, t1, tmax)
+function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t0, t1, numTimesteps)
 % HARTLEY_STIMULUS_RESAMPLED_TIME - generate a space-time picture of the stimulus in a time interval
 %
-% [B,T] = vis.revcorr.hartley_stimulus_resampled_time(M, HARTLEY_STIMULUS_PARAMETERS, HARTLEY_STIMULUS_TIMES, T0, T1, DELTAT)
+% [B,T] = vis.revcorr.hartley_stimulus_resampled_time(M, HARTLEY_STIMULUS_PARAMETERS, HARTLEY_STIMULUS_TIMES, T0, T1, NUMTIMESTEPS)
 %
 % Inputs:
 %  M - the size of the Hartley stimulus 
@@ -12,10 +12,10 @@ function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters,
 %  HARTLEY_STIMULUS_TIMES - an array of the stimulus times in seconds
 %  T0 - the time to begin the reconstruction
 %  T1 - the time to stop the reconstruction
-%  DELTAT - the time step to be used in the reconstruction
+%  NUMTIMESTEPS - the number of timesteps to be used in the reconstruction
 % 
 % OUTPUTS:
-%  B - an MxMxTMAX array, where TMAX = (T1-T0)/DELTAT + 1, the number of timesteps
+%  B - an NUMTIMESTEPS array
 %    B(:,:,s) is the stimulus that was on the screen at time sample s where
 %    the time of stimulus sample s is t0 + (s-1)*deltaT.
 %  T = the time of each reconstructed stimulus sample in the same units as
@@ -23,8 +23,7 @@ function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters,
 
     
     t1 = t1-eps;
-    t = linspace(t0,t1,tmax);
-    
+    t = linspace(t0,t1,numTimesteps);
     
     S = [];
     
@@ -42,5 +41,4 @@ function [b,t] = hartley_stimulus_resampled_time(M, hartley_stimulus_parameters,
         IM = reshape(Si(:,i), M, M);
         b = cat(3, b, IM);
     end
-%     montage(b);
 end

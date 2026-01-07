@@ -1,0 +1,197 @@
+{"comparisonStruct": [
+  {
+    "comparisonMethod": "none",
+    "name": "app.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.url",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.os_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "app.interpreter_version",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.session_id",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "base.datestamp",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_calc.input_parameters.T",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_calc.input_parameters.X_sample",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_calc.input_parameters.Y_sample",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_calc.depends_on.name",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_calc.depends_on.value",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "hartley_reverse_correlation.stimulus_properties.M",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "hartley_reverse_correlation.stimulus_properties.L_max",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "hartley_reverse_correlation.stimulus_properties.K_max",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "hartley_reverse_correlation.stimulus_properties.sf_max",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "hartley_reverse_correlation.stimulus_properties.fps",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.stimulus_properties.color_high",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.stimulus_properties.color_low",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.stimulus_properties.rect",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.reconstruction_properties.T_coords",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.reconstruction_properties.X_coords",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.reconstruction_properties.Y_coords",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.hartley_numbers.S",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.hartley_numbers.KXV",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.hartley_numbers.KYV",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.hartley_numbers.ORDER",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.spiketimes",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "hartley_reverse_correlation.frameTimes",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "ngrid.data_size",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "ngrid.data_type",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "ngrid.data_dim",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "ngrid.coordinates",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "reverse_correlation.method",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "reverse_correlation.dimension_labels",
+    "toleranceAmount": 0
+  }
+]}
