@@ -39,8 +39,18 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
             tuning_response_doc = tuning_response_doc{1};
 
+            min_xi = 0;
+            max_xi = 1;
+
+            if isfield(parameters.input_parameters, 'min_xi')
+                min_xi = parameters.input_parameters.min_xi;
+            end
+            if isfield(parameters.input_parameters, 'max_xi')
+                max_xi = parameters.input_parameters.max_xi;
+            end
+
             % Step 2: perform the calculator, which here creates a speed_tuning doc
-            doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc) + ...
+            doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc, 'min_xi', min_xi, 'max_xi', max_xi) + ...
                 ndi_calculator_obj.newdocument();
 
             if ~isempty(doc)
@@ -59,7 +69,7 @@ classdef speed_tuning < ndi.calc.tuning_fit
             % to the calculator. For speed_tuning_calc, there is no appropriate default parameters
             % so this search will yield empty.
             %
-            parameters.input_parameters = struct([]);
+            parameters.input_parameters = struct('min_xi', 0, 'max_xi', 1);
             parameters.depends_on = did.datastructures.emptystruct('name', 'value');
             parameters.query = obj.default_parameters_query(parameters);
 
@@ -209,16 +219,28 @@ classdef speed_tuning < ndi.calc.tuning_fit
 
         end % plot()
 
-        function speed_props_doc = calculate_speed_indexes(obj, tuning_doc)
+        function speed_props_doc = calculate_speed_indexes(obj, tuning_doc, kwargs)
             % CALCULATE_SPEED_INDEXES - calculate speed index values from a tuning curve
             %
-            % SPEED_PROPS_DOC = CALCULATE_SPEED_INDEXES(OBJ, TUNING_DOC)
+            % SPEED_PROPS_DOC = CALCULATE_SPEED_INDEXES(OBJ, TUNING_DOC, ...)
             %
             % Given a 2-dimensional tuning curve document with measurements at many spatial and
             % and temporal frequencies, this function calculates speed response
             % parameters and stores them in SPEED_TUNING document SPEED_PROPS_DOC.
             %
+            % This function takes additional input arguments as name/value pairs:
+            % |----------|---------------------------------------------------------|
+            % | min_xi   | The minimum value of xi to search (default 0)           |
+            % | max_xi   | The maximum value of xi to search (default 1)           |
+            % |----------|---------------------------------------------------------|
             %
+            arguments
+                obj
+                tuning_doc
+                kwargs.min_xi (1,1) double = 0
+                kwargs.max_xi (1,1) double = 1
+            end
+
             properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
 
             stim_response_doc = obj.session.database_search(ndi.query('base.id', ...
@@ -256,7 +278,8 @@ classdef speed_tuning < ndi.calc.tuning_fit
             significance = struct('visual_response_anova_p', anova_across_stims_blank, ...
                 'across_stimuli_anova_p', anova_across_stims);
 
-            [f, sse_withspeed, r2_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
+            [f, sse_withspeed, r2_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
+                kwargs.min_xi, kwargs.max_xi);
             sfs = logspace(0.01, 60, 200);
             tfs = logspace(0.01, 120, 200);
             [SFs, TFs] = meshgrid(sfs, tfs);

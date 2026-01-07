@@ -8,3 +8,23 @@ Example:
 DQ = c.default_search_for_input_parameters();
 DQ.query = DQ.query & ndi.query('','depends_on','element_id',myelement);
 c.run('Replace',DQ);
+
+
+Example:
+% Run with custom xi constraints (default is min_xi=0, max_xi=1)
+
+cc = ndi.calc.vis.speed_tuning(S);
+parameters = cc.default_search_for_input_parameters();
+parameters.input_parameters.min_xi = 0;
+parameters.input_parameters.max_xi = 1;
+docs = cc.run('Replace',parameters);
+
+
+Example:
+% Run with extended xi constraints
+
+cc = ndi.calc.vis.speed_tuning(S);
+parameters = cc.default_search_for_input_parameters();
+parameters.input_parameters.min_xi = -4;
+parameters.input_parameters.max_xi = 4;
+docs = cc.run('Replace',parameters);
