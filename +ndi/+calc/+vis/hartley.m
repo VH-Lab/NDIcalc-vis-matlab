@@ -226,56 +226,91 @@ classdef hartley < ndi.calculator
                 return;
             end
 
-            % Compare binary data
-            p = fileparts(mfilename('fullpath'));
-            mock_dir = fullfile(p, 'mock', 'hartley');
+            % Check if the actual document is in the database; if not, add it temporarily.
+            % The read_sta method uses database_openbinarydoc, which often requires the document to be in the database
+            % to find associated binary files if they are not absolute paths.
 
-            % Assuming test index 1 for now.
-            % Ideally we should infer index from expected_doc filename if possible,
-            % but standard ndi.mock framework doesn't explicitly pass it.
-            % Given user instructions for this task, checking 'mock.1_hartley_results.ngrid' is the target.
-            expected_binary_path = fullfile(mock_dir, 'mock.1_hartley_results.ngrid');
+            doc_added = false;
+            try
+                % Check if doc exists in session
+                q = ndi.query('base.id', 'exact_string', actual_doc.id(), '');
+                search_result = ndi_calculator_obj.session.database_search(q);
 
-            if ~isfile(expected_binary_path)
-                % If we can't find specific file, warn but don't fail basic doc check
-                warning(['Expected binary file ' expected_binary_path ' not found. Skipping binary comparison.']);
-                return;
-            end
+                if isempty(search_result)
+                    ndi_calculator_obj.session.database_add(actual_doc);
+                    doc_added = true;
+                end
 
-            % Read expected data
-            fid_exp = fopen(expected_binary_path, 'r', 'ieee-le');
-            if fid_exp < 0
-                error(['Could not open expected binary file ' expected_binary_path]);
-            end
-            % We need dimensions. Expected doc should have them.
-            dims_exp = expected_doc.document_properties.ngrid.data_dim;
-            type_exp = expected_doc.document_properties.ngrid.data_type;
+                % Compare binary data
+                p = fileparts(mfilename('fullpath'));
+                mock_dir = fullfile(p, 'mock', 'hartley');
 
-            [sta_exp, ~] = ndi.calc.vis.hartley.readStaFromFile(fid_exp, dims_exp, type_exp);
-            fclose(fid_exp);
+                % Assuming test index 1 for now.
+                % Ideally we should infer index from expected_doc filename if possible,
+                % but standard ndi.mock framework doesn't explicitly pass it.
+                % Given user instructions for this task, checking 'mock.1_hartley_results.ngrid' is the target.
+                expected_binary_path = fullfile(mock_dir, 'mock.1_hartley_results.ngrid');
 
-            % Read actual data
-            [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc);
+                if ~isfile(expected_binary_path)
+                    % If we can't find specific file, warn but don't fail basic doc check
+                    warning(['Expected binary file ' expected_binary_path ' not found. Skipping binary comparison.']);
+                    % Clean up if needed
+                    if doc_added
+                        ndi_calculator_obj.session.database_rm(actual_doc.id());
+                    end
+                    return;
+                end
 
-            % Compare 10th frame (3rd dimension)
-            if size(sta_exp, 3) < 10 || size(sta_act, 3) < 10
-                b = 0;
-                report = 'STA data has fewer than 10 frames.';
-                return;
-            end
+                % Read expected data
+                fid_exp = fopen(expected_binary_path, 'r', 'ieee-le');
+                if fid_exp < 0
+                    if doc_added
+                        ndi_calculator_obj.session.database_rm(actual_doc.id());
+                    end
+                    error(['Could not open expected binary file ' expected_binary_path]);
+                end
+                % We need dimensions. Expected doc should have them.
+                dims_exp = expected_doc.document_properties.ngrid.data_dim;
+                type_exp = expected_doc.document_properties.ngrid.data_type;
 
-            frame_exp = sta_exp(:, :, 10);
-            frame_act = sta_act(:, :, 10);
+                [sta_exp, ~] = ndi.calc.vis.hartley.readStaFromFile(fid_exp, dims_exp, type_exp);
+                fclose(fid_exp);
 
-            diff = abs(frame_exp - frame_act);
-            max_diff = max(diff(:));
+                % Read actual data
+                [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc);
 
-            if max_diff > 1e-2
-                b = 0;
-                report = sprintf('STA data mismatch at frame 10. Max diff: %g', max_diff);
-            else
-                b = 1;
-                report = ''; % Success
+                % Clean up if we added the document
+                if doc_added
+                    ndi_calculator_obj.session.database_rm(actual_doc.id());
+                end
+
+                % Compare 10th frame (3rd dimension)
+                if size(sta_exp, 3) < 10 || size(sta_act, 3) < 10
+                    b = 0;
+                    report = 'STA data has fewer than 10 frames.';
+                    return;
+                end
+
+                frame_exp = sta_exp(:, :, 10);
+                frame_act = sta_act(:, :, 10);
+
+                diff = abs(frame_exp - frame_act);
+                max_diff = max(diff(:));
+
+                if max_diff > 1e-2
+                    b = 0;
+                    report = sprintf('STA data mismatch at frame 10. Max diff: %g', max_diff);
+                else
+                    b = 1;
+                    report = ''; % Success
+                end
+
+            catch ME
+                % Ensure we clean up even if an error occurs
+                if doc_added
+                    ndi_calculator_obj.session.database_rm(actual_doc.id());
+                end
+                rethrow(ME);
             end
         end
 
