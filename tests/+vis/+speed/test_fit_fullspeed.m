@@ -57,9 +57,12 @@ classdef test_fit_fullspeed < matlab.unittest.TestCase
 
         function testFitFullSpeedStructure(testCase)
              % Test that the output structure and types are correct
-             sf = [0.1; 0.2; 0.4];
-             tf = [1; 2; 4];
-             r = [5; 10; 5]; % Dummy data
+             % We need at least 7 data points to avoid the warning about trust-region-reflective
+             % requiring at least as many equations as variables.
+
+             sf = [0.1; 0.2; 0.4; 0.8; 0.1; 0.2; 0.4; 0.8];
+             tf = [1; 1; 1; 1; 2; 2; 2; 2];
+             r = [5; 10; 5; 2; 6; 11; 6; 3]; % Dummy data, 8 points
 
              [params, sse, rsq] = vis.speed.fit_fullspeed(sf, tf, r);
 
