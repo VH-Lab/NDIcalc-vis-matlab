@@ -47,7 +47,9 @@
 			"Priebe_fit_values":					[0],
 			"Priebe_fit_speed_tuning_index":			[0],
 			"Priebe_fit_spatial_frequency_preference":		0,
-			"Priebe_fit_temporal_frequency_preference":		0
+			"Priebe_fit_temporal_frequency_preference":		0,
+            "sse":                                          0,
+            "r_squared":                                    0
 		},
         "fit_no_speed": {
             "Priebe_fit_parameters":				[0],
@@ -57,6 +59,22 @@
 			"Priebe_fit_speed_tuning_index":			[0],
 			"Priebe_fit_spatial_frequency_preference":		0,
 			"Priebe_fit_temporal_frequency_preference":		0,
+            "sse":                                          0,
+            "r_squared":                                    0,
+            "partial_r2":                                   0,
+            "Priebe_fit_nested_F_test_p_value":             0
+        },
+        "fit_fullspeed": {
+            "Priebe_fit_parameters":				[0],
+			"Priebe_fit_spatial_frequencies":			[0],
+			"Priebe_fit_temporal_frequencies":			[0],
+			"Priebe_fit_values":					[0],
+			"Priebe_fit_speed_tuning_index":			[0],
+			"Priebe_fit_spatial_frequency_preference":		0,
+			"Priebe_fit_temporal_frequency_preference":		0,
+            "sse":                                          0,
+            "r_squared":                                    0,
+            "partial_r2":                                   0,
             "Priebe_fit_nested_F_test_p_value":             0
         }
 	}
