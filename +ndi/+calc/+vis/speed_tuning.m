@@ -296,7 +296,9 @@ classdef speed_tuning < ndi.calc.tuning_fit
             fit.r_squared = r2_withspeed;
 
             %add fit with speed parameter set to 0
-            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
+            f_start_nospeed = f; f_start_nospeed(3) = 0; % use the best fit parameters as a starting point
+            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
+                'SpecificStartPoint', f_start_nospeed);
             fit_no_speed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_no_speed);
             fit_no_speed.Priebe_fit_parameters = f_no_speed;
             fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
@@ -314,7 +316,9 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
 
             %add fit with speed parameter set to 1 (full speed)
-            [f_fullspeed, sse_fullspeed, r2_fullspeed] = vis.speed.fit_fullspeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
+            f_start_fullspeed = f; f_start_fullspeed(3) = 1; % use the best fit parameters as a starting point
+            [f_fullspeed, sse_fullspeed, r2_fullspeed] = vis.speed.fit_fullspeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
+                'SpecificStartPoint', f_start_fullspeed);
             fit_fullspeed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_fullspeed);
             fit_fullspeed.Priebe_fit_parameters = f_fullspeed;
             fit_fullspeed.Priebe_fit_spatial_frequencies = SFs(:);
