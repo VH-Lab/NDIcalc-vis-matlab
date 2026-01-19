@@ -72,5 +72,21 @@ classdef test_fit_fullspeed < matlab.unittest.TestCase
              testCase.verifyEqual(params(3), 1, 'xi must be 1 even for dummy data.');
         end
 
+        function testFitFullSpeedOptions(testCase)
+            % Test options for fit_fullspeed
+
+            sf = [0.1; 0.2; 0.4; 0.8; 0.1; 0.2; 0.4; 0.8];
+            tf = [1; 1; 1; 1; 2; 2; 2; 2];
+            r = [5; 10; 5; 2; 6; 11; 6; 3]; % Dummy data
+
+            % Test numberStartPoints
+            [params, ~, ~] = vis.speed.fit_fullspeed(sf, tf, r, 'numberStartPoints', 10);
+            testCase.verifyEqual(params(3), 1, 'AbsTol', 1e-10, 'xi must be 1');
+
+             % Test SpecificStartPoint
+            startPt = [9; 0.1; 1; 1.1; 1.1; 0.15; 2.2]; % xi=1
+            [params2, ~, ~] = vis.speed.fit_fullspeed(sf, tf, r, 'SpecificStartPoint', startPt);
+            testCase.verifyEqual(params2(3), 1, 'AbsTol', 1e-10, 'xi must be 1');
+        end
     end
 end
