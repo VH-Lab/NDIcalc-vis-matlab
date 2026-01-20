@@ -16,8 +16,8 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 %
 %   Name-Value Pair Arguments:
 %     numberStartPoints  - The number of initial starting points to try. (Default: 40)
-%     SpecificStartPoint - A 7x1 column vector specifying a specific starting
-%                          point to include in the search.
+%     SpecificStartPoint - A 7xN matrix specifying specific starting
+%                          points to include in the search.
 %
 %   Outputs:
 %     P         - A 7x1 vector with the best-fit parameters.
@@ -37,7 +37,7 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
         min_xi (1,1) double = 0
         max_xi (1,1) double = 1
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
-        options.SpecificStartPoint (:,1) double = []
+        options.SpecificStartPoint (7,:) double = []
     end
 
     SF = SF(:); TF = TF(:); R = R(:); % Ensure column vectors
@@ -70,9 +70,6 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
     end
 
     if ~isempty(options.SpecificStartPoint)
-        if size(options.SpecificStartPoint, 1) ~= 7
-            error('SpecificStartPoint must be a 7x1 vector.');
-        end
         StartPoint = [StartPoint, options.SpecificStartPoint];
     end
 
