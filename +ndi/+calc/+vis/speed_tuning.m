@@ -336,7 +336,7 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
 
             %add nested-F test
-            num_responses = numel(fit_values);
+            num_responses = numel(tuning_curve.mean);
             fit_no_speed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses, sse_withspeed, sse_nospeed);
             fit_fullspeed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses, sse_withspeed, sse_fullspeed);
 
