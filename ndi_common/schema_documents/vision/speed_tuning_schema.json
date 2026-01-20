@@ -46,6 +46,14 @@
 			"parameters": "",
 			"queryable": 1,
 			"documentation": "The fits (with no speed parameter) structure."
+        },
+        {
+            "name": "fit_fullspeed",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The fits (with full speed parameter) structure."
         }
 	]
 }
