@@ -283,9 +283,7 @@ classdef speed_tuning < ndi.calc.tuning_fit
             [SFs, TFs] = meshgrid(sfs, tfs);
 
             %add fit with speed parameter set to 0
-            f_start_nospeed = f; f_start_nospeed(3) = 0; % use the best fit parameters as a starting point
-            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
-                'SpecificStartPoint', f_start_nospeed);
+            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
             fit_no_speed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_no_speed);
             fit_no_speed.Priebe_fit_parameters = f_no_speed;
             fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
