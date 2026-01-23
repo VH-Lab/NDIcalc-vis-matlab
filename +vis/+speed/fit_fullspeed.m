@@ -15,8 +15,8 @@ function [parameters, sse, r_squared] = fit_fullspeed(sf, tf, r, options)
 %
 %  Name-Value Pair Arguments:
 %     numberStartPoints  - The number of initial starting points to try. (Default: 40)
-%     SpecificStartPoint - A 7x1 column vector specifying a specific starting
-%                          point to include in the search.
+%     SpecificStartPoint - A 7xN matrix specifying specific starting
+%                          points to include in the search.
 %
 %  Outputs:
 %    PARAMETERS - A 7x1 vector with the best-fit parameters.
@@ -34,7 +34,7 @@ function [parameters, sse, r_squared] = fit_fullspeed(sf, tf, r, options)
         tf
         r
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
-        options.SpecificStartPoint (:,1) double = []
+        options.SpecificStartPoint (7,:) double = []
     end
 
     sf = sf(:); tf = tf(:); r = r(:); % Ensure column vectors
@@ -64,9 +64,6 @@ function [parameters, sse, r_squared] = fit_fullspeed(sf, tf, r, options)
     end
 
     if ~isempty(options.SpecificStartPoint)
-        if size(options.SpecificStartPoint, 1) ~= 7
-            error('SpecificStartPoint must be a 7x1 vector.');
-        end
         StartPoint = [StartPoint, options.SpecificStartPoint];
     end
 

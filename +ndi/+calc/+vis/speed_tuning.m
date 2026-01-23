@@ -278,11 +278,39 @@ classdef speed_tuning < ndi.calc.tuning_fit
             significance = struct('visual_response_anova_p', anova_across_stims_blank, ...
                 'across_stimuli_anova_p', anova_across_stims);
 
-            [f, sse_withspeed, r2_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
-                kwargs.min_xi, kwargs.max_xi);
             sfs = logspace(0.01, 60, 200);
             tfs = logspace(0.01, 120, 200);
             [SFs, TFs] = meshgrid(sfs, tfs);
+
+            %add fit with speed parameter set to 0
+            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
+            fit_no_speed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_no_speed);
+            fit_no_speed.Priebe_fit_parameters = f_no_speed;
+            fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
+            fit_no_speed.Priebe_fit_temporal_frequencies = TFs(:);
+            fit_no_speed.Priebe_fit_values = fit_no_speed_values;
+            fit_no_speed.Priebe_fit_speed_tuning_index = fit_no_speed.Priebe_fit_parameters(3);
+            fit_no_speed.Priebe_fit_spatial_frequency_preference = fit_no_speed.Priebe_fit_parameters(6);
+            fit_no_speed.Priebe_fit_temporal_frequency_preference = fit_no_speed.Priebe_fit_parameters(7);
+            fit_no_speed.sse = sse_nospeed;
+            fit_no_speed.r_squared = r2_nospeed;
+
+            %add fit with speed parameter set to 1 (full speed)
+            [f_fullspeed, sse_fullspeed, r2_fullspeed] = vis.speed.fit_fullspeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:));
+            fit_fullspeed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_fullspeed);
+            fit_fullspeed.Priebe_fit_parameters = f_fullspeed;
+            fit_fullspeed.Priebe_fit_spatial_frequencies = SFs(:);
+            fit_fullspeed.Priebe_fit_temporal_frequencies = TFs(:);
+            fit_fullspeed.Priebe_fit_values = fit_fullspeed_values;
+            fit_fullspeed.Priebe_fit_speed_tuning_index = fit_fullspeed.Priebe_fit_parameters(3);
+            fit_fullspeed.Priebe_fit_spatial_frequency_preference = fit_fullspeed.Priebe_fit_parameters(6);
+            fit_fullspeed.Priebe_fit_temporal_frequency_preference = fit_fullspeed.Priebe_fit_parameters(7);
+            fit_fullspeed.sse = sse_fullspeed;
+            fit_fullspeed.r_squared = r2_fullspeed;
+
+            % use best fit from restricted models as start points for full model
+            [f, sse_withspeed, r2_withspeed] = vis.speed.fit(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
+                kwargs.min_xi, kwargs.max_xi, 'SpecificStartPoint', [f_no_speed f_fullspeed]);
             fit_values = vis.speed.tuningfunc(SFs(:), TFs(:), f);
 
             fit.Priebe_fit_parameters = f;
@@ -295,40 +323,12 @@ classdef speed_tuning < ndi.calc.tuning_fit
             fit.sse = sse_withspeed;
             fit.r_squared = r2_withspeed;
 
-            %add fit with speed parameter set to 0
-            f_start_nospeed = f; f_start_nospeed(3) = 0; % use the best fit parameters as a starting point
-            [f_no_speed, sse_nospeed, r2_nospeed] = vis.speed.fit_nospeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
-                'SpecificStartPoint', f_start_nospeed);
-            fit_no_speed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_no_speed);
-            fit_no_speed.Priebe_fit_parameters = f_no_speed;
-            fit_no_speed.Priebe_fit_spatial_frequencies = SFs(:);
-            fit_no_speed.Priebe_fit_temporal_frequencies = TFs(:);
-            fit_no_speed.Priebe_fit_values = fit_no_speed_values;
-            fit_no_speed.Priebe_fit_speed_tuning_index = fit_no_speed.Priebe_fit_parameters(3);
-            fit_no_speed.Priebe_fit_spatial_frequency_preference = fit_no_speed.Priebe_fit_parameters(6);
-            fit_no_speed.Priebe_fit_temporal_frequency_preference = fit_no_speed.Priebe_fit_parameters(7);
-            fit_no_speed.sse = sse_nospeed;
-            fit_no_speed.r_squared = r2_nospeed;
             if sse_nospeed~=0,
                 fit_no_speed.partial_r2 = (sse_nospeed-sse_withspeed)/sse_nospeed;
             else,
                 fit_no_speed.partial_r2 = 0;
             end
 
-            %add fit with speed parameter set to 1 (full speed)
-            f_start_fullspeed = f; f_start_fullspeed(3) = 1; % use the best fit parameters as a starting point
-            [f_fullspeed, sse_fullspeed, r2_fullspeed] = vis.speed.fit_fullspeed(tuning_curve.spatial_frequency(:), tuning_curve.temporal_frequency(:), tuning_curve.mean(:), ...
-                'SpecificStartPoint', f_start_fullspeed);
-            fit_fullspeed_values = vis.speed.tuningfunc(SFs(:), TFs(:), f_fullspeed);
-            fit_fullspeed.Priebe_fit_parameters = f_fullspeed;
-            fit_fullspeed.Priebe_fit_spatial_frequencies = SFs(:);
-            fit_fullspeed.Priebe_fit_temporal_frequencies = TFs(:);
-            fit_fullspeed.Priebe_fit_values = fit_fullspeed_values;
-            fit_fullspeed.Priebe_fit_speed_tuning_index = fit_fullspeed.Priebe_fit_parameters(3);
-            fit_fullspeed.Priebe_fit_spatial_frequency_preference = fit_fullspeed.Priebe_fit_parameters(6);
-            fit_fullspeed.Priebe_fit_temporal_frequency_preference = fit_fullspeed.Priebe_fit_parameters(7);
-            fit_fullspeed.sse = sse_fullspeed;
-            fit_fullspeed.r_squared = r2_fullspeed;
             if sse_fullspeed~=0,
                 fit_fullspeed.partial_r2 = (sse_fullspeed-sse_withspeed)/sse_fullspeed;
             else,
@@ -336,7 +336,7 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
 
             %add nested-F test
-            num_responses = numel(fit_values);
+            num_responses = numel(tuning_curve.mean);
             fit_no_speed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses, sse_withspeed, sse_nospeed);
             fit_fullspeed.Priebe_fit_nested_F_test_p_value = vis.speed.speed_nested_f(num_responses, sse_withspeed, sse_fullspeed);
 
