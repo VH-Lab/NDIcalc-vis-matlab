@@ -5,8 +5,8 @@ function T = modulationIndex(T, NameValueArgs)
 %
 %   DESCRIPTION:
 %   This function identifies pairs of rows corresponding to 'mean' (unmodulated)
-%   and 'F1' (modulated) responses and computes an index. The result is
-%   added as a new column to the input table. The column name is derived
+%   and 'F1' (modulated) responses and computes an index (2 * X.TC.F1/(X.TC.F1+X.TC.mean)).
+%   The result is added as a new column to the input table. The column name is derived
 %   from the tuning curve data column (e.g., if data is from 'X.TC.mean',
 %   the new column will be 'X.TC.modulationIndex').
 %
@@ -24,6 +24,8 @@ function T = modulationIndex(T, NameValueArgs)
 %   T - A MATLAB table containing the data. This table will be modified.
 %
 %   NAME-VALUE PAIRS:
+%   'restrictToZeroTwo' - (Optional) Logical. If true (default), the calculated
+%       modulation index is restricted to the range [0, 2].
 %   'responseTypeColumn' - (Optional) Name of the column that indicates the
 %       response type ('mean' or 'F1'). Searched automatically if not provided.
 %   'TuningCurveMeanColumn' - (Optional) Name of the column with tuning curve data.
@@ -43,6 +45,7 @@ function T = modulationIndex(T, NameValueArgs)
 
 arguments
     T table
+    NameValueArgs.restrictToZeroTwo (1,1) logical = true
     NameValueArgs.responseTypeColumn (1,:) char = ''
     NameValueArgs.TuningCurveMeanColumn (1,:) char = ''
     NameValueArgs.rowPairConstantColumns (1,:) cell = ...
@@ -156,6 +159,14 @@ for i = 1:num_groups
         mi = 0;
     end
     
+    if NameValueArgs.restrictToZeroTwo
+        if mi < 0
+            mi = 0;
+        elseif mi > 2
+            mi = 2;
+        end
+    end
+
     % --- Update the main table with the calculated value for BOTH rows ---
     % Get the original row indices from the full table T
     original_mean_idx = group_indices(best_mean_idx_in_group);
