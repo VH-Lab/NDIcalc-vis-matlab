@@ -45,9 +45,9 @@ end
 angles = angles(:);
 responses = responses(:); 
 
-if isempty(options.widthHints),
+if isempty(options.widthHints)
 	options.widthHints = linspace(median(diff(angles))/2,90,6);
-end;
+end
 
 dg = fittype(@(a,b,c,d,e,x) vlt.data.colvec(vlt.neuro.vision.oridir.doublegaussianfunc(x,[a;b;c*b;d;e])));
 fo = fitoptions(dg);
@@ -56,26 +56,29 @@ fo = fitoptions(dg);
 rmin = min(responses);
 
 span = peak - rmin;
-
 fo.Lower = [  -span;       0;   0;    -4*180;    median(diff(angles))/2];
-fo.Upper = [   span;  max(3*peak,0);   1;     4*180;    90 ];
+fo.Upper = [   span;  max(3*span,0);   1;     4*180;    90 ];
 
 bestErr = Inf;
 bestP = [];
 msse = Inf;
 R2 = Inf;
 
-for w = 1:numel(options.widthHints),
+for w = 1:numel(options.widthHints)
 	fo.StartPoint = [0; peak; 0.5; angles(loc); options.widthHints(w)];
 	dg = setoptions(dg,fo);
-	[orifit,gof] = fit(angles,responses,dg);
-	if gof.sse < bestErr,
+	try
+		[orifit,gof] = fit(angles,responses,dg);
+	catch
+		gof.sse = Inf;
+	end
+	if gof.sse < bestErr
 		bestErr = gof.sse;
 		bestP = [ orifit.a; orifit.b; orifit.b*orifit.c; mod(orifit.d,360); orifit.e];
 		msse = bestErr / numel(responses);
 		R2 = gof.rsquare;
-	end;
-end;
+	end
+end
 
 angles_fitcurve = 0:359;
 

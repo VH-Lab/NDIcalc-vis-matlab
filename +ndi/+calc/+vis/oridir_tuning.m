@@ -44,8 +44,13 @@ classdef oridir_tuning < ndi.calc.tuning_fit
             % stimulus responses and write output into an oridir_tuning document
 
             oriapp = ndi.app.oridirtuning(ndi_calculator_obj.session);
-            doc = ndi_calculator_obj.calculate_oridir_indexes(tuning_doc) + ...
-                ndi_calculator_obj.newdocument();
+            
+            doc_struct = ndi_calculator_obj.calculate_oridir_indexes(tuning_doc);
+            if isempty(doc_struct)
+                doc = {};
+            else
+                doc = doc_struct + ndi_calculator_obj.newdocument();
+            end
 
             % Step 4. Check if doc exists
             if ~isempty(doc)
@@ -190,6 +195,12 @@ classdef oridir_tuning < ndi.calc.tuning_fit
                 if any(~isreal(response_ind{i}))
                     response_ind{i} = abs(response_ind{i});
                 end
+            end
+
+            if any(isnan(response_mean))
+                warning('ndi:calc:vis:oridir_tuning:calculate_oridir_indexes:NaNs', 'Response mean contains NaNs. Returning empty document.');
+                oriprops_doc = [];
+                return;
             end
 
             properties.coordinates = 'compass';
