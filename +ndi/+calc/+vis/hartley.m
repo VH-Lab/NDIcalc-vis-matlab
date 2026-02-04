@@ -275,7 +275,11 @@ classdef hartley < ndi.calculator
                 fclose(fid_exp);
 
                 % Read actual data
-                [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
+                if strcmp(actual_doc.id(), expected_doc.id())
+                    sta_act = sta_exp;
+                else
+                    [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
+                end
 
                 % Clean up if we added the document
                 if doc_added
