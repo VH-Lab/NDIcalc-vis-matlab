@@ -2,11 +2,11 @@ This calculation object computes a fit of speed tuning given a set of stimulus r
 
 The fit function is a modified two-dimensional Gaussian function of the form
 
-R(sf,tf) = A * exp( (-(log(sf)-log(sf0)).^2) / (2*sigma_sf*sigma_sf) ) .* ( exp( -(log(tf)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log(tf)-logtfpsf)).^2) ) - exp(-1/(zeta.^2)))
+R(sf,tf) = A * exp( (-(log10(sf)-log10(sf0)).^2) / (2*sigma_sf*sigma_sf) ) .* ( exp( -(log10(tf)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log10(tf)-logtfpsf)).^2) ) - exp(-1/(zeta.^2)))
 
 where
 
-logtfpsf = xi * (log(sf)-log(sf0)) + log(tf0)
+logtfpsf = xi * (log10(sf)-log10(sf0)) + log10(tf0)
 
 and the fit parameters wherein
 
