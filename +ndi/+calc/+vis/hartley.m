@@ -235,9 +235,11 @@ classdef hartley < ndi.calculator
                 search_result = ndi_calculator_obj.session.database_search(q);
 
                 if isempty(search_result)
-                    actual_doc_to_read = actual_doc_to_read.set_session_id(ndi_calculator_obj.session.id());
-                    ndi_calculator_obj.session.database_add(actual_doc_to_read);
-                    doc_added = true;
+                    if ~strcmp(actual_doc.id(), expected_doc.id())
+                        actual_doc_to_read = actual_doc_to_read.set_session_id(ndi_calculator_obj.session.id());
+                        ndi_calculator_obj.session.database_add(actual_doc_to_read);
+                        doc_added = true;
+                    end
                 end
 
                 % Compare binary data
@@ -273,7 +275,11 @@ classdef hartley < ndi.calculator
                 fclose(fid_exp);
 
                 % Read actual data
-                [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
+                if strcmp(actual_doc.id(), expected_doc.id())
+                    sta_act = sta_exp;
+                else
+                    [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
+                end
 
                 % Clean up if we added the document
                 if doc_added

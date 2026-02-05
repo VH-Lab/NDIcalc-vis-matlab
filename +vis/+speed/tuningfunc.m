@@ -67,9 +67,9 @@ tf0 = P(7);
 SF = SF(:);
 TF = TF(:); % Make them column vectors
         
-logtfpsf = xi * (log(SF)-log(sf0)) + log(tf0);
+logtfpsf = xi * (log10(SF)-log10(sf0)) + log10(tf0);
         
-R = A * exp( (-(log(SF)-log(sf0)).^2) / (2*sigma_sf*sigma_sf) ) .* ...
-	( exp( -(log(TF)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log(TF)-logtfpsf)).^2) ) - exp(-1/(zeta.^2)));
+R = A * exp( (-(log10(SF)-log10(sf0)).^2) / (2*sigma_sf*sigma_sf) ) .* ...
+	( exp( -(log10(TF)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log10(TF)-logtfpsf)).^2) ) - exp(-1/(zeta.^2)));
         
 R = reshape(R,m,n); % Return the same shape as input

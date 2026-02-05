@@ -31,10 +31,10 @@ classdef test_tuningfunc < matlab.unittest.TestCase
 
             sf_val = 0.1;
             tf_val = 2;
-            logtfpsf = xi * (log(sf_val)-log(sf0)) + log(tf0); % should be log(2)
+            logtfpsf = xi * (log10(sf_val)-log10(sf0)) + log10(tf0); % should be log10(2)
 
-            term1 = exp( (-(log(sf_val)-log(sf0)).^2) / (2*sigma_sf*sigma_sf) ); % exp(0) = 1
-            term2 = exp( -(log(tf_val)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log(tf_val)-logtfpsf)).^2) ); % exp(0) = 1
+            term1 = exp( (-(log10(sf_val)-log10(sf0)).^2) / (2*sigma_sf*sigma_sf) ); % exp(0) = 1
+            term2 = exp( -(log10(tf_val)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log10(tf_val)-logtfpsf)).^2) ); % exp(0) = 1
             term3 = exp(-1/(zeta.^2)); % For zeta=0, this term is tricky.
 
             % Wait, looking at the code:
