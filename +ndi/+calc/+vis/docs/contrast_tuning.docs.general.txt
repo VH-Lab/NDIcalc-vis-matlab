@@ -3,7 +3,7 @@ This calculator object computes three fits of contrast tuning given a set of sti
 The three fit functions are modified Naka-Rushtan functions of the form 
 
 R(c) = Rm*c/(C50+c)
-R(c) = Rm*c^n/(C50+c^n)
+R(c) = Rm*c^n/(C50^n+c^n)
 R(c) = Rm*c^n/(C50^(s*n)+c^(s*n))
 
 This calculator also returns an estimate of the C50 point by linear interpolation. 
