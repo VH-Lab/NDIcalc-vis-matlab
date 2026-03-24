@@ -1,0 +1,6529 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Van Hooser lab and others">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>Manual: Writing ndi.calculator Objects - NDIcalc-vis-matlab</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#manual-writing-ndicalculator-objects" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NDIcalc-vis-matlab" class="md-header__button md-logo" aria-label="NDIcalc-vis-matlab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NDIcalc-vis-matlab
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Manual: Writing ndi.calculator Objects
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/VH-Lab/NDIcalc-vis-matlab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NDIcalc-vis-matlab" class="md-nav__button md-logo" aria-label="NDIcalc-vis-matlab" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NDIcalc-vis-matlab
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/VH-Lab/NDIcalc-vis-matlab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Document reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Document reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    calc
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            calc
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/contrastsensitivity_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    contrastsensitivity_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/contrasttuning_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    contrasttuning_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/hartley_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hartley_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/oridirtuning_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    oridirtuning_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/spatial_frequency_tuning_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    spatial_frequency_tuning_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/speedtuning_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    speedtuning_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/calc/temporal_frequency_tuning_calc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    temporal_frequency_tuning_calc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    neuro
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            neuro
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/neuro/hartley_reverse_correlation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hartley_reverse_correlation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/neuro/reverse_correlation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    reverse_correlation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    vision
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            vision
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/vision/contrast_tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    contrast_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/vision/spatial_frequency_tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    spatial_frequency_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/vision/speed_tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    speed_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documents/vision/temporal_frequency_tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    temporal_frequency_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Code reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Code reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    ndi PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            ndi PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1" id="__nav_4_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    calc PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            calc PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1_1" id="__nav_4_1_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    paperFigures PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            paperFigures PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2BpaperFigures/triangleNode.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.paperFigures.triangleNode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2BpaperFigures/trianglePipeline.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.paperFigures.trianglePipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1_2" id="__nav_4_1_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    vis PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            vis PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/contrast_sensitivity.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.contrast_sensitivity
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/contrast_tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.contrast_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/hartley.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.hartley
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/oridir_tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.oridir_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/spatial_frequency_tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.spatial_frequency_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/speed_tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.speed_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/temporal_frequency_tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.temporal_frequency_tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_1_2_8" id="__nav_4_1_1_2_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    test PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_1_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            test PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/contrast_tuning_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.contrast_tuning_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/contrastsensitivity_calc_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.contrastsensitivity_calc_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/hartley_reverse_correlation_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.hartley_reverse_correlation_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/oridir_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.oridir_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/oridir_compare_docs_older.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.oridir_compare_docs_older
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/spatial_frequency_tuning_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.spatial_frequency_tuning_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/speed_tuning_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.speed_tuning_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bcalc/%2Bvis/%2Btest/temporal_frequency_tuning_compare_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.calc.vis.test.temporal_frequency_tuning_compare_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_2" id="__nav_4_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    fun PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            fun PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bfun/ndiCalcVisPath.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.fun.ndiCalcVisPath
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_2_2" id="__nav_4_1_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    spiketrains PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            spiketrains PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bfun/%2Bspiketrains/mean_spike_waveforms.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.fun.spiketrains.mean_spike_waveforms
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    test PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            test PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Btest/values_within_tolerance.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.test.values_within_tolerance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3_2" id="__nav_4_1_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    calc PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            calc PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3_2_1" id="__nav_4_1_3_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    mock PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_3_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            mock PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_2_1_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3_2_1_1" id="__nav_4_1_3_2_1_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    oridir_tuning PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="6" aria-labelledby="__nav_4_1_3_2_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_2_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            oridir_tuning PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Btest/%2Bcalc/%2Bmock/%2Boridir_tuning/generate_mock_docs.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.test.calc.mock.oridir_tuning.generate_mock_docs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4" id="__nav_4_1_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    viz PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            viz PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/modulationIndex.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.modulationIndex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/plot_resp_sftf.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.plot_resp_sftf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/selectRowsByModulationIndex.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.selectRowsByModulationIndex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4_4" id="__nav_4_1_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    bigtable PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            bigtable PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/contrast_struct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.contrast_struct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/dir_struct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.dir_struct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/element_struct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.element_struct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/element_subject.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.element_subject
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/freq_struct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.freq_struct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/prependvarnames.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.prependvarnames
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/stimtunefitT2features.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.stimtunefitT2features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tc_table.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tc_table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_dir.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_dir
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_dir2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_dir2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_sf.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_sf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_sf2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_sf2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_struct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_struct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_tf.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_tf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bbigtable/tuning_curve_tf2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.bigtable.tuning_curve_tf2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4_5" id="__nav_4_1_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    fun PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            fun PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bfun/stimuluspurpose2stimulusresponse.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.fun.stimuluspurpose2stimulusresponse
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bfun/stimuluspurpose2stimulusresponsequery.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.fun.stimuluspurpose2stimulusresponsequery
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bfun/stimuluspurpose2tuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.fun.stimuluspurpose2tuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4_6" id="__nav_4_1_4_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    vis PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            vis PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_oridir.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_oridir
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_oridir2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_oridir2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_respmag.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_respmag
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_sf.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_sf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_sf2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_sf2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_tf.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_tf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bndi/%2Bviz/%2Bvis/plot_tf2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ndi.viz.vis.plot_tf2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    vis PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            vis PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/vector2nasaltemporal.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.vector2nasaltemporal
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_2" id="__nav_4_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    contrast PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            contrast PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/naka_rushton_fit.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.naka_rushton_fit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/naka_rushton_func.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.naka_rushton_func
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_2_3" id="__nav_4_2_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    indexes PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            indexes PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/c50interpolated.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.c50interpolated
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/contrastfit2c50.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.contrastfit2c50
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/contrastfit2relativemaximumgain.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.contrastfit2relativemaximumgain
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/contrastfit2saturationindex.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.contrastfit2saturationindex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/contrastfit2sensitivity.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.contrastfit2sensitivity
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bcontrast/%2Bindexes/fitindexes.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.contrast.indexes.fitindexes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_3" id="__nav_4_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    frequency PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            frequency PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/bandwidth.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.bandwidth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/compute_halfwidth.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.compute_halfwidth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/compute_halfwidth_interp.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.compute_halfwidth_interp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/dog.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.dog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/dog_fit.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.dog_fit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/movshon2005_cells.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.movshon2005_cells
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/movshon2005_fit.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.movshon2005_fit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/movshon2005_func.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.movshon2005_func
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/spatial_frequency_analysis.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.spatial_frequency_analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bfrequency/temporal_frequency_analysis.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.frequency.temporal_frequency_analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_4" id="__nav_4_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    oridir PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            oridir PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/dirspace2orispace.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.dirspace2orispace
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/doublegaussianfunc.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.doublegaussianfunc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/dsi2dirparams.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.dsi2dirparams
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/osi2oriparams.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.osi2oriparams
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/osi2oriparams2.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.osi2oriparams2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/rotated_oripref_stats.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.rotated_oripref_stats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/rotatedircurve.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.rotatedircurve
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/vector_direction_pref.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.vector_direction_pref
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_4_9" id="__nav_4_2_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    fit PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            fit PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bfit/doublegaussian.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.fit.doublegaussian
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_4_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_4_10" id="__nav_4_2_4_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    index PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            index PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_circularvariance.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_circularvariance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_dircircularvariance.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_dircircularvariance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_directionindex.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_directionindex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_directionsignificancedotproduct.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_directionsignificancedotproduct
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_dirvecconstrainedori.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_dirvecconstrainedori
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_dirvecdotorivec.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_dirvecdotorivec
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_halfwidth.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_halfwidth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_orientationindex.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_orientationindex
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_orientationvector.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_orientationvector
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/compute_tuningwidth.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.compute_tuningwidth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitdi.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitdi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitdibr.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitdibr
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitdibr_orig.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitdibr_orig
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitdidiffsum.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitdidiffsum
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitdr_angle.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitdr_angle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitoi.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitoi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2fitoidiffsum.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2fitoidiffsum
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2null.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2null
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2orth.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2orth
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/fit2pref.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.fit2pref
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/oridir_fitindexes.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.oridir_fitindexes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/oridir_fitindexes_classic.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.oridir_fitindexes_classic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bindex/oridir_vectorindexes.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.index.oridir_vectorindexes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_4_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_4_11" id="__nav_4_2_4_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    plot PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            plot PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bplot/polarplot_dir.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.plot.polarplot_dir
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Boridir/%2Bplot/polarplot_ori.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.oridir.plot.polarplot_ori
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_5" id="__nav_4_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    revcorr PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            revcorr PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/calc_significance.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.calc_significance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/calculateHartleyResponse.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.calculateHartleyResponse
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/gauss3fit.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.gauss3fit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/generate_STA.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.generate_STA
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/get_cdf_val.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.get_cdf_val
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/get_cmap.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.get_cmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/get_frames.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.get_frames
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/get_sigma.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.get_sigma
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/get_t0.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.get_t0
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/hartley_stimulus_resampled_time.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.hartley_stimulus_resampled_time
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/json_file_processor.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.json_file_processor
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/main.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.main
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/mvnpdf_3.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.mvnpdf_3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/peak_time_profile.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.peak_time_profile
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/recover_sta.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.recover_sta
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/rescale_p_image.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.rescale_p_image
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/rotate_sta.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.rotate_sta
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/setRF.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.setRF
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/sta_pipeline.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.sta_pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/stim_plot.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.stim_plot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Brevcorr/test.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.revcorr.test
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_6" id="__nav_4_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    speed PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            speed PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/fit.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.fit
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/fit_fullspeed.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.fit_fullspeed
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/fit_nospeed.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.fit_nospeed
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/plottuning.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.plottuning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/speed_nested_f.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.speed_nested_f
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/tuningfunc.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.tuningfunc
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_6_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2_6_7" id="__nav_4_2_6_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    test PACKAGE
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_2_6_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_6_7">
+            <span class="md-nav__icon md-icon"></span>
+            test PACKAGE
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/%2Btest/fittest.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.test.fittest
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/%2Bvis/%2Bspeed/%2Btest/responseplay.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vis.speed.test.responseplay
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    demos FOLDER
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            demos FOLDER
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/demos/hartley_plot_demo.m/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hartley_plot_demo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Repository Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Repository Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-folder-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standard Folder Structure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#required-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Required Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-class-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Class File Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-json-document-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. JSON Document Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-json-schema-definition-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. JSON Schema Definition (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-calculator-documentation-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Calculator Documentation Files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Calculator Documentation Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-general-documentation-docsgeneraltxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. General Documentation (*.docs.general.txt)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-output-documentation-docsoutputtxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Output Documentation (*.docs.output.txt)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-searching-documentation-docssearchingtxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Searching Documentation (*.docs.searching.txt)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-by-step-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step-by-Step Guide
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step-by-Step Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-plan-your-calculator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Plan Your Calculator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-the-json-document-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 2: Create the JSON Document Definition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-the-matlab-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Create the MATLAB Class
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Create the MATLAB Class">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Constructor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-calculate-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Calculate Method
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-default-search-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Default Search Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-optional-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Optional Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Optional Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-custom-query-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 Custom Query Logic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 Input Validation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-binary-data-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.3 Binary Data Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-plotting-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.4 Plotting Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#running-a-calculator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running a Calculator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#querying-calculator-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying Calculator Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Naming Conventions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-design-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Design Decisions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-json-file-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. JSON File Location
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-query-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Query Construction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Documentation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-class-ndicalctuning_fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Class: ndi.calc.tuning_fit
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Class: ndi.calc.tuning_fit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementing-generate_mock_parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing generate_mock_parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-testing-with-mock-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Testing with Mock Documents
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Testing with Mock Documents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generating-mock-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generating Mock Documents
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generating-gold-standard-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generating "Gold Standard" Documents
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparing-mock-documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparing Mock Documents
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple Dependencies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#array-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Outputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nested-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nested Structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#binary-file-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary File Handling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calculator-doesnt-find-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calculator doesn't find inputs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documents-not-created" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documents not created
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path errors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-syntax-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Query syntax errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary Checklist
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="manual-writing-ndicalculator-objects">Manual: Writing ndi.calculator Objects<a class="headerlink" href="#manual-writing-ndicalculator-objects" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>An <code>ndi.calculator</code> is a mini-app in the NDI (Neuroscience Data Interface) system that performs computations on data and stores the results as NDI documents in a database. Calculators enable reproducible, traceable analysis by:</p>
+<ul>
+<li>Defining clear input parameters and dependencies</li>
+<li>Storing computational results with full provenance</li>
+<li>Allowing queries to find and reuse existing calculations</li>
+<li>Supporting both simple and complex multi-step analyses</li>
+</ul>
+<h2 id="repository-structure">Repository Structure<a class="headerlink" href="#repository-structure" title="Permanent link">&para;</a></h2>
+<p>External calculators (those not in the core NDI-matlab repository) are typically organized in repositories following the naming convention <strong><code>NDIcalc-REPONAME-matlab</code></strong>, where <code>REPONAME</code> describes the domain or purpose of the calculators. For example:</p>
+<ul>
+<li><code>NDIcalc-vis-matlab</code> - Calculators for vision research</li>
+<li><code>NDIcalc-extracellular-matlab</code> - Calculators for extracellular recordings (future)</li>
+</ul>
+<h3 id="standard-folder-structure">Standard Folder Structure<a class="headerlink" href="#standard-folder-structure" title="Permanent link">&para;</a></h3>
+<p>Each calculator repository contains three main folders:</p>
+<div class="codehilite"><pre><span></span><code>NDIcalc-REPONAME-matlab/
+├── +ndi/
+│   └── +calc/
+│       └── +category/
+│           ├── docs/
+│           │   ├── calculator1.docs.general.txt
+│           │   ├── calculator1.docs.output.txt
+│           │   ├── calculator1.docs.searching.txt
+│           │   ├── calculator2.docs.general.txt
+│           │   ├── calculator2.docs.output.txt
+│           │   ├── calculator2.docs.searching.txt
+│           │   └── ...
+│           ├── calculator1.m
+│           ├── calculator2.m
+│           └── ...
+├── ndi_common/
+│   ├── database_documents/
+│   │   └── calc/
+│   │       ├── calculator1_calc.json
+│   │       ├── calculator2_calc.json
+│   │       └── ...
+│   └── schema_documents/
+│       └── calc/
+│           ├── calculator1_calc_schema.json
+│           ├── calculator2_calc_schema.json
+│           └── ...
+└── docs/
+</code></pre></div>
+
+<p><strong>Key directories</strong>:</p>
+<ul>
+<li><strong><code>+ndi/+calc/</code></strong> - Contains the MATLAB calculator class files organized by category (e.g., <code>+vis</code>, <code>+extracellular</code>)</li>
+<li><strong><code>ndi_common/database_documents/calc/</code></strong> - Contains JSON files that define the structure of blank calculator output documents</li>
+<li><strong><code>ndi_common/schema_documents/calc/</code></strong> - Contains JSON schema files for validating calculator documents</li>
+</ul>
+<p>This structure ensures consistency across calculator packages and allows NDI to automatically discover and validate calculator document types.</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Each calculator consists of two main components:</p>
+<ol>
+<li><strong>MATLAB Class File</strong> - The code that performs calculations (<code>.m</code> file)</li>
+<li><strong>JSON Document Definition</strong> - The database schema for storing results (<code>.json</code> file)</li>
+</ol>
+<h2 id="required-components">Required Components<a class="headerlink" href="#required-components" title="Permanent link">&para;</a></h2>
+<h3 id="1-class-file-structure">1. Class File Structure<a class="headerlink" href="#1-class-file-structure" title="Permanent link">&para;</a></h3>
+<p>Your calculator class must:
+- Inherit from <code>ndi.calculator</code>
+- Implement required methods:
+  - <code>constructor(session)</code> - Initialize the calculator
+  - <code>calculate(parameters)</code> - Perform the computation
+  - <code>default_search_for_input_parameters()</code> OR <code>default_parameters_query()</code> - Define default search logic</p>
+<p><strong>Location</strong>: <code>+ndi/+calc/+[category]/[calculator_name].m</code></p>
+<p>Example categories: <code>+vis</code>, <code>+extracellular</code>, <code>+example</code></p>
+<h3 id="2-json-document-definition">2. JSON Document Definition<a class="headerlink" href="#2-json-document-definition" title="Permanent link">&para;</a></h3>
+<p>Defines the structure of the output document, including:
+- Document metadata (class name, version, superclasses)
+- Dependencies (what documents this calculator depends on)
+- Input parameters (configuration values)
+- Output fields (results to be stored)</p>
+<p><strong>Location</strong>: <code>ndi_common/database_documents/calc/[calculator_name]_calc.json</code></p>
+<h3 id="3-json-schema-definition-optional">3. JSON Schema Definition (Optional)<a class="headerlink" href="#3-json-schema-definition-optional" title="Permanent link">&para;</a></h3>
+<p>A JSON schema file validates the structure of calculator documents, ensuring they conform to the expected format. While optional, schemas are recommended for production calculators.</p>
+<p><strong>Location</strong>: <code>ndi_common/schema_documents/calc/[calculator_name]_calc_schema.json</code></p>
+<p>The schema defines validation rules for all fields in your calculator document. Refer to existing schema files in the repository for examples.</p>
+<h3 id="4-calculator-documentation-files">4. Calculator Documentation Files<a class="headerlink" href="#4-calculator-documentation-files" title="Permanent link">&para;</a></h3>
+<p>This section describes the structure and content of the documentation files required for each calculator class in the <code>ndi.calc.X</code> package, where X is any namespace.</p>
+<h4 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">&para;</a></h4>
+<p>For each calculator class <code>ndi.calc.X.CALCULATOR_NAME.m</code>, there must be a corresponding <code>docs</code> directory at <code>+ndi/+calc/+X/docs/</code>. Inside this directory, three text files are required for each calculator:</p>
+<ol>
+<li><code>CALCULATOR_NAME.docs.general.txt</code></li>
+<li><code>CALCULATOR_NAME.docs.output.txt</code></li>
+<li><code>CALCULATOR_NAME.docs.searching.txt</code></li>
+</ol>
+<h4 id="1-general-documentation-docsgeneraltxt">1. General Documentation (<code>*.docs.general.txt</code>)<a class="headerlink" href="#1-general-documentation-docsgeneraltxt" title="Permanent link">&para;</a></h4>
+<p>This file should provide a high-level overview of what the calculator computes.</p>
+<p><strong>Content Instructions:</strong>
+*   <strong>Description:</strong> Briefly explain the purpose of the calculator. What scientific or data analysis problem does it solve?
+*   <strong>Methodology:</strong> Mention the algorithms or mathematical models used.
+*   <strong>References:</strong> Cite relevant scientific papers or standard methods (e.g., "Naka and Rushton 1966", "Mazurek et al. 2014").
+*   <strong>Formulas:</strong> Include the key mathematical formulas for any fits performed.
+    *   Define the equation (e.g., <code>R(c) = Rm*c/(C50+c)</code>).
+    *   List and define the parameters used in the equation.</p>
+<h4 id="2-output-documentation-docsoutputtxt">2. Output Documentation (<code>*.docs.output.txt</code>)<a class="headerlink" href="#2-output-documentation-docsoutputtxt" title="Permanent link">&para;</a></h4>
+<p>This file details the structure of the output document generated by the calculator.</p>
+<p><strong>Content Instructions:</strong>
+*   <strong>Document Type:</strong> State the specific NDI document type produced (e.g., <code>'ndi_calculation_contrasttuning'</code>).
+*   <strong>Superclasses:</strong> List any superclasses the output document inherits from (e.g., <code>ndi_document</code>, <code>ndi_document_app</code>).
+*   <strong>Fields Description:</strong> Systematically list and describe the fields in the output document structure. Organize them by top-level categories such as:
+    *   <code>properties</code>: Basic metadata like units or response type.
+    *   <code>tuning_curve</code>: The core data vectors (independent variable, mean response, error bars, etc.).
+    *   <code>significance</code>: Statistical test results (p-values).
+    *   <code>fitless</code>: Metrics calculated without a model fit (e.g., interpolated values, circular variance).
+    *   <code>fit</code>: Parameters and quality metrics for any model fits performed.
+*   <strong>Field Details:</strong> For each field, provide a clear description of what it represents, including units or dimensions where applicable (e.g., "The set of contrast values (vector, 1 x number of contrasts shown)").</p>
+<h4 id="3-searching-documentation-docssearchingtxt">3. Searching Documentation (<code>*.docs.searching.txt</code>)<a class="headerlink" href="#3-searching-documentation-docssearchingtxt" title="Permanent link">&para;</a></h4>
+<p>This file explains how the calculator identifies the input documents it needs to process.</p>
+<p><strong>Content Instructions:</strong>
+*   <strong>Default Search Criteria:</strong> Describe the default query parameters.
+    *   What input document type is it looking for (e.g., <code>stimulus_tuningcurve</code>)?
+    *   What specific fields or labels identify the correct input (e.g., <code>independent_variable_label</code> must be 'contrast')?
+*   <strong>Modifying the Search:</strong> Explain how a user can customize the search query.
+*   <strong>Example:</strong> Provide a code snippet showing how to restrict the search, for example, to a specific element ID.</p>
+<div class="codehilite"><pre><span></span><code><span class="c">% Example: Only perform the operation on the element called myelement</span>
+<span class="n">DQ</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">default_search_for_input_parameters</span><span class="p">();</span>
+<span class="n">DQ</span><span class="p">.</span><span class="n">query</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DQ</span><span class="p">.</span><span class="n">query</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="s">&#39;depends_on&#39;</span><span class="p">,</span><span class="s">&#39;element_id&#39;</span><span class="p">,</span><span class="n">myelement</span><span class="p">);</span>
+<span class="n">c</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;Replace&#39;</span><span class="p">,</span><span class="n">DQ</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="step-by-step-guide">Step-by-Step Guide<a class="headerlink" href="#step-by-step-guide" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-plan-your-calculator">Step 1: Plan Your Calculator<a class="headerlink" href="#step-1-plan-your-calculator" title="Permanent link">&para;</a></h3>
+<p>Before coding, determine:</p>
+<ol>
+<li><strong>Input</strong>: What documents/elements does your calculator need?</li>
+<li>
+<p>Examples: spike times, stimulus information, element epochs</p>
+</li>
+<li>
+<p><strong>Parameters</strong>: What configuration values are needed?</p>
+</li>
+<li>
+<p>Examples: time windows, thresholds, filter settings</p>
+</li>
+<li>
+<p><strong>Output</strong>: What results will be stored?</p>
+</li>
+<li>
+<p>Examples: tuning curves, statistics, waveforms</p>
+</li>
+<li>
+<p><strong>Binary Data</strong>: Will you store large data files?</p>
+</li>
+<li>
+<p>Examples: spike waveforms, images, time series</p>
+</li>
+<li>
+<p><strong>Granularity</strong>: One document per analysis, or multiple documents?</p>
+</li>
+<li>Important: NDI documents cannot be updated, only deleted and recreated</li>
+<li>If you'll add more data later, create separate documents (e.g., one per epoch)</li>
+</ol>
+<h3 id="step-2-create-the-json-document-definition">Step 2: Create the JSON Document Definition<a class="headerlink" href="#step-2-create-the-json-document-definition" title="Permanent link">&para;</a></h3>
+<p>Start from the simple template (<code>simple_calc.json</code>) and customize:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;document_class&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$NDICALCDOCUMENTPATH/calc/my_calculator_calc.json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;validation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$NDICALCSCHEMAPATH/calc/my_calculator_calc_schema.json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;class_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_calculator_calc&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;property_list_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_calculator_calc&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;class_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;superclasses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$NDIDOCUMENTPATH/base.json&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$NDIDOCUMENTPATH/app.json&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;depends_on&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;element_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;my_calculator_calc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;input_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;param1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;param2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;output_field1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;output_field2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><strong>Key fields</strong>:
+- <code>depends_on</code> - Documents this calculator requires (by their IDs)
+- <code>input_parameters</code> - Configuration values with defaults
+- Additional fields - Your output results (initialize with appropriate defaults)</p>
+<p><strong>Optional</strong>: Add <code>"files"</code> section if storing binary data:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;file_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;mydata.bin&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="step-3-create-the-matlab-class">Step 3: Create the MATLAB Class<a class="headerlink" href="#step-3-create-the-matlab-class" title="Permanent link">&para;</a></h3>
+<h4 id="31-constructor">3.1 Constructor<a class="headerlink" href="#31-constructor" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><code><span class="k">classdef</span><span class="w"> </span><span class="n">my_calculator</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">calculator</span>
+
+<span class="w">    </span><span class="k">methods</span>
+<span class="w">        </span><span class="k">function</span><span class="w"> </span>obj<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">my_calculator</span><span class="p">(</span>session<span class="p">)</span>
+<span class="w">            </span><span class="c">% MY_CALCULATOR - calculator that does [description]</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% OBJ = MY_CALCULATOR(SESSION)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Creates a MY_CALCULATOR ndi.calculator object</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="c">% Call superclass constructor with document type info</span>
+<span class="w">            </span><span class="n">obj</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">@</span><span class="n">ndi</span><span class="p">.</span><span class="n">calculator</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;my_calculator_calc&#39;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<p><strong>Key points</strong>:
+- First argument to superclass: document type name (without <code>.json</code>)
+- The calculator automatically locates the JSON definition file based on the document type name (ensure the JSON file is in the standard <code>ndi_common/database_documents/calc/</code> location).</p>
+<h4 id="32-calculate-method">3.2 Calculate Method<a class="headerlink" href="#32-calculate-method" title="Permanent link">&para;</a></h4>
+<p>The <code>calculate()</code> method receives a <code>parameters</code> object with two key fields:</p>
+<p><strong>Parameters Structure</strong>:
+- <strong><code>input_parameters</code></strong> - A structure containing parameters that modify the calculation (e.g., time windows, thresholds, filter settings). These are configuration values that don't depend on other documents.</p>
+<ul>
+<li><strong><code>depends_on</code></strong> - A structure array with <code>name</code> and <code>value</code> fields containing the document IDs that this calculation depends on. Each entry represents a matched document from the database query (e.g., element_id, stimulus_id, epoch_id). The <code>value</code> field contains the document's base ID.</li>
+</ul>
+<p><strong>Accessing Dependencies</strong>:</p>
+<p>To extract a specific dependency ID from the <code>depends_on</code> array, use <code>did.db.struct_name_value_search()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="c">% Extract element_id from depends_on</span>
+<span class="n">element_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">did</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">struct_name_value_search</span><span class="p">(</span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;element_id&#39;</span><span class="p">);</span>
+
+<span class="c">% Extract stimulus_tuningcurve_id from depends_on</span>
+<span class="n">tuning_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">did</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">struct_name_value_search</span><span class="p">(</span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;stimulus_tuningcurve_id&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>This function searches the structure array for the matching <code>name</code> and returns the corresponding <code>value</code>.</p>
+<p><strong>Example Implementation</strong>:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span>doc<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">calculate</span><span class="p">(</span>ndi_calculator_obj, parameters<span class="p">)</span>
+<span class="w">            </span><span class="c">% CALCULATE - perform the calculation</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% DOC = CALCULATE(NDI_CALCULATOR_OBJ, PARAMETERS)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Creates a my_calculator_calc document given input parameters.</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="c">% Validate inputs</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="nb">isfield</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;input_parameters&#39;</span><span class="p">)</span>
+<span class="w">                </span><span class="nb">error</span><span class="p">(</span><span class="s">&#39;parameters structure lacks &#39;&#39;input_parameters&#39;&#39;.&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="nb">isfield</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;depends_on&#39;</span><span class="p">)</span>
+<span class="w">                </span><span class="nb">error</span><span class="p">(</span><span class="s">&#39;parameters structure lacks &#39;&#39;depends_on&#39;&#39;.&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="c">% Step 1: Extract dependencies</span>
+<span class="w">            </span><span class="n">element_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">did</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">struct_name_value_search</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;element_id&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="c">% now do something with the dependency,</span>
+<span class="w">            </span><span class="c">%maybe create an object or load some information</span>
+<span class="w">            </span><span class="n">element</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">database</span><span class="p">.</span><span class="n">fun</span><span class="p">.</span><span class="n">ndi_document2ndi_object</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">element_id</span><span class="p">,</span><span class="w"> </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">session</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Step 2: Perform your calculation</span>
+<span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">your_analysis_function</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="n">parameters</span><span class="p">.</span><span class="n">input_parameters</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Step 3: Build output structure</span>
+<span class="w">            </span><span class="n">output</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">parameters</span><span class="p">;</span><span class="w">  </span><span class="c">% Start with input parameters</span>
+<span class="w">            </span><span class="n">output</span><span class="p">.</span><span class="n">output_field1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">data1</span><span class="p">;</span>
+<span class="w">            </span><span class="n">output</span><span class="p">.</span><span class="n">output_field2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">data2</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c">% Step 4: Create NDI document</span>
+<span class="w">            </span><span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">document</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">doc_document_types</span><span class="p">{</span><span class="mi">1</span><span class="p">},</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;my_calculator_calc&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="n">output</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Step 5: Set dependencies if your document needs them</span>
+<span class="w">            </span><span class="c">%  most will, to store the provenance of the calculation</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="nb">i</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">:</span><span class="nb">numel</span><span class="p">(</span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">)</span>
+<span class="w">                </span><span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">doc</span><span class="p">.</span><span class="n">set_dependency_value</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                    </span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">(</span><span class="nb">i</span><span class="p">).</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                    </span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="p">(</span><span class="nb">i</span><span class="p">).</span><span class="n">value</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="c">% Optional: Add binary files</span>
+<span class="w">            </span><span class="c">% doc = doc.add_file(&#39;mydata.bin&#39;, full_path_to_file);</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<p><strong>Key points</strong>:
+- Always validate that <code>input_parameters</code> and <code>depends_on</code> exist
+- Use <code>did.db.struct_name_value_search()</code> to extract dependency values
+- Start output structure with <code>parameters</code> to preserve input info
+- Use <code>ndi_calculator_obj.doc_document_types{1}</code> for document type
+- Document property name (3rd arg) must match JSON definition</p>
+<h4 id="33-default-search-parameters">3.3 Default Search Parameters<a class="headerlink" href="#33-default-search-parameters" title="Permanent link">&para;</a></h4>
+<p>Either or both of <code>default_search_for_input_parameters</code> or <code>default_parameters_query</code> must be overridden in order for the calculator to have a default method to find documents to operate on.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span><span class="nf">parameters</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">default_search_for_input_parameters</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">ndi_calculator_obj</span><span class="p">)</span>
+<span class="w">            </span><span class="c">% DEFAULT_SEARCH_FOR_INPUT_PARAMETERS - default search parameters</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% PARAMETERS = DEFAULT_SEARCH_FOR_INPUT_PARAMETERS(NDI_CALCULATOR_OBJ)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Returns default search parameters for finding inputs.</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="c">% Set default input parameters</span>
+<span class="w">            </span><span class="n">parameters</span><span class="p">.</span><span class="n">input_parameters</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;param1&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;param2&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Initialize empty depends_on structure</span>
+<span class="w">            </span><span class="n">parameters</span><span class="p">.</span><span class="n">depends_on</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">did</span><span class="p">.</span><span class="n">datastructures</span><span class="p">.</span><span class="n">emptystruct</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;value&#39;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Define query to find appropriate input documents</span>
+<span class="w">            </span><span class="n">parameters</span><span class="p">.</span><span class="n">query</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;element_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;query&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;element.type&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;exact_string&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;spikes&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">));</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<p><strong>Key points</strong>:
+- <code>input_parameters</code> - Default values for your parameters
+- <code>depends_on</code> - Use <code>emptystruct()</code> to create proper structure
+- <code>query</code> - Defines how to search for input documents
+  - <code>name</code> - Which dependency to search for
+  - <code>query</code> - <code>ndi.query</code> object specifying search criteria</p>
+<h3 id="step-4-optional-methods">Step 4: Optional Methods<a class="headerlink" href="#step-4-optional-methods" title="Permanent link">&para;</a></h3>
+<h4 id="41-custom-query-logic">4.1 Custom Query Logic<a class="headerlink" href="#41-custom-query-logic" title="Permanent link">&para;</a></h4>
+<p>If you need more complex queries:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span><span class="nf">query</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">default_parameters_query</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">ndi_calculator_obj</span><span class="p">,</span><span class="w"> </span><span class="n">parameters_specification</span><span class="p">)</span>
+<span class="w">            </span><span class="c">% DEFAULT_PARAMETERS_QUERY - custom query logic</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Allows combining multiple queries with AND/OR logic</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="n">q1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;isa&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;stimulus_tuningcurve&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">q2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;stimulus_tuningcurve.independent_variable_label&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;contains_string&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;contrast&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">q3</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;stimulus_tuningcurve.independent_variable_label&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;contains_string&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;Contrast&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Combine queries: | for OR, &amp; for AND</span>
+<span class="w">            </span><span class="n">q_combined</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">q2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">q3</span><span class="p">);</span>
+
+<span class="w">            </span><span class="n">query</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;stimulus_tuningcurve_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="s">&#39;query&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">q_combined</span><span class="p">);</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<h4 id="42-input-validation">4.2 Input Validation<a class="headerlink" href="#42-input-validation" title="Permanent link">&para;</a></h4>
+<p>For additional validation beyond queries:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span><span class="nf">b</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">is_valid_dependency_input</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="n">ndi_calculator_obj</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="w">            </span><span class="c">% IS_VALID_DEPENDENCY_INPUT - validate potential inputs</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% B = IS_VALID_DEPENDENCY_INPUT(NDI_CALCULATOR_OBJ, NAME, VALUE)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Returns true if the document with id VALUE is valid for</span>
+<span class="w">            </span><span class="c">% dependency NAME.</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="n">b</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c">% Default to true</span>
+
+<span class="w">            </span><span class="k">switch</span><span class="w"> </span><span class="nb">lower</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="w">                </span><span class="k">case</span><span class="w"> </span><span class="s">&#39;stimulus_tuningcurve_id&#39;</span>
+<span class="w">                    </span><span class="c">% Custom validation logic</span>
+<span class="w">                    </span><span class="n">q</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;base.id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;exact_string&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="w">                    </span><span class="n">d</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">database_search</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="nb">isempty</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="w">                        </span><span class="n">d</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">d</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+<span class="w">                        </span><span class="c">% Check specific conditions</span>
+<span class="w">                        </span><span class="n">b</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">numel</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">document_properties</span><span class="k">...</span>
+<span class="w">                            </span><span class="p">.</span><span class="n">independent_variable_label</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">                    </span><span class="k">end</span>
+<span class="w">                </span><span class="k">otherwise</span>
+<span class="w">                    </span><span class="n">b</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<h4 id="43-binary-data-loading">4.3 Binary Data Loading<a class="headerlink" href="#43-binary-data-loading" title="Permanent link">&para;</a></h4>
+<p>If your calculator stores binary files:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span><span class="nf">[data1, data2] = load</span><span class="p">(</span>ndi_calculator_obj, doc<span class="p">)</span>
+<span class="w">            </span><span class="c">% LOAD - load binary data from document</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% [DATA1, DATA2] = LOAD(NDI_CALCULATOR_OBJ, DOC)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Loads binary data associated with document DOC.</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="c">% Convert doc_id to document if needed</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="nb">isa</span><span class="p">(</span><span class="nb">doc</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;ndi.document&#39;</span><span class="p">)</span>
+<span class="w">                </span><span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">database_search</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                    </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;base.id&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;exact_string&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">doc</span><span class="p">));</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="c">% Open binary file</span>
+<span class="w">            </span><span class="n">myfile</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">database_openbinarydoc</span><span class="p">(</span><span class="k">...</span>
+<span class="w">                </span><span class="nb">doc</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;mydata.bin&#39;</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Read data using appropriate format</span>
+<span class="w">            </span><span class="p">[</span><span class="n">data1</span><span class="p">,</span><span class="w"> </span><span class="n">data2</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">your_read_function</span><span class="p">(</span><span class="n">myfile</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Close file</span>
+<span class="w">            </span><span class="n">ndi_calculator_obj</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">database_closebinarydoc</span><span class="p">(</span><span class="n">myfile</span><span class="p">);</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<h4 id="44-plotting-results">4.4 Plotting Results<a class="headerlink" href="#44-plotting-results" title="Permanent link">&para;</a></h4>
+<p>For visualizing calculator output:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">        </span><span class="k">function</span><span class="w"> </span>h<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span>ndi_calculator_obj, doc_or_parameters, varargin<span class="p">)</span>
+<span class="w">            </span><span class="c">% PLOT - visualize calculator results</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% H = PLOT(NDI_CALCULATOR_OBJ, DOC_OR_PARAMETERS, ...)</span>
+<span class="w">            </span><span class="c">%</span>
+<span class="w">            </span><span class="c">% Produces a diagnostic plot of the results.</span>
+<span class="w">            </span><span class="c">%</span>
+
+<span class="w">            </span><span class="c">% Call superclass to set up axes</span>
+<span class="w">            </span><span class="n">h</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">plot</span><span class="p">@</span><span class="n">ndi</span><span class="p">.</span><span class="n">calculator</span><span class="p">(</span><span class="n">ndi_calculator_obj</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">                </span><span class="n">doc_or_parameters</span><span class="p">,</span><span class="w"> </span><span class="nb">varargin</span><span class="p">{:});</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="nb">isa</span><span class="p">(</span><span class="n">doc_or_parameters</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;ndi.document&#39;</span><span class="p">)</span>
+<span class="w">                </span><span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">doc_or_parameters</span><span class="p">;</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">                </span><span class="nb">error</span><span class="p">(</span><span class="s">&#39;Plotting requires an ndi.document.&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="c">% Extract data</span>
+<span class="w">            </span><span class="n">data</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">doc</span><span class="p">.</span><span class="n">document_properties</span><span class="p">.</span><span class="n">my_calculator_calc</span><span class="p">;</span>
+
+<span class="w">            </span><span class="c">% Create plots</span>
+<span class="w">            </span><span class="nb">hold</span><span class="w"> </span><span class="n">on</span><span class="p">;</span>
+<span class="w">            </span><span class="nb">plot</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;b-&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;linewidth&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c">% Add labels if not suppressed</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="n">h</span><span class="p">.</span><span class="n">params</span><span class="p">.</span><span class="n">suppress_x_label</span>
+<span class="w">                </span><span class="n">h</span><span class="p">.</span><span class="n">xlabel</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;X Label&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="n">h</span><span class="p">.</span><span class="n">params</span><span class="p">.</span><span class="n">suppress_y_label</span>
+<span class="w">                </span><span class="n">h</span><span class="p">.</span><span class="n">ylabel</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Y Label&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="n">h</span><span class="p">.</span><span class="n">params</span><span class="p">.</span><span class="n">suppress_title</span>
+<span class="w">                </span><span class="n">h</span><span class="p">.</span><span class="n">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">title</span><span class="p">(</span><span class="s">&#39;My Calculator Results&#39;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">end</span>
+
+<span class="w">            </span><span class="nb">box</span><span class="w"> </span><span class="n">off</span><span class="p">;</span>
+<span class="w">        </span><span class="k">end</span>
+</code></pre></div>
+
+<h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="running-a-calculator">Running a Calculator<a class="headerlink" href="#running-a-calculator" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c">% Create session</span>
+<span class="n">session</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">session</span><span class="p">(</span><span class="s">&#39;my_experiment&#39;</span><span class="p">);</span>
+
+<span class="c">% Create calculator</span>
+<span class="n">calc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">calc</span><span class="p">.</span><span class="n">category</span><span class="p">.</span><span class="n">my_calculator</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+
+<span class="c">% Option 1: Use default parameters</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">calc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;Replace&#39;</span><span class="p">);</span>
+
+<span class="c">% Option 2: Custom parameters</span>
+<span class="n">params</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">calc</span><span class="p">.</span><span class="n">default_search_for_input_parameters</span><span class="p">();</span>
+<span class="n">params</span><span class="p">.</span><span class="n">input_parameters</span><span class="p">.</span><span class="n">param1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.002</span><span class="p">;</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">calc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;Replace&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
+
+<span class="c">% Option 3: Search for specific inputs</span>
+<span class="n">params</span><span class="p">.</span><span class="n">query</span><span class="p">.</span><span class="n">query</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">params</span><span class="p">.</span><span class="n">query</span><span class="p">.</span><span class="n">query</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;element.reference&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;exact_number&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">calc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;Replace&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="querying-calculator-results">Querying Calculator Results<a class="headerlink" href="#querying-calculator-results" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c">% Find all calculator documents</span>
+<span class="n">q</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;isa&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;my_calculator_calc&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">database_search</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="c">% Find for specific element</span>
+<span class="n">q1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;isa&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;my_calculator_calc&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="p">);</span>
+<span class="n">q2</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;depends_on&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;element_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">element_doc_id</span><span class="p">);</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">database_search</span><span class="p">(</span><span class="n">q1</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">q2</span><span class="p">);</span>
+
+<span class="c">% Access results</span>
+<span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">docs</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+<span class="n">results</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">doc</span><span class="p">.</span><span class="n">document_properties</span><span class="p">.</span><span class="n">my_calculator_calc</span><span class="p">;</span>
+<span class="n">value1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="n">output_field1</span><span class="p">;</span>
+</code></pre></div>
+
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="1-naming-conventions">1. Naming Conventions<a class="headerlink" href="#1-naming-conventions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Class file</strong>: lowercase with underscores (e.g., <code>my_calculator.m</code>)</li>
+<li><strong>Document type</strong>: class name + <code>_calc</code> (e.g., <code>my_calculator_calc</code>)</li>
+<li><strong>JSON file</strong>: same as document type (e.g., <code>my_calculator_calc.json</code>)</li>
+</ul>
+<h3 id="2-design-decisions">2. Design Decisions<a class="headerlink" href="#2-design-decisions" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Granularity</strong>: Create separate documents per epoch/trial if data may be added later</li>
+<li><strong>Dependencies</strong>: Include all documents needed to reproduce the calculation</li>
+<li><strong>Parameters</strong>: Store all configuration values in <code>input_parameters</code></li>
+<li><strong>Output</strong>: Store both raw results and derived statistics</li>
+</ul>
+<h3 id="3-json-file-location">3. JSON File Location<a class="headerlink" href="#3-json-file-location" title="Permanent link">&para;</a></h3>
+<p>Ensure your JSON document definition file is named identically to the document type (e.g., <code>my_calculator_calc.json</code>) and is placed in the <code>ndi_common/database_documents/calc/</code> directory so NDI can locate it automatically.</p>
+<h3 id="4-query-construction">4. Query Construction<a class="headerlink" href="#4-query-construction" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Use <code>ndi.query()</code> for database searches</li>
+<li>Combine queries with <code>&amp;</code> (AND) and <code>|</code> (OR)</li>
+<li>Common query types:</li>
+<li><code>'exact_string'</code> - Exact match</li>
+<li><code>'contains_string'</code> - Substring match</li>
+<li><code>'isa'</code> - Document type check</li>
+<li><code>'depends_on'</code> - Dependency check</li>
+<li><code>'exact_number'</code> - Numeric equality</li>
+</ul>
+<h3 id="5-error-handling">5. Error Handling<a class="headerlink" href="#5-error-handling" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Always validate <code>input_parameters</code> and <code>depends_on</code> exist</li>
+<li>Check that queries return expected number of documents</li>
+<li>Provide informative error messages</li>
+</ul>
+<h3 id="6-documentation">6. Documentation<a class="headerlink" href="#6-documentation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Document all methods with clear help text</li>
+<li>Explain input parameters and their units</li>
+<li>Describe output fields and their meaning</li>
+<li>Include usage examples</li>
+</ul>
+<h2 id="special-class-ndicalctuning_fit">Special Class: <code>ndi.calc.tuning_fit</code><a class="headerlink" href="#special-class-ndicalctuning_fit" title="Permanent link">&para;</a></h2>
+<p>The <code>ndi.calc.tuning_fit</code> class is a specialized subclass of <code>ndi.calculator</code> that is designed to help implementing calculators that fit a function to data, such as a tuning curve.</p>
+<p>It provides a standard implementation for generating mock documents and expected outputs, which streamlines the testing process. If your calculator fits a curve to data, consider inheriting from <code>ndi.calc.tuning_fit</code>.</p>
+<p>To use <code>ndi.calc.tuning_fit</code>:
+1.  Inherit from <code>ndi.calc.tuning_fit</code> instead of <code>ndi.calculator</code>.
+2.  Implement the <code>generate_mock_parameters</code> method, which <code>generate_mock_docs</code> relies on.</p>
+<h3 id="implementing-generate_mock_parameters">Implementing <code>generate_mock_parameters</code><a class="headerlink" href="#implementing-generate_mock_parameters" title="Permanent link">&para;</a></h3>
+<p>When inheriting from <code>ndi.calc.tuning_fit</code>, you must implement the <code>generate_mock_parameters</code> method. This method generates the ground truth parameters and responses used to create mock input documents.</p>
+<p>The method signature is:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="nf">[param_struct, independent_variable, x, r] = generate_mock_parameters</span><span class="p">(</span>obj, scope, index<span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Inputs:</strong>
+*   <code>obj</code>: The calculator object instance.
+*   <code>scope</code>: The test scope, e.g., <code>'highSNR'</code> or <code>'lowSNR'</code>. You can adjust parameters (like noise levels or amplitude) based on this.
+*   <code>index</code>: An integer index (1 to <code>numberOfSelfTests</code>) indicating which specific test case to generate. You should map this index to different parameter sets to cover various scenarios (e.g., broad vs. narrow tuning, different preferred directions).</p>
+<p><strong>Outputs:</strong>
+*   <code>param_struct</code>: A structure containing additional parameters needed for the mock document (e.g., <code>sFrequency</code>, <code>tFrequency</code>).
+*   <code>independent_variable</code>: A cell array of strings specifying the name(s) of the independent variable(s) (e.g., <code>{'angle'}</code> or <code>{'contrast'}</code>).
+*   <code>x</code>: A column vector containing the values of the independent variable. It is common practice to append <code>NaN</code> at the end to represent a blank/control condition.
+*   <code>r</code>: A column vector containing the expected response values corresponding to <code>x</code>. Append <code>0</code> (or the baseline response) at the end for the blank condition.</p>
+<p><strong>Pointers to Examples:</strong>
+For concrete examples of how to implement this method, examine the following classes in the <code>NDIcalc-vis-matlab</code> repository (or <code>+ndi/+calc/+vis/</code> directory):
+*   <strong><code>ndi.calc.vis.oridir_tuning</code></strong>: Demonstrates generating orientation/direction tuning curves using Gaussian functions.
+*   <strong><code>ndi.calc.vis.spatial_frequency_tuning</code></strong>: Shows how to select between different functional forms (e.g., difference of Gaussians vs. Movshon models) based on the test index.
+*   <strong><code>ndi.calc.vis.contrast_tuning</code></strong>: Illustrates generating contrast response functions (Naka-Rushton) and varying parameters like C50 and saturation.</p>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<h3 id="basic-test">Basic Test<a class="headerlink" href="#basic-test" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c">% Create test session</span>
+<span class="n">S</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">session</span><span class="p">.</span><span class="n">test</span><span class="p">(</span><span class="s">&#39;test_my_calculator&#39;</span><span class="p">);</span>
+
+<span class="c">% Create calculator and run</span>
+<span class="n">calc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">calc</span><span class="p">.</span><span class="n">category</span><span class="p">.</span><span class="n">my_calculator</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
+<span class="n">docs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">calc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="s">&#39;Replace&#39;</span><span class="p">);</span>
+
+<span class="c">% Verify results</span>
+<span class="nb">assert</span><span class="p">(</span><span class="o">~</span><span class="nb">isempty</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;No documents created&#39;</span><span class="p">);</span>
+<span class="nb">assert</span><span class="p">(</span><span class="nb">isfield</span><span class="p">(</span><span class="n">docs</span><span class="p">{</span><span class="mi">1</span><span class="p">}.</span><span class="n">document_properties</span><span class="p">.</span><span class="n">my_calculator_calc</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;output_field1&#39;</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;Missing output field&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="advanced-testing-with-mock-documents">Advanced Testing with Mock Documents<a class="headerlink" href="#advanced-testing-with-mock-documents" title="Permanent link">&para;</a></h3>
+<p>For production calculators, it is essential to perform robust testing using synthetic data ("mock documents"). This ensures the calculator behaves correctly under known conditions.</p>
+<h4 id="generating-mock-documents">Generating Mock Documents<a class="headerlink" href="#generating-mock-documents" title="Permanent link">&para;</a></h4>
+<p>The <code>generate_mock_docs</code> method creates synthetic input data, runs the calculator, and compares the result to an expected output.</p>
+<p>To generate mock documents for testing:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span><span class="n">docs</span><span class="p">,</span><span class="w"> </span><span class="n">doc_output</span><span class="p">,</span><span class="w"> </span><span class="n">doc_expected_output</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">generate_mock_docs</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="n">number_of_tests</span><span class="p">,</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Value</span><span class="p">);</span>
+</code></pre></div>
+
+<ul>
+<li><code>scope</code>: Defines the test conditions.<ul>
+<li><code>'highSNR'</code>: High signal-to-noise ratio (easy case).</li>
+<li><code>'lowSNR'</code>: High noise (stress test).</li>
+</ul>
+</li>
+<li><code>number_of_tests</code>: The number of test iterations to run.</li>
+</ul>
+<h4 id="generating-gold-standard-documents">Generating "Gold Standard" Documents<a class="headerlink" href="#generating-gold-standard-documents" title="Permanent link">&para;</a></h4>
+<p>To create the "gold standard" or expected output documents (against which future runs will be compared), you must run <code>generate_mock_docs</code> with the <code>generate_expected_docs</code> flag set to <code>true</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="c">% Generate 5 high SNR tests and save the output as expected results</span>
+<span class="p">[</span><span class="n">docs</span><span class="p">,</span><span class="w"> </span><span class="n">doc_output</span><span class="p">,</span><span class="w"> </span><span class="n">doc_expected_output</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="n">generate_mock_docs</span><span class="p">(</span><span class="s">&#39;highSNR&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;generate_expected_docs&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+</code></pre></div>
+
+<p><strong>Where are they stored?</strong>
+The mock documents and expected outputs are stored in the calculator's test directory (usually <code>+ndi/+calc/+category/test/</code>). You will need to locate these files to inspect them or use them for defining comparison rules.</p>
+<h4 id="comparing-mock-documents">Comparing Mock Documents<a class="headerlink" href="#comparing-mock-documents" title="Permanent link">&para;</a></h4>
+<p>After generating the mock documents, you need to verify that the mock documents (which represent the "gold standard" or "expected" output) are correct and can be used for automated testing.</p>
+<p>You should perform a "doc comparison interview" for each mock document. This process allows you to inspect the document structure and content and define rules for comparison.</p>
+<div class="codehilite"><pre><span></span><code><span class="c">% 1. Load the mock document</span>
+<span class="c">% You need to locate the generated .json file in the test directory (e.g., &#39;mock.1.json&#39;)</span>
+<span class="n">mock_doc_json</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fileread</span><span class="p">(</span><span class="s">&#39;mock.1.json&#39;</span><span class="p">);</span>
+<span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">document</span><span class="p">(</span><span class="nb">jsondecode</span><span class="p">(</span><span class="n">mock_doc_json</span><span class="p">));</span>
+
+<span class="c">% 2. Run the interview to define comparison rules</span>
+<span class="n">dc_out</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">ndi</span><span class="p">.</span><span class="n">database</span><span class="p">.</span><span class="n">doctools</span><span class="p">.</span><span class="n">docComparison</span><span class="p">.</span><span class="n">interview</span><span class="p">(</span><span class="nb">doc</span><span class="p">);</span>
+
+<span class="c">% 3. Save the comparison rules to a file</span>
+<span class="n">vlt</span><span class="p">.</span><span class="n">file</span><span class="p">.</span><span class="n">str2text</span><span class="p">(</span><span class="s">&#39;mock.1.comparison.json&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">dc_out</span><span class="p">.</span><span class="n">toJson</span><span class="p">);</span>
+</code></pre></div>
+
+<p>This generates a comparison JSON file that the testing framework uses to validate future calculator runs.</p>
+<p><strong>Tip:</strong> If the comparison rules defined for <code>mock.1.comparison.json</code> apply to all your test cases (which is often true if the output structure is identical), you can easily copy this file for all other mock tests:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="nb">i</span><span class="p">=</span><span class="mi">2</span><span class="p">:</span><span class="n">myCalculator</span><span class="p">.</span><span class="n">numberOfSelfTests</span><span class="p">,</span><span class="w"> </span><span class="nb">copyfile</span><span class="p">(</span><span class="s">&#39;mock.1.comparison.json&#39;</span><span class="p">,[</span><span class="s">&#39;mock.&#39;</span><span class="w"> </span><span class="nb">int2str</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span><span class="w"> </span><span class="s">&#39;.comparison.json&#39;</span><span class="p">]);</span><span class="w"> </span><span class="k">end</span>
+</code></pre></div>
+
+<h2 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Permanent link">&para;</a></h2>
+<h3 id="multiple-dependencies">Multiple Dependencies<a class="headerlink" href="#multiple-dependencies" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;depends_on&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;element_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stimulus_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;element_epoch_id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<h3 id="array-outputs">Array Outputs<a class="headerlink" href="#array-outputs" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="nt">&quot;output_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+</code></pre></div>
+
+<p>Initialize as empty array, populate in <code>calculate()</code>.</p>
+<h3 id="nested-structures">Nested Structures<a class="headerlink" href="#nested-structures" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="n">output</span><span class="p">.</span><span class="n">results</span><span class="p">.</span><span class="n">tuning_curve</span><span class="p">.</span><span class="n">mean</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="k">...</span><span class="c">];</span>
+<span class="n">output</span><span class="p">.</span><span class="n">results</span><span class="p">.</span><span class="n">tuning_curve</span><span class="p">.</span><span class="n">stderr</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="k">...</span><span class="c">];</span>
+<span class="n">output</span><span class="p">.</span><span class="n">results</span><span class="p">.</span><span class="n">statistics</span><span class="p">.</span><span class="n">p_value</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
+</code></pre></div>
+
+<h3 id="binary-file-handling">Binary File Handling<a class="headerlink" href="#binary-file-handling" title="Permanent link">&para;</a></h3>
+<div class="codehilite"><pre><span></span><code><span class="c">% In calculate():</span>
+<span class="n">fname</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">session</span><span class="p">.</span><span class="n">path</span><span class="w"> </span><span class="nb">filesep</span><span class="w"> </span><span class="s">&#39;ndiobjects&#39;</span><span class="w"> </span><span class="nb">filesep</span><span class="w"> </span><span class="n">doc_id</span><span class="w"> </span><span class="s">&#39;.bin&#39;</span><span class="p">];</span>
+<span class="c">% ... write data to fname ...</span>
+<span class="nb">doc</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">doc</span><span class="p">.</span><span class="n">add_file</span><span class="p">(</span><span class="s">&#39;mydata.bin&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">fname</span><span class="p">);</span>
+
+<span class="c">% In load():</span>
+<span class="n">myfile</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">session</span><span class="p">.</span><span class="n">database_openbinarydoc</span><span class="p">(</span><span class="nb">doc</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;mydata.bin&#39;</span><span class="p">);</span>
+<span class="n">data</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fread</span><span class="p">(</span><span class="n">myfile</span><span class="p">,</span><span class="w"> </span><span class="k">...</span><span class="c">);</span>
+<span class="n">session</span><span class="p">.</span><span class="n">database_closebinarydoc</span><span class="p">(</span><span class="n">myfile</span><span class="p">);</span>
+</code></pre></div>
+
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="calculator-doesnt-find-inputs">Calculator doesn't find inputs<a class="headerlink" href="#calculator-doesnt-find-inputs" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Check your <code>query</code> in <code>default_search_for_input_parameters()</code></li>
+<li>Verify input documents exist: <code>session.database_search(query)</code></li>
+<li>Check dependency names match JSON definition</li>
+</ul>
+<h3 id="documents-not-created">Documents not created<a class="headerlink" href="#documents-not-created" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify <code>calculate()</code> returns valid <code>ndi.document</code> object</li>
+<li>Check all dependencies are set with <code>set_dependency_value()</code></li>
+<li>Ensure JSON definition matches document structure</li>
+</ul>
+<h3 id="path-errors">Path errors<a class="headerlink" href="#path-errors" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify JSON file exists at <code>ndi_common/database_documents/calc/</code></li>
+<li>Ensure the JSON filename matches the document type name exactly</li>
+<li>Check MATLAB path includes calculator directory</li>
+</ul>
+<h3 id="query-syntax-errors">Query syntax errors<a class="headerlink" href="#query-syntax-errors" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Use <code>ndi.query()</code> constructor, not raw strings</li>
+<li>Combine with <code>&amp;</code> and <code>|</code>, not <code>&amp;&amp;</code> and <code>||</code></li>
+<li>Field names are case-sensitive</li>
+</ul>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Examples</strong>: See <code>+ndi/+calc/+vis/</code> in NDIcalc-vis-matlab</li>
+<li><strong>Base class</strong>: <code>+ndi/calculator.m</code> in NDI-matlab</li>
+<li><strong>Tutorial</strong>: <code>making_a_new_calculator.md</code> in NDIcalc-vis-matlab</li>
+<li><strong>Simple template</strong>: <code>+ndi/+calc/+example/simple.m</code> in NDI-matlab</li>
+</ul>
+<h2 id="summary-checklist">Summary Checklist<a class="headerlink" href="#summary-checklist" title="Permanent link">&para;</a></h2>
+<p>When creating a new calculator:</p>
+<ul>
+<li>[ ] Plan inputs, parameters, outputs, and granularity</li>
+<li>[ ] Create JSON document definition in <code>ndi_common/database_documents/calc/</code></li>
+<li>[ ] Create MATLAB class in <code>+ndi/+calc/+[category]/</code></li>
+<li>[ ] Implement constructor passing the document type name</li>
+<li>[ ] Implement <code>calculate()</code> method</li>
+<li>[ ] Implement <code>default_search_for_input_parameters()</code> and/or <code>default_parameters_query</code> method</li>
+<li>[ ] Add optional methods as needed (plot, load, etc.)</li>
+<li>[ ] Test with real or mock data</li>
+<li>[ ] Create documentation files in <code>+ndi/+calc/+[category]/docs/</code></li>
+<li>[ ] Document all methods and parameters</li>
+<li>[ ] Verify calculator can be run with default parameters</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
