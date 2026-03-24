@@ -75,15 +75,14 @@ jobs:
             addpath(genpath(fullfile(pwd, 'tools')));
             addpath(genpath('MATLAB-AddOns'));
             addpath(pwd);
-            addpath('tests');
+
+            testsDir = fullfile(pwd, 'tests');
+            addpath(testsDir);
 
             import matlab.unittest.TestSuite
             import matlab.unittest.TestRunner
 
-            suite = [
-                TestSuite.fromPackage('ndi.unittest', 'IncludingSubpackages', true), ...
-                TestSuite.fromPackage('vis.speed', 'IncludingSubpackages', true)
-            ];
+            suite = TestSuite.fromFolder(testsDir, 'IncludingSubfolders', true);
 
             fprintf('\n=== Discovered %d test(s) ===\n', numel(suite));
             for k = 1:numel(suite)
