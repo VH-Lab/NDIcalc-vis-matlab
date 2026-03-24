@@ -80,9 +80,9 @@ if isempty(dog_par),
 	r2 = -Inf;
 	response=NaN*tfrange_interp;
 else,
-	norm_error=dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
+	norm_error=vis.frequency.dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
 	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
-	response=dog(dog_par',tfrange_interp);
+	response=vis.frequency.dog(tfrange_interp,dog_par(2:end)');
 end;
 
 	
