@@ -58,6 +58,14 @@ jobs:
             addpath(genpath('MATLAB-AddOns'));
             addpath(genpath(pwd));
 
+            % Create symlink so NDI-matlab's find_calc_directories() discovers
+            % this package as a sibling directory named NDIcalc-vis-matlab
+            ndiParent = fileparts(fileparts(fileparts(ndi.toolboxdir)));
+            linkPath = fullfile(ndiParent, 'NDIcalc-vis-matlab');
+            if ~isfolder(linkPath)
+                system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
+            end
+
             ndi.docs.calcbuild(pwd);
 
       - name: Configure Git
