@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-The NDI Pipeline Manager is a graphical interface designed to streamline the creation, editing, and execution of data analysis pipelines. It allows users to chain together multiple Calculator Instances, customize their parameters using MATLAB code, and automatically generate paper-ready figures from NDI sessions.
+The NDI Pipeline Manager is a graphical interface designed to streamline the creation, editing, and execution of data analysis pipelines. It allows users to chain together multiple Calculator Instances, customize their parameters using MATLAB code, and automatically generate figures from NDI sessions.
 
 ---
 
@@ -10,7 +10,7 @@ The NDI Pipeline Manager is a graphical interface designed to streamline the cre
 
 ### 2.1 Prepare NDI Session Data
 
-Before using the NDI Pipeline GUI, your data must be prepared for utilization with NDI. This may include performing spike detection and sorting if you are working with extracellular recording data. Once your data has been processed and organized, you can write the output to NDI. In order for the Calculators to run, you will need to have previously run `decode_stimuli` and `calculate_stimulus_responses`. After this initial processing, you will be ready to run Calculators and create Pipelines of customized Calculator instances.
+Before using the NDI Pipeline GUI, your data must be prepared for use with NDI. This may include performing spike detection and sorting if you are working with extracellular recording data. Once your data has been processed and organized, you can write the output to NDI. In order for the visual response Calculators here to run, you will need to have previously run `decode_stimuli` and `calculate_stimulus_responses`. After this initial processing, you will be ready to run Calculators and create Pipelines of customized Calculator instances.
 
 Prepare an NDI Data Session to be operated on by your created pipeline by running:
 
@@ -25,7 +25,7 @@ You can open as many NDI Data Sessions as you wish to work with (just make sure 
 To launch the Pipeline Manager, run the following command in the MATLAB Command Window:
 
 ```matlab
-ndi.cpipeline.edit
+ndi.cpipeline.edit()
 ```
 
 This will open the main Pipeline Manager window.
