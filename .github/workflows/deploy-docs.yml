@@ -39,6 +39,7 @@ jobs:
           cache: true
           products: |
             Communications_Toolbox
+            Optimization_Toolbox
             Statistics_and_Machine_Learning_Toolbox
             Signal_Processing_Toolbox
 

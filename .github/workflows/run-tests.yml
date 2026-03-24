@@ -58,6 +58,7 @@ jobs:
           cache: true
           products: |
             Communications_Toolbox
+            Optimization_Toolbox
             Statistics_and_Machine_Learning_Toolbox
             Signal_Processing_Toolbox
 
@@ -74,7 +75,7 @@ jobs:
 
             addpath(genpath(fullfile(pwd, 'tools')));
             addpath(genpath('MATLAB-AddOns'));
-            addpath(pwd);
+            addpath(genpath(pwd));
 
             testsDir = fullfile(pwd, 'tests');
             addpath(testsDir);
