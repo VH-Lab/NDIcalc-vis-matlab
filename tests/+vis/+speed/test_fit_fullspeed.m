@@ -22,7 +22,7 @@ classdef test_fit_fullspeed < matlab.unittest.TestCase
 
             % Add a tiny bit of noise to avoid perfect fit issues/warnings,
             % but keep it small to verify accuracy.
-            rng(1);
+            rng(1, 'twister');
             r_noisy = r + 0.01 * randn(size(r));
             r_noisy(r_noisy<0) = 0;
 
