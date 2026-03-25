@@ -55,6 +55,9 @@ jobs:
             copyfile('requirements.txt', fullfile('tools', 'requirements.txt'));
             matbox.installRequirements(fullfile(pwd, 'tools'));
 
+            % Prevent doc crawler from descending into MATLAB-AddOns
+            fclose(fopen(fullfile('MATLAB-AddOns', '.matlab2markdown-ignore'), 'w'));
+
             addpath(genpath(fullfile(pwd, 'tools')));
             addpath(genpath('MATLAB-AddOns'));
             addpath(genpath(pwd));
@@ -66,6 +69,10 @@ jobs:
             if ~isfolder(linkPath)
                 system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
             end
+
+            % Build NDI-matlab docs first so documentation_structure.mat
+            % exists for cross-linking in calcbuild
+            ndi.docs.build();
 
             ndi.docs.calcbuild(pwd);
 
