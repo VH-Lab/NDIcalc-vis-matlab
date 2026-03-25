@@ -1,8 +1,5 @@
     - ndi PACKAGE:
       - calc PACKAGE:
-        - paperFigures PACKAGE:
-          - ndi.calc.paperFigures.triangleNode: 'reference/+ndi/+calc/+paperFigures/triangleNode.m.md'
-          - ndi.calc.paperFigures.trianglePipeline: 'reference/+ndi/+calc/+paperFigures/trianglePipeline.m.md'
         - vis PACKAGE:
           - ndi.calc.vis.contrast_sensitivity: 'reference/+ndi/+calc/+vis/contrast_sensitivity.m.md'
           - ndi.calc.vis.contrast_tuning: 'reference/+ndi/+calc/+vis/contrast_tuning.m.md'
@@ -81,6 +78,7 @@
         - vis.frequency.compute_halfwidth: 'reference/+vis/+frequency/compute_halfwidth.m.md'
         - vis.frequency.compute_halfwidth_interp: 'reference/+vis/+frequency/compute_halfwidth_interp.m.md'
         - vis.frequency.dog: 'reference/+vis/+frequency/dog.m.md'
+        - vis.frequency.dog_error: 'reference/+vis/+frequency/dog_error.m.md'
         - vis.frequency.dog_fit: 'reference/+vis/+frequency/dog_fit.m.md'
         - vis.frequency.movshon2005_cells: 'reference/+vis/+frequency/movshon2005_cells.m.md'
         - vis.frequency.movshon2005_fit: 'reference/+vis/+frequency/movshon2005_fit.m.md'
