@@ -47,9 +47,6 @@ jobs:
       - name: Install MatBox
         uses: ehennestad/matbox-actions/install-matbox@v1
 
-      - name: Exclude MATLAB-AddOns from doc crawling
-        run: touch MATLAB-AddOns/.matlab2markdown-ignore
-
       - name: Build Documentation (MATLAB)
         uses: matlab-actions/run-command@v2
         with:
@@ -57,6 +54,9 @@ jobs:
             mkdir('tools');
             copyfile('requirements.txt', fullfile('tools', 'requirements.txt'));
             matbox.installRequirements(fullfile(pwd, 'tools'));
+
+            % Prevent doc crawler from descending into MATLAB-AddOns
+            fclose(fopen(fullfile('MATLAB-AddOns', '.matlab2markdown-ignore'), 'w'));
 
             addpath(genpath(fullfile(pwd, 'tools')));
             addpath(genpath('MATLAB-AddOns'));
