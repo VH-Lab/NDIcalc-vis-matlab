@@ -70,6 +70,10 @@ jobs:
                 system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
             end
 
+            % Build NDI-matlab docs first so documentation_structure.mat
+            % exists for cross-linking in calcbuild
+            ndi.docs.build();
+
             ndi.docs.calcbuild(pwd);
 
       - name: Configure Git
