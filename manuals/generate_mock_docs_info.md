@@ -2,6 +2,13 @@
 
 The `generate_mock_docs` method is a testing utility present in NDI visualization calculator classes (e.g., `contrast_tuning`, `oridir_tuning`, `spatial_frequency_tuning`, `speed_tuning`, `temporal_frequency_tuning`). It generates synthetic input data (mock documents) and runs the calculator to produce actual outputs, which can then be compared against expected outputs.
 
+> **Note:** The canonical developer manual for calculators lives in
+> [NDI-matlab `NDI_Calculator_Manual.md`](https://github.com/VH-Lab/NDI-matlab/blob/main/src/ndi/docs/NDI-matlab/manual/developer/NDI_Calculator_Manual.md),
+> which covers `generate_mock_docs` in its "Advanced Testing with Mock Documents" section.
+> The detailed typed input/output tables and the `specific_test_inds` option
+> documented here are not yet reflected there; eventually this content should
+> be merged into the NDI-matlab manual and this file removed.
+
 ## Function Signature
 
 ```matlab
