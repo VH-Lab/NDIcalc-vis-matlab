@@ -40,9 +40,12 @@ function [parameters, sse, r_squared] = fit_fullspeed(sf, tf, r, options)
     sf = sf(:); tf = tf(:); r = r(:); % Ensure column vectors
 
     % --- Multi-start Optimization Setup ---
-    % Define hard constraints, identical to vis.speed.fit but with xi fixed at 1
-    Upper = [2 * max(r); 3; 1; 4; 4; max(sf); max(tf)];
-    Lower = [0; -3; 1; 0.1; 0.1; min(sf); min(tf)];
+    % Define hard constraints, identical to vis.speed.fit but with xi fixed at 1.
+    % sigma_sf, sigma_tf, and zeta are scaled by log(10) so that the search
+    % space matches the prior natural-log formulation now that tuningfunc
+    % uses log10.
+    Upper = [2 * max(r); 3 * log(10); 1; 4 / log(10); 4 / log(10); max(sf); max(tf)];
+    Lower = [0; -3 * log(10); 1; 0.1 / log(10); 0.1 / log(10); min(sf); min(tf)];
 
     StartPoint = zeros(7, options.numberStartPoints);
 
