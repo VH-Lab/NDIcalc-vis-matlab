@@ -43,9 +43,12 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
     SF = SF(:); TF = TF(:); R = R(:); % Ensure column vectors
 
     % --- Multi-start Optimization Setup ---
-    % Define hard constraints (upper and lower bounds) for the fit parameters
-    Upper = [2 * max(R); 3; max_xi; 4; 4; max(SF); max(TF)];
-    Lower = [0; -3; min_xi; 0.1; 0.1; min(SF); min(TF)];
+    % Define hard constraints (upper and lower bounds) for the fit parameters.
+    % sigma_sf, sigma_tf, and zeta are scaled by log(10) so that the search
+    % space matches the prior natural-log formulation now that tuningfunc
+    % uses log10.
+    Upper = [2 * max(R); 3 * log(10); max_xi; 4 / log(10); 4 / log(10); max(SF); max(TF)];
+    Lower = [0; -3 * log(10); min_xi; 0.1 / log(10); 0.1 / log(10); min(SF); min(TF)];
 
     StartPoint = zeros(7, options.numberStartPoints);
 
