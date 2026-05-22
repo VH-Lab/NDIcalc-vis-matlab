@@ -278,8 +278,8 @@ classdef speed_tuning < ndi.calc.tuning_fit
             significance = struct('visual_response_anova_p', anova_across_stims_blank, ...
                 'across_stimuli_anova_p', anova_across_stims);
 
-            sfs = logspace(0.01, 60, 200);
-            tfs = logspace(0.01, 120, 200);
+            sfs = logspace(log10(0.01), log10(60),  14);
+            tfs = logspace(log10(0.01), log10(120), 14);
             [SFs, TFs] = meshgrid(sfs, tfs);
 
             %add fit with speed parameter set to 0
