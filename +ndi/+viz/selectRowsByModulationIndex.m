@@ -1,7 +1,7 @@
-function T_out = selectRowsByModulationIndex(T, NameValueArgs)
+function [T_out, T_F0, T_F1] = selectRowsByModulationIndex(T, NameValueArgs)
 % SELECTROWSBYMODULATIONINDEX - Filter rows based on the modulation index
 %
-%   T_OUT = NDI.VIZ.SELECTROWSBYMODULATIONINDEX(T, NAMEVALUEARGS)
+%   [T_OUT, T_F0, T_F1] = NDI.VIZ.SELECTROWSBYMODULATIONINDEX(T, NAMEVALUEARGS)
 %
 %   Filters a table that has been produced by ndi.viz.modulationIndex.
 %
@@ -15,6 +15,22 @@ function T_out = selectRowsByModulationIndex(T, NameValueArgs)
 %   equal to 'F1'. If the modulation index is less than 1, then the row
 %   is kept in the output table if the row X.properties.response_type is
 %   equal to 'mean'.
+%
+%   OUTPUTS:
+%   T_OUT - The table with the modulation-index-selected rows (F1 for cells
+%           with modulation index >= 1, 'mean' for cells with modulation
+%           index < 1), as described above.
+%   T_F0  - (Optional) The table containing, for every validly-paired cell,
+%           only its 'mean' (F0) row regardless of the modulation index.
+%   T_F1  - (Optional) The table containing, for every validly-paired cell,
+%           only its 'F1' row regardless of the modulation index.
+%
+%   A cell is considered validly paired if its modulation index is not NaN
+%   (ndi.viz.modulationIndex assigns the index to both the 'mean' and 'F1'
+%   rows of each successful pair). T_F0 and T_F1 are useful for analyses that
+%   need to use the F0 or F1 response for every cell rather than the
+%   modulation-index-selected response (for example, to test whether a result
+%   depends on the use of the F1 response for simple cells).
 %
 %   This function can also be specified using name/value pairs.
 %   'modulationIndexColumn'      : The column with the modulation index.
@@ -30,6 +46,7 @@ function T_out = selectRowsByModulationIndex(T, NameValueArgs)
 %
 %   Example:
 %      T_filtered = ndi.viz.selectRowsByModulationIndex(T_with_MI)
+%      [T_filtered, T_F0, T_F1] = ndi.viz.selectRowsByModulationIndex(T_with_MI)
 %
 
 arguments
@@ -70,6 +87,12 @@ if ~NameValueArgs.allowMultipleModulationIndexFilters
 			(MI<1 & strcmpi(response_type,'mean'))  ...
 		);
 	T_out = T(keep_rows,:);
+
+	% Build the F0 ('mean') and F1 row sets for every validly-paired cell.
+	keep_rows_F0 = find(~isnan(MI) & strcmpi(response_type,'mean'));
+	keep_rows_F1 = find(~isnan(MI) & strcmpi(response_type,'F1'));
+	T_F0 = T(keep_rows_F0,:);
+	T_F1 = T(keep_rows_F1,:);
 else
     % multiple filter mode
     if ~isempty(NameValueArgs.modulationIndexColumn)
@@ -81,6 +104,8 @@ else
 
 	modulationIndexColumns = find_column_by_suffix(T, '', '.TC.modulationIndex', 'allow_multiple', true);
     keep_rows = [];
+    keep_rows_F0 = [];
+    keep_rows_F1 = [];
     for i=1:numel(modulationIndexColumns)
         modulationIndexColumn = modulationIndexColumns{i};
         responseTypeColumn = strrep(modulationIndexColumn,'.TC.modulationIndex','.properties.response_type');
@@ -94,8 +119,12 @@ else
                 (MI<1 & strcmpi(response_type,'mean'))  ...
             );
         keep_rows = unique([keep_rows(:); keep_rows_here(:)]);
+        keep_rows_F0 = unique([keep_rows_F0(:); find(~isnan(MI) & strcmpi(response_type,'mean'))]);
+        keep_rows_F1 = unique([keep_rows_F1(:); find(~isnan(MI) & strcmpi(response_type,'F1'))]);
     end
     T_out = T(keep_rows,:);
+    T_F0 = T(keep_rows_F0,:);
+    T_F1 = T(keep_rows_F1,:);
 end
 
 end
