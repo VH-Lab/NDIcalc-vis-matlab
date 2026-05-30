@@ -180,8 +180,9 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
             vis.speed.plottuning(SF, TF, MNs_fit, 'marker', 'none', 'linestyle', linestyle);
 
-            % now plot raw responses
-            vis.speed.plottuning(SF, TF, MNs);
+            % now plot raw responses; overlay the half-height contour of the
+            % fitted model on the heat map to show the bounds of the model.
+            vis.speed.plottuning(SF, TF, MNs, 'half_contour_params', ft.Priebe_fit_parameters);
 
             ch = get(gcf, 'children');
             currentaxes = gca;
