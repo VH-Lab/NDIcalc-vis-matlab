@@ -376,6 +376,14 @@ classdef hartley < ndi.calculator
 
                 if ~isempty(ts_epoch_t0_out)% we have a match
 
+                    % A Hartley reverse correlation runs for a long time and
+                    % prints nothing while it does, which is hard to tell apart
+                    % from a hang. Report progress instead. The reporter does
+                    % nothing when MATLAB cannot show figures, and never raises.
+                    report = ndi.fun.progressReporter('Hartley reverse correlation',...
+                        ['Epoch ' stimulus_presentation_docs{i}.document_properties.epochid.epochid ...
+                        ', ' element.elementstring()]);
+
                     % Step 3: now to calculate
 
                     % Step 3a: set up variables for returning
@@ -398,6 +406,8 @@ classdef hartley < ndi.calculator
                         presentation_time(1).onset, ...
                         presentation_time(end).offset);
 
+                    report(0.15);
+
                     % load the hartley states
                     P = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.stimuli(stimids(1)).parameters;
                     P.rect = P.rect(:)';
@@ -415,6 +425,8 @@ classdef hartley < ndi.calculator
                     hartley_reverse_correlation.spiketimes = spike_times;
                     hartley_reverse_correlation.frameTimes = frameTimes;
 
+                    report(0.30);
+
                     % write JSON file here for now
 
                     mystring = vlt.data.jsonencodenan(hartley_reverse_correlation);
@@ -428,6 +440,8 @@ classdef hartley < ndi.calculator
                     mystring = char(vlt.data.prettyjson(mystring));
                     vlt.file.str2text(myfile,mystring);
 
+                    report(0.35);
+
                     [sta,p_val, rescale, cmap] = vis.revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers.S,...
                         hartley_reverse_correlation.hartley_numbers.KXV, ...
                         hartley_reverse_correlation.hartley_numbers.KYV, ...
@@ -435,7 +449,8 @@ classdef hartley < ndi.calculator
                         hartley_reverse_correlation.spiketimes, ...
                         hartley_reverse_correlation.reconstruction_properties.T_coords, ...
                         hartley_reverse_correlation.reconstruction_properties.X_coords, ...
-                        hartley_reverse_correlation.reconstruction_properties.Y_coords);
+                        hartley_reverse_correlation.reconstruction_properties.Y_coords, ...
+                        @(fraction) report(0.35 + 0.55*fraction));
 
                     sta = sta(:,:,end:-1:1); % make it match T
                     p_val = p_val(:,:,end:-1:1); % make it match T
@@ -472,6 +487,8 @@ classdef hartley < ndi.calculator
 
                         doc{end} = doc{end}.add_file('hartley_results.ngrid',myfile);
                     end
+
+                    report(1);
                 end
             end
         end % calculate
