@@ -13,9 +13,11 @@ function report = progressReporter(title, label)
 %
 %  No window is created when MATLAB cannot show figures -- started with
 %  -batch or -nodisplay, as in continuous integration -- and REPORT is then a
-%  handle that does nothing. Reporting also never raises: if the window
-%  cannot be created or updated, the calculation carries on without it.
-%  Callers therefore never need to test anything before calling REPORT.
+%  handle that does nothing. Reporting also never raises: if the window cannot
+%  be created the calculation carries on without it, after a warning saying so,
+%  and if it cannot be updated -- because the viewer closed it -- the rest of
+%  the calculation proceeds quietly. Callers never need to test anything before
+%  calling REPORT.
 %
 %  Example:
 %     report = ndi.fun.progressReporter('Hartley','Epoch t00001');
@@ -36,13 +38,24 @@ tag = '';
 try
 	if ~batchStartupOptionUsed() && feature('ShowFigureWindows'),
 		app = ndi.gui.component.ProgressBarWindow(title);
-		tag = did.ido.unique();
-		app.addBar('Label',label,'Tag',tag,'Auto',true);
+		tag = did.ido.unique_id();
+
+		 % A bar that goes un-updated for longer than the window's timeout is
+		 % flagged as timed out, and an 'Auto' bar is then closed. The stages
+		 % reported here each run for minutes, so the bar must not be automatic
+		 % and the timeout has to be longer than the gaps between updates. The
+		 % bar is removed explicitly when the work reaches 1.
+		app.setTimeout(minutes(60));
+		app.addBar('Label',label,'Tag',tag,'Auto',false);
 	end;
-catch
+catch ME
 	 % A missing display, no GUI toolkit, an older NDI without the component:
-	 % none of these are reasons to stop the calculation.
+	 % none of these are reasons to stop the calculation. Say so rather than
+	 % failing silently, because a reporter that quietly does nothing is
+	 % indistinguishable from a calculation that is not reporting progress.
 	app = [];
+	warning('NDIcalc:progressReporter:unavailable',...
+		'Could not open a progress window (%s). Continuing without one.',ME.message);
 end;
 
 report = @(fraction) ndi_fun_progressReporter_update(app,tag,fraction);
@@ -55,8 +68,15 @@ if isempty(app),
 	return;
 end;
 
+fraction = max(0,min(1,fraction));
+
 try
-	app.updateBar(tag,max(0,min(1,fraction)));
+	app.updateBar(tag,fraction);
+	if fraction>=1,
+		 % The bar is not automatic, so it is closed here rather than on a
+		 % timeout that would otherwise fire during a long stage.
+		app.removeBar(tag);
+	end;
 catch
 	 % The user may have closed the window mid-calculation.
 end;
