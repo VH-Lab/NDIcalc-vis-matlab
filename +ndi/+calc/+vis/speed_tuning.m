@@ -8,6 +8,11 @@ classdef speed_tuning < ndi.calc.tuning_fit
             %
             % Creates a SPEED_TUNING ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             speed_tuning_obj = speed_tuning_obj@ndi.calc.tuning_fit(session, 'speedtuning_calc', ...
                 'speedtuning_calc');
             speed_tuning_obj.defaultParametersCanFunction = true;

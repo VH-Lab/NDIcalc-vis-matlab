@@ -29,6 +29,12 @@ function [tf, expectedPath, msg] = checkCalcDirectory()
 %  This function does not create anything. To make a non-matching checkout
 %  discoverable, follow the command it reports.
 %
+%  Every ndi.calc.vis calculator constructor calls this before its superclass
+%  constructor, and the self-test harness calls it before the first test, so
+%  an undiscoverable copy is reported at the point of use rather than as a
+%  document-type error further down. It is cheap: two path splits and a
+%  directory test.
+%
 %  Example:
 %     ndi.fun.checkCalcDirectory();
 %     ndi.calc.vis.oridir_tuning(S).test('highSNR',1,0);

@@ -8,6 +8,11 @@ classdef contrast_sensitivity < ndi.calculator
             %
             % Creates a CONTRAST_TUNING ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             contrast_sensitivity_obj = contrast_sensitivity_obj@ndi.calculator(session,'contrastsensitivity_calc',...
             'contrastsensitivity_calc');
             contrast_sensitivity_obj.numberOfSelfTests = 1;

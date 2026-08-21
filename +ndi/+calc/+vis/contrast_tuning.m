@@ -8,6 +8,11 @@ classdef contrast_tuning < ndi.calc.tuning_fit
             %
             % Creates a CONTRAST_TUNING ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             contrast_tuning_obj = contrast_tuning_obj@ndi.calc.tuning_fit(session,'contrasttuning_calc',...
                 'contrasttuning_calc');
             contrast_tuning_obj.defaultParametersCanFunction = true;

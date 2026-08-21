@@ -8,6 +8,11 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             %
             % Creates a TEMPORAL_FREQUENCY_TUNING ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             temporal_frequency_tuning_obj = temporal_frequency_tuning_obj@ndi.calc.tuning_fit(session,'temporal_frequency_tuning_calc',...
                 'temporal_frequency_tuning_calc');
             temporal_frequency_tuning_obj.defaultParametersCanFunction = true;

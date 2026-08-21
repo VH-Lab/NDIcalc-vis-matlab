@@ -42,6 +42,8 @@ ndi.fun.checkCalcDirectory();
 ```
 
 It reports the checkout, the directory NDI searches, and the exact command to
-link the two. It changes nothing on disk — move or link the folder yourself. The
-test suite calls it first, so a checkout in the wrong place fails with that
-message rather than with the schema error above.
+link the two. It changes nothing on disk — move or link the folder yourself.
+
+Every calculator constructor and the test suite call it first, so a checkout in
+the wrong place fails with that message rather than with the schema error
+above.

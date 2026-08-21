@@ -8,6 +8,11 @@ classdef hartley < ndi.calculator
             %
             % Creates a HARTLEY ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             hartley_obj = hartley_obj@ndi.calculator(session,'hartley',...
                 'hartley_calc');
             hartley_obj.numberOfSelfTests = 1;

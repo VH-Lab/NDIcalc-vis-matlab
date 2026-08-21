@@ -8,6 +8,11 @@ classdef spatial_frequency_tuning < ndi.calc.tuning_fit
             %
             % Creates a SPATIAL_FREQUENCY_TUNING ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             spatial_frequency_tuning_obj = spatial_frequency_tuning_obj@ndi.calc.tuning_fit(session,'spatial_frequency_tuning_calc',...
                 'spatial_frequency_tuning_calc');
             spatial_frequency_tuning_obj.defaultParametersCanFunction = true;
