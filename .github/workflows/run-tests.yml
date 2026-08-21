@@ -80,9 +80,15 @@ jobs:
             addpath(genpath('MATLAB-AddOns'));
             addpath(genpath(pwd));
 
-            % Let NDI-matlab's find_calc_directories() discover this package
-            % regardless of the folder name the checkout landed in.
-            ndi.fun.linkCalcDirectory();
+            % NDI-matlab's find_calc_directories() looks beside NDI-matlab for
+            % folders named NDIcalc*-matlab; the CI checkout is not one, so
+            % link it. See ndi.fun.checkCalcDirectory for the diagnostic the
+            % self-tests raise when this step is missing.
+            ndiParent = fileparts(fileparts(fileparts(ndi.toolboxdir)));
+            linkPath = fullfile(ndiParent, 'NDIcalc-vis-matlab');
+            if ~isfolder(linkPath)
+                system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
+            end
 
             % Initialize NewStim globals needed by hartleystim
             NewStimGlobals;

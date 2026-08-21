@@ -23,22 +23,25 @@ tools/
 
 NDI discovers this package by scanning the directory that holds NDI-matlab for
 folders whose names match `NDIcalc*-matlab`. If the checkout ends up somewhere
-else, or under a different name — a downloaded zip expands to
-`NDIcalc-vis-matlab-main`, and continuous-integration checkouts pick their own
-names — the calculators load but their self-tests fail while reading the JSON
-schema that defines each one's output type:
+else, or under a different name, the calculators load but their self-tests fail
+while reading the JSON schema that defines each one's output type:
 
 ```
 DID:Document:readjsonfilelocation: found no match for {calculator}
 ```
 
-Either move the checkout beside NDI-matlab under the name
-`NDIcalc-vis-matlab`, as above, or run
+Names that do not match are easier to end up with than renaming suggests:
+GitHub's **Download ZIP** expands to `NDIcalc-vis-matlab-main`, and an archived
+release expands to `NDIcalc-vis-matlab-1.0.0`. Neither matches.
+
+To find out whether the copy you have can be discovered, and what to do if it
+cannot, run
 
 ```matlab
-ndi.fun.linkCalcDirectory();
+ndi.fun.checkCalcDirectory();
 ```
 
-which creates a link of that name pointing at the current checkout. It does
-nothing if the checkout can already be found, and the test suite calls it
-automatically, so the self-tests now run from a checkout of any name.
+It reports the checkout, the directory NDI searches, and the exact command to
+link the two. It changes nothing on disk — move or link the folder yourself. The
+test suite calls it first, so a checkout in the wrong place fails with that
+message rather than with the schema error above.
