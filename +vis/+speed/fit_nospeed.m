@@ -17,6 +17,13 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
 %     numberStartPoints  - The number of initial starting points to try. (Default: 40)
 %     SpecificStartPoint - A 7xN matrix specifying specific starting
 %                          points to include in the search.
+%     RandomSeed         - Seed for the random components of the starting
+%                          points. (Default: 0.) The random draws use a
+%                          private stream, so the fit is reproducible and the
+%                          caller's global random stream is left untouched.
+%                          Pass 'shuffle' to vary the search between runs, or
+%                          [] to draw from the global stream as before.
+%                          See vis.randomstream.
 %
 %  Outputs:
 %    PARAMETERS - A 7x1 vector with the best-fit parameters.
@@ -35,6 +42,7 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
         r
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
         options.SpecificStartPoint (7,:) double = []
+        options.RandomSeed = 0
     end
 
     sf = sf(:); tf = tf(:); r = r(:); % Ensure column vectors
@@ -49,15 +57,20 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
 
     StartPoint = zeros(7, options.numberStartPoints);
 
+    % The random components of the start points are drawn from a private,
+    % seeded stream so that the multi-start search returns the same fit every
+    % time it is run on the same data.
+    startStream = vis.randomstream(options.RandomSeed);
+
     for i = 1:options.numberStartPoints
         rule_idx = mod(i-1, 10) + 1;
 
         % Generate random components
-        zeta_val = (Upper(2) - Lower(2)) * rand() + Lower(2);
+        zeta_val = (Upper(2) - Lower(2)) * rand(startStream) + Lower(2);
         % xi_val is fixed to 0 (Upper(3)=0, Lower(3)=0)
-        xi_val = (Upper(3) - Lower(3)) * rand() + Lower(3);
-        sigma_sf_val = (Upper(4) - Lower(4)) * rand() + Lower(4);
-        sigma_tf_val = (Upper(5) - Lower(5)) * rand() + Lower(5);
+        xi_val = (Upper(3) - Lower(3)) * rand(startStream) + Lower(3);
+        sigma_sf_val = (Upper(4) - Lower(4)) * rand(startStream) + Lower(4);
+        sigma_tf_val = (Upper(5) - Lower(5)) * rand(startStream) + Lower(5);
 
         A_val = (0.2 * rule_idx) * max(r);
         sf0_val = (0.1 * rule_idx) * max(sf);

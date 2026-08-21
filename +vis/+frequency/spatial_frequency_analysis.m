@@ -46,6 +46,22 @@ function [sf_props]=spatial_frequency_analysis(resp)
 %  'SF spline Pref'           |   SF Pref, as measured with spline
 %  'SF spline Low'            |   Low cut-off, as measured with spline
 %  'SF spline High'           |   High cut-off, as measured with spline
+%  'SF spline R2'             |   R^2; identically 1, because the spline
+%                             |     interpolates the data rather than fitting
+%                             |     it. Not comparable to the other fits.
+%
+%  Log-gaussian fit:
+%  'SF gausslog params'       |   fit parameters, as returned by
+%                             |     vlt.fit.gausslogfit
+%  'SF gausslog Fit'          |   1st row has SF values, 2nd has responses
+%  'SF gausslog R2'           |   R^2 error
+%  'SF gausslog Low'          |   Low cut-off, as measured with gausslog
+%  'SF gausslog Pref'         |   SF Pref, as measured with gausslog
+%  'SF gausslog High'         |   High cut-off, as measured with gausslog
+%
+%  Every R2 above is computed by vis.frequency.rsquared from the model
+%  evaluated at the measured frequencies, so the fits can be compared
+%  against each other directly.
 %
 %  Movshon et al 2005 fit: 
 %  'SF MV params'             |   [k fc fh B]
@@ -85,10 +101,13 @@ rcurve = resp.curve;
 sfrange_interp=logspace( log10(min( min(rcurve(1,:)),0.01)),log10(120),100);
 if isempty(dog_par),
 	norm_error = Inf;
-	r2 = -Inf;
+	dog_r2 = NaN;
 	response=NaN*sfrange_interp;
 else,
-	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
+	 % R2 is computed from the model evaluated at the measured frequencies,
+	 % not on the interpolated grid, so that it is directly comparable to the
+	 % R2 values reported by the Movshon fits below.
+	dog_r2 = vis.frequency.rsquared(rcurve(2,:),vis.frequency.dog(rcurve(1,:),dog_par'));
 	response=vis.frequency.dog(sfrange_interp,dog_par');
 end;
 
@@ -100,6 +119,7 @@ fit_dog.fit = vlt.data.colvec(response);
 fit_dog.L50 = lowdog;
 fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
+fit_dog.R2 = dog_r2;
 fit_dog.bandwidth = vis.frequency.bandwidth(fit_dog.L50, fit_dog.H50);
 
 sf_props.fit_dog = fit_dog;
@@ -149,6 +169,11 @@ fit_spline.fit = fity;
 fit_spline.L50 = lowspline;
 fit_spline.Pref = prefspline;
 fit_spline.H50 = highspline;
+ % The spline interpolates the measured responses, so evaluating it at the
+ % measured frequencies returns them exactly and this R2 is identically 1.
+ % It is recorded so that every fit has the same fields; it is not evidence
+ % that the spline describes the data better than the fitted models.
+fit_spline.R2 = vis.frequency.rsquared(rcurve(2,:),interp1(rcurve(1,:),rcurve(2,:),rcurve(1,:),'spline'));
 fit_spline.bandwidth = vis.frequency.bandwidth(fit_spline.L50, fit_spline.H50);
 
 sf_props.fit_spline = fit_spline;
@@ -160,8 +185,10 @@ a_range = [0 0];
 b = mf;
 b_range = [0 2*max(0,mf)];
 c = maxv;
-d = rand*(highv - lowv);
-if isnan(d)
+ % A deterministic hint -- the expected value of the rand*(highv-lowv) that
+ % was used here before -- so that repeated runs return identical fits.
+d = 0.5*(highv - lowv);
+if isnan(d) | isinf(d)
     d = 1;
 end
 e = 0;
@@ -179,6 +206,11 @@ fit_gausslog.fit = vlt.math.gausslog(fit_gausslog.values,fit_gausslog.parameters
 fit_gausslog.L50 = low_gausslog;
 fit_gausslog.Pref = pref_gausslog;
 fit_gausslog.H50 = high_gausslog;
+if isempty(gausslog_par),
+	fit_gausslog.R2 = NaN;
+else,
+	fit_gausslog.R2 = vis.frequency.rsquared(rcurve(2,:),vlt.math.gausslog(rcurve(1,:),gausslog_par));
+end;
 fit_gausslog.bandwidth = vis.frequency.bandwidth(fit_gausslog.L50,fit_gausslog.H50);
 
 sf_props.fit_gausslog = fit_gausslog;

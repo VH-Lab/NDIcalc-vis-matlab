@@ -4,6 +4,20 @@ classdef sessionSetup < matlab.unittest.TestCase
 		SessionPath
 	end
 
+	methods (TestClassSetup)
+		function ensureCalculatorsDiscoverable(testCase)
+			% ENSURECALCULATORSDISCOVERABLE - let NDI find this checkout
+			%
+			% NDI-matlab locates calculator schemas and database documents by
+			% folder name, so a checkout under any other name cannot be found
+			% and every calculator test below fails while reading its output
+			% type. See ndi.fun.linkCalcDirectory, which is a no-op when the
+			% checkout is already discoverable.
+
+			ndi.fun.linkCalcDirectory();
+		end
+	end
+
 	methods (TestMethodSetup)
 		function setupSession(testCase)
 			% SETUP_SESSION - create a temporary ndi.session.dir object for testing
