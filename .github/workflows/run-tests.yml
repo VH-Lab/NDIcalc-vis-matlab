@@ -58,16 +58,17 @@ jobs:
         with:
           release: ${{ inputs.matlab_release || 'latest' }}
           cache: true
+          # Parallel_Computing_Toolbox is required: without it parfor degrades
+          # to a serial loop and the parallel paths in
+          # vis.revcorr.calculateHartleyResponse and vis.revcorr.generate_STA
+          # are never exercised here, which is where a reviewer reported the
+          # Hartley self-test hanging (R1.40).
           products: |
             Communications_Toolbox
             Optimization_Toolbox
             Statistics_and_Machine_Learning_Toolbox
             Signal_Processing_Toolbox
             Curve_Fitting_Toolbox
-            # Without this, parfor degrades to a serial loop and the parallel
-            # paths in vis.revcorr.calculateHartleyResponse and
-            # vis.revcorr.generate_STA are never exercised here -- which is
-            # where a reviewer reported the Hartley self-test hanging (R1.40).
             Parallel_Computing_Toolbox
 
       - name: Install MatBox
