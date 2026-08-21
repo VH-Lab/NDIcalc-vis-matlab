@@ -203,10 +203,13 @@ classdef temporal_frequency_tuning < ndi.calc.tuning_fit
             %h_fit = plot(tft.fit_spline.values,tft.fit_spline.fit,['k' linestyle] );
             %h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(tft.fit_dog.values,tft.fit_dog.fit,['m' linestyle]);
+            ndi.fun.labelPlottedLine(h_fit,'difference-of-Gaussians fit');
             h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(tft.fit_movshon.values,tft.fit_movshon.fit,['b' linestyle],'linewidth',2);
+            ndi.fun.labelPlottedLine(h_fit,'Movshon et al. 2005 fit');
             h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(tft.fit_movshon_c.values,tft.fit_movshon_c.fit,['g' linestyle],'linewidth',2);
+            ndi.fun.labelPlottedLine(h_fit,'Movshon et al. 2005 fit, with constant term');
             h.objects = cat(2,h.objects,h_fit);
             %h_fit = plot(tft.fit_gausslog.values,tft.fit_gausslog.fit,['g' linestyle]);
             %h.objects = cat(2,h.objects,h_fit);

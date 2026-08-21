@@ -201,10 +201,13 @@ classdef spatial_frequency_tuning < ndi.calc.tuning_fit
             %h_fit = plot(sft.fit_spline.values,sft.fit_spline.fit,['k' linestyle] );
             %h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(sft.fit_dog.values,sft.fit_dog.fit,['m' linestyle]);
+            ndi.fun.labelPlottedLine(h_fit,'difference-of-Gaussians fit');
             h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(sft.fit_movshon.values,sft.fit_movshon.fit,['b' linestyle],'linewidth',2);
+            ndi.fun.labelPlottedLine(h_fit,'Movshon et al. 2005 fit');
             h.objects = cat(2,h.objects,h_fit);
             h_fit = plot(sft.fit_movshon_c.values,sft.fit_movshon_c.fit,['g' linestyle],'linewidth',1.5);
+            ndi.fun.labelPlottedLine(h_fit,'Movshon et al. 2005 fit, with constant term');
             h.objects = cat(2,h.objects,h_fit);
                 % the gauss log fits are terrible
             %h_fit = plot(sft.fit_gausslog.values,sft.fit_gausslog.fit,['g' linestyle]);
