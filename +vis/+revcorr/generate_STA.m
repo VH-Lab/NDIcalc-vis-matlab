@@ -54,7 +54,11 @@ t_end = spiketimes + T_coords(end);
 %% reconstruction
 reconstruction_block = zeros(M, M, tmax);
 
-parfor i = 1:size(t_start, 1)
+ % The worker limit comes from the user's NDI parallel preferences; 0 runs
+ % this loop serially in the client. See ndi.fun.parallelWorkers.
+numberOfWorkers = ndi.fun.parallelWorkers();
+
+parfor (i = 1:size(t_start, 1), numberOfWorkers)
     t_s = t_start(i);
     t_e = t_end(i);
     cur_tp = [i, t_s, t_e];

@@ -71,7 +71,11 @@ response = zeros(numTimeSteps, 1);
 rf_backwards = rf(:, :, end:-1:1);
 
 % Calculate response
-parfor i = 1:numTimeSteps
+ % The worker limit comes from the user's NDI parallel preferences. At 0 this
+ % loop runs serially in the client, which is what happens unless the user has
+ % opened a pool or asked NDI to open one. See ndi.fun.parallelWorkers.
+numberOfWorkers = ndi.fun.parallelWorkers();
+parfor (i = 1:numTimeSteps, numberOfWorkers)
     % Determine the time interval for the current response point
     % We need stimulus history of length rfTimeRange ending at responseTimes(i)
     t_end = responseTimes(i);
