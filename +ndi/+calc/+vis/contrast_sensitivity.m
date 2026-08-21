@@ -380,9 +380,9 @@ classdef contrast_sensitivity < ndi.calculator
                             empirical_c50_RBN = [ empirical_c50_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_empirical_c50)];
                             empirical_c50_RBNS = [ empirical_c50_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_empirical_c50)];
 
-                            saturation_index_RB = [ saturation_index_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_empirical_c50)];
-                            saturation_index_RBN = [ saturation_index_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_empirical_c50)];
-                            saturation_index_RBNS = [ saturation_index_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_empirical_c50)];
+                            saturation_index_RB = [ saturation_index_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_saturation_index)];
+                            saturation_index_RBN = [ saturation_index_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_saturation_index)];
+                            saturation_index_RBNS = [ saturation_index_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_saturation_index)];
 
                             fitless_interpolated_c50 = [ fitless_interpolated_c50 vlt.data.colvec(ctp.fitless.interpolated_c50)];
 
