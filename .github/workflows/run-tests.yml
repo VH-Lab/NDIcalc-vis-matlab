@@ -64,6 +64,11 @@ jobs:
             Statistics_and_Machine_Learning_Toolbox
             Signal_Processing_Toolbox
             Curve_Fitting_Toolbox
+            # Without this, parfor degrades to a serial loop and the parallel
+            # paths in vis.revcorr.calculateHartleyResponse and
+            # vis.revcorr.generate_STA are never exercised here -- which is
+            # where a reviewer reported the Hartley self-test hanging (R1.40).
+            Parallel_Computing_Toolbox
 
       - name: Install MatBox
         uses: ehennestad/matbox-actions/install-matbox@v1
