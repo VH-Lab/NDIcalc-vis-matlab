@@ -1,7 +1,7 @@
-function sta = generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M)
+function sta = generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M, progressFcn)
 %GENERATE_STA - Generate the Spike-Triggered Average (STA) from Hartley stimulus
 %
-% STA = vis.revcorr.generate_STA(S, KX_V, KY_V, FRAMETIMES, SPIKETIMES, RF_RANGE, T_COORDS, TMAX, M)
+% STA = vis.revcorr.generate_STA(S, KX_V, KY_V, FRAMETIMES, SPIKETIMES, RF_RANGE, T_COORDS, TMAX, M, PROGRESSFCN)
 %
 % Inputs:
 %  S - the s parameters of the Hartley stimulus
@@ -13,6 +13,10 @@ function sta = generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_co
 %  T_COORDS - vector of time coordinates relative to spike time for the STA (e.g. [-0.5 ... 0.5])
 %  TMAX - number of time bins for the reconstruction
 %  M - spatial dimension of the stimulus (MxM)
+%  PROGRESSFCN - an optional handle called as PROGRESSFCN(FRACTION), with
+%   FRACTION the proportion of spikes accumulated so far. This loop runs for
+%   minutes on a real recording, so a caller with somewhere to show progress
+%   can pass one. See ndi.fun.progressReporter. Defaults to doing nothing.
 %
 % Outputs:
 %  STA - the calculated Spike-Triggered Average (MxMxTMAX)
@@ -51,6 +55,10 @@ t_end = spiketimes + T_coords(end);
 % This is INCONSISTENT with test.m logic if T_coords is the time base.
 % I will update generate_STA to match the logic in test.m which is straightforward addition of the window.
 
+if nargin<10,
+    progressFcn = [];
+end;
+
 %% reconstruction
 reconstruction_block = zeros(M, M, tmax);
 
@@ -58,16 +66,19 @@ reconstruction_block = zeros(M, M, tmax);
  % this loop serially in the client. See ndi.fun.parallelWorkers.
 numberOfWorkers = ndi.fun.parallelWorkers();
 
-parfor (i = 1:size(t_start, 1), numberOfWorkers)
+numberOfSpikes = size(t_start, 1);
+
+ % Count completed iterations rather than reading the loop index: parfor takes
+ % the range in an arbitrary order. See ndi.fun.parforProgress.
+tick = ndi.fun.parforProgress(numberOfSpikes, progressFcn, numberOfWorkers);
+
+parfor (i = 1:numberOfSpikes, numberOfWorkers)
     t_s = t_start(i);
     t_e = t_end(i);
-    cur_tp = [i, t_s, t_e];
-    if mod(i, 100) == 0
-        disp(cur_tp);
-    end
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
     [b,~] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, tmax);
-    reconstruction_block = reconstruction_block + b;  
+    reconstruction_block = reconstruction_block + b;
+    tick();
 end
 sta = reconstruction_block / size(spiketimes, 1);
 end

@@ -39,7 +39,10 @@ tmax = round(rf_range/deltaT) + 1;
 M = size(X_coords(:), 1);
 spike_num = size(spiketimes, 1);
 progressFcn(0);
-sta = vis.revcorr.generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M);
+ % generate_STA is the long stage; let it drive the first 70% rather than
+ % leaving the bar at 0 for the whole of it.
+sta = vis.revcorr.generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_coords, tmax, M,...
+	@(fraction) progressFcn(0.7*fraction));
 progressFcn(0.7);
 [p_val_adjusted, p_val, rescale] = vis.revcorr.calc_significance(sta,spike_num);
 cmap = vis.revcorr.get_cmap();

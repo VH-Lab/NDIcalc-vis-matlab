@@ -125,9 +125,18 @@ classdef hartley < ndi.calculator
                 frameTimes = (0:num_frames-1)' / P.fps;
 
                 % Calculate Spike Times
+                % This is the long stage of the self-test: it runs for minutes
+                % while everything after it takes seconds. Report it here as
+                % well as in calculate(), because a self-test spends nearly all
+                % of its time in this call and none of the reporting in
+                % calculate() has begun yet.
+                mockReport = ndi.fun.progressReporter('Hartley self-test',...
+                    ['Mock response, test ' int2str(i)]);
+
                 [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
                     'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
-                    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, 'Verbose', Verbose);
+                    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, ...
+                    'Verbose', Verbose, 'progressFcn', mockReport);
 
                 % 3. Update the spikes element and stimulator with the epoch
 

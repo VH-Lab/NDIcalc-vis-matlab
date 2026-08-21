@@ -21,7 +21,11 @@ function [response, spikeTimes] = calculateHartleyResponse(s, kx_v, ky_v, frameT
 %  max_TimeBlock_StartTime - maximum start time to consider for response calculation (default: 500)
 %  threshold - threshold for detecting spikes in the response (default: 1)
 %  rfTimeRange - the total duration of the receptive field (default: rfDeltaT * rfNumTimeSteps)
-%  Verbose - if true, print progress (default: true)
+%  Verbose - if true, print the percentage complete as the calculation runs
+%     (default: true)
+%  progressFcn - an optional handle called as PROGRESSFCN(FRACTION), with
+%     FRACTION from 0 to 1, as the calculation proceeds. See
+%     ndi.fun.progressReporter. Defaults to doing nothing.
 %
 % Outputs:
 %  RESPONSE - the continuous response trace of the model cell
@@ -40,6 +44,7 @@ arguments
     kwargs.threshold (1,1) double = 1
     kwargs.rfTimeRange double = []
     kwargs.Verbose (1,1) logical = true
+    kwargs.progressFcn = []
 end
 
 rfDeltaT = kwargs.rfDeltaT;
@@ -75,6 +80,14 @@ rf_backwards = rf(:, :, end:-1:1);
  % loop runs serially in the client, which is what happens unless the user has
  % opened a pool or asked NDI to open one. See ndi.fun.parallelWorkers.
 numberOfWorkers = ndi.fun.parallelWorkers();
+
+ % Progress is counted in completed iterations rather than read off the loop
+ % index: parfor works through the range in an arbitrary order, so i tells us
+ % nothing about how much is left. See ndi.fun.parforProgress.
+tick = ndi.fun.parforProgress(numTimeSteps,...
+	@(fraction) calculateHartleyResponseProgress(fraction,Verbose,kwargs.progressFcn),...
+	numberOfWorkers);
+
 parfor (i = 1:numTimeSteps, numberOfWorkers)
     % Determine the time interval for the current response point
     % We need stimulus history of length rfTimeRange ending at responseTimes(i)
@@ -89,17 +102,27 @@ parfor (i = 1:numTimeSteps, numberOfWorkers)
     product = b .* rf_backwards;
     response(i) = mean(product, 'all');
 
-    if Verbose && mod(i, 1000) == 0
-        disp([num2str(100*i/numTimeSteps) '%']);
-    end
-
     if isnan(response(i))
         error('Error. \n NaN at idx %d.', i)
     end
+
+    tick();
 end
 
 % Find spikes
 peak_idx = find(response > threshold);
 spikeTimes = responseTimes(peak_idx);
+
+end % calculateHartleyResponse()
+
+function calculateHartleyResponseProgress(fraction,Verbose,progressFcn)
+
+if Verbose,
+    disp([num2str(round(100*fraction)) '%']);
+end;
+
+if ~isempty(progressFcn),
+    progressFcn(fraction);
+end;
 
 end
