@@ -78,7 +78,7 @@ parfor (i = 1:numberOfSpikes, numberOfWorkers)
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
     [b,~] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, tmax);
     reconstruction_block = reconstruction_block + b;
-    tick();
+    tick(i);
 end
 sta = reconstruction_block / size(spiketimes, 1);
 end

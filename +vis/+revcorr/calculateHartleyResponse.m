@@ -106,7 +106,7 @@ parfor (i = 1:numTimeSteps, numberOfWorkers)
         error('Error. \n NaN at idx %d.', i)
     end
 
-    tick();
+    tick(i);
 end
 
 % Find spikes
