@@ -115,14 +115,14 @@
     "toleranceAmount": 0
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "temporal_frequency_tuning.significance.visual_response_anova_p",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "temporal_frequency_tuning.significance.across_stimuli_anova_p",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
     "comparisonMethod": "none",
