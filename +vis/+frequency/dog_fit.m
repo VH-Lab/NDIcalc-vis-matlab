@@ -17,12 +17,19 @@ function [params,err] = dog_fit(x,y,s,varargin)
 % by the weights calculated with S if provided.
 %
 % This function takes name/value pairs that influence its behavior
-% |-----------------------------------------------------------------|
-% | Parameter (default)  | Description                              |
-% |----------------------|------------------------------------------|
-% | start_positions (10) | Number of random start positions to use  |
-% |_---------------------|------------------------------------------|
+% |-----------------------------------------------------------------------|
+% | Parameter (default)  | Description                                    |
+% |----------------------|------------------------------------------------|
+% | start_positions (40) | Number of random start positions to use        |
+% | RandomSeed (0)       | Seed for the random start positions. The draws |
+% |                      |   use a private stream, so the fit is          |
+% |                      |   reproducible and the caller's global random  |
+% |                      |   stream is left untouched. Pass 'shuffle' to  |
+% |                      |   vary the search between runs, or [] to draw  |
+% |                      |   from the global stream. See vis.randomstream.|
+% |_---------------------|------------------------------------------------|
 %
+% See also: vis.randomstream, vis.frequency.dog
 %
 
 if nargin<3,
@@ -36,6 +43,7 @@ else,
 end;
 
 start_positions = 40;
+RandomSeed = 0;
 
 vlt.data.assign(varargin{:});
 
@@ -51,9 +59,22 @@ fo.Upper = [10*max(0,my); 10*mx; 10*max(0,my); 10*mx;];
 best_error = Inf;
 dog_param_best = [];
 
+ % The start positions are drawn here, from a private seeded stream, rather
+ % than left to the Curve Fitting Toolbox. With no StartPoint set, FIT picks
+ % one at random on every call, so this loop returned a different answer each
+ % time it was run on the same data. Drawing them explicitly makes the fit
+ % reproducible; the stream is private, so the caller's global stream is
+ % untouched. Bounds are the same ones FIT was already searching within.
+lb = fo.Lower(:).';
+ub = fo.Upper(:).';
+startStream = vis.randomstream(RandomSeed);
+
 warn_state = warning('off');
 
 for jj=1:start_positions,
+	 % clamped because ub can fall below lb when the data are degenerate
+	 % (all responses <= 0, or a single distinct frequency)
+	fo.StartPoint = min(ub,max(lb,(ub-lb).*rand(startStream,1,4)+lb));
 	mydog = setoptions(mydog,fo);
 
 	[mydog_fit,mydog_gof] = fit(x(:),y(:),mydog,'weight',w);
