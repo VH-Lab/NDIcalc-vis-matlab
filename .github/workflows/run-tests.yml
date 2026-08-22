@@ -39,7 +39,9 @@ concurrency:
 jobs:
   run_tests:
     name: Run tests (MATLAB ${{ inputs.matlab_release || 'latest' }})
-    runs-on: ubuntu-latest
+    # Pinned rather than ubuntu-latest so that the operating system reported in
+    # the paper's Code Accessibility statement stays true as ubuntu-latest moves.
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -56,18 +58,34 @@ jobs:
         with:
           release: ${{ inputs.matlab_release || 'latest' }}
           cache: true
+          # Parallel_Computing_Toolbox is required: without it parfor degrades
+          # to a serial loop and the parallel paths in
+          # vis.revcorr.calculateHartleyResponse and vis.revcorr.generate_STA
+          # are never exercised here, which is where a reviewer reported the
+          # Hartley self-test hanging (R1.40).
           products: |
             Communications_Toolbox
             Optimization_Toolbox
             Statistics_and_Machine_Learning_Toolbox
             Signal_Processing_Toolbox
             Curve_Fitting_Toolbox
+            Parallel_Computing_Toolbox
 
       - name: Install MatBox
         uses: ehennestad/matbox-actions/install-matbox@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         uses: matlab-actions/run-command@v2
+        # matbox.installRequirements fetches NDI-matlab through the GitHub API.
+        # Unauthenticated, that is 60 requests an hour shared by IP across
+        # GitHub-hosted runners, so it fails whenever someone else has spent
+        # the budget -- "GitHub API rate limit exceeded", raised before a
+        # single test runs. The automatic token raises it to 1000 an hour for
+        # this repository.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           command: |
             mkdir('tools');
@@ -78,8 +96,10 @@ jobs:
             addpath(genpath('MATLAB-AddOns'));
             addpath(genpath(pwd));
 
-            % Create symlink so NDI-matlab's find_calc_directories() discovers
-            % this package as a sibling directory named NDIcalc-vis-matlab
+            % NDI-matlab's find_calc_directories() looks beside NDI-matlab for
+            % folders named NDIcalc*-matlab; the CI checkout is not one, so
+            % link it. See ndi.fun.checkCalcDirectory for the diagnostic the
+            % self-tests raise when this step is missing.
             ndiParent = fileparts(fileparts(fileparts(ndi.toolboxdir)));
             linkPath = fullfile(ndiParent, 'NDIcalc-vis-matlab');
             if ~isfolder(linkPath)

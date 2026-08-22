@@ -10,6 +10,11 @@ classdef oridir_tuning < ndi.calc.tuning_fit
             %
             % Creates a oridir_tuning ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             oridir_tuning_obj = oridir_tuning_obj@ndi.calc.tuning_fit(session,'oridir_tuning',...
                 'oridirtuning_calc');
             oridir_tuning_obj.defaultParametersCanFunction = true;

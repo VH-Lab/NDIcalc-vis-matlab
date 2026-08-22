@@ -18,3 +18,32 @@ tools/
 ```
 
 
+
+## If the self-tests cannot find the calculator schemas
+
+NDI discovers this package by scanning the directory that holds NDI-matlab for
+folders whose names match `NDIcalc*-matlab`. If the checkout ends up somewhere
+else, or under a different name, the calculators load but their self-tests fail
+while reading the JSON schema that defines each one's output type:
+
+```
+DID:Document:readjsonfilelocation: found no match for {calculator}
+```
+
+Names that do not match are easier to end up with than renaming suggests:
+GitHub's **Download ZIP** expands to `NDIcalc-vis-matlab-main`, and an archived
+release expands to `NDIcalc-vis-matlab-1.0.0`. Neither matches.
+
+To find out whether the copy you have can be discovered, and what to do if it
+cannot, run
+
+```matlab
+ndi.fun.checkCalcDirectory();
+```
+
+It reports the checkout, the directory NDI searches, and the exact command to
+link the two. It changes nothing on disk — move or link the folder yourself.
+
+Every calculator constructor and the test suite call it first, so a checkout in
+the wrong place fails with that message rather than with the schema error
+above.

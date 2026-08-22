@@ -18,6 +18,13 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 %     numberStartPoints  - The number of initial starting points to try. (Default: 40)
 %     SpecificStartPoint - A 7xN matrix specifying specific starting
 %                          points to include in the search.
+%     RandomSeed         - Seed for the random components of the starting
+%                          points. (Default: 0.) The random draws use a
+%                          private stream, so the fit is reproducible and the
+%                          caller's global random stream is left untouched.
+%                          Pass 'shuffle' to vary the search between runs, or
+%                          [] to draw from the global stream as before.
+%                          See vis.randomstream.
 %
 %   Outputs:
 %     P         - A 7x1 vector with the best-fit parameters.
@@ -38,6 +45,7 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
         max_xi (1,1) double = 1
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
         options.SpecificStartPoint (7,:) double = []
+        options.RandomSeed = 0
     end
 
     SF = SF(:); TF = TF(:); R = R(:); % Ensure column vectors
@@ -52,14 +60,19 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 
     StartPoint = zeros(7, options.numberStartPoints);
 
+    % The random components of the start points are drawn from a private,
+    % seeded stream so that the multi-start search returns the same fit every
+    % time it is run on the same data.
+    startStream = vis.randomstream(options.RandomSeed);
+
     for i = 1:options.numberStartPoints
         rule_idx = mod(i-1, 10) + 1;
 
         % Generate random components
-        zeta_val = (Upper(2) - Lower(2)) * rand() + Lower(2);
-        xi_val = (Upper(3) - Lower(3)) * rand() + Lower(3);
-        sigma_sf_val = (Upper(4) - Lower(4)) * rand() + Lower(4);
-        sigma_tf_val = (Upper(5) - Lower(5)) * rand() + Lower(5);
+        zeta_val = (Upper(2) - Lower(2)) * rand(startStream) + Lower(2);
+        xi_val = (Upper(3) - Lower(3)) * rand(startStream) + Lower(3);
+        sigma_sf_val = (Upper(4) - Lower(4)) * rand(startStream) + Lower(4);
+        sigma_tf_val = (Upper(5) - Lower(5)) * rand(startStream) + Lower(5);
 
         % Rules based on the original StartPoint matrix structure
         % Multiplier for A is 0.2 * rule_idx

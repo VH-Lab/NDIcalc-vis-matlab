@@ -8,6 +8,11 @@ classdef hartley < ndi.calculator
             %
             % Creates a HARTLEY ndi.calculator object
             %
+            % Fail with an explanation rather than with the document-type error
+            % NDI raises further down, when this copy of the package is not
+            % where NDI looks for calculator schemas.
+            ndi.fun.checkCalcDirectory();
+
             hartley_obj = hartley_obj@ndi.calculator(session,'hartley',...
                 'hartley_calc');
             hartley_obj.numberOfSelfTests = 1;
@@ -120,9 +125,18 @@ classdef hartley < ndi.calculator
                 frameTimes = (0:num_frames-1)' / P.fps;
 
                 % Calculate Spike Times
+                % This is the long stage of the self-test: it runs for minutes
+                % while everything after it takes seconds. Report it here as
+                % well as in calculate(), because a self-test spends nearly all
+                % of its time in this call and none of the reporting in
+                % calculate() has begun yet.
+                mockReport = ndi.fun.progressReporter('Hartley self-test',...
+                    ['Mock response, test ' int2str(i)]);
+
                 [response, spiketimes] = vis.revcorr.calculateHartleyResponse(s, kx_v, ky_v, frameTimes, rf, ...
                     'rfDeltaT', rfDeltaT, 'rfNumTimeSteps', rfNumTimeSteps, 'responseDeltaT', responseDeltaT, ...
-                    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, 'Verbose', Verbose);
+                    'max_TimeBlock_StartTime', max_TimeBlock_StartTime, 'threshold', threshold, 'rfTimeRange', rfTimeRange, ...
+                    'Verbose', Verbose, 'progressFcn', mockReport);
 
                 % 3. Update the spikes element and stimulator with the epoch
 
@@ -371,6 +385,14 @@ classdef hartley < ndi.calculator
 
                 if ~isempty(ts_epoch_t0_out)% we have a match
 
+                    % A Hartley reverse correlation runs for a long time and
+                    % prints nothing while it does, which is hard to tell apart
+                    % from a hang. Report progress instead. The reporter does
+                    % nothing when MATLAB cannot show figures, and never raises.
+                    report = ndi.fun.progressReporter('Hartley reverse correlation',...
+                        ['Epoch ' stimulus_presentation_docs{i}.document_properties.epochid.epochid ...
+                        ', ' element.elementstring()]);
+
                     % Step 3: now to calculate
 
                     % Step 3a: set up variables for returning
@@ -393,6 +415,8 @@ classdef hartley < ndi.calculator
                         presentation_time(1).onset, ...
                         presentation_time(end).offset);
 
+                    report(0.15);
+
                     % load the hartley states
                     P = stimulus_presentation_docs{i}.document_properties.stimulus_presentation.stimuli(stimids(1)).parameters;
                     P.rect = P.rect(:)';
@@ -410,6 +434,8 @@ classdef hartley < ndi.calculator
                     hartley_reverse_correlation.spiketimes = spike_times;
                     hartley_reverse_correlation.frameTimes = frameTimes;
 
+                    report(0.30);
+
                     % write JSON file here for now
 
                     mystring = vlt.data.jsonencodenan(hartley_reverse_correlation);
@@ -423,6 +449,8 @@ classdef hartley < ndi.calculator
                     mystring = char(vlt.data.prettyjson(mystring));
                     vlt.file.str2text(myfile,mystring);
 
+                    report(0.35);
+
                     [sta,p_val, rescale, cmap] = vis.revcorr.sta_pipeline(hartley_reverse_correlation.hartley_numbers.S,...
                         hartley_reverse_correlation.hartley_numbers.KXV, ...
                         hartley_reverse_correlation.hartley_numbers.KYV, ...
@@ -430,7 +458,8 @@ classdef hartley < ndi.calculator
                         hartley_reverse_correlation.spiketimes, ...
                         hartley_reverse_correlation.reconstruction_properties.T_coords, ...
                         hartley_reverse_correlation.reconstruction_properties.X_coords, ...
-                        hartley_reverse_correlation.reconstruction_properties.Y_coords);
+                        hartley_reverse_correlation.reconstruction_properties.Y_coords, ...
+                        @(fraction) report(0.35 + 0.55*fraction));
 
                     sta = sta(:,:,end:-1:1); % make it match T
                     p_val = p_val(:,:,end:-1:1); % make it match T
@@ -467,6 +496,8 @@ classdef hartley < ndi.calculator
 
                         doc{end} = doc{end}.add_file('hartley_results.ngrid',myfile);
                     end
+
+                    report(1);
                 end
             end
         end % calculate

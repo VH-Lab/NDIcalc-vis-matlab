@@ -205,13 +205,78 @@
     "toleranceAmount": 0.2
   },
   {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_no_speed.partial_r2",
+    "toleranceAmount": 0.2
+  },
+  {
     "comparisonMethod": "pValueConsistent",
     "name": "speed_tuning.fit_no_speed.Priebe_fit_nested_F_test_p_value",
     "toleranceAmount": 0.05
   },
   {
     "comparisonMethod": "none",
-    "name": "speedtuning_calc.input_parameters",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_parameters",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_spatial_frequencies",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_temporal_frequencies",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_values",
+    "toleranceAmount": 1
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_speed_tuning_index",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs percent difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_spatial_frequency_preference",
+    "toleranceAmount": 50
+  },
+  {
+    "comparisonMethod": "abs percent difference",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_temporal_frequency_preference",
+    "toleranceAmount": 50
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "speed_tuning.fit_fullspeed.sse",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.r_squared",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "speed_tuning.fit_fullspeed.partial_r2",
+    "toleranceAmount": 0.2
+  },
+  {
+    "comparisonMethod": "pValueConsistent",
+    "name": "speed_tuning.fit_fullspeed.Priebe_fit_nested_F_test_p_value",
+    "toleranceAmount": 0.05
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "speedtuning_calc.input_parameters.min_xi",
+    "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "none",
+    "name": "speedtuning_calc.input_parameters.max_xi",
     "toleranceAmount": 0
   },
   {

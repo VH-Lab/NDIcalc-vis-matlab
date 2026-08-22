@@ -46,6 +46,22 @@ function [tf_props]=temporal_frequency_analysis(resp)
 %  'TF spline Pref'           |   TF Pref, as measured with spline
 %  'TF spline Low'            |   Low cut-off, as measured with spline
 %  'TF spline High'           |   High cut-off, as measured with spline
+%  'TF spline R2'             |   R^2; identically 1, because the spline
+%                             |     interpolates the data rather than fitting
+%                             |     it. Not comparable to the other fits.
+%
+%  Log-gaussian fit:
+%  'TF gausslog params'       |   fit parameters, as returned by
+%                             |     vlt.fit.gausslogfit
+%  'TF gausslog Fit'          |   1st row has TF values, 2nd has responses
+%  'TF gausslog R2'           |   R^2 error
+%  'TF gausslog Low'          |   Low cut-off, as measured with gausslog
+%  'TF gausslog Pref'         |   TF Pref, as measured with gausslog
+%  'TF gausslog High'         |   High cut-off, as measured with gausslog
+%
+%  Every R2 above is computed by vis.frequency.rsquared from the model
+%  evaluated at the measured frequencies, so the fits can be compared
+%  against each other directly.
 %
 
 
@@ -72,16 +88,24 @@ tf_props.fitless.high_pass_index = rectify(resp.curve(2,maxFLoc))/rectify(maxVal
 rcurve = resp.curve;
 
 [dog_par,norm_error] = vis.frequency.dog_fit(rcurve(1,:),rcurve(2,:),rcurve(3,:));
+ % Whether the fit succeeded has to be recorded before the leading 0 is
+ % prepended: afterwards dog_par is never empty, so the test below would
+ % always fail and a failed fit would reach vis.frequency.dog with no
+ % parameters at all.
+dog_failed = isempty(dog_par);
 dog_par = [0 dog_par]; % add in the 0 to comply with old dog
 
 tfrange_interp=logspace( log10(min( min(rcurve(1,:)),0.01)),log10(120),100);
-if isempty(dog_par),
+if dog_failed,
 	norm_error = Inf;
-	r2 = -Inf;
+	dog_r2 = NaN;
 	response=NaN*tfrange_interp;
 else,
 	norm_error=vis.frequency.dog_error(dog_par, [rcurve(1,:)],[rcurve(2,:)]);
-	r2 = norm_error - ((rcurve(2,:)-mean(rcurve(2,:)))*(rcurve(2,:)'-mean(rcurve(2,:))));
+	 % R2 is computed from the model evaluated at the measured frequencies,
+	 % not on the interpolated grid, so that it is directly comparable to the
+	 % R2 values reported by the Movshon fits below.
+	dog_r2 = vis.frequency.rsquared(rcurve(2,:),vis.frequency.dog(rcurve(1,:),dog_par(2:end)'));
 	response=vis.frequency.dog(tfrange_interp,dog_par(2:end)');
 end;
 
@@ -94,6 +118,7 @@ fit_dog.fit = vlt.data.colvec(response);
 fit_dog.L50 = lowdog;
 fit_dog.Pref = prefdog;
 fit_dog.H50 = highdog;
+fit_dog.R2 = dog_r2;
 fit_dog.bandwidth = vis.frequency.bandwidth(fit_dog.L50, fit_dog.H50);
 
 tf_props.fit_dog = fit_dog;
@@ -141,6 +166,11 @@ fit_spline.fit = vlt.data.colvec(fity);
 fit_spline.L50 = lowspline;
 fit_spline.Pref = prefspline;
 fit_spline.H50 = highspline;
+ % The spline interpolates the measured responses, so evaluating it at the
+ % measured frequencies returns them exactly and this R2 is identically 1.
+ % It is recorded so that every fit has the same fields; it is not evidence
+ % that the spline describes the data better than the fitted models.
+fit_spline.R2 = vis.frequency.rsquared(rcurve(2,:),interp1(rcurve(1,:),rcurve(2,:),rcurve(1,:),'spline'));
 fit_spline.bandwidth = vis.frequency.bandwidth(fit_spline.L50, fit_spline.H50);
 
 tf_props.fit_spline = fit_spline;
@@ -152,7 +182,15 @@ a_range = [0 0];
 b = mf;
 b_range = [0 2*max(mf,0)];
 c = maxv;
-d = rand*(highv - lowv);
+ % A deterministic hint -- the expected value of the rand*(highv-lowv) that
+ % was used here before -- so that repeated runs return identical fits. The
+ % isnan/isinf guard matches vis.frequency.spatial_frequency_analysis, which
+ % has always had it; without it a non-finite hint reaches vlt.fit.gausslogfit
+ % and is silently replaced by a random start point.
+d = 0.5*(highv - lowv);
+if isnan(d) | isinf(d)
+    d = 1;
+end
 e = 0;
 e_range = [ 0 0 ];
 
@@ -167,6 +205,11 @@ fit_gausslog.fit = vlt.data.colvec(vlt.math.gausslog(fit_gausslog.values,fit_gau
 fit_gausslog.L50 = low_gausslog;
 fit_gausslog.Pref = pref_gausslog;
 fit_gausslog.H50 = high_gausslog;
+if isempty(gausslog_par),
+	fit_gausslog.R2 = NaN;
+else,
+	fit_gausslog.R2 = vis.frequency.rsquared(rcurve(2,:),vlt.math.gausslog(rcurve(1,:),vlt.data.colvec(gausslog_par)));
+end;
 fit_gausslog.bandwidth = vis.frequency.bandwidth(fit_gausslog.L50,fit_gausslog.H50);
 
 tf_props.fit_gausslog = fit_gausslog;

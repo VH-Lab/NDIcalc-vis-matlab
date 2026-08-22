@@ -10,7 +10,9 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # Pinned rather than ubuntu-latest so that the operating system reported in
+    # the paper's Code Accessibility statement stays true as ubuntu-latest moves.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -62,8 +64,10 @@ jobs:
             addpath(genpath('MATLAB-AddOns'));
             addpath(genpath(pwd));
 
-            % Create symlink so NDI-matlab's find_calc_directories() discovers
-            % this package as a sibling directory named NDIcalc-vis-matlab
+            % NDI-matlab's find_calc_directories() looks beside NDI-matlab for
+            % folders named NDIcalc*-matlab; the CI checkout is not one, so
+            % link it. See ndi.fun.checkCalcDirectory for the diagnostic the
+            % self-tests raise when this step is missing.
             ndiParent = fileparts(fileparts(fileparts(ndi.toolboxdir)));
             linkPath = fullfile(ndiParent, 'NDIcalc-vis-matlab');
             if ~isfolder(linkPath)

@@ -185,6 +185,11 @@
     "toleranceAmount": 0
   },
   {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.fit_dog.R2",
+    "toleranceAmount": 0.2
+  },
+  {
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.fit_dog.bandwidth",
     "toleranceAmount": 0
@@ -295,6 +300,11 @@
     "toleranceAmount": 0
   },
   {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.fit_spline.R2",
+    "toleranceAmount": 0.2
+  },
+  {
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.fit_spline.bandwidth",
     "toleranceAmount": 0
@@ -328,6 +338,11 @@
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.fit_gausslog.H50",
     "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.fit_gausslog.R2",
+    "toleranceAmount": 0.2
   },
   {
     "comparisonMethod": "none",
@@ -393,6 +408,11 @@
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.abs.fit_dog.H50",
     "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.abs.fit_dog.R2",
+    "toleranceAmount": 0.2
   },
   {
     "comparisonMethod": "none",
@@ -505,6 +525,11 @@
     "toleranceAmount": 0
   },
   {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.abs.fit_spline.R2",
+    "toleranceAmount": 0.2
+  },
+  {
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.abs.fit_spline.bandwidth",
     "toleranceAmount": 0
@@ -538,6 +563,11 @@
     "comparisonMethod": "none",
     "name": "temporal_frequency_tuning.abs.fit_gausslog.H50",
     "toleranceAmount": 0
+  },
+  {
+    "comparisonMethod": "abs difference",
+    "name": "temporal_frequency_tuning.abs.fit_gausslog.R2",
+    "toleranceAmount": 0.2
   },
   {
     "comparisonMethod": "none",
