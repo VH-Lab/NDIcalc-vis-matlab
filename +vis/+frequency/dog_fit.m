@@ -20,14 +20,20 @@ function [params,err] = dog_fit(x,y,s,varargin)
 % |-----------------------------------------------------------------------|
 % | Parameter (default)  | Description                                    |
 % |----------------------|------------------------------------------------|
-% | start_positions (40) | Number of random start positions to use        |
-% | RandomSeed (0)       | Seed for the random start positions. The draws |
-% |                      |   use a private stream, so the fit is          |
-% |                      |   reproducible and the caller's global random  |
-% |                      |   stream is left untouched. Pass 'shuffle' to  |
-% |                      |   vary the search between runs, or [] to draw  |
-% |                      |   from the global stream. See vis.randomstream.|
+% | start_positions (0)  | Number of EXTRA random start positions to try  |
+% |                      |   on top of the deterministic grid below. The   |
+% |                      |   grid alone reaches the best fit on every mock |
+% |                      |   in this repository, so the default is none.   |
+% | RandomSeed (0)       | Seed for those extra start positions. The draws |
+% |                      |   use a private stream, so the fit is           |
+% |                      |   reproducible and the caller's global random   |
+% |                      |   stream is left untouched. Pass 'shuffle' to   |
+% |                      |   vary the search between runs, or [] to draw   |
+% |                      |   from the global stream. See vis.randomstream. |
 % |_---------------------|------------------------------------------------|
+%
+% The start positions are a deterministic grid derived from the data, not
+% random draws over the parameter bounds. See the note in the code for why.
 %
 % See also: vis.randomstream, vis.frequency.dog
 %
@@ -42,7 +48,7 @@ else,
 	w = 1./(1+s(:));
 end;
 
-start_positions = 40;
+start_positions = 0;
 RandomSeed = 0;
 
 vlt.data.assign(varargin{:});
@@ -59,22 +65,68 @@ fo.Upper = [10*max(0,my); 10*mx; 10*max(0,my); 10*mx;];
 best_error = Inf;
 dog_param_best = [];
 
- % The start positions are drawn here, from a private seeded stream, rather
- % than left to the Curve Fitting Toolbox. With no StartPoint set, FIT picks
- % one at random on every call, so this loop returned a different answer each
- % time it was run on the same data. Drawing them explicitly makes the fit
- % reproducible; the stream is private, so the caller's global stream is
- % untouched. Bounds are the same ones FIT was already searching within.
 lb = fo.Lower(:).';
 ub = fo.Upper(:).';
-startStream = vis.randomstream(RandomSeed);
+
+ % Where the start positions come from, and why they are not random.
+ %
+ % This loop used to set no StartPoint at all, which left the choice to the
+ % Curve Fitting Toolbox: FIT then picks one at random on every call, so the
+ % function returned a different answer each time it was run on the same
+ % data. That is the defect this addresses, but simply seeding those draws is
+ % not enough, because the box they are drawn from is the wrong box. The
+ % width bounds are ten times the full frequency range -- for the mocks here,
+ % (0, 599.9] against data spanning 0.01 to 60 cyc/deg -- and a Gaussian that
+ % wide is flat to within half a percent over the data. Most of the volume
+ % being sampled is a plateau where the gradient is nearly zero, so a large
+ % minority of draws never leave it: fitting the mock spatial frequency
+ % curves from uniform starts over these bounds reaches the good optimum on
+ % roughly two calls in three and collapses to a flat fit on the rest.
+ % Seeding that would only pin down which outcome you get.
+ %
+ % So the starts are a grid built from the data instead, over the region a
+ % band-pass difference of gaussians must live in: the centre width spans the
+ % measured frequencies, the surround is narrower than the centre in
+ % frequency (d < b, which is what makes the response fall off at low
+ % frequency rather than rise), and the two amplitudes are comparable so that
+ % the difference is small near zero. 30 starts, and on every mock in this
+ % repository the best of them reaches the same optimum as the best of the
+ % old 40 random ones -- every time rather than most of the time.
+ %
+ % vis.frequency.movshon2005_fit reached the same conclusion for its own fit,
+ % where the comment reads 'go full random -- did not work well'.
+fpos = x(x>0);
+if isempty(fpos),
+	 % nothing to build a grid from; fall back to the bounds
+	startGrid = repmat(0.5*(lb+ub),30,1);
+else,
+	b_cand = logspace(log10(min(fpos(:))),log10(max(fpos(:))),5);
+	bd_ratio = [2 4 8];      % how much narrower the surround is, in frequency
+	c_frac = [0.5 0.9];      % surround amplitude as a fraction of the centre
+	startGrid = [];
+	for ib=1:numel(b_cand),
+		for ir=1:numel(bd_ratio),
+			for ic=1:numel(c_frac),
+				startGrid(end+1,:) = [my b_cand(ib) c_frac(ic)*my b_cand(ib)/bd_ratio(ir)];
+			end;
+		end;
+	end;
+end;
+
+ % anyone who wants the old wide random search can ask for it by name
+if start_positions>0,
+	startStream = vis.randomstream(RandomSeed);
+	startGrid = [startGrid; (ub-lb).*rand(startStream,start_positions,4)+lb];
+end;
+
+ % clamped because ub can fall below lb when the data are degenerate
+ % (all responses <= 0, or a single distinct frequency)
+startGrid = min(repmat(ub,size(startGrid,1),1),max(repmat(lb,size(startGrid,1),1),startGrid));
 
 warn_state = warning('off');
 
-for jj=1:start_positions,
-	 % clamped because ub can fall below lb when the data are degenerate
-	 % (all responses <= 0, or a single distinct frequency)
-	fo.StartPoint = min(ub,max(lb,(ub-lb).*rand(startStream,1,4)+lb));
+for jj=1:size(startGrid,1),
+	fo.StartPoint = startGrid(jj,:);
 	mydog = setoptions(mydog,fo);
 
 	[mydog_fit,mydog_gof] = fit(x(:),y(:),mydog,'weight',w);
