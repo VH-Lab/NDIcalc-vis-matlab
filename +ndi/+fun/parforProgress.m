@@ -1,19 +1,29 @@
-function tick = parforProgress(total, progressFcn, numberOfWorkers, options)
+function [tick, everyN] = parforProgress(total, progressFcn, numberOfWorkers, options)
 % PARFORPROGRESS - report how much of a parfor loop has finished
 %
-%  TICK = ndi.fun.parforProgress(TOTAL, PROGRESSFCN, NUMBEROFWORKERS, ...)
+%  [TICK, EVERYN] = ndi.fun.parforProgress(TOTAL, PROGRESSFCN, NUMBEROFWORKERS, ...)
 %
-%  Returns a handle TICK(I) to be called once per iteration, at the end of a
-%  parfor body running TOTAL iterations, with I the loop index. PROGRESSFCN is
-%  then called in the client as PROGRESSFCN(FRACTION), with FRACTION the
-%  proportion of iterations that have completed.
+%  Returns a handle TICK, and the interval EVERYN at which the caller should
+%  call it. Each call reports one step of progress; PROGRESSFCN is called in
+%  the client as PROGRESSFCN(FRACTION), with FRACTION the proportion of the
+%  loop finished. Call it from the end of a parfor body like this:
 %
-%  TICK does nothing on most iterations. It acts only on every (TOTAL /
-%  UpdateSteps)th index and on the last, so the work it costs the loop is
-%  bounded by UpdateSteps however many iterations there are. This matters most
-%  when the loop has workers: there TICK sends a message from the worker to the
-%  client, which is far more expensive than a counter increment and would
-%  otherwise happen on every one of what may be tens of thousands of iterations.
+%     if mod(i,everyN)==0 || i==total
+%        tick();
+%     end
+%
+%  The interval is the point. Reporting on every iteration is wasteful, and
+%  when the loop has workers it is expensive: TICK then sends a message from
+%  the worker to the client, far dearer than a counter increment, and there may
+%  be tens of thousands of iterations. Gating in the loop body means most
+%  iterations cost one mod and no call at all.
+%
+%  The gate belongs at the call site rather than inside TICK because parfor
+%  cannot tell a function handle called with the loop variable from an array
+%  sliced by it: TICK(I) inside a parfor raises
+%  MATLAB:parfor:sliced_function_handle. Calling TICK with no arguments is
+%  unambiguous. (MATLAB suggests feval(tick,i) instead, which also works, but
+%  still pays a call on every iteration.)
 %
 %  A parfor hands its iterations out in an arbitrary order, so the loop index
 %  says nothing about how much of the work is done: index 9000 of 10000 may be
@@ -43,10 +53,11 @@ function tick = parforProgress(total, progressFcn, numberOfWorkers, options)
 %
 %  Example:
 %     n = ndi.fun.parallelWorkers();
-%     tick = ndi.fun.parforProgress(N, @(f) disp([num2str(round(100*f)) '%']), n);
+%     [tick,everyN] = ndi.fun.parforProgress(N, ...
+%        @(f) disp([num2str(round(100*f)) '%']), n);
 %     parfor (i=1:N, n)
 %        % ... work ...
-%        tick(i);
+%        if mod(i,everyN)==0 || i==N, tick(); end;
 %     end
 %
 %  See also: ndi.fun.parallelWorkers, ndi.fun.progressReporter
@@ -60,7 +71,11 @@ arguments
 end
 
 if isempty(progressFcn) || total==0,
-	tick = @(i) [];
+	 % Nothing to report. everyN is still returned so the caller's gate is
+	 % valid; at this value it lets through only the last iteration, which
+	 % then calls a handle that does nothing.
+	tick = @() [];
+	everyN = max(1,total);
 	return;
 end;
 
@@ -74,7 +89,7 @@ if numberOfWorkers>0,
 	try
 		queue = parallel.pool.DataQueue;
 		afterEach(queue,@(~) ndi_fun_parforProgress_count(counter,total,everyN,progressFcn));
-		tick = @(i) ndi_fun_parforProgress_send(queue,i,everyN,total);
+		tick = @() send(queue,1);
 		return;
 	catch ME
 		 % No Parallel Computing Toolbox, or no pool to attach to. The loop
@@ -82,38 +97,15 @@ if numberOfWorkers>0,
 		 % what this function exists to prevent.
 		warning('NDIcalc:parforProgress:unavailable',...
 			'Could not open a progress queue (%s). Continuing without progress reports.',ME.message);
-		tick = @(i) [];
+		tick = @() [];
+		everyN = max(1,total);
 		return;
 	end;
 end;
 
-tick = @(i) ndi_fun_parforProgress_serial(counter,i,everyN,total,progressFcn);
+tick = @() ndi_fun_parforProgress_count(counter,total,everyN,progressFcn);
 
 end % parforProgress()
-
-function ndi_fun_parforProgress_send(queue,i,everyN,total)
- % Runs on the worker, so it must be as close to free as possible on the
- % iterations that do not report: one mod, then return.
-
-if mod(i,everyN)~=0 && i~=total,
-	return;
-end;
-
-send(queue,1);
-
-end % ndi_fun_parforProgress_send()
-
-function ndi_fun_parforProgress_serial(counter,i,everyN,total,progressFcn)
- % The no-worker path. Same gate, then report directly rather than through a
- % queue, since there is no worker to send from.
-
-if mod(i,everyN)~=0 && i~=total,
-	return;
-end;
-
-ndi_fun_parforProgress_count(counter,total,everyN,progressFcn);
-
-end % ndi_fun_parforProgress_serial()
 
 function ndi_fun_parforProgress_count(counter,total,everyN,progressFcn)
  % Runs in the client, once per reporting iteration. Each call stands for

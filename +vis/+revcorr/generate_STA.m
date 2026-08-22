@@ -70,7 +70,7 @@ numberOfSpikes = size(t_start, 1);
 
  % Count completed iterations rather than reading the loop index: parfor takes
  % the range in an arbitrary order. See ndi.fun.parforProgress.
-tick = ndi.fun.parforProgress(numberOfSpikes, progressFcn, numberOfWorkers);
+[tick, tickEvery] = ndi.fun.parforProgress(numberOfSpikes, progressFcn, numberOfWorkers);
 
 parfor (i = 1:numberOfSpikes, numberOfWorkers)
     t_s = t_start(i);
@@ -78,7 +78,11 @@ parfor (i = 1:numberOfSpikes, numberOfWorkers)
     [hartley_stimulus_parameters, hartley_stimulus_times] = vis.revcorr.get_frames(s,kx_v, ky_v, frameTimes, t_s, t_e);
     [b,~] = vis.revcorr.hartley_stimulus_resampled_time(M, hartley_stimulus_parameters, hartley_stimulus_times, t_s, t_e, tmax);
     reconstruction_block = reconstruction_block + b;
-    tick(i);
+     % Gated here, not inside tick: parfor rejects tick(i) as a sliced function
+     % handle. See ndi.fun.parforProgress.
+    if mod(i,tickEvery)==0 || i==numberOfSpikes
+        tick();
+    end
 end
 sta = reconstruction_block / size(spiketimes, 1);
 end

@@ -84,7 +84,7 @@ numberOfWorkers = ndi.fun.parallelWorkers();
  % Progress is counted in completed iterations rather than read off the loop
  % index: parfor works through the range in an arbitrary order, so i tells us
  % nothing about how much is left. See ndi.fun.parforProgress.
-tick = ndi.fun.parforProgress(numTimeSteps,...
+[tick, tickEvery] = ndi.fun.parforProgress(numTimeSteps,...
 	@(fraction) calculateHartleyResponseProgress(fraction,Verbose,kwargs.progressFcn),...
 	numberOfWorkers);
 
@@ -106,7 +106,13 @@ parfor (i = 1:numTimeSteps, numberOfWorkers)
         error('Error. \n NaN at idx %d.', i)
     end
 
-    tick(i);
+     % Gate here rather than inside tick: parfor cannot tell a function handle
+     % called with the loop variable from an array sliced by it, and rejects
+     % tick(i) as MATLAB:parfor:sliced_function_handle. This also costs nothing
+     % but a mod on the iterations that do not report.
+    if mod(i,tickEvery)==0 || i==numTimeSteps
+        tick();
+    end
 end
 
 % Find spikes
