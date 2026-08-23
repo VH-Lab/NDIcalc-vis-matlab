@@ -10,7 +10,12 @@ function sta = generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_co
 %  FRAMETIMES - the time points of the Hartley stimulus
 %  SPIKETIMES - the times of the spikes to trigger on
 %  RF_RANGE - (Unused in current implementation logic but kept for signature)
-%  T_COORDS - vector of time coordinates relative to spike time for the STA (e.g. [-0.5 ... 0.5])
+%  T_COORDS - vector of lags, measured backwards from each event: a lag of
+%   +0.100 means the stimulus 0.100 s before the event, -0.100 the stimulus
+%   0.100 s after it. The reconstruction is returned in reverse-lag order,
+%   so plane s holds the stimulus at event-T_COORDS(TMAX+1-s); callers such
+%   as ndi.calc.vis.hartley reverse the third dimension so that plane k
+%   corresponds to T_COORDS(k).
 %  TMAX - number of time bins for the reconstruction
 %  M - spatial dimension of the stimulus (MxM)
 %  PROGRESSFCN - an optional handle called as PROGRESSFCN(FRACTION), with
@@ -22,38 +27,23 @@ function sta = generate_STA(s,kx_v, ky_v, frameTimes, spiketimes, rf_range, T_co
 %  STA - the calculated Spike-Triggered Average (MxMxTMAX)
 
 %% read data
-% Calculate start and end times for each spike based on the provided time coordinates.
-% Note: The logic assumes T_coords defines the window around the spike.
-% If T_coords = [-0.1, 0, 0.1], then:
-% t_start = spike - 0.1
-% t_end = spike - (-0.1) = spike + 0.1
-% This assumes symmetric or specific ordering.
-% Let's stick to the user provided logic:
-t_start = spiketimes + T_coords(1);
-t_end = spiketimes + T_coords(end);
-
-% The previous code in file was:
-% t_start = spiketimes - T_coords(end);
-% t_end = spiketimes - T_coords(1);
-% This implies T_coords might be "lags" (positive means past?).
-% If T_coords is [-0.1 ... 0.1]
-% t_start = spike - 0.1
-% t_end = spike - (-0.1) = spike + 0.1
-% This matches "time around spike".
-
-% However, looking at test.m:
-% t_s = t_values(i) + reconstructionT0;
-% t_e = t_values(i) + reconstructionT1;
-% reconstructionTimeBase = linspace(reconstructionT0, reconstructionT1, ...)
-% So passing reconstructionTimeBase as T_coords means T_coords(1) is T0, T_coords(end) is T1.
-% So t_s = spike + T0 = spike + T_coords(1).
-% t_e = spike + T1 = spike + T_coords(end).
-
-% The original code in generate_STA was:
-% t_start = spiketimes - T_coords(end);
-% t_end = spiketimes - T_coords(1);
-% This is INCONSISTENT with test.m logic if T_coords is the time base.
-% I will update generate_STA to match the logic in test.m which is straightforward addition of the window.
+ % T_coords holds lags measured backwards from each event: a lag of +0.100 s
+ % means the stimulus that was on the screen 0.100 s BEFORE the event, and a
+ % lag of -0.100 s the stimulus 0.100 s after it. The window is therefore
+ % taken backwards, from event-T_coords(end) to event-T_coords(1), which
+ % fills the reconstruction in reverse-lag order: plane s holds the stimulus
+ % at event-T_coords(TMAX+1-s). ndi.calc.vis.hartley reverses the third
+ % dimension of the result, after which plane k matches T_coords(k) element
+ % for element.
+ %
+ % Do not "simplify" this to event+T_coords(1) .. event+T_coords(end). That
+ % form agrees with this one only when T_coords is symmetric about zero, and
+ % neither of the calculator's defaults is; it was in place between c47d6ca
+ % and this commit, and it offset the stored time axis by T_coords(1)+
+ % T_coords(end). See tests/+vis/+revcorr/test_generate_STA.m, which pins
+ % the convention.
+t_start = spiketimes - T_coords(end);
+t_end = spiketimes - T_coords(1);
 
 if nargin<10,
     progressFcn = [];
