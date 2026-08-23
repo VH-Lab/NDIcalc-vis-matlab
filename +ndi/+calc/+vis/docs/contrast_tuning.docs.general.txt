@@ -1,9 +1,31 @@
 This calculator object computes three fits of contrast tuning given a set of stimulus responses at a range of contrast values as described in Naka and Rushton 1966, Albrecht and Hamilton 1982, and Peirce 2007. 
 
-The three fit functions are modified Naka-Rushtan functions of the form 
+The three fit functions are modified Naka-Rushton functions of the form 
 
 R(c) = Rm*c/(C50+c)
 R(c) = Rm*c^n/(C50^n+c^n)
 R(c) = Rm*c^n/(C50^(s*n)+c^(s*n))
+
+where 
+         c         - the stimulus contrast, expressed as a fraction from 0 to 1
+         R(c)      - the response at contrast c, in the units of the response measure
+         Rm        - the maximum response of the fit
+         C50       - the semisaturation contrast, at which the fit reaches half of Rm
+         n         - an exponent (a Hill coefficient) that sets the steepness of the
+                     rising portion of the curve
+         s         - a saturation factor, which allows the fitted response to fall at
+                     high contrast when s > 1
+
+The three forms are nested: setting s=1 recovers the second form, and additionally setting n=1 recovers the first. All three are fit by least squares, and their measures are distinguished in the output document by the prefixes naka_rushton_RB_, naka_rushton_RBN_, and naka_rushton_RBNS_, for the two-, three-, and four-parameter forms respectively.
+
+All three are computed because they come from different eras of the contrast literature and are not equally useful for every purpose:
+
+  - The two-parameter form is the hyperbolic ratio of Naka and Rushton (1966), described for S-potentials in the fish retina and in general use for contrast response functions from the 1970s onward. It is the plainest form and the one that most of the older literature reports.
+
+  - The three-parameter form adds the exponent n (Albrecht and Hamilton 1982), because contrast response functions in visual cortex commonly rise more steeply than a hyperbolic ratio allows.
+
+  - The four-parameter form adds the saturation factor s (Peirce 2007), which lets the fitted response fall at high contrast, so that neurons whose responses supersaturate are not forced onto a monotonically rising curve.
+
+An investigator comparing new measurements against a body of earlier work will usually want the form that work used, while an investigator describing a new population is usually better served by the most flexible form. Because all three fits are computed and stored, that choice can be made when the measures are read rather than when they are computed.
 
 This calculator also returns an estimate of the C50 point by linear interpolation. 
