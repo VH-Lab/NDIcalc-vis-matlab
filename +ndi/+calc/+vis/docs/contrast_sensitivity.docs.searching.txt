@@ -1,0 +1,19 @@
+This ndi.calc.vis.contrast_sensitivity object has no input parameters, and its default search is deliberately unrestricted: every document in the session is offered as a candidate element_id. Candidates that are not elements, or whose stimulus presentations do not vary in both contrast and spatial frequency with more than two values of each, produce no output document.
+
+For each candidate element, the calculator finds the stimulus_response_scalar documents that depend on it, groups them by stimulus presentation, and then looks for the stimulus_tuningcurve documents whose independent_variable_label contains 'Contrast' and the contrast_tuning documents that depend on them. Those contrast tuning documents are the actual input, so ndi.calc.vis.contrast_tuning must have been run first.
+
+Because the default search examines every document, it is usually worth restricting it.
+
+Example:
+% Only perform the operation on the element called myelement
+
+DQ = c.default_search_for_input_parameters();
+DQ.query = DQ.query & ndi.query('base.id','exact_string',myelement.id(),'');
+c.run('Replace',DQ);
+
+Example:
+% Only perform the operation on elements of type 'spikes'
+
+DQ = c.default_search_for_input_parameters();
+DQ.query = DQ.query & ndi.query('element.type','exact_string','spikes','');
+c.run('Replace',DQ);

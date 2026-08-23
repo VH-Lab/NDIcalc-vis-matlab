@@ -1,0 +1,31 @@
+The contrast sensitivity document has the following fields. In the matrix fields below, each column corresponds to one entry of spatial_frequencies.
+
+contrastsensitivity_calc:
+         	input_parameters:              	The parameters the calculator was run with; empty for this calculator, which takes none.
+         	spatial_frequencies:              	The spatial frequencies of the contributing contrast tuning curves, in cycles per degree, sorted in ascending order (1xN vector).
+         	response_type:              	The response measure used, 'mean' or 'F1'.
+         	is_modulated_response:              	1 if the modulated (F1) response was used, 0 if the mean response was used.
+         	sensitivity_RB:              	Contrast sensitivity of the 2-parameter Naka-Rushton fit, 1/Cthreshold (10xN matrix). Each row is a threshold of 1..10 standard deviations of the control response. If the standard deviation of the control response is 0, it is recalculated assuming the response is 1 unit per trial.
+         	sensitivity_RBN:              	The same for the 3-parameter fit (10xN matrix).
+         	sensitivity_RBNS:              	The same for the 4-parameter fit with saturation (10xN matrix).
+         	relative_max_gain_RB:              	The relative maximum gain of the 2-parameter fit, the maximum slope of the fit when its maximum response is normalized to 1 (1xN vector).
+         	relative_max_gain_RBN:              	The same for the 3-parameter fit (1xN vector).
+         	relative_max_gain_RBNS:              	The same for the 4-parameter fit (1xN vector).
+         	empirical_c50_RB:              	The contrast at which the 2-parameter fit reaches 50% of its response to 100% contrast (1xN vector). This differs from the C50 parameter of the fit because the maximum response does not usually occur at 100% contrast.
+         	empirical_c50_RBN:              	The same for the 3-parameter fit (1xN vector).
+         	empirical_c50_RBNS:              	The same for the 4-parameter fit (1xN vector).
+         	saturation_index_RB:              	The saturation index (R(Cmax)-R(1))/(R(Cmax)-R(0)) of the 2-parameter fit (1xN vector). Always 0 for this form, which cannot saturate.
+         	saturation_index_RBN:              	The same for the 3-parameter fit (1xN vector). Always 0 for this form.
+         	saturation_index_RBNS:              	The same for the 4-parameter fit (1xN vector); this is the form for which the index is informative.
+         	parameters_RB:              	The fit parameters [Rm C50] of the 2-parameter Naka-Rushton fit (2xN matrix).
+         	parameters_RBN:              	The fit parameters [Rm C50 N] of the 3-parameter fit (3xN matrix).
+         	parameters_RBNS:              	The fit parameters [Rm C50 N S] of the 4-parameter fit with saturation (4xN matrix).
+         	fitless_interpolated_c50:              	The contrast at which the interpolated empirical responses, without any fit, reach half of their maximum (1xN vector).
+         	visual_response_p_bonferroni:              	The smallest p-value, across the contributing contrast tuning curves, of the ANOVA comparing the stimulus responses with the control responses, multiplied by the number of contributing curves.
+         	response_varies_p_bonferroni:              	The smallest p-value, across the contributing contrast tuning curves, of the ANOVA comparing the responses to the different stimuli, multiplied by the number of contributing curves.
+
+depends_on:
+         	element_id:              	The element whose responses were analyzed.
+         	stimulus_presentation_id:              	The stimulus presentation whose stimuli varied in contrast and spatial frequency.
+         	stimulus_response_scalar_id:              	The scalar response document, of the response type named in response_type, from which the tuning curves were derived.
+         	contrasttuning_id_1 ...:              	One dependency for each contributing contrast_tuning document, in the order in which the tuning curves were found rather than in ascending spatial frequency.

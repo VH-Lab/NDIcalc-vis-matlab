@@ -1,0 +1,20 @@
+This calculator object computes the spike-triggered average (STA) of the responses of a neural element to a Hartley subspace stimulus, following the reverse correlation method of Ringach et al. (1997), and returns an estimate of the element's spatiotemporal receptive field together with a per-pixel measure of its significance.
+
+The calculator searches the session for stimulus_presentation documents that contain Hartley stimuli, and for each one that overlaps in time with the element it is run on, it:
+
+1) reads the stimulus parameters of the Hartley stimulus (M, L_absmax, K_absmax, sfmax, fps, chromhigh, chromlow, rect) and the Hartley numbers (S, KXV, KYV, ORDER) that describe which basis function was shown on each frame;
+
+2) reads the times of the stimulus frames and the times of the events (typically spikes) of the element over the interval of the presentation, converting between the stimulus clock and the element clock with the session's syncgraph;
+
+3) accumulates, for each event, the Hartley basis functions shown in the window [t + T_coords(1), t + T_coords(end)] resampled onto the requested reconstruction times, and divides by the number of events. The result is the spike-triggered average: an X by X by TMAX array, where X is the number of X_coords requested and TMAX = round((T_coords(end)-T_coords(1))/mean(diff(T_coords))) + 1. The time axis is returned so that plane k corresponds to T_coords(k);
+
+4) evaluates the significance of each pixel of the average. Under the null hypothesis that the element's events are unrelated to the stimulus, each pixel of the average is normally distributed with mean 0 and standard deviation sqrt(0.5)/sqrt(N), where N is the number of events. The calculator stores the cumulative distribution function of each pixel under that null. Values near 1 indicate unusually bright pixels and values near 0 unusually dark ones; a two-tailed p-value is 2*min(cdf, 1-cdf).
+
+The average and the significance array are written to a binary ngrid file attached to the document rather than into the document fields, because they are large. Use the read_sta method to read them back:
+
+    h = ndi.calc.vis.hartley(S);
+    [sta,cdf] = h.read_sta(mydoc);
+
+Note that this calculator is far more expensive than the others in this package, taking minutes where the tuning-curve calculators take seconds, because the reconstruction visits every event. It reports its progress as it runs. The reconstruction loop is run with the number of workers given by the user's NDI parallel preferences; see ndi.fun.parallelWorkers.
+
+Two properties of the reconstruction are worth knowing before choosing input parameters. First, the spatial size of the reconstruction is set by the number of X_coords alone: the average is numel(X_coords) by numel(X_coords). Y_sample changes the Y_coords that are recorded in the document but does not change the size of the reconstruction, so X_sample and Y_sample should ordinarily be given the same value. Second, T_coords may include times before and after the event; the default range runs from -0.100 s to 0.250 s in 10 ms steps.
