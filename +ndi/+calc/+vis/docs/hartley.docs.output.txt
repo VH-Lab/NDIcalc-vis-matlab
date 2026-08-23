@@ -1,0 +1,44 @@
+The hartley_calc document has the following fields:
+
+hartley_calc:
+         	input_parameters:              	The parameters the calculator was run with (T, X_sample, Y_sample); see the searching documentation.
+         	depends_on:              	The documents this calculation depended upon.
+
+hartley_reverse_correlation:
+         	spiketimes:              	The times of the events of the element that were used, in the element's clock, in seconds.
+         	frameTimes:              	The onset time of each stimulus frame, in the same clock as spiketimes, in seconds.
+ stimulus_properties:
+         	M:              	The size of the Hartley stimulus grid, in stimulus pixels (the stimulus is M by M).
+         	L_max:              	The maximum absolute value of L in the Hartley basis set (the stimulus parameter L_absmax).
+         	K_max:              	The maximum absolute value of K in the Hartley basis set (the stimulus parameter K_absmax).
+         	sf_max:              	The maximum spatial frequency of the basis set, in cycles per degree (the stimulus parameter sfmax).
+         	fps:              	The number of stimulus frames shown per second.
+         	color_high:              	The RGB triplet used for the high value of the stimulus (the stimulus parameter chromhigh).
+         	color_low:              	The RGB triplet used for the low value of the stimulus (the stimulus parameter chromlow).
+         	rect:              	The rectangle of the display that the stimulus occupied, [top left bottom right] in display coordinates.
+ reconstruction_properties:
+         	T_coords:              	The reconstruction times relative to each event, in seconds, as requested in the input parameter T.
+         	X_coords:              	The stimulus grid columns that were reconstructed, 1:X_sample:M.
+         	Y_coords:              	The stimulus grid rows that were reconstructed, 1:Y_sample:M. Recorded for reference; the size of the reconstruction is set by X_coords (see the general documentation).
+ hartley_numbers:
+         	S:              	The value of S for each stimulus in the Hartley set.
+         	KXV:              	The value of kx for each stimulus in the Hartley set.
+         	KYV:              	The value of ky for each stimulus in the Hartley set.
+         	ORDER:              	The order in which the Hartley basis functions were presented.
+
+reverse_correlation:
+         	method:              	The reverse correlation method used; 'Hartley' for this calculator.
+         	dimension_labels:              	The labels of the dimensions of the reconstruction; presently empty.
+
+ngrid:
+         	data_type:              	The type of the binary data in the attached file; 'double'.
+         	data_size:              	The size of each element of the binary data, in bytes; 8.
+         	data_dim:              	The dimensions of the binary data: [numel(X_coords) numel(X_coords) TMAX 2].
+         	coordinates:              	The coordinate values of the grid, the concatenation of T_coords, X_coords, and Y_coords.
+
+files:
+         	hartley_results.ngrid:              	A binary file, little-endian doubles, holding an array of size [numel(X_coords) numel(X_coords) TMAX 2]. The first plane along the fourth dimension is the spike-triggered average. The second is the cumulative distribution function of each pixel of the average under the null hypothesis of no relationship between the events and the stimulus, on [0,1]; a two-tailed p-value is 2*min(cdf, 1-cdf). Note that this array is referred to as p_val in parts of the code, but it holds the cumulative distribution function, which is what the plotting routines expect. Read both with the read_sta method rather than by opening the file directly.
+
+depends_on:
+         	element_id:              	The element (for example, a spike train) whose events were correlated with the stimulus.
+         	stimulus_presentation_id:              	The stimulus presentation document that contained the Hartley stimulus.

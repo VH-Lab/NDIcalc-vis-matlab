@@ -1,0 +1,16 @@
+This calculator object computes the contrast sensitivity of a neural element as a function of spatial frequency.
+
+Unlike the other calculators in this package, its input is the output of another calculator. It does not fit anything itself. It searches for the contrast_tuning documents that describe the same element and the same stimulus presentation, each of which is a contrast tuning curve measured at one spatial frequency, and assembles their measures into curves over spatial frequency, sorted from lowest spatial frequency to highest. A session must therefore have been analyzed with ndi.calc.vis.contrast_tuning before this calculator will produce anything.
+
+An output document is produced for each stimulus presentation in which the stimuli vary in both contrast and spatial frequency, with more than two values of each. If a stimulus presentation has both a mean (F0) and a modulated (F1) response available, the calculator chooses between them with ndi.app.stimulus.tuning_response.modulated_or_mean and records which it used in response_type and is_modulated_response.
+
+The quantities carried over from the contrast tuning curves are those of the three Naka-Rushton fits performed by ndi.calc.vis.contrast_tuning, identified by suffix:
+
+    RB     the 2-parameter form, R(c) = Rm*c/(C50+c), with parameters [Rm C50]
+    RBN    the 3-parameter form, R(c) = Rm*c^N/(C50^N+c^N), with parameters [Rm C50 N]
+    RBNS   the 4-parameter form with saturation, R(c) = Rm*c^N/(C50^(S*N)+c^(S*N)),
+           with parameters [Rm C50 N S]
+
+Contrast sensitivity itself is 1/Cthreshold, where Cthreshold is the first contrast whose fitted response exceeds a threshold; ten thresholds are used, of 1 to 10 standard deviations of the control response, so the sensitivity of each fit at each spatial frequency is a vector of ten values rather than a single number. The default plot draws the fifth of these, that is, a threshold of 5 standard deviations of the control response.
+
+Statistical significance is inherited from the contributing contrast tuning curves rather than recomputed. The smallest p-value across the contributing curves is multiplied by the number of curves, a Bonferroni correction for having examined several spatial frequencies; this is done separately for the test of whether the element responded to the stimuli at all and for the test of whether the responses varied across stimuli.

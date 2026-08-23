@@ -1,0 +1,29 @@
+By default, this ndi.calc.vis.hartley object looks for elements of type 'spikes'. It does not search for the stimulus itself: for each candidate element, the calculator examines every stimulus_presentation document in the session, keeps those that contain Hartley stimuli (that is, those whose stimulus parameters include M, chromhigh, and K_absmax), and computes an output document for each such presentation that overlaps the element in time. One output document is produced per element and overlapping Hartley presentation.
+
+The input parameters are:
+
+    T           The reconstruction times relative to each event, in seconds.
+                Default -0.100:0.010:0.250.
+    X_sample    The stride with which the stimulus grid is sampled in X.
+                Default 1, meaning every column of the M by M grid.
+    Y_sample    The stride with which the stimulus grid is sampled in Y.
+                Default 1. See the general documentation: this value is
+                recorded but does not change the size of the reconstruction.
+
+Because the reconstruction is expensive, it is usually worth restricting the search to the elements one actually wants rather than running it over every spike train in a session.
+
+Example:
+% Only perform the operation on the element called myelement
+
+DQ = c.default_search_for_input_parameters();
+DQ.query = DQ.query & ndi.query('base.id','exact_string',myelement.id(),'');
+c.run('Replace',DQ);
+
+Example:
+% Reconstruct a shorter window at half the spatial resolution
+
+DQ = c.default_search_for_input_parameters();
+DQ.input_parameters.T = 0:0.010:0.150;
+DQ.input_parameters.X_sample = 2;
+DQ.input_parameters.Y_sample = 2;
+c.run('Replace',DQ);

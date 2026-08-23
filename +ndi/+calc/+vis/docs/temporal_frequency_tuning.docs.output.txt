@@ -52,6 +52,25 @@ fit_movshon_c:
          	H50:              		The frequency value greater than the peak where the Movshon fit response dropped below half the maximum, if ever; if no such point occurred, then Inf. 
          	bandwidth:              	The bandwidth between L50 and H50 in octaves ( log2(H50/L50) ). Bandwidth is Inf if either L50 or H50 are +/- Inf.
 
+fit_spline:
+         	values:              		Temporal frequencies that were used to calculate a filled-in fit response curve.
+         	fit:              		Cubic spline interpolation of the measured responses at each point in `values` above. There are no fit parameters, so no `parameters` field is returned.
+         	R2:              		The uncorrected R2 value between the responses and the spline. The spline interpolates the measured responses, so evaluating it at the measured frequencies returns them exactly and this value is identically 1. It is recorded so that every fit returns the same fields; it is not evidence that the spline describes the data better than the fitted models.
+         	L50:              		The frequency value below the peak where the spline response dropped below half the maximum, if ever; if no such point occurred, then -Inf.
+         	Pref:    			The frequency value where the spline peak response occured.
+         	H50:              		The frequency value greater than the peak where the spline response dropped below half the maximum, if ever; if no such point occurred, then Inf.
+         	bandwidth:              	The bandwidth between L50 and H50 in octaves ( log2(H50/L50) ). Bandwidth is Inf if either L50 or H50 are +/- Inf.
+
+fit_gausslog:
+         	parameters:              	[a b c d e] log-Gaussian fit parameters (see vlt.math.gausslog). Empty if the fit did not converge, in which case R2 is NaN.
+         	values:              		Temporal frequencies that were used to calculate a filled-in fit response curve.
+         	fit:              		Response of the fit to each point in `values` above. 
+         	R2:              		The uncorrected R2 value between the responses and the fit (sum(1/N (fit(y_i)-(y_i))^2/(mean(y)-(y_i))^2
+         	L50:              		The frequency value below the peak where the log-Gaussian fit response dropped below half the maximum, if ever; if no such point occurred, then -Inf.
+         	Pref:    			The frequency value where the log-Gaussian fit peak response occured.
+         	H50:              		The frequency value greater than the peak where the log-Gaussian fit response dropped below half the maximum, if ever; if no such point occurred, then Inf.
+         	bandwidth:              	The bandwidth between L50 and H50 in octaves ( log2(H50/L50) ). Bandwidth is Inf if either L50 or H50 are +/- Inf.
+
 abs:
         	All fields above are repeated under 'abs', or absolute value, where the absolute value of the responses are examined.
          
