@@ -203,14 +203,26 @@ classdef hartley < ndi.calculator
                     doc_expected_output{i} = doc_output{i};
                     vlt.file.str2text(fullfile(mock_dir, ['mock.' int2str(i) '.json']), jsonencode(doc_expected_output{i}.document_properties));
 
-                    % Also copy the binary results file
-                    % Try to locate it in `obj.session.path/hartley`.
-                    generated_file = fullfile(obj.session.path, 'hartley', [doc_output{i}.id() '.ngrid']);
-                    if isfile(generated_file)
-                        expected_binary_name = ['mock.' int2str(i) '_hartley_results.ngrid'];
-                        expected_binary_path = fullfile(mock_dir, expected_binary_name);
-                        copyfile(generated_file, expected_binary_path);
+                    % Write the binary expectation from the document itself.
+                    % Reading it back through read_sta is what compare_mock_docs
+                    % does, so what is stored here is what will be compared.
+                    %
+                    % This used to copy a staged file from beside the session,
+                    % at session.path/hartley/<doc id>.ngrid, and skip without
+                    % comment when that path did not resolve. The result was a
+                    % regeneration that rewrote mock.<i>.json while leaving the
+                    % .ngrid at its previous contents, reported as success, and
+                    % surfaced only later as a self-test failure. Ask the
+                    % database for the data rather than reconstructing a path.
+                    [sta, pval] = obj.read_sta(doc_output{i});
+                    expected_binary_path = fullfile(mock_dir, ['mock.' int2str(i) '_hartley_results.ngrid']);
+                    fid = fopen(expected_binary_path, 'w', 'ieee-le');
+                    if fid < 0
+                        error('NDICALC:hartley:expectation',...
+                            ['Could not open ' expected_binary_path ' to write the expected output.']);
                     end
+                    fwrite(fid, cat(4, sta, pval), 'double');
+                    fclose(fid);
                 else
                     expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
                     if isfile(expected_file)
