@@ -106,10 +106,9 @@ jobs:
                 system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
             end
 
-            % Initialize NewStim globals needed by hartleystim
-            NewStimGlobals;
-            global pixels_per_cm;
-            pixels_per_cm = 21.0526;
+            % The NewStim globals hartleystim needs are set by testHartley's
+            % own TestClassSetup, so that the test behaves the same here as it
+            % does for someone running it from MATLAB. Nothing needed here.
 
             testsDir = fullfile(pwd, 'tests');
             addpath(testsDir);

@@ -340,7 +340,17 @@ classdef spatial_frequency_tuning < ndi.calc.tuning_fit
                 function_choice_{i} = 'movshon_c';
             end
             P_{11} = [10 10 12 1 -1]; %double the characteristic spatial frequency
-            P_{12} = [5 10 12 1 -1]; %flip the scaling factor and characteristic spatial frequency
+            % Flip the scaling factor and characteristic spatial frequency relative
+            % to P_{3} ([10 5 ...] becomes [5 10 ...]), with both doubled. At the
+            % undoubled [5 10 12 1 -1] this curve peaks at 0.163 spikes/s, which
+            % over a 2 s stimulus is a third of one spike, so every point that
+            % cleared zero recorded the same single spike: the tuning curve came
+            % back as six identical samples with zero variance and 94 zeros. That
+            % is a quantization floor rather than a tuning curve, and no fit can
+            % do anything with it. Doubling both parameters keeps the flip exactly
+            % and puts the peak at 2.54 spikes/s, about five spikes per
+            % presentation, over 4.3 octaves.
+            P_{12} = [10 20 12 1 -1];
             P_{13} = [10 10 18 1 -1]; %increase the corner spatial frequency on the lower frequency side
             P_{14} = [10 10 6 1 -1]; %halve the corner spatial frequency on the lower frequency side
             P_{15} = [10 10 6 2 -1]; %double the slope of the lower frequency side

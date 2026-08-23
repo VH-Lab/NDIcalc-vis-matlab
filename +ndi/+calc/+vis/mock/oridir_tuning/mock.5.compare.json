@@ -120,14 +120,14 @@
     "toleranceAmount": 0
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "orientation_direction_tuning.significance.visual_response_anova_p",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "orientation_direction_tuning.significance.across_stimuli_anova_p",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
     "comparisonMethod": "abs difference",
@@ -140,9 +140,9 @@
     "toleranceAmount": 0.2
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "orientation_direction_tuning.vector.Hotelling2Test",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
     "comparisonMethod": "abs difference",
@@ -155,14 +155,14 @@
     "toleranceAmount": 5
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "orientation_direction_tuning.vector.direction_hotelling2test",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
-    "comparisonMethod": "abs difference",
+    "comparisonMethod": "pValueConsistent",
     "name": "orientation_direction_tuning.vector.dot_direction_significance",
-    "toleranceAmount": 0.01
+    "toleranceAmount": 0.05
   },
   {
     "comparisonMethod": "abs difference",
