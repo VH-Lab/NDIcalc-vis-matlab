@@ -3,7 +3,7 @@ function report = progressReporter(title, label)
 %
 %  REPORT = ndi.fun.progressReporter(TITLE, LABEL)
 %
-%  Returns a function handle REPORT(FRACTION) that advances a bar labelled
+%  Returns a function handle REPORT(FRACTION) that advances a bar labeled
 %  LABEL in an ndi.gui.component.ProgressBarWindow titled TITLE. FRACTION
 %  runs from 0 to 1; REPORT(1) completes the bar, which then closes itself.
 %  The window also estimates the time remaining from the rate of progress.

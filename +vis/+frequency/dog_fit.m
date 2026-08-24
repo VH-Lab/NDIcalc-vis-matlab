@@ -85,8 +85,8 @@ ub = fo.Upper(:).';
  % Seeding that would only pin down which outcome you get.
  %
  % So the starts are a grid built from the data instead, over the region a
- % band-pass difference of gaussians must live in: the centre width spans the
- % measured frequencies, the surround is narrower than the centre in
+ % band-pass difference of gaussians must live in: the center width spans the
+ % measured frequencies, the surround is narrower than the center in
  % frequency (d < b, which is what makes the response fall off at low
  % frequency rather than rise), and the two amplitudes are comparable so that
  % the difference is small near zero. 30 starts, and on every mock in this
@@ -102,7 +102,7 @@ if isempty(fpos),
 else,
 	b_cand = logspace(log10(min(fpos(:))),log10(max(fpos(:))),5);
 	bd_ratio = [2 4 8];      % how much narrower the surround is, in frequency
-	c_frac = [0.5 0.9];      % surround amplitude as a fraction of the centre
+	c_frac = [0.5 0.9];      % surround amplitude as a fraction of the center
 	startGrid = [];
 	for ib=1:numel(b_cand),
 		for ir=1:numel(bd_ratio),
