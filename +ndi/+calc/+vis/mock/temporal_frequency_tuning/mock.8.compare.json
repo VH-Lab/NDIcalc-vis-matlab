@@ -282,7 +282,7 @@
   {
     "comparisonMethod": "abs difference",
     "name": "temporal_frequency_tuning.fit_spline.fit",
-    "toleranceAmount": 1
+    "toleranceAmount": 100
   },
   {
     "comparisonMethod": "none",
@@ -505,9 +505,9 @@
     "toleranceAmount": 1
   },
   {
-    "comparisonMethod": "none",
+    "comparisonMethod": "abs difference",
     "name": "temporal_frequency_tuning.abs.fit_spline.fit",
-    "toleranceAmount": 0
+    "toleranceAmount": 100
   },
   {
     "comparisonMethod": "none",

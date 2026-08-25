@@ -54,6 +54,36 @@ and the nested F test's p-value, compared by the decision it supports rather
 than its digits. Those reproduce fine. The unconstrained `fit` is well specified
 and keeps its tight tolerances -- do not loosen those.
 
+### The spline fits
+
+`spatial_frequency_tuning` and `temporal_frequency_tuning` each report three
+fits, and one of them, `fit_spline`, is not a fit at all: a spline interpolates
+its inputs, so it passes exactly through the data and has no free parameters.
+It therefore cannot be more reproducible than the data are, and with the mock
+inputs drawn fresh on every run its curve moves on every run by construction.
+
+It is also badly conditioned. The knots are 100 points of
+`logspace(-2, log10(60))`, whose narrowest gap is 0.0009 and whose widest is
+5.05 -- a ratio of about 5500 to 1. A cubic spline's second-derivative system
+at that spacing amplifies a small change in the data into a large excursion
+between knots, so the 0.1 percent noise the mocks carry does not stay 0.1
+percent in the interpolant. `spatial_frequency_tuning.m` already says as much,
+in the comment that keeps the spline out of the plot: *the spline fits are
+terrible*.
+
+So `fit_spline.fit` carries a deliberately wide tolerance, 100, against
+response amplitudes of at most 20. It is a presence-and-sanity check, not an
+accuracy check: it still fails on a missing field, an empty one, or an `Inf`,
+and it no longer fails because a different noise draw moved an interpolant.
+
+It is a wide tolerance rather than `none` on purpose. In
+`ndi.database.doctools.docComparison`, `'none'` is the first branch of the
+comparison loop and `continue`s before the value is read, so it skips the
+field-missing check as well -- a field set to `none` is not loosely checked,
+it is invisible. `fit_spline.values`, `L50`, `Pref`, `H50` and `bandwidth` are
+all `none` already, and `R2` is identically 1 for an interpolant, so a wide
+number on `fit` is the only thing keeping that group wired up at all.
+
 ## Related repositories
 
 `VH-Lab/NDI-matlab` holds the framework, including the mock generation these
