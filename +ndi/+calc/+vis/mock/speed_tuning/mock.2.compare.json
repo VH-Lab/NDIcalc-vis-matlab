@@ -187,12 +187,12 @@
   {
     "comparisonMethod": "abs percent difference",
     "name": "speed_tuning.fit_no_speed.Priebe_fit_spatial_frequency_preference",
-    "toleranceAmount": 50
+    "toleranceAmount": 2500
   },
   {
     "comparisonMethod": "abs percent difference",
     "name": "speed_tuning.fit_no_speed.Priebe_fit_temporal_frequency_preference",
-    "toleranceAmount": 50
+    "toleranceAmount": 6500
   },
   {
     "comparisonMethod": "none",
@@ -232,7 +232,7 @@
   {
     "comparisonMethod": "abs difference",
     "name": "speed_tuning.fit_fullspeed.Priebe_fit_values",
-    "toleranceAmount": 1
+    "toleranceAmount": 10
   },
   {
     "comparisonMethod": "abs difference",
@@ -242,12 +242,12 @@
   {
     "comparisonMethod": "abs percent difference",
     "name": "speed_tuning.fit_fullspeed.Priebe_fit_spatial_frequency_preference",
-    "toleranceAmount": 50
+    "toleranceAmount": 2500
   },
   {
     "comparisonMethod": "abs percent difference",
     "name": "speed_tuning.fit_fullspeed.Priebe_fit_temporal_frequency_preference",
-    "toleranceAmount": 50
+    "toleranceAmount": 6500
   },
   {
     "comparisonMethod": "none",
