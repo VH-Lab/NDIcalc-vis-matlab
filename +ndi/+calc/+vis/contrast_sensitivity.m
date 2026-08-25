@@ -32,11 +32,14 @@ classdef contrast_sensitivity < ndi.calculator
             %   KWARGS - keyword arguments:
             %     'generate_expected_docs' (boolean, default false) - if true, save expected output
             %     'specific_test_inds' (vector, default []) - run only specific test indices
-            %     'RandomSeed' (default 1) - seed for the simulated trial-to-trial
-            %        variability of the mock responses. The draws come from a private
-            %        stream, so the same mock documents are built on every run and the
-            %        self-test comparison against the stored expected output is
-            %        deterministic. Pass [] to draw from the global stream instead.
+            %     'RandomSeed' (default 'shuffle') - seed for the simulated
+            %        trial-to-trial variability of the mock responses. The draws come
+            %        from a private stream, so they do not disturb the caller's global
+            %        random numbers, but they are deliberately not pinned: each run
+            %        builds a fresh synthetic dataset, so passing the self-test is
+            %        evidence that the calculator recovers the answer from data it has
+            %        not seen before, rather than from one stored draw. Pass a
+            %        non-negative integer to reproduce a particular run's documents.
             %        See vis.randomstream.
             %
 
@@ -46,11 +49,13 @@ classdef contrast_sensitivity < ndi.calculator
                 number_of_tests
                 kwargs.generate_expected_docs (1,1) logical = false
                 kwargs.specific_test_inds (1,:) double = []
-                kwargs.RandomSeed = 1
+                kwargs.RandomSeed = 'shuffle'
             end
 
-            % Draw the mock trial-to-trial variability from a private, seeded
-            % stream so that repeated self-test runs build identical documents.
+            % Draw the mock trial-to-trial variability from a private stream,
+            % unpinned, so that each run builds a fresh synthetic dataset. The
+            % stream is private only so that generating mocks does not perturb
+            % the caller's own random numbers.
             mockStream = vis.randomstream(kwargs.RandomSeed);
 
             docs = cell(1,number_of_tests);

@@ -19,11 +19,12 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 %     SpecificStartPoint - A 7xN matrix specifying specific starting
 %                          points to include in the search.
 %     RandomSeed         - Seed for the random components of the starting
-%                          points. (Default: 0.) The random draws use a
-%                          private stream, so the fit is reproducible and the
-%                          caller's global random stream is left untouched.
-%                          Pass 'shuffle' to vary the search between runs, or
-%                          [] to draw from the global stream as before.
+%                          points. (Default: 'shuffle', a fresh draw on every
+%                          call.) The draws use a private stream, so they do
+%                          not disturb the caller's global random stream.
+%                          Pass a non-negative integer to pin the search to
+%                          one reproducible set of starts, for instance when
+%                          reproducing a particular run while debugging.
 %                          See vis.randomstream.
 %
 %   Outputs:
@@ -45,7 +46,7 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
         max_xi (1,1) double = 1
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
         options.SpecificStartPoint (7,:) double = []
-        options.RandomSeed = 0
+        options.RandomSeed = 'shuffle'
     end
 
     SF = SF(:); TF = TF(:); R = R(:); % Ensure column vectors
@@ -60,9 +61,12 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 
     StartPoint = zeros(7, options.numberStartPoints);
 
-    % The random components of the start points are drawn from a private,
-    % seeded stream so that the multi-start search returns the same fit every
-    % time it is run on the same data.
+    % The random components of the start points are drawn fresh on every
+    % call, from a private stream that leaves the caller's global stream
+    % undisturbed. They are deliberately not seeded: the search must reach
+    % the same optimum whatever starts it is given, and a run that only
+    % agrees with a stored answer for one pinned set of starts would be
+    % evidence of nothing. Pass RandomSeed to pin them while debugging.
     startStream = vis.randomstream(options.RandomSeed);
 
     for i = 1:options.numberStartPoints
