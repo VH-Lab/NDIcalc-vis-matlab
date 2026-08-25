@@ -8,11 +8,11 @@ function h = labelPlottedLine(h, name)
 %  clicking or hovering over the curve names it.
 %
 %  A plot that draws several fits of the same data over one another is
-%  otherwise unlabelled, and a reader cannot tell which curve came from which
+%  otherwise unlabeled, and a reader cannot tell which curve came from which
 %  fit. Naming the lines lets the figure answer that question itself.
 %
 %  H is returned with only these properties changed. This function never
-%  raises: labelling is a convenience, and a caller drawing into an unusual
+%  raises: labeling is a convenience, and a caller drawing into an unusual
 %  graphics context should not fail because a data tip could not be attached.
 %
 %  Example:
