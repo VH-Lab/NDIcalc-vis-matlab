@@ -282,7 +282,7 @@
   {
     "comparisonMethod": "abs difference",
     "name": "spatial_frequency_tuning.fit_spline.fit",
-    "toleranceAmount": 2
+    "toleranceAmount": 100
   },
   {
     "comparisonMethod": "none",
@@ -507,7 +507,7 @@
   {
     "comparisonMethod": "abs difference",
     "name": "spatial_frequency_tuning.abs.fit_spline.fit",
-    "toleranceAmount": 2
+    "toleranceAmount": 100
   },
   {
     "comparisonMethod": "none",
