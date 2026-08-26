@@ -45,11 +45,13 @@ classdef spatial_frequency_tuning < ndi.calc.tuning_fit
             tuning_response_doc = tuning_response_doc{1};
 
             % Step 2: perform the calculator, which here creates a spatial_frequency_tuning doc
+            app_doc = ndi_calculator_obj.newdocument();
             doc = ndi_calculator_obj.calculate_spatial_frequency_indexes(tuning_response_doc) + ...
-                ndi_calculator_obj.newdocument();
+                app_doc;
 
             if ~isempty(doc)
                 doc = ndi.document(ndi_calculator_obj.doc_document_types{1},'spatial_frequency_tuning_calc',spatial_frequency_tuning_calc) + doc;
+                doc = doc.setproperties('app',app_doc.document_properties.app);
             end
         end % calculate
 
