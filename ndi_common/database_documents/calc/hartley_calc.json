@@ -1,10 +1,10 @@
 {
 	"document_class": {
 		"definition":                       "$NDICALCDOCUMENTPATH\/calc\/hartley_calc.json",
-		"validation":                       "$NDICALCSCHEMAPATH\/calc\/hartley_calc_schema.json",
+		"validation":                       "$NDICALCSCHEMAPATH\/calc\/hartley_calc_v2_schema.json",
 		"class_name":                       "hartley_calc",
 		"property_list_name":                   "hartley_calc", 
-		"class_version":                    1,
+		"class_version":                    2,
 		"superclasses": [
 			{ "definition":                 "$NDIDOCUMENTPATH\/calculator.json" },
 			{ "definition":                 "$NDICALCDOCUMENTPATH\/neuro\/hartley_reverse_correlation.json" }
