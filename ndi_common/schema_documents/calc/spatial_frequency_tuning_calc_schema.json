@@ -1,6 +1,6 @@
 {
 	"classname": "spatial_frequency_tuning_calc",
-	"superclasses":  [ "base", "app", "calculator", "spatial_frequency_tuning"],
+	"superclasses":  [ "base", "spatial_frequency_tuning"],
 	"depends_on": [ ],
 	"file": [ ],
 	"spatial_frequency_tuning_calc": [
