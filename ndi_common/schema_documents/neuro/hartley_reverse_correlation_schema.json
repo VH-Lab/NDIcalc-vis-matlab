@@ -1,6 +1,6 @@
 {
 	"classname": "hartley_reverse_correlation",
-	"superclasses":  [ "base", "reverse_correlation", "ngrid"],
+	"superclasses":  [ "base", "reverse_correlation"],
 	"depends_on": [ ],
 	"file": [ ],
 	"hartley_reverse_correlation": [
