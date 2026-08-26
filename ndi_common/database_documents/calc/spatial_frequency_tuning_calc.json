@@ -6,7 +6,7 @@
 		"property_list_name":                   "spatial_frequency_tuning_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/calculator.json" },
 			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/spatial_frequency_tuning.json"}
 		]
 	},

@@ -1,6 +1,6 @@
 {
 	"classname": "oridirtuning_calc",
-	"superclasses":  [ "base", "orientation_direction_tuning"],
+	"superclasses":  [ "base", "app", "calculator", "orientation_direction_tuning"],
 	"depends_on": [ ],
 	"file": [ ],
 	"oridirtuning_calc": [
