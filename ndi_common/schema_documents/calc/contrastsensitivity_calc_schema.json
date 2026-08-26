@@ -1,6 +1,6 @@
 {
 	"classname": "contrastsensitivity_calc",
-	"superclasses":  [ "base" ],
+	"superclasses":  [ "base", "app", "calculator" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1},
 		{ "name": "stimulus_presentation_id", "mustbenotempty": 1},

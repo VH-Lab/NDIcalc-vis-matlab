@@ -1,6 +1,6 @@
 {
 	"classname": "temporal_frequency_tuning_calc",
-	"superclasses":  [ "base", "temporal_frequency_tuning"],
+	"superclasses":  [ "base", "app", "calculator", "temporal_frequency_tuning"],
 	"depends_on": [ ],
 	"file": [ ],
 	"temporal_frequency_tuning_calc": [

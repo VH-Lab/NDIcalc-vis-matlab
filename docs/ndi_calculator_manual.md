@@ -190,8 +190,7 @@ Start from the simple template (`simple_calc.json`) and customize:
         "property_list_name": "my_calculator_calc",
         "class_version": 1,
         "superclasses": [
-            { "definition": "$NDIDOCUMENTPATH/base.json" },
-            { "definition": "$NDIDOCUMENTPATH/app.json" }
+            { "definition": "$NDIDOCUMENTPATH/calculator.json" }
         ]
     },
     "depends_on": [
@@ -209,9 +208,19 @@ Start from the simple template (`simple_calc.json`) and customize:
 ```
 
 **Key fields**:
+- `superclasses` - `calculator` declares `base` and `app`, so one entry covers both. Add your domain document type here as a second entry if the calculator produces one.
 - `depends_on` - Documents this calculator requires (by their IDs)
 - `input_parameters` - Configuration values with defaults
 - Additional fields - Your output results (initialize with appropriate defaults)
+
+**Note on the matching schema**: the `superclasses` list in the validation
+schema is the *full* set of types the document ends up with, not just the ones
+named above. NDI merges each superclass's own superclasses in turn, so a
+document declaring `calculator` and `my_domain_type` validates against a schema
+listing `base`, `app`, `calculator`, and `my_domain_type`. A schema that lists
+only what the definition declares fails with
+`DID:Database:ValidationSuperClasses` the first time the document is added to a
+session.
 
 **Optional**: Add `"files"` section if storing binary data:
 ```json

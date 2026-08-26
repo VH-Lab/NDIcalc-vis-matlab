@@ -6,7 +6,7 @@
 		"property_list_name":                   "hartley_calc", 
 		"class_version":                    1,
 		"superclasses": [
-			{ "definition":                 "$NDIDOCUMENTPATH\/base.json" },
+			{ "definition":                 "$NDIDOCUMENTPATH\/calculator.json" },
 			{ "definition":                 "$NDICALCDOCUMENTPATH\/neuro\/hartley_reverse_correlation.json" }
 		]
 	},

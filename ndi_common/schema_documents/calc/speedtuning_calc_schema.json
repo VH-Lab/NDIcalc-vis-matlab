@@ -1,6 +1,6 @@
 {
 	"classname": "speedtuning_calc",
-	"superclasses":  [ "base", "speed_tuning"],
+	"superclasses":  [ "base", "app", "calculator", "speed_tuning"],
 	"depends_on": [ ],
 	"file": [ ],
 	"speedtuning_calc": [
