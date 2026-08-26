@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "ndi.calc.vis.spatial_frequency_tuning",
-    "version": "cd9e168b82d88e15d6f92c4126a6eafa6103ac41",
+    "version": "e4967f173cde7633f2745c7647a32fa29c441091",
     "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab",
     "os": "MACA64",
     "os_version": "26.6.2",
@@ -9,19 +9,19 @@
     "interpreter_version": "24.2"
   },
   "base": {
-    "id": "412696f19c475954_c0a8e53c5f5982a7",
-    "session_id": "412696f19c41b3c6_c0d24125bf384c58",
+    "id": "412696f99fca0b18_c0d4bcf2cbccdc41",
+    "session_id": "412696f999384995_40ce00353523c0d4",
     "name": "",
-    "datestamp": "2026-08-22T23:19:32.031Z"
+    "datestamp": "2026-08-26T23:29:24.433Z"
   },
   "depends_on": [
     {
       "name": "element_id",
-      "value": "412696f19c428282_c0b1caae5a4436e6"
+      "value": "412696f99fc3cdda_40dc56993ced190b"
     },
     {
       "name": "stimulus_tuningcurve_id",
-      "value": "412696f19c45cc8a_c0db1218e37ac42c"
+      "value": "412696f99fc8d4d5_c0c4153b71b808c1"
     }
   ],
   "document_class": {
@@ -3467,7 +3467,7 @@
     "input_parameters": [],
     "depends_on": {
       "name": "stimulus_tuningcurve_id",
-      "value": "412696f19c45cc8a_c0db1218e37ac42c"
+      "value": "412696f99fc8d4d5_c0c4153b71b808c1"
     }
   }
 }
