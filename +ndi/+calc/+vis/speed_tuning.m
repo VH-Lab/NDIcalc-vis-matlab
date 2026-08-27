@@ -55,11 +55,13 @@ classdef speed_tuning < ndi.calc.tuning_fit
             end
 
             % Step 2: perform the calculator, which here creates a speed_tuning doc
+            app_doc = ndi_calculator_obj.newdocument();
             doc = ndi_calculator_obj.calculate_speed_indexes(tuning_response_doc, 'min_xi', min_xi, 'max_xi', max_xi) + ...
-                ndi_calculator_obj.newdocument();
+                app_doc;
 
             if ~isempty(doc)
                 doc = ndi.document(ndi_calculator_obj.doc_document_types{1}, 'speedtuning_calc', speed_tuning_calc) + doc;
+                doc = doc.setproperties('app',app_doc.document_properties.app);
                 doc = doc.set_dependency_value('stimulus_tuningcurve_id', tuning_response_doc.id());
                 doc = doc.set_dependency_value('element_id', tuning_response_doc.dependency_value('element_id'));
             end

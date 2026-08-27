@@ -50,17 +50,19 @@ classdef oridir_tuning < ndi.calc.tuning_fit
 
             oriapp = ndi.app.oridirtuning(ndi_calculator_obj.session);
             
+            app_doc = ndi_calculator_obj.newdocument();
             doc_struct = ndi_calculator_obj.calculate_oridir_indexes(tuning_doc);
             if isempty(doc_struct)
                 doc = {};
             else
-                doc = doc_struct + ndi_calculator_obj.newdocument();
+                doc = doc_struct + app_doc;
             end
 
             % Step 4. Check if doc exists
             if ~isempty(doc)
                 doc = ndi.document(ndi_calculator_obj.doc_document_types{1},...
                     'oridirtuning_calc',oridir_tuning) + doc;
+                doc = doc.setproperties('app',app_doc.document_properties.app);
                 doc = doc.set_dependency_value('stimulus_tuningcurve_id',tuning_doc.id());
             end
         end % calculate
