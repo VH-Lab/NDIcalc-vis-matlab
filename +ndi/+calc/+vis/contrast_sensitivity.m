@@ -122,9 +122,39 @@ classdef contrast_sensitivity < ndi.calculator
 
                 stim_params.presentation_order = 1:k;
 
+                % The stimulus_presentation schema declares presentation_time.bin
+                % with mustbenotempty == 1, so the document is only valid once
+                % that file is attached. did.database used to admit it anyway:
+                % checkfiles reported the missing file and then fell through to
+                % isvalid = 1, so add_docs committed a schema-invalid document.
+                % It now rejects it (DID:Database:ValidationFiles).
+                %
+                % Build one entry per presentation, the same structure hartley.m
+                % writes from its real frame times. This calculator never reads
+                % the presentation times back -- it works from the tuning curve
+                % documents -- so evenly spaced onsets are enough to describe
+                % the mock stimuli honestly.
+                stim_duration = 2;
+                interstimulus_interval = 1;
+                pt_struct = vlt.data.emptystruct('clocktype','stimopen','onset','offset','stimclose','stimevents');
+                for m = 1:numel(stim_params.presentation_order)
+                    onset_here = (m-1) * (stim_duration + interstimulus_interval);
+                    offset_here = onset_here + stim_duration;
+                    pt_struct(m).clocktype = 'dev_local_time';
+                    pt_struct(m).stimopen = onset_here;
+                    pt_struct(m).onset = onset_here;
+                    pt_struct(m).offset = offset_here;
+                    pt_struct(m).stimclose = offset_here;
+                    pt_struct(m).stimevents = [onset_here 1];
+                end
+
+                pt_filename = ndi.file.temp_name();
+                ndi.database.fun.write_presentation_time_structure(pt_filename, pt_struct);
+
                 stim_pres_doc = ndi.document('stimulus_presentation', 'stimulus_presentation', stim_params) + ...
                 obj.session.newdocument();
                 stim_pres_doc = stim_pres_doc.set_dependency_value('stimulus_element_id', nde_stim.id());
+                stim_pres_doc = stim_pres_doc.add_file('presentation_time.bin', pt_filename);
                 S.database_add(stim_pres_doc);
                 current_docs{end+1} = stim_pres_doc;
 
