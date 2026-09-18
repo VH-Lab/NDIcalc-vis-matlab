@@ -1,34 +1,30 @@
 classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
     % SPEED_TUNING_BOOTSTRAP - bootstrap version of the speed_tuning calculator
     %
-    % =====================================================================
-    % SCAFFOLD / DRAFT -- NOT YET IMPLEMENTED OR RUN.
-    % This class is a starting point for discussion (see the design issue).
-    % It has not been executed (no licensed MATLAB in the authoring env; per
-    % AGENTS.md, changes here are verified by CI on push). Sections marked TODO
-    % are intentionally left for the implementation session after the design is
-    % agreed. Do not assume any method below is complete.
-    % =====================================================================
-    %
     % SPEED_TUNING_BOOTSTRAP computes the same spatiotemporal-coupling fits as
     % ndi.calc.vis.speed_tuning, but repeats the fit over S bootstrap resamples
-    % of the individual trials, so that a confidence interval can be placed on
-    % the coupling index xi and the other fit parameters. The motivation is the
-    % Suarez-Casanova et al. review: cells that "pass" the xi==1 nested F-test
-    % but have a fitted xi<0 are poorly-constrained fits, and a CI on xi
-    % (rather than an accept-the-null test) separates genuinely speed-tuned
-    % cells from unconstrained ones.
+    % of the individual trials, so a confidence interval can be placed on the
+    % coupling index xi and the other Priebe fit parameters.
+    %
+    % Motivation (Suarez-Casanova et al. review, R1.4/R1.5): the nested F test
+    % calls a site "speed tuned" whenever it *fails to reject* xi==1, which
+    % conflates "the data support xi==1" with "the data do not constrain xi at
+    % all" -- some such cells have a fitted xi<0. A confidence interval on xi
+    % (an equivalence-style classification) separates genuinely speed-tuned
+    % cells from unconstrained ones. The tuning-curve document already stores
+    % the individual trial responses (resp.ind), so a nonparametric bootstrap
+    % over trials is feasible.
     %
     % Output document type: 'speedtuning_bootstrap_calc'
-    % Result document type:  'speed_tuning_bootstrap'
+    % Result document type: 'speed_tuning_bootstrap'
     %
-    % The per-sample fit parameters are stored as an S-by-P matrix (S bootstrap
-    % samples in rows, P Priebe parameters in columns), so that
-    % prctile(params,[2.5 97.5]) returns a 2-by-P per-parameter CI with no
-    % transpose. (Orientation is a design decision -- see the issue.)
+    % The per-sample free-fit parameters are stored as an S-by-P matrix (S
+    % bootstrap samples in rows, P=7 Priebe parameters in columns), so that
+    % prctile(params,[2.5 97.5]) returns a 2-by-P per-parameter confidence
+    % interval with no transpose.
     %
-    % See also: ndi.calc.vis.speed_tuning, vis.speed.fit, vis.speed.fit_nospeed,
-    %           vis.speed.fit_fullspeed, vis.speed.speed_nested_f
+    % See also: ndi.calc.vis.speed_tuning, vis.speed.extract_tuning_curve,
+    %           vis.speed.fit_priebe_triplet, vis.speed.fit
 
     methods
         function obj = speed_tuning_bootstrap(session)
@@ -42,7 +38,11 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
                 'speedtuning_bootstrap_calc');
             obj.defaultParametersCanFunction = true;
 
-            % TODO: set once self-test mocks exist (see +vis/mock/speed_tuning_bootstrap/).
+            % The field-by-field self-tests (generate_mock_parameters + stored
+            % expected documents) require the expected mock documents to be
+            % generated in a licensed-MATLAB session, as for every other
+            % calculator here. Until those are generated and committed, this
+            % stays 0. See generate_mock_parameters below.
             obj.numberOfSelfTests = 0;
         end % speed_tuning_bootstrap()
 
@@ -53,8 +53,13 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
             %
             % Creates a speedtuning_bootstrap_calc document. Input parameters
             % mirror speed_tuning (min_xi, max_xi) plus:
-            %   input_parameters.numBootstrap : number of resamples S (default 100)
-            %   input_parameters.bootstrapSeed: optional; see AGENTS.md on seeding
+            %   input_parameters.numBootstrap    : number of resamples S (default 200)
+            %   input_parameters.confidenceLevel : percent for the CIs (default 95)
+            %   input_parameters.bootstrapSeed   : optional; [] draws fresh (see
+            %                                      AGENTS.md on seeding)
+            %   input_parameters.useParallel     : use an already-open parallel
+            %                                      pool if one exists (default true;
+            %                                      never opens a pool)
             %
             arguments
                 ndi_calculator_obj
@@ -70,14 +75,21 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
             end
             tuning_response_doc = tuning_response_doc{1};
 
-            min_xi = 0; max_xi = 1; numBootstrap = 100;
-            if isfield(parameters.input_parameters, 'min_xi'), min_xi = parameters.input_parameters.min_xi; end
-            if isfield(parameters.input_parameters, 'max_xi'), max_xi = parameters.input_parameters.max_xi; end
-            if isfield(parameters.input_parameters, 'numBootstrap'), numBootstrap = parameters.input_parameters.numBootstrap; end
+            min_xi = 0; max_xi = 1; numBootstrap = 200; confidenceLevel = 95;
+            bootstrapSeed = []; useParallel = true;
+            ip = parameters.input_parameters;
+            if isfield(ip, 'min_xi'),          min_xi = ip.min_xi;                   end
+            if isfield(ip, 'max_xi'),          max_xi = ip.max_xi;                   end
+            if isfield(ip, 'numBootstrap'),    numBootstrap = ip.numBootstrap;       end
+            if isfield(ip, 'confidenceLevel'), confidenceLevel = ip.confidenceLevel; end
+            if isfield(ip, 'bootstrapSeed'),   bootstrapSeed = ip.bootstrapSeed;     end
+            if isfield(ip, 'useParallel'),     useParallel = ip.useParallel;         end
 
             app_doc = ndi_calculator_obj.newdocument();
             doc = ndi_calculator_obj.calculate_speed_indexes_bootstrap(tuning_response_doc, ...
-                'min_xi', min_xi, 'max_xi', max_xi, 'numBootstrap', numBootstrap) + app_doc;
+                'min_xi', min_xi, 'max_xi', max_xi, 'numBootstrap', numBootstrap, ...
+                'confidenceLevel', confidenceLevel, 'bootstrapSeed', bootstrapSeed, ...
+                'useParallel', useParallel) + app_doc;
 
             if ~isempty(doc)
                 doc = ndi.document(ndi_calculator_obj.doc_document_types{1}, 'speedtuning_bootstrap_calc', speedtuning_bootstrap_calc) + doc;
@@ -89,7 +101,8 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
 
         function parameters = default_search_for_input_parameters(obj)
             % DEFAULT_SEARCH_FOR_INPUT_PARAMETERS - default search parameters
-            parameters.input_parameters = struct('min_xi', 0, 'max_xi', 1, 'numBootstrap', 100);
+            parameters.input_parameters = struct('min_xi', 0, 'max_xi', 1, ...
+                'numBootstrap', 200, 'confidenceLevel', 95);
             parameters.depends_on = did.datastructures.emptystruct('name', 'value');
             parameters.query = obj.default_parameters_query(parameters);
         end % default_search_for_input_parameters
@@ -108,122 +121,179 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
             b = 1;
         end % is_valid_dependency_input()
 
+        function h = plot(obj, doc_or_parameters, varargin)
+            % PLOT - show the bootstrap distribution of the speed index xi
+            %
+            % H = PLOT(OBJ, DOC_OR_PARAMETERS, ...)
+            %
+            % Plots a histogram of the S bootstrap estimates of xi, with the
+            % point estimate and the confidence interval marked, and reference
+            % lines at xi==0 (no speed tuning) and xi==1 (full speed tuning) so
+            % the equivalence-style classification reads off the figure.
+            %
+            % Handles are returned in H.
+
+            h = plot@ndi.calculator(obj, doc_or_parameters, varargin{:});
+
+            if isa(doc_or_parameters, 'ndi.document')
+                doc = doc_or_parameters;
+            else
+                error('Do not know how to proceed without an ndi document for doc_or_parameters.');
+            end
+
+            sb = doc.document_properties.speed_tuning_bootstrap;
+            xi = sb.bootstrap.Priebe_fit_parameters(:, 3);
+            ci = sb.confidence_interval;
+            xi_hat = sb.point_estimate.fit.Priebe_fit_speed_tuning_index;
+
+            hold on;
+            h.histogram = histogram(xi, 'Normalization', 'probability');
+            yl = ylim;
+
+            h.ci_low  = plot([ci.speed_tuning_index_ci(1) ci.speed_tuning_index_ci(1)], yl, 'r--', 'linewidth', 1.5);
+            h.ci_high = plot([ci.speed_tuning_index_ci(2) ci.speed_tuning_index_ci(2)], yl, 'r--', 'linewidth', 1.5);
+            h.point_estimate = plot([xi_hat xi_hat], yl, 'k-', 'linewidth', 2);
+            h.ref0 = plot([0 0], yl, 'b:');
+            h.ref1 = plot([1 1], yl, 'b:');
+
+            if ~h.params.suppress_x_label
+                h.xlabel = xlabel('\xi (speed tuning index)');
+            end
+            if ~h.params.suppress_y_label
+                h.ylabel = ylabel('bootstrap probability');
+            end
+            if ~h.params.suppress_title
+                h.title = title(['\xi = ' num2str(xi_hat, 3) ' [' ...
+                    num2str(ci.speed_tuning_index_ci(1), 3) ', ' ...
+                    num2str(ci.speed_tuning_index_ci(2), 3) '] (' ...
+                    num2str(ci.confidenceLevel) '% CI)']);
+            end
+            box off;
+
+        end % plot()
+
         function speed_props_doc = calculate_speed_indexes_bootstrap(obj, tuning_doc, kwargs)
             % CALCULATE_SPEED_INDEXES_BOOTSTRAP - bootstrap the Priebe fit over trials
             %
             % SPEED_PROPS_DOC = CALCULATE_SPEED_INDEXES_BOOTSTRAP(OBJ, TUNING_DOC, ...)
             %
-            % Extracts the tuning curve (with its individual trial responses) the
-            % same way ndi.calc.vis.speed_tuning.calculate_speed_indexes does,
-            % then, for each of S = numBootstrap resamples, resamples the trials
-            % of each stimulus condition with replacement, recomputes the
-            % per-condition mean, and refits the three Priebe models. The S fits
-            % are stacked so that a confidence interval can be taken over the
-            % rows.
+            % Extracts the tuning curve (with its individual trial responses)
+            % via vis.speed.extract_tuning_curve, then, for each of S =
+            % numBootstrap resamples, resamples the trials of each stimulus
+            % condition with replacement, recomputes the per-condition mean, and
+            % refits the three Priebe models via vis.speed.fit_priebe_triplet.
+            % The S free-fit parameter vectors are stacked S-by-P so a
+            % confidence interval can be taken over the rows.
             %
             % Name/value:
-            %   min_xi (0), max_xi (1), numBootstrap (100)
+            %   min_xi (0), max_xi (1), numBootstrap (200), confidenceLevel (95),
+            %   bootstrapSeed ([] = fresh draw), useParallel (true)
             %
             arguments
                 obj
                 tuning_doc
                 kwargs.min_xi (1,1) double = 0
                 kwargs.max_xi (1,1) double = 1
-                kwargs.numBootstrap (1,1) double = 100
+                kwargs.numBootstrap (1,1) double = 200
+                kwargs.confidenceLevel (1,1) double = 95
+                kwargs.bootstrapSeed = []
+                kwargs.useParallel (1,1) logical = true
             end
 
-            % --- Extract the tuning curve exactly as speed_tuning does -------
-            % (kept in sync with ndi.calc.vis.speed_tuning.calculate_speed_indexes;
-            %  a future refactor could factor this extraction into a shared helper.)
-            properties.response_units = tuning_doc.document_properties.stimulus_tuningcurve.response_units;
-            stim_response_doc = obj.session.database_search(ndi.query('base.id', ...
-                'exact_string', tuning_doc.dependency_value('stimulus_response_scalar_id'), ''));
-            if numel(stim_response_doc) ~= 1
-                error('Could not find stimulus response scalar document.');
-            end
-            if iscell(stim_response_doc), stim_response_doc = stim_response_doc{1}; end
-            properties.response_type = stim_response_doc.document_properties.stimulus_response_scalar.response_type;
-
-            resp = ndi.app.stimulus.tuning_response.tuningcurvedoc2vhlabrespstruct(tuning_doc);
-
-            sf = vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:, 1));
-            tf = vlt.data.colvec(tuning_doc.document_properties.stimulus_tuningcurve.independent_variable_value(:, 2));
-
-            % resp.ind{k} holds the individual single-trial responses for
-            % condition k; this is the resampling unit for the bootstrap.
-            ind = resp.ind;                     % cell array, one entry per condition
+            % --- Extract the tuning curve (shared with speed_tuning) ---------
+            tc = vis.speed.extract_tuning_curve(obj.session, tuning_doc);
+            properties = tc.properties;
+            sf  = tc.spatial_frequency;
+            tf  = tc.temporal_frequency;
+            ind = tc.resp.ind;                       % cell, one entry per condition
             nCond = numel(ind);
+            observed_mean = vlt.data.colvec(tc.resp.curve(2, :));   % per-condition mean
 
-            SFs_grid = logspace(log10(0.01), log10(60),  14);
-            TFs_grid = logspace(log10(0.01), log10(120), 14);
-            [SFg, TFg] = meshgrid(SFs_grid, TFs_grid);
+            % --- Point estimate: the observed-data fit, computed by the sibling
+            %     speed_tuning calculator on the same document, so the point
+            %     estimate cannot drift from speed_tuning. -------------------
+            st = ndi.calc.vis.speed_tuning(obj.session);
+            pe_doc = st.calculate_speed_indexes(tuning_doc, 'min_xi', kwargs.min_xi, 'max_xi', kwargs.max_xi);
+            point_estimate = pe_doc.document_properties.speed_tuning;
 
-            P = 7;                              % number of Priebe parameters
+            % --- Private stream for the trial resampling (see AGENTS.md) -----
+            if isempty(kwargs.bootstrapSeed)
+                rs = vis.randomstream('shuffle');
+            else
+                rs = vis.randomstream(kwargs.bootstrapSeed);
+            end
+
             S = kwargs.numBootstrap;
+            P = 7;                                   % number of Priebe parameters
+            min_xi = kwargs.min_xi;
+            max_xi = kwargs.max_xi;
 
-            % Pre-allocate S-by-P / S-by-1 outputs (S rows = bootstrap samples).
-            fit_params            = nan(S, P);
-            fit_no_speed_params   = nan(S, P);
-            fit_fullspeed_params  = nan(S, P);
-            speed_tuning_index    = nan(S, 1);
-            sf_preference         = nan(S, 1);
-            tf_preference         = nan(S, 1);
-            r_squared             = nan(S, 1);
-            nested_F_no_speed_p   = nan(S, 1);
-            nested_F_fullspeed_p  = nan(S, 1);
-
+            % --- Serial pre-pass: draw every resampled per-condition mean up
+            %     front, from the private stream, so the result does not depend
+            %     on whether the fit loop below runs serially or in parallel.
+            %     A condition with no stored trials keeps its observed mean
+            %     (rather than injecting NaN, which would break the fit). -----
+            meanRespAll = repmat(observed_mean(:).', S, 1);   % S x nCond
             for s = 1:S
-                % --- resample trials within each condition, recompute the mean ---
-                meanResp = nan(nCond, 1);
                 for k = 1:nCond
-                    tk = ind{k};
-                    tk = tk(:);
-                    if isempty(tk)
-                        meanResp(k) = NaN;      % TODO: decide handling of empty conditions
-                    else
-                        meanResp(k) = mean(tk(randi(numel(tk), numel(tk), 1)));
+                    tk = ind{k}(:);
+                    nk = numel(tk);
+                    if nk > 0
+                        idx = randi(rs, nk, nk, 1);
+                        meanRespAll(s, k) = mean(tk(idx));
                     end
                 end
-
-                % --- refit the three Priebe models on the resampled means -------
-                [f_ns, sse_ns, ~]  = vis.speed.fit_nospeed(sf, tf, meanResp);
-                [f_fs, sse_fs, ~]  = vis.speed.fit_fullspeed(sf, tf, meanResp);
-                [f, sse_ws, r2_ws] = vis.speed.fit(sf, tf, meanResp, ...
-                    kwargs.min_xi, kwargs.max_xi, 'SpecificStartPoint', [f_ns f_fs]);
-
-                fit_params(s, :)           = f(:).';
-                fit_no_speed_params(s, :)  = f_ns(:).';
-                fit_fullspeed_params(s, :) = f_fs(:).';
-                speed_tuning_index(s)      = f(3);
-                sf_preference(s)           = f(6);
-                tf_preference(s)           = f(7);
-                r_squared(s)               = r2_ws;
-                nested_F_no_speed_p(s)     = vis.speed.speed_nested_f(nCond, sse_ws, sse_ns);
-                nested_F_fullspeed_p(s)    = vis.speed.speed_nested_f(nCond, sse_ws, sse_fs);
             end
 
-            % --- assemble the result document -------------------------------
-            % TODO (design issue): finalize exactly which fields are stored and
-            % their orientation. Draft below stores per-sample matrices/vectors
-            % plus the observed-data point estimate (via the parent calculator)
-            % and percentile CIs. Confidence level is a parameter to decide.
-            speed_tuning_bootstrap.properties   = properties;
-            speed_tuning_bootstrap.input        = struct('numBootstrap', S, ...
-                'min_xi', kwargs.min_xi, 'max_xi', kwargs.max_xi);
-            speed_tuning_bootstrap.bootstrap    = struct( ...
-                'Priebe_fit_parameters',            fit_params, ...           % S x P
-                'Priebe_fit_no_speed_parameters',   fit_no_speed_params, ...  % S x P
-                'Priebe_fit_fullspeed_parameters',  fit_fullspeed_params, ... % S x P
-                'Priebe_fit_speed_tuning_index',    speed_tuning_index, ...   % S x 1
-                'Priebe_fit_spatial_frequency_preference', sf_preference, ... % S x 1
-                'Priebe_fit_temporal_frequency_preference', tf_preference, ...% S x 1
-                'r_squared',                        r_squared, ...            % S x 1
-                'nested_F_no_speed_p_value',        nested_F_no_speed_p, ...  % S x 1
-                'nested_F_fullspeed_p_value',       nested_F_fullspeed_p);    % S x 1
+            fit_params = nan(S, P);
+            r_squared  = nan(S, 1);
 
-            % TODO: also store the point-estimate fit (call the sibling
-            % speed_tuning calculator on the same tuning_doc) and percentile CIs
-            % so downstream code does not have to recompute them.
+            % Use an already-open parallel pool if the caller asked for parallel
+            % and one exists; never open a pool here (gcp('nocreate') returns []
+            % when there is no pool and does not create one).
+            runParallel = false;
+            if kwargs.useParallel && exist('gcp', 'file')
+                runParallel = ~isempty(gcp('nocreate'));
+            end
+
+            if runParallel
+                parfor s = 1:S
+                    [f, ~, ~, stats] = vis.speed.fit_priebe_triplet(sf, tf, meanRespAll(s, :).', min_xi, max_xi);
+                    fit_params(s, :) = f(:).';
+                    r_squared(s)     = stats.r_squared;
+                end
+            else
+                for s = 1:S
+                    [f, ~, ~, stats] = vis.speed.fit_priebe_triplet(sf, tf, meanRespAll(s, :).', min_xi, max_xi);
+                    fit_params(s, :) = f(:).';
+                    r_squared(s)     = stats.r_squared;
+                end
+            end
+
+            % --- Percentile confidence intervals over the S rows ------------
+            alphaPct  = (100 - kwargs.confidenceLevel) / 2;
+            ci        = prctile(fit_params, [alphaPct, 100 - alphaPct], 1);   % 2 x P
+            ci_median = prctile(fit_params, 50, 1);                           % 1 x P
+
+            confidence_interval = struct( ...
+                'confidenceLevel',                  kwargs.confidenceLevel, ...
+                'parameter_ci_low',                 ci(1, :), ...
+                'parameter_ci_high',                ci(2, :), ...
+                'parameter_median',                 ci_median, ...
+                'speed_tuning_index_ci',            [ci(1, 3) ci(2, 3)], ...
+                'speed_tuning_index_median',        ci_median(3), ...
+                'spatial_frequency_preference_ci',  [ci(1, 6) ci(2, 6)], ...
+                'temporal_frequency_preference_ci', [ci(1, 7) ci(2, 7)]);
+
+            % --- Assemble the result document -------------------------------
+            speed_tuning_bootstrap.properties = properties;
+            speed_tuning_bootstrap.input = struct('numBootstrap', S, ...
+                'min_xi', min_xi, 'max_xi', max_xi, 'confidenceLevel', kwargs.confidenceLevel);
+            speed_tuning_bootstrap.point_estimate = point_estimate;
+            speed_tuning_bootstrap.bootstrap = struct( ...
+                'Priebe_fit_parameters', fit_params, ...   % S x P
+                'r_squared',             r_squared);       % S x 1
+            speed_tuning_bootstrap.confidence_interval = confidence_interval;
 
             speed_props_doc = ndi.document('speed_tuning_bootstrap', ...
                 'speed_tuning_bootstrap', speed_tuning_bootstrap);
@@ -232,9 +302,64 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
             speed_props_doc = speed_props_doc.set_dependency_value('stimulus_tuningcurve_id', tuning_doc.id());
         end % calculate_speed_indexes_bootstrap()
 
-        % TODO: plot() override to show the bootstrap distribution of xi / a CI.
-        % TODO: generate_mock_parameters() for the self-test framework (mirror
-        %       speed_tuning; store expectations on the CIs, not point digits).
+        % TESTING METHODS
+
+        function [param_struct, independent_variable, x, r] = generate_mock_parameters(obj, scope, index)
+            % GENERATE_MOCK_PARAMETERS - generate mock parameters for testing
+            %
+            % [PARAM_STRUCT, INDEPENDENT_VARIABLE, X, R] = GENERATE_MOCK_PARAMETERS(OBJ, SCOPE, INDEX)
+            %
+            % Generates a parameter set for a mock speed-tuning document, mirroring
+            % ndi.calc.vis.speed_tuning.generate_mock_parameters. Three cells are
+            % defined so the bootstrap self-test can check the confidence interval
+            % behaves as expected across the regimes the paper cares about:
+            %   1  speed-tuned, well constrained (xi = 1)
+            %   2  not speed tuned              (xi ~ 0)
+            %   3  weak response / poorly constrained (small A, xi = 0.5)
+            %
+            % SCOPE can be 'standard', 'random_nonoise', or 'random_noisy'; the
+            % framework adds trial-to-trial noise and replicate trials (the
+            % resampling unit for the bootstrap). INDEX selects the cell (1..TOTAL,
+            % wrapped with MOD).
+            %
+            % The field-by-field self-tests are enabled by generating the expected
+            % mock documents in a licensed-MATLAB session and raising
+            % numberOfSelfTests; see the class constructor.
+
+            %          cell:  1(tuned) 2(not)   3(weak)
+            A        = [   5,        5,      1 ];   % peak response
+            zeta     = [   0,        0,      0 ];   % temporal-frequency skew
+            xi       = [   1,   0.0001,    0.5 ];   % speed tuning index (0..1)
+            sigma_sf = [   1,        1,      1 ];   % spatial-frequency tuning width
+            sigma_tf = [   1,        1,      1 ];   % temporal-frequency tuning width
+            sf0      = [ 0.2,      0.2, sqrt(2)/5 ];% preferred spatial frequency
+            tf0      = [   2,        2,      4 ];   % preferred temporal frequency
+
+            P_ = [A(:) zeta(:) xi(:) sigma_sf(:) sigma_tf(:) sf0(:) tf0(:)];
+            total = size(P_, 1);
+
+            actual_index = 1 + mod(index - 1, total);
+
+            % no dependence on scope for this stimulus type
+            P = P_(actual_index, :);
+
+            % grid of stimulus conditions (taken from speed_tuning's mock / the demo)
+            sfs = [0.05 0.08 0.1 0.2 0.4 0.8 1.2];
+            tfs = [0.5 1 2 4 8 16 32];
+            [SFs, TFs] = meshgrid(sfs, tfs);
+            function_params = P;
+            r_ = vlt.neuro.vision.speed.tuningfunc(SFs, TFs, function_params);
+
+            param_struct = struct('contrast', .5);
+            independent_variable = {'temporal_frequency', 'spatial_frequency'};
+            x = [SFs(:), TFs(:)];
+            r = r_(:);
+
+            % blank (control) stimulus with firing rate 0
+            x(end + 1, :) = NaN;
+            r(end + 1, 1) = 0;
+
+        end % generate_mock_parameters
 
     end % methods()
 end % speed_tuning_bootstrap

@@ -13,7 +13,7 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The units structure."
+			"documentation": "The units structure (response_units, response_type)."
 		},
 		{
 			"name": "input",
@@ -21,7 +21,15 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The bootstrap input parameters (numBootstrap, min_xi, max_xi)."
+			"documentation": "The bootstrap input parameters (numBootstrap, min_xi, max_xi, confidenceLevel)."
+		},
+		{
+			"name": "point_estimate",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The observed-data fit, identical to a speed_tuning result (properties, tuning_curve, significance, fit, fit_no_speed, fit_fullspeed, including the nested-F test)."
 		},
 		{
 			"name": "bootstrap",
@@ -29,7 +37,15 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "Per-resample fit outputs (S-by-P parameter matrices and S-by-1 index/preference/p-value vectors)."
+			"documentation": "Per-resample free-fit outputs: Priebe_fit_parameters (S-by-7 Priebe parameter matrix) and r_squared (S-by-1)."
+		},
+		{
+			"name": "confidence_interval",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Precomputed percentile confidence intervals on the free-fit parameters at confidenceLevel, with xi and SF/TF preference intervals called out."
 		}
 	]
 }
