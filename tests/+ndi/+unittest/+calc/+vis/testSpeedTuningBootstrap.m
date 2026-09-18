@@ -8,11 +8,13 @@ classdef testSpeedTuningBootstrap < ndi.unittest.calc.sessionSetup
 			% The field-by-field self-tests (generate_mock_parameters + stored
 			% expected documents) are a follow-up: the expected mock documents
 			% must be generated in a licensed-MATLAB session, as for every other
-			% calculator here, then numberOfSelfTests raised above 0. While it is
-			% 0, verifySelfTests runs no comparisons and simply passes.
+			% calculator here, then numberOfSelfTests raised above 0 and a
+			% verifySelfTests call added here. verifySelfTests requires
+			% numberOfSelfTests to be positive, so it is not called while the
+			% count is 0.
 			obj = ndi.calc.vis.speed_tuning_bootstrap(testCase.S);
 			testCase.verifyClass(obj, 'ndi.calc.vis.speed_tuning_bootstrap');
-			obj.verifySelfTests(testCase);
+			testCase.verifyEqual(obj.numberOfSelfTests, 0);
 		end
 	end
 end
