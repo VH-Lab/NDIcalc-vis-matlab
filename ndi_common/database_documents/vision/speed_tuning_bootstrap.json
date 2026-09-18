@@ -1,0 +1,49 @@
+{
+	"document_class": {
+		"definition":	"$NDICALCDOCUMENTPATH\/vision\/speed_tuning_bootstrap.json",
+		"validation":	"$NDICALCSCHEMAPATH\/vision\/speed_tuning_bootstrap_schema.json",
+		"class_name":						"speed_tuning_bootstrap",
+		"property_list_name":                                   "speed_tuning_bootstrap",
+		"class_version":					1,
+		"superclasses": [
+			{ "definition":       "$NDIDOCUMENTPATH\/base.json"}
+		]
+	},
+	"depends_on": [
+		{
+			"name":		"element_id",
+			"value":	""
+		},
+		{	"name":     	"stimulus_tuningcurve_id",
+			"value":   	""
+		}
+	],
+	"speed_tuning_bootstrap":  {
+		"properties": {
+			"response_units":					0,
+			"response_type":					"mean"
+		},
+		"input": {
+			"numBootstrap":						200,
+			"min_xi":						0,
+			"max_xi":						1,
+			"confidenceLevel":					95
+		},
+		"point_estimate": {
+		},
+		"bootstrap": {
+			"Priebe_fit_parameters":				[0],
+			"r_squared":						[0]
+		},
+		"confidence_interval": {
+			"confidenceLevel":					95,
+			"parameter_ci_low":					[0],
+			"parameter_ci_high":					[0],
+			"parameter_median":					[0],
+			"speed_tuning_index_ci":				[0],
+			"speed_tuning_index_median":				0,
+			"spatial_frequency_preference_ci":			[0],
+			"temporal_frequency_preference_ci":			[0]
+		}
+	}
+}
