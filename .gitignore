@@ -12,3 +12,7 @@ docs/mkdocs-references.yml
 mkdocs.yml
 site/*
 __pycache__
+# Python packaging build output
+/dist/
+/build/
+*.egg-info
