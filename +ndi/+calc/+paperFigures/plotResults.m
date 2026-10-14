@@ -19,6 +19,7 @@ function fh = plotResults(D, options)
 % |----------------------------|----------------------------------------------|
 % | Parameter (default)        | Description                                  |
 % |----------------------------|----------------------------------------------|
+% | doSpeed (true)             | Plot the ndi.calc.vis.speed_tuning examples. |
 % | doHartley (true)           | Plot the ndi.calc.vis.hartley examples.      |
 % |----------------------------|----------------------------------------------|
 %
@@ -30,6 +31,7 @@ function fh = plotResults(D, options)
 
 arguments
     D = []
+    options.doSpeed (1,1) logical = true
     options.doHartley (1,1) logical = true
 end
 
@@ -39,19 +41,23 @@ end
 
 fh = gobjects(0);
 
+% Speed tuning
+
+if options.doSpeed
+    % The same cells as the Hartley examples, from the Suarez Casanova session
+    [S, elementIds] = findElements(D, suarezCasanovaCells());
+    c = ndi.calc.vis.speed_tuning(S);
+    docs = S.database_search(ndi.query('','isa','speedtuning_calc') & dependsOnAny(elementIds));
+    for i = 1:numel(docs)
+        fh(end+1) = figure; %#ok<AGROW>
+        c.plot(docs{i});
+    end
+end
+
 % Hartley reverse correlation
 
 if options.doHartley
-    % The example cells, by element name and reference
-    cells = { ...
-        'leftcortex_8',  1; ...
-        'leftcortex_11', 1; ...
-        'leftcortex_22', 1; ...
-        'leftcortex_26', 1; ...
-        'leftcortex_31', 1; ...
-        'leftcortex_35', 1; ...
-        'leftcortex_37', 1};
-    [S, elementIds] = findElements(D, cells);
+    [S, elementIds] = findElements(D, suarezCasanovaCells());
     c = ndi.calc.vis.hartley(S);
     docs = S.database_search(ndi.query('','isa','hartley_calc') & dependsOnAny(elementIds));
     for i = 1:numel(docs)
@@ -60,6 +66,22 @@ if options.doHartley
     end
 end
 
+end
+
+function cells = suarezCasanovaCells()
+% SUAREZCASANOVACELLS - Example cells from the Suarez Casanova session
+%
+% The cells, by element name and reference, whose speed tuning and Hartley
+% receptive fields are shown. They are recorded in the example dataset's
+% session from the Suarez Casanova et al. study.
+cells = { ...
+    'leftcortex_8',  1; ...
+    'leftcortex_11', 1; ...
+    'leftcortex_22', 1; ...
+    'leftcortex_26', 1; ...
+    'leftcortex_31', 1; ...
+    'leftcortex_35', 1; ...
+    'leftcortex_37', 1};
 end
 
 function [S, elementIds] = findElements(D, cells)
