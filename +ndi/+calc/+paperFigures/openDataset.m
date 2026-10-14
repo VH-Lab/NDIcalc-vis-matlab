@@ -63,10 +63,5 @@ end
 
 function id = paperCloudDatasetId()
 % PAPERCLOUDDATASETID - The NDI Cloud identifier of the paper's example dataset
-id = ""; % TODO: fill in the NDI Cloud dataset ID of the paper's example dataset
-if strlength(id) == 0
-    error('NDICALC:paperFigures:openDataset:NoDatasetId', ...
-        ['The NDI Cloud ID of the paper''s example dataset has not been filled ' ...
-        'in yet. Pass it as ''cloudDatasetId''.']);
-end
+id = "6acfaec58756f8d8d66f67a9";
 end
