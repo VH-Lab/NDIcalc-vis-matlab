@@ -1,14 +1,14 @@
 function fh = plotResults(D, options)
-% PLOTRESULTS - Plot the stored calculator results in the paper's example dataset
+% PLOTRESULTS - Plot the calculator results shown in the paper from the example dataset
 %
 % FH = NDI.CALC.PAPERFIGURES.PLOTRESULTS()
 % FH = NDI.CALC.PAPERFIGURES.PLOTRESULTS(D)
 %
-% Plots the calculator output documents that are stored in the example
-% dataset that accompanies the calculators paper. For each session in the
-% dataset and each calculator, the documents of that calculator's output type
-% are found with a database search, and each one is drawn in its own figure
-% with the calculator's own PLOT method.
+% Plots the calculator output documents that the calculators paper shows,
+% drawn from the example dataset that accompanies the paper. Each calculator
+% has its own section, which picks out the example cells for that calculator
+% and draws each of their output documents in its own figure with the
+% calculator's own PLOT method.
 %
 % D is the ndi.dataset to plot from. If it is not given, the dataset is opened
 % (and downloaded if necessary) with ndi.calc.paperFigures.openDataset.
@@ -19,69 +19,85 @@ function fh = plotResults(D, options)
 % |----------------------------|----------------------------------------------|
 % | Parameter (default)        | Description                                  |
 % |----------------------------|----------------------------------------------|
-% | calculators                | The calculators whose results to plot, by    |
-% |   (all seven)              | class name, e.g. "ndi.calc.vis.hartley".     |
-% | sessions ([])              | Which of the dataset's sessions to plot, by  |
-% |                            | index into D.session_list(). Empty means all.|
+% | doHartley (true)           | Plot the ndi.calc.vis.hartley examples.      |
 % |----------------------------|----------------------------------------------|
 %
 % Example:
 %   D = ndi.calc.paperFigures.openDataset();
-%   ndi.calc.paperFigures.plotResults(D, 'calculators', "ndi.calc.vis.hartley");
+%   fh = ndi.calc.paperFigures.plotResults(D);
 %
 % See also: ndi.calc.paperFigures.openDataset, ndi.calculator/plot
 
 arguments
     D = []
-    options.calculators (1,:) string = [ ...
-        "ndi.calc.vis.oridir_tuning", ...
-        "ndi.calc.vis.contrast_tuning", ...
-        "ndi.calc.vis.contrast_sensitivity", ...
-        "ndi.calc.vis.spatial_frequency_tuning", ...
-        "ndi.calc.vis.temporal_frequency_tuning", ...
-        "ndi.calc.vis.speed_tuning", ...
-        "ndi.calc.vis.hartley"]
-    options.sessions (1,:) double = []
+    options.doHartley (1,1) logical = true
 end
 
 if isempty(D)
     D = ndi.calc.paperFigures.openDataset();
 end
 
-% The output document type of each calculator
-docTypes = dictionary( ...
-    "ndi.calc.vis.oridir_tuning",             "oridirtuning_calc", ...
-    "ndi.calc.vis.contrast_tuning",           "contrasttuning_calc", ...
-    "ndi.calc.vis.contrast_sensitivity",      "contrastsensitivity_calc", ...
-    "ndi.calc.vis.spatial_frequency_tuning",  "spatial_frequency_tuning_calc", ...
-    "ndi.calc.vis.temporal_frequency_tuning", "temporal_frequency_tuning_calc", ...
-    "ndi.calc.vis.speed_tuning",              "speedtuning_calc", ...
-    "ndi.calc.vis.hartley",                   "hartley_calc");
-
-unknown = options.calculators(~isKey(docTypes, options.calculators));
-if ~isempty(unknown)
-    error('NDICALC:paperFigures:plotResults:UnknownCalculator', ...
-        'Unknown calculator(s): %s.', strjoin(unknown, ', '));
-end
-
-[~, sessionIds] = D.session_list();
-if isempty(options.sessions)
-    options.sessions = 1:numel(sessionIds);
-end
-
 fh = gobjects(0);
 
-for s = options.sessions
-    S = D.open_session(sessionIds{s});
-    for calcName = options.calculators
-        c = feval(char(calcName), S);
-        q = ndi.query('', 'isa', char(docTypes(calcName)));
-        docs = S.database_search(q);
-        for i = 1:numel(docs)
-            fh(end+1) = figure; %#ok<AGROW>
-            c.plot(docs{i});
-        end
+% Hartley reverse correlation
+
+if options.doHartley
+    % The example cells, by element name and reference
+    cells = { ...
+        'leftcortex_8',  1; ...
+        'leftcortex_11', 1; ...
+        'leftcortex_22', 1; ...
+        'leftcortex_26', 1; ...
+        'leftcortex_31', 1; ...
+        'leftcortex_35', 1; ...
+        'leftcortex_37', 1};
+    [S, elementIds] = findElements(D, cells);
+    c = ndi.calc.vis.hartley(S);
+    docs = S.database_search(ndi.query('','isa','hartley_calc') & dependsOnAny(elementIds));
+    for i = 1:numel(docs)
+        fh(end+1) = figure; %#ok<AGROW>
+        c.plot(docs{i});
     end
 end
 
+end
+
+function [S, elementIds] = findElements(D, cells)
+% FINDELEMENTS - Look up the element documents of the example cells
+%
+% [S, ELEMENTIDS] = FINDELEMENTS(D, CELLS)
+%
+% CELLS is an N x 2 cell array of element names and references. Each must
+% match exactly one element document in the dataset D, and all must belong to
+% the same session. Returns that session S and the N element ids.
+
+elementIds = cell(size(cells,1),1);
+sessionIds = cell(size(cells,1),1);
+for k = 1:size(cells,1)
+    q = ndi.query('','isa','element') & ...
+        ndi.query('element.name','exact_string',cells{k,1}) & ...
+        ndi.query('element.reference','exact_number',cells{k,2});
+    edoc = D.database_search(q);
+    if numel(edoc) ~= 1
+        error('NDICALC:paperFigures:plotResults:ElementNotFound', ...
+            'Expected one element named %s | %d, found %d.', ...
+            cells{k,1}, cells{k,2}, numel(edoc));
+    end
+    elementIds{k} = edoc{1}.id();
+    sessionIds{k} = edoc{1}.document_properties.base.session_id;
+end
+sessionIds = unique(sessionIds);
+if numel(sessionIds) ~= 1
+    error('NDICALC:paperFigures:plotResults:MixedSessions', ...
+        'The example cells come from %d sessions; expected one.', numel(sessionIds));
+end
+S = D.open_session(sessionIds{1});
+end
+
+function q = dependsOnAny(elementIds)
+% DEPENDSONANY - A query matching documents that depend on any of ELEMENTIDS
+q = ndi.query.none();
+for k = 1:numel(elementIds)
+    q = q | ndi.query('','depends_on','element_id',elementIds{k});
+end
 end
