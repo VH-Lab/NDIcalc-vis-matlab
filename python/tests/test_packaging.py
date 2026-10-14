@@ -22,6 +22,13 @@ def _repo_json_files() -> list[Path]:
     return sorted(files)
 
 
+def _content(path: Path) -> bytes:
+    # Line endings are normalized because a Windows checkout may have CRLF
+    # while a wheel built elsewhere has LF. (The files are not all strict
+    # JSON, so they are compared as text rather than parsed.)
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def test_toolbox_dir_contains_ndi_common():
     toolbox = ndicalc_vis_matlab.toolbox_dir()
     assert isinstance(toolbox, Path)
@@ -39,7 +46,7 @@ def test_every_json_file_is_installed():
     differ = [
         str(rel)
         for rel in expected
-        if (installed / rel).read_bytes() != (REPO_ROOT / "ndi_common" / rel).read_bytes()
+        if _content(installed / rel) != _content(REPO_ROOT / "ndi_common" / rel)
     ]
     assert not differ, f"installed copies differ from the repository: {differ}"
 
