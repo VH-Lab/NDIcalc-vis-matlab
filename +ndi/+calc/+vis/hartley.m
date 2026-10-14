@@ -605,19 +605,26 @@ classdef hartley < ndi.calculator
             linkaxes([ax(1) ax(2)]);
 
             rp = doc.document_properties.hartley_reverse_correlation.reconstruction_properties;
-            [theta,sta_r,pval_r] = vis.revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
-            [t_profile,t_profile_pval] = vis.revcorr.peak_time_profile(rp.T_coords,sta,significance_plot);
+            % take the space x time profile from the STA rotated to its
+            % prevailing orientation, so the space axis is fixed relative to
+            % the receptive field rather than to the screen
+            [~,sta_r,pval_r] = vis.revcorr.rotate_sta(rp.T_coords, sta, significance_plot);
+            [t_profile,t_profile_pval] = vis.revcorr.peak_time_profile(rp.T_coords,sta_r,pval_r);
 
             ax(3) = subplot(2,2,2);
             imshow(t_profile,clim,'XData',rp.T_coords,'YData',rp.Y_coords);
             axis normal on;
             grid on;
+            xlabel('Time lag (s)');
+            ylabel({'Position, rotated to','preferred orientation'});
 
             ax(4) = subplot(2,2,4);
             image(t_profile_pval,'XData',rp.T_coords,'YData',rp.Y_coords);
             colormap(ax(4),cmap);
             axis normal on;
             grid on;
+            xlabel('Time lag (s)');
+            ylabel({'Position, rotated to','preferred orientation'});
 
             linkaxes([ax(3) ax(4)]);
 
