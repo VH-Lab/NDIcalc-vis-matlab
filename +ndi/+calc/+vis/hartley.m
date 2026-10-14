@@ -594,17 +594,25 @@ classdef hartley < ndi.calculator
             H = vlt.image.stack2tile(sta(:,:,1:size_param),plotrows,plotcols);
             Hp = vlt.image.stack2tile(significance_plot(:,:,1:size_param),plotrows,plotcols);
 
+            rp = doc.document_properties.hartley_reverse_correlation.reconstruction_properties;
+
+            % the tiles run left to right, then top to bottom, one time lag each
+            dt_ms = 1000 * median(diff(rp.T_coords(:)));
+            tile_str = sprintf('\\Deltat = %g ms per tile, %g to %g ms', dt_ms, ...
+                1000*rp.T_coords(1), 1000*rp.T_coords(size_param));
+
             ax(1) = subplot(2,2,1);
             imshow(H{1},clim);
+            title({'Spike-triggered average', tile_str});
 
             ax(2)=subplot(2,2,3);
             image(Hp{1});
             colormap(ax(2),cmap);
             axis equal off;
+            title({'Significance', tile_str});
 
             linkaxes([ax(1) ax(2)]);
 
-            rp = doc.document_properties.hartley_reverse_correlation.reconstruction_properties;
             % take the space x time profile from the STA rotated to its
             % prevailing orientation, so the space axis is fixed relative to
             % the receptive field rather than to the screen
@@ -625,8 +633,23 @@ classdef hartley < ndi.calculator
             grid on;
             xlabel('Time lag (s)');
             ylabel({'Position, rotated to','preferred orientation'});
+            title('Significance');
 
             linkaxes([ax(3) ax(4)]);
+
+            % label the whole figure with the cell and the epoch
+            element_str = '';
+            ele = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('element_id')));
+            if ~isempty(ele)
+                element = ndi.database.fun.ndi_document2ndi_object(ele{1}, ndi_calculator_obj.session);
+                element_str = element.elementstring();
+            end
+            epoch_str = '';
+            stim_pres = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',doc.dependency_value('stimulus_presentation_id')));
+            if ~isempty(stim_pres)
+                epoch_str = stim_pres{1}.document_properties.epochid.epochid;
+            end
+            sgtitle([element_str ' ' epoch_str], 'Interpreter', 'none');
 
             h.objects = cat(1,h.objects,ax);
 
