@@ -1,14 +1,14 @@
 function fh = plotResults(D, options)
 % PLOTRESULTS - Plot the calculator results shown in the paper from the example dataset
 %
-% FH = NDI.CALC.PAPERFIGURES.PLOTRESULTS()
-% FH = NDI.CALC.PAPERFIGURES.PLOTRESULTS(D)
+% FH = NDI.CALC.PAPERFIGURES.PLOTRESULTS(D, ...)
 %
 % Plots the calculator output documents that the calculators paper shows,
 % drawn from the example dataset that accompanies the paper. Each calculator
-% has its own section, which picks out the example cells for that calculator
-% and draws each of their output documents with the calculator's own PLOT
-% method.
+% has its own section, switched by its own name/value pair; all are on by
+% default, since plotting is quick, so name the ones to leave out. Each section finds the output
+% documents of the example cells (ndi.calc.paperFigures.exampleCells) and
+% draws them with the calculator's own PLOT method.
 %
 % The orientation/direction, contrast, contrast sensitivity, spatial
 % frequency and temporal frequency examples come from the dataset's session
@@ -17,7 +17,7 @@ function fh = plotResults(D, options)
 % Casanova et al. study; their plots have several panels, so each gets its own
 % window.
 %
-% D is the ndi.dataset to plot from. If it is not given, the dataset is opened
+% D is the ndi.dataset to plot from. If it is empty, the dataset is opened
 % (and downloaded if necessary) with ndi.calc.paperFigures.openDataset.
 %
 % FH is a vector of the figure handles that were created.
@@ -43,9 +43,11 @@ function fh = plotResults(D, options)
 %
 % Example:
 %   D = ndi.calc.paperFigures.openDataset();
-%   fh = ndi.calc.paperFigures.plotResults(D);
+%   fh = ndi.calc.paperFigures.plotResults(D);                       % everything
+%   fh = ndi.calc.paperFigures.plotResults(D, 'doContrast', false);  % all but contrast
 %
-% See also: ndi.calc.paperFigures.openDataset, ndi.calculator/plot
+% See also: ndi.calc.paperFigures.openDataset, ndi.calc.paperFigures.exampleCells,
+%   ndi.calc.paperFigures.recomputeResults, ndi.calculator/plot
 
 arguments
     D = []
@@ -62,9 +64,9 @@ if isempty(D)
     D = ndi.calc.paperFigures.openDataset();
 end
 
-fh = gobjects(0);
+fh = gobjects(1,0);
 
-% The Griswold and Van Hooser session: one 4 x 4 grid of windows per calculator
+% The Griswold and Van Hooser session: windows of 4 x 4 plots per calculator
 
 griswold = { ...
     options.doOridir,              'ndi.calc.vis.oridir_tuning',             'oridirtuning_calc'; ...
@@ -74,13 +76,8 @@ griswold = { ...
     options.doTemporalFrequency,   'ndi.calc.vis.temporal_frequency_tuning', 'temporal_frequency_tuning_calc'};
 
 if any([griswold{:,1}])
-    S = sessionByReference(D, griswoldSessionReference());
-    q_cells = ndi.query.all();
-    cells = griswoldCells();
-    if ~isempty(cells)
-        [~, elementIds] = findElements(D, cells);
-        q_cells = dependsOnAny(elementIds);
-    end
+    [S, ~, q_cells] = ndi.calc.paperFigures.findElements(D, ...
+        ndi.calc.paperFigures.exampleCells("griswold"));
     for k = find([griswold{:,1}])
         c = feval(griswold{k,2}, S);
         docs = S.database_search(ndi.query('','isa',griswold{k,3}) & q_cells);
@@ -88,117 +85,25 @@ if any([griswold{:,1}])
     end
 end
 
-% Speed tuning
+% The Suarez Casanova session: one window per plot
 
-if options.doSpeed
-    % The same cells as the Hartley examples, from the Suarez Casanova session
-    [S, elementIds] = findElements(D, suarezCasanovaCells());
-    c = ndi.calc.vis.speed_tuning(S);
-    docs = S.database_search(ndi.query('','isa','speedtuning_calc') & dependsOnAny(elementIds));
-    for i = 1:numel(docs)
-        fh(end+1) = figure; %#ok<AGROW>
-        c.plot(docs{i});
+suarez = { ...
+    options.doSpeed,   'ndi.calc.vis.speed_tuning', 'speedtuning_calc'; ...
+    options.doHartley, 'ndi.calc.vis.hartley',      'hartley_calc'};
+
+if any([suarez{:,1}])
+    [S, ~, q_cells] = ndi.calc.paperFigures.findElements(D, ...
+        ndi.calc.paperFigures.exampleCells("suarezCasanova"));
+    for k = find([suarez{:,1}])
+        c = feval(suarez{k,2}, S);
+        docs = S.database_search(ndi.query('','isa',suarez{k,3}) & q_cells);
+        for i = 1:numel(docs)
+            fh(end+1) = figure; %#ok<AGROW>
+            c.plot(docs{i});
+        end
     end
 end
 
-% Hartley reverse correlation
-
-if options.doHartley
-    [S, elementIds] = findElements(D, suarezCasanovaCells());
-    c = ndi.calc.vis.hartley(S);
-    docs = S.database_search(ndi.query('','isa','hartley_calc') & dependsOnAny(elementIds));
-    for i = 1:numel(docs)
-        fh(end+1) = figure; %#ok<AGROW>
-        c.plot(docs{i});
-    end
-end
-
-end
-
-function ref = griswoldSessionReference()
-% GRISWOLDSESSIONREFERENCE - Reference of the Griswold and Van Hooser session
-ref = '2021-07-06';
-end
-
-function cells = griswoldCells()
-% GRISWOLDCELLS - Example cells from the Griswold and Van Hooser session
-%
-% The cells, by element name and reference, whose orientation/direction,
-% contrast, contrast sensitivity, spatial frequency and temporal frequency
-% results are shown: the first 15 cells, in name order, that have
-% orientation/direction results. Empty would mean every cell is shown.
-cells = { ...
-    'LeftHemisphere_1', 1; ...
-    'LeftHemisphere_2', 1; ...
-    'LeftHemisphere_5', 1; ...
-    'LeftHemisphere_7', 1; ...
-    'LeftHemisphere_17', 1; ...
-    'LeftHemisphere_18', 1; ...
-    'LeftHemisphere_20', 1; ...
-    'LeftHemisphere_21', 1; ...
-    'LeftHemisphere_22', 1; ...
-    'LeftHemisphere_23', 1; ...
-    'LeftHemisphere_24', 1; ...
-    'LeftHemisphere_25', 1; ...
-    'LeftHemisphere_26', 1; ...
-    'LeftHemisphere_27', 1; ...
-    'LeftHemisphere_28', 1};
-end
-
-function cells = suarezCasanovaCells()
-% SUAREZCASANOVACELLS - Example cells from the Suarez Casanova session
-%
-% The cells, by element name and reference, whose speed tuning and Hartley
-% receptive fields are shown. They are recorded in the example dataset's
-% session from the Suarez Casanova et al. study.
-cells = { ...
-    'leftcortex_11', 1; ...
-    'leftcortex_22', 1; ...
-    'leftcortex_26', 1; ...
-    'leftcortex_31', 1};
-end
-
-function [S, elementIds] = findElements(D, cells)
-% FINDELEMENTS - Look up the element documents of the example cells
-%
-% [S, ELEMENTIDS] = FINDELEMENTS(D, CELLS)
-%
-% CELLS is an N x 2 cell array of element names and references. Each must
-% match exactly one element document in the dataset D, and all must belong to
-% the same session. Returns that session S and the N element ids.
-
-elementIds = cell(size(cells,1),1);
-sessionIds = cell(size(cells,1),1);
-for k = 1:size(cells,1)
-    q = ndi.query('','isa','element') & ...
-        ndi.query('element.name','exact_string',cells{k,1}) & ...
-        ndi.query('element.reference','exact_number',cells{k,2});
-    edoc = D.database_search(q);
-    if numel(edoc) ~= 1
-        error('NDICALC:paperFigures:plotResults:ElementNotFound', ...
-            'Expected one element named %s | %d, found %d.', ...
-            cells{k,1}, cells{k,2}, numel(edoc));
-    end
-    elementIds{k} = edoc{1}.id();
-    sessionIds{k} = edoc{1}.document_properties.base.session_id;
-end
-sessionIds = unique(sessionIds);
-if numel(sessionIds) ~= 1
-    error('NDICALC:paperFigures:plotResults:MixedSessions', ...
-        'The example cells come from %d sessions; expected one.', numel(sessionIds));
-end
-S = D.open_session(sessionIds{1});
-end
-
-function S = sessionByReference(D, ref)
-% SESSIONBYREFERENCE - Open the session of the dataset D with reference REF
-[refs, ids] = D.session_list();
-match = find(strcmp(refs, ref));
-if numel(match) ~= 1
-    error('NDICALC:paperFigures:plotResults:SessionNotFound', ...
-        'Expected one session with reference %s, found %d.', ref, numel(match));
-end
-S = D.open_session(ids{match});
 end
 
 function fh = plotGrid(c, docs, rows, cols)
@@ -219,12 +124,4 @@ for i = 1:numel(docs)
     c.plot(docs{i});
 end
 fh = reshape(get(fig, 'userdata'), 1, []);
-end
-
-function q = dependsOnAny(elementIds)
-% DEPENDSONANY - A query matching documents that depend on any of ELEMENTIDS
-q = ndi.query.none();
-for k = 1:numel(elementIds)
-    q = q | ndi.query('','depends_on','element_id',elementIds{k});
-end
 end
