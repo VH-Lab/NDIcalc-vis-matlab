@@ -81,7 +81,7 @@ if any([griswold{:,1}])
     for k = find([griswold{:,1}])
         c = feval(griswold{k,2}, S);
         docs = S.database_search(ndi.query('','isa',griswold{k,3}) & q_cells);
-        fh = cat(2, fh, plotGrid(c, docs, 4, 4));
+        fh = cat(2, fh, ndi.calc.paperFigures.plotGrid(c, docs, 4, 4));
     end
 end
 
@@ -104,24 +104,4 @@ if any([suarez{:,1}])
     end
 end
 
-end
-
-function fh = plotGrid(c, docs, rows, cols)
-% PLOTGRID - Plot documents in windows of ROWS x COLS axes
-%
-% FH = PLOTGRID(C, DOCS, ROWS, COLS)
-%
-% Draws each document in the cell array DOCS with the PLOT method of
-% calculator C, one per axes, filling windows of ROWS x COLS axes with
-% vlt.plot.supersubplot. Returns the handles of the windows.
-fh = gobjects(1,0);
-if isempty(docs)
-    return;
-end
-fig = figure;
-for i = 1:numel(docs)
-    vlt.plot.supersubplot(fig, rows, cols, i);
-    c.plot(docs{i});
-end
-fh = reshape(get(fig, 'userdata'), 1, []);
 end
