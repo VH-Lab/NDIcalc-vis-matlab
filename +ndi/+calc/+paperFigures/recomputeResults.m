@@ -14,6 +14,9 @@ function [fh, docs] = recomputeResults(D, options)
 % (SEARCH_FOR_INPUT_PARAMETERS) lists every set of inputs it can run on; the
 % sets that produced the stored results of the example cells
 % (ndi.calc.paperFigures.exampleCells) are calculated again with CALCULATE.
+% A cell has one Hartley result per epoch of Hartley stimuli; only the last
+% (ndi.calc.paperFigures.lastHartley) is recomputed, with the same input
+% parameters it was computed with, which saves most of the time.
 %
 % The new documents are plotted the way ndi.calc.paperFigures.plotResults
 % plots the stored ones, in windows named "Recomputed: <calculator>". They
@@ -93,7 +96,11 @@ for k = find([sections{:,1}])
 
     % recompute the input sets whose stored results belong to the example cells
     docs_here = {};
-    all_parameters = c.search_for_input_parameters(c.default_search_for_input_parameters());
+    if isa(c, 'ndi.calc.vis.hartley')
+        all_parameters = lastHartleyParameters(S, elementIds);
+    else
+        all_parameters = c.search_for_input_parameters(c.default_search_for_input_parameters());
+    end
     for i = 1:numel(all_parameters)
         stored = c.search_for_calculator_docs(all_parameters{i});
         if ~any(cellfun(@(d) ismember(d.dependency_value('element_id'), elementIds), stored))
@@ -131,4 +138,26 @@ if isa(c, 'ndi.calc.vis.hartley')
     cleanup = onCleanup(@() c.session.database_rm(doc.id())); %#ok<NASGU>
 end
 c.plot(doc);
+end
+
+function all_parameters = lastHartleyParameters(S, elementIds)
+% LASTHARTLEYPARAMETERS - Inputs that recompute each cell's last Hartley result
+%
+% For each cell's last stored hartley_calc document, the input parameters it
+% was computed with and the element and stimulus presentation it depends on.
+q = ndi.query.none();
+for k = 1:numel(elementIds)
+    q = q | ndi.query('','depends_on','element_id',elementIds{k});
+end
+stored = ndi.calc.paperFigures.lastHartley(S, ...
+    S.database_search(ndi.query('','isa','hartley_calc') & q));
+all_parameters = cell(1, numel(stored));
+for i = 1:numel(stored)
+    all_parameters{i} = struct( ...
+        'input_parameters', stored{i}.document_properties.hartley_calc.input_parameters, ...
+        'depends_on', struct( ...
+            'name',  {'element_id', 'stimulus_presentation_id'}, ...
+            'value', {stored{i}.dependency_value('element_id'), ...
+                      stored{i}.dependency_value('stimulus_presentation_id')}));
+end
 end

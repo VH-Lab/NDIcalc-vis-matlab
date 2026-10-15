@@ -370,6 +370,12 @@ classdef hartley < ndi.calculator
             element = ndi.database.fun.ndi_document2ndi_object(element_doc, ndi_calculator_obj.session);
 
             q1 = ndi.query('','isa','stimulus_presentation','');
+            % a caller can name one stimulus presentation in depends_on, to
+            % compute the reverse correlation for that presentation only
+            stim_pres_index = find(strcmp('stimulus_presentation_id',{parameters.depends_on.name}),1);
+            if ~isempty(stim_pres_index) && ~isempty(parameters.depends_on(stim_pres_index).value)
+                q1 = q1 & ndi.query('base.id','exact_string',parameters.depends_on(stim_pres_index).value,'');
+            end
             stimulus_presentation_docs = ndi_calculator_obj.session.database_search(q1);
             ndi_decoder = ndi.app.stimulus.decoder(ndi_calculator_obj.session);
 

@@ -15,7 +15,8 @@ function fh = plotResults(D, options)
 % from Griswold and Van Hooser (2025) and are drawn in windows of 4 x 4 plots.
 % The speed tuning and Hartley examples come from the session from the Suarez
 % Casanova et al. study; their plots have several panels, so each gets its own
-% window.
+% window. A cell has one Hartley document per epoch of Hartley stimuli; only
+% the last is shown (ndi.calc.paperFigures.lastHartley).
 %
 % D is the ndi.dataset to plot from. If it is empty, the dataset is opened
 % (and downloaded if necessary) with ndi.calc.paperFigures.openDataset.
@@ -97,6 +98,10 @@ if any([suarez{:,1}])
     for k = find([suarez{:,1}])
         c = feval(suarez{k,2}, S);
         docs = S.database_search(ndi.query('','isa',suarez{k,3}) & q_cells);
+        if strcmp(suarez{k,2}, 'ndi.calc.vis.hartley')
+            % a cell has one Hartley document per Hartley epoch; show the last
+            docs = ndi.calc.paperFigures.lastHartley(S, docs);
+        end
         for i = 1:numel(docs)
             fh(end+1) = figure; %#ok<AGROW>
             c.plot(docs{i});
