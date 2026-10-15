@@ -1,7 +1,7 @@
-function results = recomputeResults(D, options)
+function [results, docs] = recomputeResults(D, options)
 % RECOMPUTERESULTS - Recompute the paper's example results and compare them with the stored ones
 %
-% RESULTS = NDI.CALC.PAPERFIGURES.RECOMPUTERESULTS(D, 'doX', true, ...)
+% [RESULTS, DOCS] = NDI.CALC.PAPERFIGURES.RECOMPUTERESULTS(D, 'doX', true, ...)
 %
 % Runs the calculators again on the example cells of the calculators paper's
 % example dataset, and compares each newly computed output document with the
@@ -37,6 +37,15 @@ function results = recomputeResults(D, options)
 %   match      - true if the recomputed document agrees within tolerance
 %   report     - where they disagree, if they do
 %
+% DOCS is a cell array of the recomputed ndi.documents, one per row of
+% RESULTS (empty where no recomputed document matched the stored one). They
+% can be drawn with the calculator's PLOT method, for example
+%   c = ndi.calc.vis.oridir_tuning(S); figure; c.plot(docs{1});
+% where S is the session the cell belongs to. A recomputed Hartley document
+% keeps its spike-triggered average in a binary file that PLOT reads through
+% the database, so it has to be added to the session before it can be
+% plotted.
+%
 % This function also takes name/value pairs that modify its behavior:
 % |----------------------------|----------------------------------------------|
 % | Parameter (default)        | Description                                  |
@@ -56,7 +65,7 @@ function results = recomputeResults(D, options)
 %
 % Example:
 %   D = ndi.calc.paperFigures.openDataset();
-%   results = ndi.calc.paperFigures.recomputeResults(D, 'doOridir', true)
+%   [results, docs] = ndi.calc.paperFigures.recomputeResults(D, 'doOridir', true)
 %
 % See also: ndi.calc.paperFigures.plotResults, ndi.calc.paperFigures.exampleCells,
 %   ndi.calculator/calculate
@@ -88,6 +97,7 @@ sections = { ...
 results = table('Size',[0 5], ...
     'VariableTypes',{'string','string','string','logical','string'}, ...
     'VariableNames',{'calculator','element','stored_id','match','report'});
+docs = {};
 
 for k = find([sections{:,1}])
     cells = ndi.calc.paperFigures.exampleCells(sections{k,3});
@@ -114,8 +124,10 @@ for k = find([sections{:,1}])
             if isempty(n)
                 b = false;
                 report = "No recomputed document has the same dependencies.";
+                docs{end+1} = []; %#ok<AGROW>
             else
                 [b, report] = compareDocs(c, stored{j}, recomputed{n}, docCompare);
+                docs{end+1} = recomputed{n}; %#ok<AGROW>
             end
             results(end+1,:) = {string(sections{k,2}), ...
                 string(elementNames(stored{j}.dependency_value('element_id'))), ...
