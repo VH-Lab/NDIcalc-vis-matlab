@@ -11,7 +11,7 @@
 		]
 	},
 	"files": {
-		"file_list": [ "hartley_results.ngrid" ]
+		"file_list": [ "hartley_results.ngrid", "hartley_frametimes.bin", "hartley_numbers.bin", "hartley_spiketimes.bin" ]
     },
 	"hartley_calc": {
 		"input_parameters": {

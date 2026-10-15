@@ -26,7 +26,7 @@
 			"default_value": [],
 			"parameters": [],
 			"queryable": 1,
-			"documentation": "The properties of the Hartley stimuli"
+			"documentation": "The properties of the Hartley stimuli, one entry per frame: S, KXV, KYV and ORDER (empty in hartley_calc documents, which keep it in a binary file; read it with ndi.calc.vis.hartley/read_stimulus_and_spikes)"
 		},
 		{
 			"name": "spiketimes",
@@ -34,7 +34,7 @@
 			"default_value": [],
 			"parameters": [NaN,NaN],
 			"queryable": 1,
-			"documentation": "The spike times"
+			"documentation": "The spike times (empty in hartley_calc documents, which keep it in a binary file; read it with ndi.calc.vis.hartley/read_stimulus_and_spikes)"
 		},
 		{
 			"name": "frameTimes",
@@ -42,7 +42,7 @@
 			"default_value": [],
 			"parameters": [NaN,NaN],
 			"queryable": 1,
-			"documentation": "The properties of the Hartley stimuli"
+			"documentation": "The time of each stimulus frame (empty in hartley_calc documents, which keep it in a binary file; read it with ndi.calc.vis.hartley/read_stimulus_and_spikes)"
 		}
 	]
 }

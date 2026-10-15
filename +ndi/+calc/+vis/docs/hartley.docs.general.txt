@@ -15,6 +15,12 @@ The average and the significance array are written to a binary ngrid file attach
     h = ndi.calc.vis.hartley(S);
     [sta,cdf] = h.read_sta(mydoc);
 
+The inputs of the reconstruction, the time and Hartley numbers of every stimulus frame and the element's event times, are kept the same way, in three more binary files, because an epoch has tens of thousands of frames. Use the read_stimulus_and_spikes method to read them back:
+
+    [frameTimes,hartley_numbers,spiketimes] = h.read_stimulus_and_spikes(mydoc);
+
+Documents made before these files existed hold the same values in their hartley_reverse_correlation fields, and read_stimulus_and_spikes returns those instead.
+
 Note that this calculator is far more expensive than the others in this package, taking minutes where the tuning-curve calculators take seconds, because the reconstruction visits every event. It reports its progress as it runs. The reconstruction loop is run with the number of workers given by the user's NDI parallel preferences; see ndi.fun.parallelWorkers.
 
 Two properties of the reconstruction are worth knowing before choosing input parameters. First, the spatial size of the reconstruction is set by the number of X_coords alone: the average is numel(X_coords) by numel(X_coords). Y_sample changes the Y_coords that are recorded in the document but does not change the size of the reconstruction, so X_sample and Y_sample should ordinarily be given the same value. Second, T_coords may include times before and after the event; the default range runs from -0.100 s to 0.250 s in 10 ms steps.
