@@ -223,6 +223,14 @@ classdef hartley < ndi.calculator
                     end
                     fwrite(fid, cat(4, sta, pval), 'double');
                     fclose(fid);
+
+                    % and the stimulus sequence and spike times, read back the
+                    % way compare_mock_docs reads them
+                    [frameTimes_exp, numbers_exp, spiketimes_exp] = obj.read_stimulus_and_spikes(doc_output{i});
+                    ndi.calc.vis.hartley.writeDoublesToFile(fullfile(mock_dir, ['mock.' int2str(i) '_hartley_frametimes.bin']), frameTimes_exp);
+                    ndi.calc.vis.hartley.writeDoublesToFile(fullfile(mock_dir, ['mock.' int2str(i) '_hartley_numbers.bin']), ...
+                        [numbers_exp.S numbers_exp.KXV numbers_exp.KYV numbers_exp.ORDER]);
+                    ndi.calc.vis.hartley.writeDoublesToFile(fullfile(mock_dir, ['mock.' int2str(i) '_hartley_spiketimes.bin']), spiketimes_exp);
                 else
                     expected_file = fullfile(mock_dir, ['mock.' int2str(i) '.json']);
                     if isfile(expected_file)
@@ -301,10 +309,13 @@ classdef hartley < ndi.calculator
                 fclose(fid_exp);
 
                 % Read actual data
+                inputs_report = '';
                 if strcmp(actual_doc.id(), expected_doc.id())
                     sta_act = sta_exp;
                 else
                     [sta_act, ~] = ndi_calculator_obj.read_sta(actual_doc_to_read);
+                    inputs_report = ndi.calc.vis.hartley.compareStimulusAndSpikes(ndi_calculator_obj, ...
+                        expected_doc, actual_doc_to_read, mock_dir);
                 end
 
                 % Clean up if we added the document
@@ -328,6 +339,9 @@ classdef hartley < ndi.calculator
                 if max_diff > 1e-2
                     b = 0;
                     report = sprintf('STA data mismatch at frame 10. Max diff: %g', max_diff);
+                elseif ~isempty(inputs_report)
+                    b = 0;
+                    report = inputs_report;
                 else
                     b = 1;
                     report = ''; % Success
@@ -483,6 +497,15 @@ classdef hartley < ndi.calculator
                     p_val = p_val(:,:,end:-1:1); % make it match T
 
                     % Step 3c: actually make the document
+
+                    % The per-frame arrays and the spike times go into binary
+                    % files below, not into the document's JSON.
+                    hartley_numbers_in = hartley_reverse_correlation.hartley_numbers;
+                    hartley_reverse_correlation.hartley_numbers = ...
+                        struct('S',[],'KXV',[],'KYV',[],'ORDER',[]);
+                    hartley_reverse_correlation.spiketimes = [];
+                    hartley_reverse_correlation.frameTimes = [];
+
                     if 1%
                         ngridp.data_size = 8;
                         ngridp.data_type = 'double';
@@ -515,6 +538,23 @@ classdef hartley < ndi.calculator
                         fclose(fid);
 
                         doc{end} = doc{end}.add_file('hartley_results.ngrid',myfile);
+
+                        % The per-frame stimulus sequence and the spike times
+                        % are the inputs the STA was computed from. There are
+                        % tens of thousands of frames per epoch, so as JSON
+                        % they made each document several hundred KB to over
+                        % a MB; they are kept in binary files instead, read
+                        % back with READ_STIMULUS_AND_SPIKES.
+                        hn = hartley_numbers_in;
+                        binaryFiles = { ...
+                            'hartley_frametimes.bin',  frameTimes(:); ...
+                            'hartley_numbers.bin',     [hn.S(:) hn.KXV(:) hn.KYV(:) hn.ORDER(:)]; ...
+                            'hartley_spiketimes.bin',  spike_times(:)};
+                        for f = 1:size(binaryFiles,1)
+                            myfile = fullfile(mypath,[doc{end}.id() '_' binaryFiles{f,1}]);
+                            ndi.calc.vis.hartley.writeDoublesToFile(myfile, binaryFiles{f,2});
+                            doc{end} = doc{end}.add_file(binaryFiles{f,1},myfile);
+                        end
                     end
 
                     report(1);
@@ -700,7 +740,69 @@ classdef hartley < ndi.calculator
             ndi_calculator_obj.session.database_closebinarydoc(myfile);
         end % read_sta()
 
+        function [frameTimes, hartley_numbers, spiketimes] = read_stimulus_and_spikes(ndi_calculator_obj, doc_or_id)
+            % READ_STIMULUS_AND_SPIKES - read the stimulus sequence and spike times a Hartley STA was computed from
+            %
+            % [FRAMETIMES, HARTLEY_NUMBERS, SPIKETIMES] = READ_STIMULUS_AND_SPIKES(NDI_CALCULATOR_OBJ, DOC_OR_ID)
+            %
+            % Reads the inputs of the reverse correlation of a hartley_calc
+            % document. NDI_CALCULATOR_OBJ should be an ndi.calc.vis.hartley
+            % object and DOC_OR_ID should either be an ndi.document or the id of
+            % the hartley document object to be read.
+            %
+            % FRAMETIMES is a column vector with the time of each stimulus frame.
+            % HARTLEY_NUMBERS is a structure with fields S, KXV, KYV and ORDER,
+            % each a column vector with one entry per frame (see HARTLEYNUMBERS).
+            % SPIKETIMES is a column vector of the spike times.
+            %
+            % These are stored in the binary files hartley_frametimes.bin,
+            % hartley_numbers.bin and hartley_spiketimes.bin. Documents made
+            % before those files existed kept the same values in their
+            % hartley_reverse_correlation fields; those are returned instead.
+            %
+            % See also: READ_STA
+
+            doc = ndi_calculator_obj.hartley_doc(doc_or_id);
+
+            if ~ismember('hartley_frametimes.bin', doc.current_file_list())
+                % an older document, with the values in the JSON
+                hrc = doc.document_properties.hartley_reverse_correlation;
+                frameTimes = hrc.frameTimes(:);
+                hn = hrc.hartley_numbers;
+                hartley_numbers = struct('S',hn.S(:),'KXV',hn.KXV(:),'KYV',hn.KYV(:),'ORDER',hn.ORDER(:));
+                spiketimes = hrc.spiketimes(:);
+                return;
+            end
+
+            frameTimes = ndi_calculator_obj.read_doubles(doc, 'hartley_frametimes.bin', 1);
+            numbers = ndi_calculator_obj.read_doubles(doc, 'hartley_numbers.bin', 4);
+            hartley_numbers = struct('S',numbers(:,1),'KXV',numbers(:,2),'KYV',numbers(:,3),'ORDER',numbers(:,4));
+            spiketimes = ndi_calculator_obj.read_doubles(doc, 'hartley_spiketimes.bin', 1);
+        end % read_stimulus_and_spikes()
+
     end % methods()
+
+    methods (Access = private)
+        function doc = hartley_doc(ndi_calculator_obj, doc_or_id)
+            % HARTLEY_DOC - the hartley_calc document named by a document or an id
+            if ischar(doc_or_id) || isstring(doc_or_id)
+                doc = ndi_calculator_obj.session.database_search(ndi.query('base.id','exact_string',char(doc_or_id),''));
+                if numel(doc)~=1
+                    error(['No document with id ' char(doc_or_id) ' found.']);
+                end
+                doc = doc{1};
+            else
+                doc = doc_or_id;
+            end
+        end % hartley_doc()
+
+        function data = read_doubles(ndi_calculator_obj, doc, filename, ncols)
+            % READ_DOUBLES - read one of the document's binary files of doubles
+            myfile = ndi_calculator_obj.session.database_openbinarydoc(doc, filename);
+            cleanup = onCleanup(@() ndi_calculator_obj.session.database_closebinarydoc(myfile));
+            data = ndi.calc.vis.hartley.readDoublesFromFile(myfile, ncols);
+        end % read_doubles()
+    end % methods (Access = private)
 
     methods (Static)
         function [sta,pval] = readStaFromFile(fileid_or_obj, data_dim, data_type)
@@ -728,6 +830,102 @@ classdef hartley < ndi.calculator
             sta = fulldata(:,:,:,1);
             pval = fulldata(:,:,:,2);
         end % readStaFromFile
+
+        function report = compareStimulusAndSpikes(hartley_obj, expected_doc, actual_doc, mock_dir)
+            % COMPARESTIMULUSANDSPIKES - compare the stored inputs of a self-test's STA with the expected ones
+            %
+            % REPORT = COMPARESTIMULUSANDSPIKES(HARTLEY_OBJ, EXPECTED_DOC, ACTUAL_DOC, MOCK_DIR)
+            %
+            % Reads the frame times, Hartley numbers and spike times of
+            % ACTUAL_DOC with READ_STIMULUS_AND_SPIKES and compares them with
+            % those of EXPECTED_DOC. An expectation written before these moved
+            % to binary files has them in its JSON; a newer one has them in
+            % the files mock.1_hartley_*.bin in MOCK_DIR. REPORT is empty if
+            % they match and describes the first mismatch otherwise.
+            %
+            % The frame times and spike times must agree to within 1e-6 s and
+            % the Hartley numbers, which are integers, exactly. They are
+            % computed without any randomness from the self-test's fixed
+            % stimulus and model cell, so they should only ever differ by
+            % rounding.
+
+            hrc = expected_doc.document_properties.hartley_reverse_correlation;
+            if ~isempty(hrc.frameTimes)
+                frameTimes_exp = hrc.frameTimes(:);
+                hn = hrc.hartley_numbers;
+                numbers_exp = [hn.S(:) hn.KXV(:) hn.KYV(:) hn.ORDER(:)];
+                spiketimes_exp = hrc.spiketimes(:);
+            else
+                readMock = @(name, ncols) readMockFile(fullfile(mock_dir, ['mock.1_' name]), ncols);
+                frameTimes_exp = readMock('hartley_frametimes.bin', 1);
+                numbers_exp = readMock('hartley_numbers.bin', 4);
+                spiketimes_exp = readMock('hartley_spiketimes.bin', 1);
+            end
+
+            [frameTimes_act, hn_act, spiketimes_act] = hartley_obj.read_stimulus_and_spikes(actual_doc);
+            numbers_act = [hn_act.S hn_act.KXV hn_act.KYV hn_act.ORDER];
+
+            report = '';
+            if ~isequal(size(frameTimes_act), size(frameTimes_exp)) || any(abs(frameTimes_act - frameTimes_exp) > 1e-6)
+                report = sprintf('Frame times differ: %d expected, %d found.', numel(frameTimes_exp), numel(frameTimes_act));
+            elseif ~isequal(numbers_act, numbers_exp)
+                report = 'Hartley numbers (S, KXV, KYV, ORDER) differ from those expected.';
+            elseif ~isequal(size(spiketimes_act), size(spiketimes_exp)) || any(abs(spiketimes_act - spiketimes_exp) > 1e-6)
+                report = sprintf('Spike times differ: %d expected, %d found.', numel(spiketimes_exp), numel(spiketimes_act));
+            end
+
+            function data = readMockFile(filename, ncols)
+                fid = fopen(filename, 'r', 'ieee-le');
+                if fid < 0
+                    error('NDICALC:hartley:expectation', ['Could not open expected binary file ' filename '.']);
+                end
+                closeFile = onCleanup(@() fclose(fid));
+                data = ndi.calc.vis.hartley.readDoublesFromFile(fid, ncols);
+            end
+        end % compareStimulusAndSpikes
+
+        function data = readDoublesFromFile(fileid_or_obj, ncols)
+            % READDOUBLESFROMFILE - read a matrix of doubles from a file identifier or object
+            %
+            % DATA = READDOUBLESFROMFILE(FILEID_OR_OBJ, NCOLS)
+            %
+            % Reads the whole of a file of little-endian doubles, as written by
+            % WRITEDOUBLESTOFILE, and returns it as a matrix with NCOLS columns
+            % (column-major, so each column is stored after the one before it).
+            %
+            % Inputs:
+            %   FILEID_OR_OBJ - A file identifier (integer) or a file object (e.g.,
+            %                   did.file.fileobj or vlt.file.fileobj) that supports fread.
+            %   NCOLS - The number of columns.
+            %
+            % See also: WRITEDOUBLESTOFILE, READ_STIMULUS_AND_SPIKES
+
+            data = fread(fileid_or_obj, Inf, 'double');
+            if mod(numel(data), ncols) ~= 0
+                error('NDICALC:hartley:binaryFile', ...
+                    'The file holds %d values, which is not a whole number of rows of %d columns.', ...
+                    numel(data), ncols);
+            end
+            data = reshape(data, [], ncols);
+        end % readDoublesFromFile
+
+        function writeDoublesToFile(filename, data)
+            % WRITEDOUBLESTOFILE - write a matrix as little-endian doubles
+            %
+            % WRITEDOUBLESTOFILE(FILENAME, DATA)
+            %
+            % Writes DATA, column by column, to FILENAME as little-endian doubles.
+            % READDOUBLESFROMFILE reads it back.
+            %
+            % See also: READDOUBLESFROMFILE
+
+            fid = fopen(filename, 'w', 'ieee-le');
+            if fid < 0
+                error('NDICALC:hartley:binaryFile', ['Could not open file ' filename '.']);
+            end
+            cleanup = onCleanup(@() fclose(fid));
+            fwrite(fid, double(data), 'double');
+        end % writeDoublesToFile
 
         function [b,stimids] = ishartleystim(stim_presentation_doc)
             % ISHARTLEYSTIM - does a stimulus presentation doc contain a Hartley stimulus?
