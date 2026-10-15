@@ -11,8 +11,9 @@ function [fh, docs] = recomputeResults(D, options)
 % especially), so name the ones to recompute.
 %
 % For each calculator, the calculator's own input search
-% (SEARCH_FOR_INPUT_PARAMETERS) lists every set of inputs it can run on; the
-% sets that produced the stored results of the example cells
+% (SEARCH_FOR_INPUT_PARAMETERS), narrowed to the example cells, lists the sets
+% of inputs it can run on; the sets that produced the stored results of the
+% example cells
 % (ndi.calc.paperFigures.exampleCells) are calculated again with CALCULATE.
 % A cell has one Hartley result per epoch of Hartley stimuli; only the last
 % (ndi.calc.paperFigures.lastHartley) is recomputed, with the same input
@@ -99,7 +100,7 @@ for k = find([sections{:,1}])
     if isa(c, 'ndi.calc.vis.hartley')
         all_parameters = lastHartleyParameters(S, elementIds);
     else
-        all_parameters = c.search_for_input_parameters(c.default_search_for_input_parameters());
+        all_parameters = c.search_for_input_parameters(exampleCellSearch(c, elementIds));
     end
     for i = 1:numel(all_parameters)
         stored = c.search_for_calculator_docs(all_parameters{i});
@@ -125,6 +126,32 @@ for k = find([sections{:,1}])
     end
 end
 
+end
+
+function parameters = exampleCellSearch(c, elementIds)
+% EXAMPLECELLSEARCH - The calculator's input search, narrowed to the example cells
+%
+% A calculator's default search can match far more than cells:
+% contrast_sensitivity's offers every document in the session as a candidate
+% element, so listing its inputs for the whole session takes a very long
+% time. Each query in the default search is narrowed here before the search
+% runs: a query for the element itself to the example cells' ids, and any
+% other (such as a tuning curve, which depends on its element) to documents
+% that depend on one of the example cells.
+parameters = c.default_search_for_input_parameters();
+q_ids = ndi.query.none();
+q_depends = ndi.query.none();
+for k = 1:numel(elementIds)
+    q_ids = q_ids | ndi.query('base.id','exact_string',elementIds{k},'');
+    q_depends = q_depends | ndi.query('','depends_on','element_id',elementIds{k});
+end
+for i = 1:numel(parameters.query)
+    if strcmp(parameters.query(i).name, 'element_id')
+        parameters.query(i).query = parameters.query(i).query & q_ids;
+    else
+        parameters.query(i).query = parameters.query(i).query & q_depends;
+    end
+end
 end
 
 function plotUnsaved(c, doc)
