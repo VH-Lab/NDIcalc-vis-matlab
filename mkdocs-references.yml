@@ -18,7 +18,11 @@
             - ndi.calc.vis.test.speed_tuning_compare_docs: 'reference/+ndi/+calc/+vis/+test/speed_tuning_compare_docs.m.md'
             - ndi.calc.vis.test.temporal_frequency_tuning_compare_docs: 'reference/+ndi/+calc/+vis/+test/temporal_frequency_tuning_compare_docs.m.md'
       - fun PACKAGE:
+        - ndi.fun.checkCalcDirectory: 'reference/+ndi/+fun/checkCalcDirectory.m.md'
+        - ndi.fun.labelPlottedLine: 'reference/+ndi/+fun/labelPlottedLine.m.md'
         - ndi.fun.ndiCalcVisPath: 'reference/+ndi/+fun/ndiCalcVisPath.m.md'
+        - ndi.fun.parforProgress: 'reference/+ndi/+fun/parforProgress.m.md'
+        - ndi.fun.progressReporter: 'reference/+ndi/+fun/progressReporter.m.md'
         - spiketrains PACKAGE:
           - ndi.fun.spiketrains.mean_spike_waveforms: 'reference/+ndi/+fun/+spiketrains/mean_spike_waveforms.m.md'
       - test PACKAGE:
@@ -62,6 +66,7 @@
           - ndi.viz.vis.plot_tf: 'reference/+ndi/+viz/+vis/plot_tf.m.md'
           - ndi.viz.vis.plot_tf2: 'reference/+ndi/+viz/+vis/plot_tf2.m.md'
     - vis PACKAGE:
+      - vis.randomstream: 'reference/+vis/randomstream.m.md'
       - vis.vector2nasaltemporal: 'reference/+vis/vector2nasaltemporal.m.md'
       - contrast PACKAGE:
         - vis.contrast.naka_rushton_fit: 'reference/+vis/+contrast/naka_rushton_fit.m.md'
@@ -83,6 +88,7 @@
         - vis.frequency.movshon2005_cells: 'reference/+vis/+frequency/movshon2005_cells.m.md'
         - vis.frequency.movshon2005_fit: 'reference/+vis/+frequency/movshon2005_fit.m.md'
         - vis.frequency.movshon2005_func: 'reference/+vis/+frequency/movshon2005_func.m.md'
+        - vis.frequency.rsquared: 'reference/+vis/+frequency/rsquared.m.md'
         - vis.frequency.spatial_frequency_analysis: 'reference/+vis/+frequency/spatial_frequency_analysis.m.md'
         - vis.frequency.temporal_frequency_analysis: 'reference/+vis/+frequency/temporal_frequency_analysis.m.md'
       - oridir PACKAGE:
@@ -149,6 +155,7 @@
         - vis.speed.fit: 'reference/+vis/+speed/fit.m.md'
         - vis.speed.fit_fullspeed: 'reference/+vis/+speed/fit_fullspeed.m.md'
         - vis.speed.fit_nospeed: 'reference/+vis/+speed/fit_nospeed.m.md'
+        - vis.speed.halfpeakcontour: 'reference/+vis/+speed/halfpeakcontour.m.md'
         - vis.speed.plottuning: 'reference/+vis/+speed/plottuning.m.md'
         - vis.speed.speed_nested_f: 'reference/+vis/+speed/speed_nested_f.m.md'
         - vis.speed.tuningfunc: 'reference/+vis/+speed/tuningfunc.m.md'
