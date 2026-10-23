@@ -1,0 +1,55 @@
+cff-version: 1.2.0
+message: >-
+  If you use these calculators, please cite the archived release you used,
+  by its version DOI.
+type: software
+title: "NDIcalc-vis-matlab: NDI calculators for vision science"
+abstract: >-
+  Domain-specific analysis applets ("calculators") for vision science, built on
+  the NDI framework: orientation and direction tuning, contrast tuning and
+  contrast sensitivity, spatial and temporal frequency tuning, speed tuning,
+  and Hartley reverse correlation. Each calculator searches a typed document
+  database for its inputs, writes a single typed output document, and carries
+  its own documentation, self-tests, default parameters, and plotting method.
+authors:
+  - given-names: Avraham A.
+    family-names: Lepsky
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0009-0003-3983-2533"
+  - given-names: Madeline K.
+    family-names: Severson
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0000-0001-6763-3222"
+  - given-names: Ruyang
+    family-names: Wang
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0009-0003-1927-8686"
+  - given-names: Xinyu
+    family-names: Cheng
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0000-0002-7559-9658"
+  - given-names: Ricardo L.
+    family-names: Rodriguez
+    name-suffix: III
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0009-0006-4651-7840"
+  - given-names: Rui
+    family-names: Gong
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0009-0006-6544-5248"
+  - given-names: Stephen D.
+    family-names: Van Hooser
+    affiliation: Brandeis University, Department of Biology
+    orcid: "https://orcid.org/0000-0002-1112-5832"
+    email: vanhoosr@brandeis.edu
+repository-code: "https://github.com/VH-Lab/NDIcalc-vis-matlab"
+url: "https://vh-lab.github.io/NDIcalc-vis-matlab/"
+license: MIT
+keywords:
+  - neuroscience
+  - vision science
+  - data analysis
+  - reproducibility
+  - FAIR
+  - NDI
+  - MATLAB
