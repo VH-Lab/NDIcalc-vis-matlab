@@ -1,4 +1,4 @@
-https://github.com/VH-Lab/NDI-matlab
+https://github.com/VH-Lab/NDI-matlab@v1.2.0
 https://github.com/VH-lab/vhlab_vhtools
 https://github.com/VH-lab/vhlab-toolbox-matlab
 https://github.com/VH-lab/vhlab-library-matlab
