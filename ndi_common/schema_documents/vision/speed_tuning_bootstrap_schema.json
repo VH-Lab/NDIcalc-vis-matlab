@@ -1,0 +1,51 @@
+{
+	"classname": "speed_tuning_bootstrap",
+	"superclasses":  [ "base" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"speed_tuning_bootstrap": [
+		{
+			"name": "properties",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The units structure (response_units, response_type)."
+		},
+		{
+			"name": "input",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The bootstrap input parameters (numBootstrap, min_xi, max_xi, confidenceLevel)."
+		},
+		{
+			"name": "point_estimate",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The observed-data fit, identical to a speed_tuning result (properties, tuning_curve, significance, fit, fit_no_speed, fit_fullspeed, including the nested-F test)."
+		},
+		{
+			"name": "bootstrap",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Per-resample free-fit outputs: Priebe_fit_parameters (S-by-7 Priebe parameter matrix) and r_squared (S-by-1)."
+		},
+		{
+			"name": "confidence_interval",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Precomputed percentile confidence intervals on the free-fit parameters at confidenceLevel, with xi and SF/TF preference intervals called out."
+		}
+	]
+}
