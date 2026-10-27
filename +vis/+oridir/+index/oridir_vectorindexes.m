@@ -43,6 +43,7 @@ vi.dir_HotellingT2_p = nan;
 vi.dir_pref = nan;
 vi.dir_circularvariance = nan;
 vi.dir_dotproduct_sig_p = nan;
+vi.fwhh = nan;
 
 hasdirection = 0;
 
@@ -110,4 +111,4 @@ if hasdirection,
 	vi.dir_index = vlt.neuro.vision.oridir.index.compute_directionindex(angles,resp(2,:));
 end;
 
-
+vi.fwhh = vis.oridir.index.compute_bandwidth(tuneangles, tuneresps);
