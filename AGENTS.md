@@ -54,6 +54,24 @@ and the nested F test's p-value, compared by the decision it supports rather
 than its digits. Those reproduce fine. The unconstrained `fit` is well specified
 and keeps its tight tolerances -- do not loosen those.
 
+### oridir_tuning self-test 3: the broad curve
+
+Self-test 3's mock cell has a double-Gaussian width of 80 degrees, against the
+fit's upper bound of 90. Gaussians that broad overlap almost everywhere, so the
+offset `Rsp` trades off against the two peak amplitudes `Rp` and `Rn` along a
+nearly flat ridge: on CI, a fit with `Rsp` 1.66 lower and `Rp`, `Rn` each 1.47
+higher differed from the noiseless curve by at most 0.014 at any tested angle.
+The mocks' 0.1 percent noise is enough to move the fit along that ridge.
+
+A simulation of the fit (same model, bounds and six width starts; 5 reps at 0.1
+percent noise; 2000 draws) puts the worst `|fit - stored|` at about 2.1 for
+those three parameters, and failed 29 percent of draws at the old tolerances of
+1, 1 and 2. They are now 3 on mock 3 only, where 2000 draws produced no
+failures. The width's tolerance of 15 has the same cause. The other six mocks
+recover every parameter to within 0.3 and keep their tight tolerances. The
+fitted curve itself (`double_gaussian_fit_values`) and the indexes are still
+compared at their usual tolerances on mock 3.
+
 ### The spline fits
 
 `spatial_frequency_tuning` and `temporal_frequency_tuning` each report three
