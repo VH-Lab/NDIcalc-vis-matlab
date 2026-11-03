@@ -29,6 +29,18 @@ function vi = oridir_vectorindexes(respstruct)
 % dir_circularvariance            |   Direction index in vector space
 % dir_dotproduct_sig_p            |   P value of dot product direction vector significance
 %                                 |     method of Mazurek et al. 2014
+% half_low                        |   Walking from the peak toward lower directions (wrapping
+%                                 |     around the circle), the first direction where the mean
+%                                 |     response falls to half of its maximum, in [0, 360)
+%                                 |     (NaN if it does not)
+% half_high                       |   The same, walking toward higher directions
+% fwhh                            |   Full width at half height in degrees: the angular
+%                                 |     distance from half_low up to half_high across the peak
+%                                 |     (Inf if either point is not found;
+%                                 |     see vis.oridir.index.compute_fwhh)
+% bandwidth                       |   Bandwidth in octaves, log2(half_high/half_low)
+%                                 |     (Inf if either point is not found;
+%                                 |     see vis.oridir.index.compute_bandwidth)
 
 
 vi = [];
@@ -43,6 +55,10 @@ vi.dir_HotellingT2_p = nan;
 vi.dir_pref = nan;
 vi.dir_circularvariance = nan;
 vi.dir_dotproduct_sig_p = nan;
+vi.half_low = nan;
+vi.half_high = nan;
+vi.fwhh = nan;
+vi.bandwidth = nan;
 
 hasdirection = 0;
 
@@ -110,4 +126,5 @@ if hasdirection,
 	vi.dir_index = vlt.neuro.vision.oridir.index.compute_directionindex(angles,resp(2,:));
 end;
 
-
+[vi.fwhh, vi.half_low, vi.half_high] = vis.oridir.index.compute_fwhh(tuneangles, tuneresps, 'Period', 360);
+vi.bandwidth = vis.oridir.index.compute_bandwidth(tuneangles, tuneresps, 'Period', 360);

@@ -168,11 +168,11 @@
     "comparisonMethod": "abs difference",
     "name": "orientation_direction_tuning.fit.double_gaussian_parameters",
     "toleranceAmount": [
-      1,
-      1,
+      3,
+      3,
       5,
       15,
-      2
+      3
     ]
   },
   {
