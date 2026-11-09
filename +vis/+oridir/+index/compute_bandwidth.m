@@ -26,5 +26,9 @@ function [bandwidth] = compute_bandwidth(x, y)
 if isnan(low) || isnan(high)
     bandwidth = Inf;
 else
-    bandwidth = log2(high/low);
+    if low > high
+        bandwidth = low - high;
+    else
+        bandwidth = high - low;
+    end
 end
