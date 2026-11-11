@@ -40,8 +40,6 @@ function [fwhh, low, high] = compute_fwhh(x, y, options)
 %            to half of its maximum, or NaN if it does not fall that far.
 %
 %   If the maximum response is not positive, LOW and HIGH are NaN.
-%
-%   See also: vis.oridir.index.compute_bandwidth
 
 arguments
     x {mustBeNumeric}
