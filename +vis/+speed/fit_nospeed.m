@@ -25,6 +25,13 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
 %                          one reproducible set of starts, for instance when
 %                          reproducing a particular run while debugging.
 %                          See vis.randomstream.
+%     Weights            - Optional vector of non-negative weights, one per
+%                          response (typically 1/variance of each mean
+%                          response). When given, the fit minimizes the
+%                          weighted sum of squared errors
+%                          sum(Weights .* (R - model).^2), and SSE and
+%                          R_SQUARED are the weighted quantities (R_SQUARED
+%                          about the weighted mean). (Default: [], unweighted)
 %
 %  Outputs:
 %    PARAMETERS - A 7x1 vector with the best-fit parameters.
@@ -44,9 +51,19 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
         options.numberStartPoints (1,1) double {mustBeInteger, mustBePositive} = 40
         options.SpecificStartPoint (7,:) double = []
         options.RandomSeed = 'shuffle'
+        options.Weights double {mustBeNonnegative} = []
     end
 
     sf = sf(:); tf = tf(:); r = r(:); % Ensure column vectors
+    if isempty(options.Weights)
+        w = ones(size(r));
+    else
+        if numel(options.Weights) ~= numel(r)
+            error('vis:speed:fit:badWeights', 'Weights must have one element per response.');
+        end
+        w = options.Weights(:);
+    end
+    sqw = sqrt(w);
 
     % --- Multi-start Optimization Setup ---
     % Define hard constraints, identical to vis.speed.fit but with xi fixed at 0.
@@ -93,7 +110,7 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
     opts = optimset('Display', 'off');
 
     for i = 1:size(StartPoint, 2)
-        [P_current, error_current] = lsqcurvefit(@(P, SF) vis.speed.tuningfunc(SF, tf, P), StartPoint(:, i), sf, r, Lower, Upper, opts);
+        [P_current, error_current] = lsqcurvefit(@(P, SF) sqw .* vis.speed.tuningfunc(SF, tf, P), StartPoint(:, i), sf, sqw .* r, Lower, Upper, opts);
         if (error_current < optimal_error)
             optimal_error = error_current;
             P_optimal = P_current;
@@ -104,7 +121,7 @@ function [parameters, sse, r_squared] = fit_nospeed(sf, tf, r, options)
     sse = optimal_error;
 
     % --- Calculate Goodness of Fit ---
-    sst = sum((r - mean(r)).^2);
+    sst = sum(w .* (r - sum(w .* r) / max(sum(w), eps)).^2);
     if sst == 0
         r_squared = 1;
     else
