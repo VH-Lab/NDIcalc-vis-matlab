@@ -5,7 +5,10 @@
 		{ "name": "element_id", "mustbenotempty": 1}
 	],
 	"file": [
-                {"name": "hartley_results.ngrid", "mustbenotempty": 1}
+                {"name": "hartley_results.ngrid", "mustbenotempty": 1},
+                {"name": "hartley_frametimes.bin", "mustbenotempty": 0},
+                {"name": "hartley_numbers.bin", "mustbenotempty": 0},
+                {"name": "hartley_spiketimes.bin", "mustbenotempty": 0}
 	],
 	"hartley_calc": [
 		{

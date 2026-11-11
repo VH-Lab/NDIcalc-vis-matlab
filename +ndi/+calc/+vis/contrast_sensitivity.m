@@ -419,7 +419,16 @@ classdef contrast_sensitivity < ndi.calculator
                             saturation_index_RBN = [ saturation_index_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_saturation_index)];
                             saturation_index_RBNS = [ saturation_index_RBNS vlt.data.colvec(ctp.fit.naka_rushton_RBNS_saturation_index)];
 
-                            fitless_interpolated_c50 = [ fitless_interpolated_c50 vlt.data.colvec(ctp.fitless.interpolated_c50)];
+                            % vis.contrast.indexes.c50interpolated returns empty when no
+                            % response reaches half the maximum, which happens when every
+                            % response is negative (below the blank, as at a spatial
+                            % frequency the cell does not respond to) or NaN; record NaN
+                            % so that every spatial frequency keeps its column
+                            c50_here = ctp.fitless.interpolated_c50;
+                            if isempty(c50_here)
+                                c50_here = NaN;
+                            end
+                            fitless_interpolated_c50 = [ fitless_interpolated_c50 vlt.data.colvec(c50_here)];
 
                             parameters_RB = [ parameters_RB vlt.data.colvec(ctp.fit.naka_rushton_RB_parameters)];
                             parameters_RBN = [ parameters_RBN vlt.data.colvec(ctp.fit.naka_rushton_RBN_parameters)];

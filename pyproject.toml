@@ -1,0 +1,43 @@
+# Python packaging for NDIcalc-vis-matlab.
+#
+# This exists only so that NDI-python can depend on this repository's
+# document definitions (ndi_common/database_documents and
+# ndi_common/schema_documents) with pip/uv. The MATLAB toolbox does not use
+# it. The wheel contains the small package under python/ plus a copy of those
+# two JSON trees; no MATLAB code is shipped.
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ndicalc-vis-matlab"
+version = "0.1.0"
+description = "NDIcalc-vis document definitions (ndi_common JSON) for NDI-python"
+readme = "python/README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/VH-Lab/NDIcalc-vis-matlab"
+
+[project.entry-points."ndi.calc"]
+NDIcalc-vis-matlab = "ndicalc_vis_matlab:toolbox_dir"
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+    "pyproject.toml",
+    "LICENSE",
+    "python",
+    "ndi_common/database_documents",
+    "ndi_common/schema_documents",
+]
+exclude = ["__pycache__", "*.pyc"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/ndicalc_vis_matlab"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"ndi_common/database_documents" = "ndicalc_vis_matlab/ndi_common/database_documents"
+"ndi_common/schema_documents" = "ndicalc_vis_matlab/ndi_common/schema_documents"
