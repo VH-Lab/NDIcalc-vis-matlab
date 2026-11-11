@@ -38,9 +38,6 @@ function vi = oridir_vectorindexes(respstruct)
 %                                 |     distance from half_low up to half_high across the peak
 %                                 |     (Inf if either point is not found;
 %                                 |     see vis.oridir.index.compute_fwhh)
-% bandwidth                       |   Bandwidth in octaves, log2(half_high/half_low)
-%                                 |     (Inf if either point is not found;
-%                                 |     see vis.oridir.index.compute_bandwidth)
 
 
 vi = [];
@@ -58,7 +55,6 @@ vi.dir_dotproduct_sig_p = nan;
 vi.half_low = nan;
 vi.half_high = nan;
 vi.fwhh = nan;
-vi.bandwidth = nan;
 
 hasdirection = 0;
 
@@ -127,4 +123,3 @@ if hasdirection,
 end;
 
 [vi.fwhh, vi.half_low, vi.half_high] = vis.oridir.index.compute_fwhh(tuneangles, tuneresps, 'Period', 360);
-vi.bandwidth = vis.oridir.index.compute_bandwidth(tuneangles, tuneresps, 'Period', 360);
