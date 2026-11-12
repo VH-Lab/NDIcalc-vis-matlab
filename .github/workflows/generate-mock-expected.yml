@@ -1,0 +1,157 @@
+name: Generate mock expected documents
+
+# Generates the expected ("gold standard") output documents mock.N.json for a
+# calculator's self-tests, prints them to the log for review, uploads them as
+# an artifact, and then re-runs the self-tests several times against them to
+# check that every compared field is stable from run to run.
+#
+# It never commits anything: a person (or agent) reviews the generated
+# documents against the known parameters of the mock cells and commits them.
+# The expected documents come from the calculator itself, so on their own they
+# only test reproducibility; that review is what makes them a standard.
+#
+# Triggers:
+#  - workflow_dispatch, with the calculator class as input (available once
+#    this file is on the default branch);
+#  - push to the speed_tuning_bootstrap branch, to bootstrap that
+#    calculator's expectations before this workflow is on main.
+
+on:
+  workflow_dispatch:
+    inputs:
+      calculator:
+        description: 'Calculator class (e.g. ndi.calc.vis.speed_tuning_bootstrap)'
+        required: true
+        default: 'ndi.calc.vis.speed_tuning_bootstrap'
+        type: string
+      stability_runs:
+        description: 'Number of repeated self-test runs against the new expectations'
+        required: false
+        default: '3'
+        type: string
+  push:
+    branches: [ "claude/speed_tuning_bootstrap" ]
+    paths:
+      - '.github/workflows/generate-mock-expected.yml'
+      - '+ndi/+calc/+vis/speed_tuning_bootstrap.m'
+      - '+vis/+speed/+bootstrap/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    name: Generate expected documents (${{ inputs.calculator || 'ndi.calc.vis.speed_tuning_bootstrap' }})
+    runs-on: ubuntu-24.04
+    env:
+      CALCULATOR: ${{ inputs.calculator || 'ndi.calc.vis.speed_tuning_bootstrap' }}
+      STABILITY_RUNS: ${{ inputs.stability_runs || '3' }}
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Start virtual display server
+        run: |
+          sudo apt-get install -y xvfb
+          Xvfb :99 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: latest
+          cache: true
+          products: |
+            Communications_Toolbox
+            Optimization_Toolbox
+            Statistics_and_Machine_Learning_Toolbox
+            Signal_Processing_Toolbox
+            Curve_Fitting_Toolbox
+            Parallel_Computing_Toolbox
+
+      - name: Install MatBox
+        uses: ehennestad/matbox-actions/install-matbox@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate and check expected documents
+        uses: matlab-actions/run-command@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          command: |
+            mkdir('tools');
+            copyfile('requirements.txt', fullfile('tools', 'requirements.txt'));
+            matbox.installRequirements(fullfile(pwd, 'tools'));
+            addpath(genpath(fullfile(pwd, 'tools')));
+            addpath(genpath('MATLAB-AddOns'));
+            addpath(genpath(pwd));
+
+            % Let NDI find this checkout's calculator documents (as in run-tests.yml).
+            ndiParent = fileparts(fileparts(fileparts(ndi.toolboxdir)));
+            linkPath = fullfile(ndiParent, 'NDIcalc-vis-matlab');
+            if ~isfolder(linkPath)
+                system(sprintf('ln -s "%s" "%s"', pwd, linkPath));
+            end
+
+            calcName = getenv('CALCULATOR');
+            nStability = str2double(getenv('STABILITY_RUNS'));
+            fprintf('\n=== Generating expected documents for %s ===\n', calcName);
+
+            p = [tempname '_mock_session']; mkdir(p);
+            S = ndi.session.dir('test_session', p);
+            c = feval(calcName, S);
+            n = c.numberOfSelfTests;
+            assert(n > 0, [calcName ' declares no self-tests.']);
+
+            % Start from no expectations, so every file is freshly generated.
+            for i = 1:n
+                f = c.mock_expected_filename(i);
+                if isfile(f), delete(f); end
+            end
+            c.generate_mock_docs('highSNR', n, 'generate_expected_docs', true);
+
+            outDir = fullfile(pwd, 'generated_mocks');
+            mkdir(outDir);
+            for i = 1:n
+                f = c.mock_expected_filename(i);
+                copyfile(f, outDir);
+                fprintf('\n===== BEGIN %s =====\n', f);
+                fprintf('%s\n', fileread(f));
+                fprintf('===== END %s =====\n', f);
+            end
+
+            % Stability: fresh runs (fresh noise, fresh bootstrap resamples)
+            % compared against the new expectations with the stored
+            % mock.N.compare.json. Every self-test should pass every time.
+            allPass = true;
+            for run = 1:nStability
+                [b, reports] = c.test('highSNR', n, 0);
+                d = diag(b);
+                fprintf('\n=== Stability run %d of %d: self-tests passing: %s ===\n', ...
+                    run, nStability, mat2str(d(:).'));
+                for i = 1:n
+                    if ~d(i)
+                        allPass = false;
+                        r = reports{i, i};
+                        fprintf('  self-test %d failed:\n', i);
+                        if isstruct(r)
+                            for k = 1:numel(r)
+                                disp(r(k));
+                            end
+                        else
+                            disp(r);
+                        end
+                    end
+                end
+            end
+            assert(allPass, 'Some self-tests did not reproduce the new expectations; see the log.');
+
+      - name: Upload generated expected documents
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mock-expected-documents
+          path: generated_mocks/
+          if-no-files-found: warn
