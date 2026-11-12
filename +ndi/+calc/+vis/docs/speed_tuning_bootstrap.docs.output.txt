@@ -1,0 +1,88 @@
+This calculation object produces a document of type 'speedtuning_bootstrap_calc'.
+
+Superclasses: base, app, calculator, speed_tuning_bootstrap, ngrid
+
+The document holds the point estimate of the speed-tuning fit, a summary of indexes computed from the bootstrap fits, and, in an attached binary file, every bootstrap fit.
+
+speedtuning_bootstrap_calc:
+	input_parameters:			Every input parameter used (see the 'searching for inputs' documentation), with defaults filled in.
+	depends_on:				The input stimulus_tuningcurve document.
+
+ATTACHED FILE
+
+speed_tuning_bootstrap_fits.ngrid: the bootstrap fits, a numBootstrap x 9 matrix of little-endian doubles (column-major), one row per bootstrap resample. A row of NaN marks a fit that failed. The columns are:
+	1 A, 2 zeta, 3 xi, 4 sigma_sf, 5 sigma_tf, 6 sf0, 7 tf0  (the Priebe fit parameters; see the 'general' documentation)
+	8 sse        (sum of squared errors of that fit)
+	9 r_squared  (of that fit)
+The ngrid fields of the document describe the file:
+ngrid:
+	data_size:				8 (bytes per value)
+	data_type:				'double'
+	data_dim:				[numBootstrap 9]
+	coordinates:				[] (unused)
+
+To read the fits:
+	c = ndi.calc.vis.speed_tuning_bootstrap(S);
+	B = c.read_bootstrap_fits(doc);      % numBootstrap x 9
+	histogram(B(:,3));                    % bootstrap distribution of xi
+or directly:
+	f = S.database_openbinarydoc(doc, 'speed_tuning_bootstrap_fits.ngrid');
+	B = ndi.fun.data.readngrid(f, doc.document_properties.ngrid.data_dim, 'double');
+	S.database_closebinarydoc(f);
+
+speed_tuning_bootstrap:
+properties:
+	response_units:				The units of the response
+	response_type:				The category of the response (e.g. mean, F1)
+significance:
+	visual_response_anova_p:		ANOVA p-value across all stimuli and the blank (visual responsiveness), as in speed_tuning
+	across_stimuli_anova_p:			ANOVA p-value across stimuli, excluding the blank
+point_estimate:					The free fit (xi in [min_xi, max_xi]) to the observed condition means
+	Priebe_fit_parameters:			[A zeta xi sigma_sf sigma_tf sf0 tf0]
+	Priebe_fit_speed_tuning_index:		xi
+	Priebe_fit_spatial_frequency_preference: sf0
+	Priebe_fit_temporal_frequency_preference: tf0
+	sse:					Sum of squared errors of the fit
+	r_squared:				Fraction of variance of the condition means explained by the fit
+bootstrap:					Description of the attached fits
+	numBootstrap:				Number of resamples requested
+	numValid:				Number of resamples whose fit succeeded (used for every index)
+	columns:				Names of the 9 columns of the attached matrix
+	trials_per_condition_median:		Median number of trials per stimulus condition
+	stimulus_spatial_frequency_range:	[lowest highest] stimulus spatial frequency
+	stimulus_temporal_frequency_range:	[lowest highest] stimulus temporal frequency
+indexes:					Computed from the bootstrap fits by vis.speed.bootstrap.indexes. Classifications are stored as 0/1. Where a threshold was given as a vector, the classifications that use it are vectors with one value per threshold.
+	xi:
+		estimate:			xi of the point estimate
+		bootstrapMedian:		Median of the bootstrap xi
+		se:				Standard deviation of the bootstrap xi (bootstrap standard error)
+		ci:				[low high] (1-alpha) confidence interval of xi
+		ci90:				[low high] (1-2*alpha) confidence interval of xi
+		ciWidth:			Width of ci; a wide interval marks a poorly constrained fit
+		p0:				Two-sided bootstrap p-value for xi == 0
+		p1:				Two-sided bootstrap p-value for xi == 1
+		probPositive:			Fraction of bootstrap xi > 0
+		probNegative:			Fraction of bootstrap xi < 0
+		fracAtBound:			Fraction of bootstrap xi at min_xi or max_xi
+	inseparable:
+		differentFrom0:			1 if p0 < alpha
+		minimumEffect:			1 if the ci90 of xi lies entirely outside [-deltaInseparable, deltaInseparable]
+		passband:			1 if the ci90 of the preferred-TF shift across the passband lies entirely outside [-tfShiftOctaves, tfShiftOctaves]
+	speedTuned:
+		priebe:				1 if p0 < alpha and p1 >= alpha (the interval excludes 0 and includes 1; Priebe et al. 2006)
+		equivalence:			1 if differentFrom0 and the ci90 of xi lies inside [1-deltaSpeedTuned, 1+deltaSpeedTuned]
+		passband:			1 if differentFrom0 and the ci90 of the preferred-speed change across the passband lies inside [-speedConstancyOctaves, speedConstancyOctaves]
+		probNearOne:			Fraction of bootstrap xi with |xi-1| <= deltaSpeedTuned
+	tfShiftOctaves:				Preferred-TF shift across the SF passband, xi*B (octaves): estimate, ci, ci90
+	speedChangeOctaves:			Preferred-speed change across the SF passband, (xi-1)*B (octaves): estimate, ci, ci90
+	passbandOctaves:			SF passband B, the full width at half maximum of the SF tuning (octaves): estimate, ci, ci90
+	preferredSpeed:				tf0/sf0 (degrees per second): estimate, ci, ci90
+	quality:
+		numBootstrap:			Number of valid bootstrap fits used
+		medianR2:			Median r^2 of the bootstrap fits
+		fracSF0AtLowEdge:		Fraction of bootstrap fits with sf0 at the lowest stimulus spatial frequency
+		fracSF0AtHighEdge:		Fraction of bootstrap fits with sf0 at the highest stimulus spatial frequency
+	parameters:				The thresholds and settings used for the indexes (alpha, method, deltaInseparable, deltaSpeedTuned, tfShiftOctaves, speedConstancyOctaves, min_xi, max_xi, sfRange)
+
+To recompute the indexes with other thresholds from the stored fits, without refitting:
+	ix = c.recompute_indexes(doc, 'deltaSpeedTuned', [0.25 0.5 1]);

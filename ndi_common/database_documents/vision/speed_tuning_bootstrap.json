@@ -6,7 +6,8 @@
 		"property_list_name":                                   "speed_tuning_bootstrap",
 		"class_version":					1,
 		"superclasses": [
-			{ "definition":       "$NDIDOCUMENTPATH\/base.json"}
+			{ "definition":       "$NDIDOCUMENTPATH\/base.json"},
+			{ "definition":       "$NDIDOCUMENTPATH\/data\/ngrid.json"}
 		]
 	},
 	"depends_on": [
@@ -20,30 +21,30 @@
 	],
 	"speed_tuning_bootstrap":  {
 		"properties": {
-			"response_units":					0,
+			"response_units":					"",
 			"response_type":					"mean"
 		},
-		"input": {
-			"numBootstrap":						200,
-			"min_xi":						0,
-			"max_xi":						1,
-			"confidenceLevel":					95
+		"significance": {
+			"visual_response_anova_p":				1,
+			"across_stimuli_anova_p":				1
 		},
 		"point_estimate": {
+			"Priebe_fit_parameters":				[0, 0, 0, 0, 0, 0, 0],
+			"Priebe_fit_speed_tuning_index":			0,
+			"Priebe_fit_spatial_frequency_preference":		0,
+			"Priebe_fit_temporal_frequency_preference":		0,
+			"sse":							0,
+			"r_squared":						0
 		},
 		"bootstrap": {
-			"Priebe_fit_parameters":				[0],
-			"r_squared":						[0]
+			"numBootstrap":						200,
+			"numValid":						0,
+			"columns":						["A", "zeta", "xi", "sigma_sf", "sigma_tf", "sf0", "tf0", "sse", "r_squared"],
+			"trials_per_condition_median":				0,
+			"stimulus_spatial_frequency_range":			[0, 0],
+			"stimulus_temporal_frequency_range":			[0, 0]
 		},
-		"confidence_interval": {
-			"confidenceLevel":					95,
-			"parameter_ci_low":					[0],
-			"parameter_ci_high":					[0],
-			"parameter_median":					[0],
-			"speed_tuning_index_ci":				[0],
-			"speed_tuning_index_median":				0,
-			"spatial_frequency_preference_ci":			[0],
-			"temporal_frequency_preference_ci":			[0]
+		"indexes": {
 		}
 	}
 }

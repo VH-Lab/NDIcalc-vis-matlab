@@ -1,0 +1,66 @@
+This calculation object fits the speed-tuning model of Priebe et al. (2006) to responses measured at a grid of spatial and temporal frequencies, repeats the same fit on bootstrap resamples of the individual trials, stores every bootstrap fit, and derives confidence intervals, tests, and classifications of spatiotemporal coupling from those fits.
+
+THE MODEL
+
+The fit function is a modified two-dimensional Gaussian (vis.speed.tuningfunc):
+
+R(sf,tf) = A * exp( (-(log10(sf)-log10(sf0)).^2) / (2*sigma_sf*sigma_sf) ) .* ( exp( -(log10(tf)-logtfpsf).^2 ./ (2.*(sigma_tf+zeta*(log10(tf)-logtfpsf)).^2) ) - exp(-1/(zeta.^2)))
+
+where
+
+logtfpsf = xi * (log10(sf)-log10(sf0)) + log10(tf0)
+
+and
+
+A is the peak response,
+zeta is the skew of the temporal frequency tuning curve,
+xi is the spatiotemporal coupling index (speed tuning index),
+sigma_sf is the spatial frequency tuning width (log10 units),
+sigma_tf is the temporal frequency tuning width (log10 units),
+sf0 is the preferred spatial frequency averaged across temporal frequencies, and
+tf0 is the preferred temporal frequency averaged across spatial frequencies.
+
+The preferred temporal frequency varies with spatial frequency as SF^xi. xi = 0 is separable tuning (preferred temporal frequency independent of spatial frequency); xi = 1 is speed tuning (the same preferred speed, TF/SF, at every spatial frequency); xi < 0 is "anti-speed" coupling (coarser scales prefer faster motion).
+
+THE CALCULATION
+
+1. Point estimate. The model is fit to the observed condition means with xi free in [min_xi, max_xi] (vis.speed.fit, pointEstimateStartPoints random starts). This is the same free fit as in ndi.calc.vis.speed_tuning; the constrained (xi = 0, xi = 1) fits and nested F tests of that calculator are not computed here.
+
+2. Bootstrap. numBootstrap resamples of the condition means are drawn from the single trials (vis.speed.bootstrap.resample). For each condition with n trials, the residuals about the condition mean are scaled by sqrt(n/(n-1)) and n of them are drawn with replacement; the resampled mean is the condition mean plus the mean of the draws. Resampling n trials with replacement underestimates the variance of a mean by the factor (n-1)/n (0.8 for 5 trials); the scaling removes that bias (set scaleResiduals = 0 for the classical bootstrap). All resamples are drawn first, serially, from one private random stream, so the result does not depend on whether the fits run in parallel.
+
+3. Bootstrap fits. Each resample is fit once with vis.speed.fit (the same free fit as the point estimate), started from the point estimate plus numberStartPoints random starts (vis.speed.bootstrap.fit). All numBootstrap fits (7 parameters, SSE, r^2) are stored in the attached binary file speed_tuning_bootstrap_fits.ngrid, so that any index can be recomputed later without refitting (see recompute_indexes).
+
+4. Indexes. vis.speed.bootstrap.indexes computes, from the stored fits:
+
+   xi: the point estimate, bootstrap median and standard error, the (1-alpha) and (1-2*alpha) confidence intervals, p-values for xi == 0 and xi == 1, the bootstrap fractions of xi above and below 0, and the fraction of fits at the xi bounds.
+
+   Tests of a hypothesized value xi0 use the bootstrap distribution of xi (vis.speed.bootstrap.xi_test). The default 'percentile' method rejects xi0 at level alpha when xi0 lies outside the (1-alpha) percentile interval of the bootstrap estimates; its two-sided p-value is min(1, 2*min(1+#{xi* <= xi0}, 1+#{xi* >= xi0})/(S+1)). 'basic' and 'bc' (bias-corrected) methods are also available. No bootstrap fit equals 0 or 1 exactly; the tests ask whether the value is plausible given the spread of the bootstrap estimates.
+
+   Spatiotemporal inseparability, by three rules:
+     differentFrom0 - p(xi == 0) < alpha.
+     minimumEffect  - the (1-2*alpha) interval of xi lies entirely outside [-deltaInseparable, deltaInseparable]: the coupling is at least deltaInseparable in size, with confidence (two one-sided tests).
+     passband       - the preferred temporal frequency shifts by more than tfShiftOctaves octaves across the cell's spatial frequency passband (see below).
+
+   Speed tuning, by three rules:
+     priebe      - the (1-alpha) interval of xi excludes 0 and includes 1 (p(xi==0) < alpha and p(xi==1) >= alpha), the criterion of Priebe et al. (2006). It needs no margin, but a poorly constrained fit with a wide interval can pass.
+     equivalence - inseparable (differentFrom0) and the (1-2*alpha) interval of xi lies inside [1-deltaSpeedTuned, 1+deltaSpeedTuned] (two one-sided tests): xi is shown to be within deltaSpeedTuned of 1.
+     passband    - inseparable and the preferred speed changes by less than speedConstancyOctaves octaves across the cell's spatial frequency passband (see below).
+
+   The passband rules. Because the preferred temporal frequency varies as SF^xi, across a span of B octaves of spatial frequency the preferred temporal frequency shifts by xi*B octaves and the preferred speed (TF/SF) changes by (xi-1)*B octaves. B is the cell's own spatial frequency passband, the full width at half maximum of its spatial frequency tuning: B = 2*sqrt(2*ln 2)*sigma_sf/log10(2) octaves. Each bootstrap fit uses its own xi and sigma_sf, so the uncertainty of B is included. These rules express the thresholds in functional terms: for example, speedConstancyOctaves = 1 asks that the preferred speed stay within a factor of 2 across the spatial frequencies the cell responds to; for a 2-octave passband this corresponds to deltaSpeedTuned = 0.5.
+
+   Derived quantities with percentile intervals: the preferred-TF shift across the passband (xi*B), the preferred-speed change across the passband ((xi-1)*B), the passband width B, and the preferred speed tf0/sf0. Quality flags: the median bootstrap r^2, and the fractions of bootstrap fits whose sf0 lies at the lowest or highest stimulus spatial frequency (an sf0 at the edge of the sampled range means the tuning peak was not bracketed by the stimuli).
+
+   The thresholds deltaInseparable, deltaSpeedTuned, tfShiftOctaves and speedConstancyOctaves may be vectors; each classification then has one value per threshold, for sensitivity analysis.
+
+CALIBRATION
+
+In simulations of model cells with known xi, using the trial-to-trial noise of recorded ferret V1 responses (5 trials per condition), the nested F test of ndi.calc.vis.speed_tuning rejected xi == 0 for about 15% of truly separable cells at a nominal 5% level, because spiking noise is heavy-tailed and its variance grows with the response. The percentile bootstrap test computed here rejected about 4%, including for cells whose preferred spatial frequency lay below the lowest stimulus spatial frequency; the 'basic' method was miscalibrated (about 16%) for those cells, which is why 'percentile' is the default. The minimumEffect and passband inseparability rules were more conservative still (about 1% and 0%).
+
+RUN TIME
+
+The calculator performs 1 + numBootstrap fits per tuning curve, each with numberStartPoints + 1 starts (pointEstimateStartPoints for the point estimate). With the defaults (200 resamples, 6 starts each) a tuning curve took about 20 seconds on one processor core in our simulations (7 x 8 to 7 x 10 stimulus grids); run time grows in proportion to numBootstrap. If a parallel pool is already open and useParallel is 1, the bootstrap fits are spread across its workers; the calculator never opens a pool itself.
+
+REFERENCES
+
+Priebe NJ, Lisberger SG, Movshon JA (2006) Tuning for spatiotemporal frequency and speed in directionally selective neurons of macaque striate cortex. J Neurosci 26:2941-2950.
+Efron B, Tibshirani RJ (1993) An Introduction to the Bootstrap. Chapman & Hall.

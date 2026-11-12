@@ -1,0 +1,73 @@
+By default, this ndi.calc.vis.speed_tuning_bootstrap object looks for stimulus_tuningcurve documents whose independent_variable_label fields include 'spatial_frequency' and 'temporal_frequency', the same inputs as ndi.calc.vis.speed_tuning. The input tuning curve must store the individual trial responses (stimulus_tuningcurve individual responses), which are the resampling unit of the bootstrap.
+
+If one wished to restrict this further, one might add an additional condition to the default query.
+
+The parameters structure returned by default_search_for_input_parameters() also contains an 'input_parameters' field that controls the calculation itself. Any field left out takes its default value (ndi.calc.vis.speed_tuning_bootstrap.default_input_parameters()), and every value used is recorded in the output document.
+
+input_parameters:
+
+  Fitting:
+	min_xi: (double, default -4) Lower bound of the coupling index xi in every fit.
+	max_xi: (double, default 4) Upper bound of xi. The range must contain 0 and 1 away from its edges, or the tests of xi == 0 and xi == 1 are not meaningful (a warning is issued). Note that ndi.calc.vis.speed_tuning's default range is [0 1]; that range should not be used here.
+	pointEstimateStartPoints: (integer, default 40) Random starting points for the fit to the observed data.
+	numberStartPoints: (integer, default 5) Random starting points for each bootstrap fit, in addition to the point estimate, which is always used as a start.
+
+  Bootstrap:
+	numBootstrap: (integer, default 200) Number of bootstrap resamples S. Each adds one fit. Percentile intervals at 95% are usable from about 200; use 1000 or more for p-values much smaller than 0.01 or for stable 99% intervals. The fits are stored in a binary file, so large values do not enlarge the document's JSON.
+	scaleResiduals: (0/1, default 1) Scale each condition's residuals by sqrt(n/(n-1)) before resampling, so that resampled means carry the unbiased variance; 0 gives the classical bootstrap.
+	bootstrapSeed: (integer or empty, default []) Seed for the resampling stream. Empty draws a fresh set of resamples on every run; give an integer to reproduce a run exactly (the fits' own random starting points are not seeded).
+	useParallel: (0/1, default 1) Spread the bootstrap fits over the workers of an already-open parallel pool. The calculator never opens a pool; with no pool open the fits run serially.
+
+  Tests and classifications (all may be changed later without refitting; see recompute_indexes):
+	alpha: (double, default 0.05) Significance level. Two-sided tests use the (1-alpha) interval; equivalence and minimum-effect tests use the (1-2*alpha) interval.
+	method: (char, default 'percentile') Interval and p-value method for xi: 'percentile', 'basic', or 'bc' (bias-corrected). Derived quantities always use percentile intervals.
+	deltaInseparable: (double or vector, default 0.2) Minimum |xi| for the minimumEffect inseparability rule.
+	deltaSpeedTuned: (double or vector, default 0.5) Margin around xi = 1 for the equivalence speed-tuning rule.
+	tfShiftOctaves: (double or vector, default 1) Passband inseparability: the preferred temporal frequency must shift by more than this many octaves across the cell's spatial frequency passband.
+	speedConstancyOctaves: (double or vector, default 1) Passband speed tuning: the preferred speed must change by less than this many octaves across the cell's spatial frequency passband.
+
+	The four thresholds may be given as vectors (e.g. [0.25 0.5 1]); the corresponding classifications in the output are then vectors with one value per threshold.
+
+Example:
+% Only perform the operation on the element called myelement
+
+c = ndi.calc.vis.speed_tuning_bootstrap(S);
+DQ = c.default_search_for_input_parameters();
+DQ.query = DQ.query & ndi.query('','depends_on','element_id',myelement);
+c.run('Replace',DQ);
+
+
+Example:
+% More resamples and a reproducible run
+
+c = ndi.calc.vis.speed_tuning_bootstrap(S);
+parameters = c.default_search_for_input_parameters();
+parameters.input_parameters.numBootstrap = 1000;
+parameters.input_parameters.bootstrapSeed = 1;
+docs = c.run('Replace',parameters);
+
+
+Example:
+% Several thresholds at once (sensitivity analysis)
+
+c = ndi.calc.vis.speed_tuning_bootstrap(S);
+parameters = c.default_search_for_input_parameters();
+parameters.input_parameters.deltaSpeedTuned = [0.25 0.5 1];
+parameters.input_parameters.speedConstancyOctaves = [0.5 1 2];
+docs = c.run('Replace',parameters);
+docs{1}.document_properties.speed_tuning_bootstrap.indexes.speedTuned.equivalence   % 3 values
+
+
+Example:
+% Use the workers of a parallel pool for the bootstrap fits
+
+parpool;   % open once; the calculator does not open a pool itself
+c = ndi.calc.vis.speed_tuning_bootstrap(S);
+docs = c.run('Replace', c.default_search_for_input_parameters());
+
+
+Example:
+% Recompute the classifications with new thresholds from the stored fits (no refitting)
+
+ix = c.recompute_indexes(docs{1}, 'deltaInseparable', [0.1 0.2 0.3], 'alpha', 0.01);
+ix.inseparable.minimumEffect

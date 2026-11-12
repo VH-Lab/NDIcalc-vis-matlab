@@ -10,12 +10,25 @@
 			{ "definition":                 "$NDICALCDOCUMENTPATH\/vision\/speed_tuning_bootstrap.json"}
 		]
 	},
+	"files": {
+		"file_list": [ "speed_tuning_bootstrap_fits.ngrid" ]
+	},
 	"speedtuning_bootstrap_calc": {
 		"input_parameters": {
-			"min_xi":          0,
-			"max_xi":          1,
-			"numBootstrap":    200,
-			"confidenceLevel": 95
+			"min_xi":                   -4,
+			"max_xi":                   4,
+			"numBootstrap":             200,
+			"pointEstimateStartPoints": 40,
+			"numberStartPoints":        5,
+			"scaleResiduals":           1,
+			"bootstrapSeed":            [],
+			"useParallel":              1,
+			"alpha":                    0.05,
+			"method":                   "percentile",
+			"deltaInseparable":         0.2,
+			"deltaSpeedTuned":          0.5,
+			"tfShiftOctaves":           1,
+			"speedConstancyOctaves":    1
 		},
 		"depends_on": [
 			{

@@ -1,6 +1,6 @@
 {
 	"classname": "speed_tuning_bootstrap",
-	"superclasses":  [ "base" ],
+	"superclasses":  [ "base", "ngrid" ],
 	"depends_on": [
 		{ "name": "element_id", "mustbenotempty": 1},
 		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
@@ -13,15 +13,15 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The units structure (response_units, response_type)."
+			"documentation": "Response units and response type (e.g. mean, F1) of the input tuning curve."
 		},
 		{
-			"name": "input",
+			"name": "significance",
 			"type": "structure",
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The bootstrap input parameters (numBootstrap, min_xi, max_xi, confidenceLevel)."
+			"documentation": "Visual-response ANOVA p-values of the input tuning curve (visual_response_anova_p, across_stimuli_anova_p), as in speed_tuning."
 		},
 		{
 			"name": "point_estimate",
@@ -29,7 +29,7 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The observed-data fit, identical to a speed_tuning result (properties, tuning_curve, significance, fit, fit_no_speed, fit_fullspeed, including the nested-F test)."
+			"documentation": "The free Priebe fit to the observed condition means: Priebe_fit_parameters [A zeta xi sigma_sf sigma_tf sf0 tf0], the speed tuning index xi, SF and TF preferences, sse and r_squared."
 		},
 		{
 			"name": "bootstrap",
@@ -37,15 +37,15 @@
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "Per-resample free-fit outputs: Priebe_fit_parameters (S-by-7 Priebe parameter matrix) and r_squared (S-by-1)."
+			"documentation": "Description of the stored bootstrap fits (attached file speed_tuning_bootstrap_fits.ngrid, numBootstrap x 9 doubles): numBootstrap, numValid (successful fits), column names, median trials per condition, and the stimulus SF and TF ranges."
 		},
 		{
-			"name": "confidence_interval",
+			"name": "indexes",
 			"type": "structure",
 			"default_value": "",
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "Precomputed percentile confidence intervals on the free-fit parameters at confidenceLevel, with xi and SF/TF preference intervals called out."
+			"documentation": "Indexes computed from the bootstrap fits by vis.speed.bootstrap.indexes: xi (estimate, intervals, p-values), inseparable and speedTuned classifications (0/1, one value per threshold), tfShiftOctaves, speedChangeOctaves, passbandOctaves, preferredSpeed, quality flags, and the thresholds used (parameters)."
 		}
 	]
 }

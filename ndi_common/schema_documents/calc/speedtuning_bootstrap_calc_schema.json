@@ -1,8 +1,10 @@
 {
 	"classname": "speedtuning_bootstrap_calc",
-	"superclasses":  [ "base", "speed_tuning_bootstrap"],
+	"superclasses":  [ "base", "app", "calculator", "speed_tuning_bootstrap", "ngrid"],
 	"depends_on": [ ],
-	"file": [ ],
+	"file": [
+		{"name": "speed_tuning_bootstrap_fits.ngrid", "mustbenotempty": 1}
+	],
 	"speedtuning_bootstrap_calc": [
 		{
 			"name": "input_parameters",
@@ -10,7 +12,7 @@
 			"default_value": [],
 			"parameters": "",
 			"queryable": 1,
-			"documentation": "The input structure (min_xi, max_xi, numBootstrap)."
+			"documentation": "The input parameters (min_xi, max_xi, numBootstrap, pointEstimateStartPoints, numberStartPoints, scaleResiduals, bootstrapSeed, useParallel, alpha, method, deltaInseparable, deltaSpeedTuned, tfShiftOctaves, speedConstancyOctaves); see the calculator's 'searching for inputs' documentation."
 		},
 		{
 			"name": "depends_on",
