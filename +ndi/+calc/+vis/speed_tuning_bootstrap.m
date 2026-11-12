@@ -220,14 +220,24 @@ classdef speed_tuning_bootstrap < ndi.calc.tuning_fit
             %
             dims = doc.document_properties.ngrid.data_dim(:).';
             dtype = doc.document_properties.ngrid.data_type;
+            % database_openbinarydoc returns an already-open, read-only file
+            % object; read it directly (as ndi.calc.vis.hartley does).
+            % ndi.fun.data.readngrid cannot be used here: it reopens the
+            % object with mode 'r', which a read-only file object rejects
+            % (it requires 'rb').
             f = obj.session.database_openbinarydoc(doc, obj.fitsFileName);
             try
-                B = ndi.fun.data.readngrid(f, dims, dtype);
+                B = fread(f, prod(dims), dtype);
             catch err
                 obj.session.database_closebinarydoc(f);
                 rethrow(err);
             end
             obj.session.database_closebinarydoc(f);
+            if numel(B) ~= prod(dims)
+                error('ndi:calc:vis:speed_tuning_bootstrap:shortFile', ...
+                    'Read %d values from %s; expected %d.', numel(B), obj.fitsFileName, prod(dims));
+            end
+            B = reshape(B, dims);
         end % read_bootstrap_fits()
 
         function ix = recompute_indexes(obj, doc, options)

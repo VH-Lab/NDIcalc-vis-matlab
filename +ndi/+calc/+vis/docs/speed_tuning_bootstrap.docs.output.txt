@@ -27,7 +27,8 @@ To read the fits:
 	histogram(B(:,3));                    % bootstrap distribution of xi
 or directly:
 	f = S.database_openbinarydoc(doc, 'speed_tuning_bootstrap_fits.ngrid');
-	B = ndi.fun.data.readngrid(f, doc.document_properties.ngrid.data_dim, 'double');
+	B = reshape(fread(f, prod(doc.document_properties.ngrid.data_dim), 'double'), ...
+	    doc.document_properties.ngrid.data_dim(:)');
 	S.database_closebinarydoc(f);
 
 speed_tuning_bootstrap:
