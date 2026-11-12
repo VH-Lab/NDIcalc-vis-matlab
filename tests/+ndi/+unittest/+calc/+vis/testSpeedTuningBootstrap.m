@@ -33,6 +33,9 @@ classdef testSpeedTuningBootstrap < ndi.unittest.calc.sessionSetup
 			testCase.verifyEqual(ip2.numBootstrap, 50);
 			testCase.verifyEqual(ip2.deltaSpeedTuned, [0.25 0.5]);   % made a row
 			testCase.verifyEqual(ip2.alpha, 0.05);                   % default filled in
+			% too few resamples to ever reject at alpha warns
+			testCase.verifyWarning(@() ndi.calc.vis.speed_tuning_bootstrap.complete_input_parameters( ...
+				struct('numBootstrap', 20)), 'ndi:calc:vis:speed_tuning_bootstrap:tooFewResamples');
 			% a range that does not contain 0 and 1 in its interior warns
 			testCase.verifyWarning(@() ndi.calc.vis.speed_tuning_bootstrap.complete_input_parameters( ...
 				struct('min_xi', 0, 'max_xi', 1)), 'ndi:calc:vis:speed_tuning_bootstrap:xiRange');
@@ -70,7 +73,9 @@ classdef testSpeedTuningBootstrap < ndi.unittest.calc.sessionSetup
 			docs = ndi.mock.fun.stimulus_response(testCase.S, param_struct, ...
 				independent_variable, x, r, 0.001, 5, 'RandomSeed', 'shuffle');
 			parameters = obj.default_search_for_input_parameters();
-			parameters.input_parameters.numBootstrap = 20;
+			% 50 resamples: the smallest possible p-value is 2/51 < 0.05 (with
+			% 20 it would be 2/21 > 0.05, and no test could reject)
+			parameters.input_parameters.numBootstrap = 50;
 			parameters.input_parameters.deltaSpeedTuned = [0.25 0.5];
 			parameters.query.query = parameters.query.query & ...
 				ndi.query('', 'depends_on', 'element_id', docs{3}.id());
@@ -80,8 +85,8 @@ classdef testSpeedTuningBootstrap < ndi.unittest.calc.sessionSetup
 			sb = doc.document_properties.speed_tuning_bootstrap;
 
 			B = obj.read_bootstrap_fits(doc);
-			testCase.verifySize(B, [20 9]);
-			testCase.verifyEqual(doc.document_properties.ngrid.data_dim(:).', [20 9]);
+			testCase.verifySize(B, [50 9]);
+			testCase.verifyEqual(doc.document_properties.ngrid.data_dim(:).', [50 9]);
 			% mock cell 2 is speed tuned (xi = 1)
 			testCase.verifyEqual(sb.indexes.xi.estimate, 1, 'AbsTol', 0.1);
 			testCase.verifyEqual(sb.indexes.inseparable.differentFrom0, 1);

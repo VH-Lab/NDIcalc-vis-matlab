@@ -31,10 +31,12 @@ on:
         type: string
   push:
     branches: [ "claude/speed_tuning_bootstrap" ]
+    # '+' is a pattern character in path filters, so the package folders
+    # (+ndi, +vis, ...) are matched with wildcards rather than spelled out.
     paths:
       - '.github/workflows/generate-mock-expected.yml'
-      - '+ndi/+calc/+vis/speed_tuning_bootstrap.m'
-      - '+vis/+speed/+bootstrap/**'
+      - '**/speed_tuning_bootstrap.m'
+      - '**/*bootstrap/*.m'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -13,7 +13,7 @@ input_parameters:
 	numberStartPoints: (integer, default 5) Random starting points for each bootstrap fit, in addition to the point estimate, which is always used as a start.
 
   Bootstrap:
-	numBootstrap: (integer, default 200) Number of bootstrap resamples S. Each adds one fit. Percentile intervals at 95% are usable from about 200; use 1000 or more for p-values much smaller than 0.01 or for stable 99% intervals. The fits are stored in a binary file, so large values do not enlarge the document's JSON.
+	numBootstrap: (integer, default 200) Number of bootstrap resamples S. Each adds one fit. The smallest possible two-sided p-value is 2/(S+1), so S must be at least 2/alpha (40 for alpha = 0.05) for any test to be able to reject; a warning is issued otherwise. Percentile intervals at 95% are usable from about 200; use 1000 or more for p-values much smaller than 0.01 or for stable 99% intervals. The fits are stored in a binary file, so large values do not enlarge the document's JSON.
 	scaleResiduals: (0/1, default 1) Scale each condition's residuals by sqrt(n/(n-1)) before resampling, so that resampled means carry the unbiased variance; 0 gives the classical bootstrap.
 	bootstrapSeed: (integer or empty, default []) Seed for the resampling stream. Empty draws a fresh set of resamples on every run; give an integer to reproduce a run exactly (the fits' own random starting points are not seeded).
 	useParallel: (0/1, default 1) Spread the bootstrap fits over the workers of an already-open parallel pool. The calculator never opens a pool; with no pool open the fits run serially.
