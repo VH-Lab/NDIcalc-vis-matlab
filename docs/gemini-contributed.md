@@ -77,6 +77,7 @@ Based on the provided code, the following calculator classes are available (assu
 | `ndi.calc.vis.oridir_tuning`         | Analyzes orientation/direction tuning     | `stimulus_tuningcurve_id` (angle/direction)              | `oridirtuning_calc`               | Yes          |
 | `ndi.calc.vis.spatial_frequency_tuning`| Analyzes spatial frequency tuning       | `stimulus_tuningcurve_id` (spatial frequency)            | `spatial_frequency_tuning_calc`   | Yes          |
 | `ndi.calc.vis.speed_tuning`          | Analyzes speed tuning (SF+TF interaction) | `stimulus_tuningcurve_id` (SF & TF)                        | `speedtuning_calc`                | Yes          |
+| `ndi.calc.vis.speed_tuning_bootstrap`| Bootstraps the speed-tuning fit over trials; coupling indexes and classifications from the stored fits | `stimulus_tuningcurve_id` (SF & TF)                        | `speedtuning_bootstrap_calc` (+ attached `speed_tuning_bootstrap_fits.ngrid`) | Yes          |
 | `ndi.calc.vis.temporal_frequency_tuning`| Analyzes temporal frequency tuning      | `stimulus_tuningcurve_id` (temporal frequency)           | `temporal_frequency_tuning_calc`  | Yes          |
 
 ## 5. Key Output Document Fields (Examples)

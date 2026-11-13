@@ -1,0 +1,149 @@
+{
+  "comparisonStruct": [
+    {
+      "comparisonMethod": "none",
+      "name": "app.name",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.version",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.url",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.os",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.os_version",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.interpreter",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "app.interpreter_version",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "base.id",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "base.session_id",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "base.name",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "base.datestamp",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "ngrid.data_dim",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.bootstrap.numBootstrap",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.bootstrap.numValid",
+      "toleranceAmount": 10
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.point_estimate.r_squared",
+      "toleranceAmount": 0.05
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.quality.medianR2",
+      "toleranceAmount": 0.05
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.point_estimate.Priebe_fit_speed_tuning_index",
+      "toleranceAmount": 0.15
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.xi.estimate",
+      "toleranceAmount": 0.15
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.xi.ci",
+      "toleranceAmount": 0.2
+    },
+    {
+      "comparisonMethod": "pValueConsistent",
+      "name": "speed_tuning_bootstrap.indexes.xi.p0",
+      "toleranceAmount": 0.05
+    },
+    {
+      "comparisonMethod": "pValueConsistent",
+      "name": "speed_tuning_bootstrap.indexes.xi.p1",
+      "toleranceAmount": 0.05
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.inseparable.differentFrom0",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.inseparable.minimumEffect",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.speedTuned.priebe",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.indexes.quality.fracSF0AtLowEdge",
+      "toleranceAmount": 0.3
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "speed_tuning_bootstrap.indexes.inseparable.passband",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "speed_tuning_bootstrap.indexes.speedTuned.equivalence",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "none",
+      "name": "speed_tuning_bootstrap.indexes.speedTuned.passband",
+      "toleranceAmount": 0
+    },
+    {
+      "comparisonMethod": "abs difference",
+      "name": "speed_tuning_bootstrap.point_estimate.Priebe_fit_spatial_frequency_preference",
+      "toleranceAmount": 0.03
+    }
+  ]
+}

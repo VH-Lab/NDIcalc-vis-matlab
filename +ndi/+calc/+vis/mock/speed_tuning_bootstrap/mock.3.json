@@ -1,0 +1,249 @@
+{
+  "app": {
+    "name": "ndi.calc.vis.speed_tuning_bootstrap",
+    "version": "f36fd08b58bdf59688d3709eef74fea98ff6b42e",
+    "url": "https://github.com/VH-Lab/NDIcalc-vis-matlab",
+    "os": "GLNXA64",
+    "os_version": "24.4",
+    "interpreter": "MATLAB",
+    "interpreter_version": "26.2"
+  },
+  "base": {
+    "id": "412697941127dead_c0d492d5579b4e84",
+    "session_id": "4126979410be481b_c0d9b997876d1589",
+    "name": "",
+    "datestamp": "2026-11-12T00:48:15.031Z"
+  },
+  "calculator": {},
+  "depends_on": [
+    {
+      "name": "element_id",
+      "value": "4126979411089ee7_3ffbe7ba69612da1"
+    },
+    {
+      "name": "stimulus_tuningcurve_id",
+      "value": "412697941109c823_c0cd83a18dddad55"
+    }
+  ],
+  "document_class": {
+    "definition": "$NDICALCDOCUMENTPATH/calc/speedtuning_bootstrap_calc.json",
+    "validation": "$NDICALCSCHEMAPATH/calc/speedtuning_bootstrap_calc_schema.json",
+    "class_name": "speedtuning_bootstrap_calc",
+    "property_list_name": "speedtuning_bootstrap_calc",
+    "class_version": 1,
+    "superclasses": [
+      {
+        "definition": "$NDICALCDOCUMENTPATH/vision/speed_tuning_bootstrap.json"
+      },
+      {
+        "definition": "$NDIDOCUMENTPATH/app.json"
+      },
+      {
+        "definition": "$NDIDOCUMENTPATH/base.json"
+      },
+      {
+        "definition": "$NDIDOCUMENTPATH/calculator.json"
+      },
+      {
+        "definition": "$NDIDOCUMENTPATH/data/ngrid.json"
+      },
+      {
+        "definition": "$NDIDOCUMENTPATH/base.json"
+      }
+    ]
+  },
+  "files": {
+    "file_list": [
+      "speed_tuning_bootstrap_fits.ngrid"
+    ],
+    "file_info": {
+      "name": "speed_tuning_bootstrap_fits.ngrid",
+      "locations": {
+        "delete_original": 1,
+        "uid": "412697941127e01d_c0dde0750c5a3a16",
+        "location": "/tmp/tp0b45e4b8_2499_4934_bac7_8c4efd2870a0_mock_session/speed_tuning_bootstrap/412697941127dead_c0d492d5579b4e84_speed_tuning_bootstrap_fits.ngrid",
+        "parameters": "",
+        "location_type": "file",
+        "ingest": 1
+      }
+    },
+    "series_info": []
+  },
+  "ngrid": {
+    "data_size": 8,
+    "data_type": "double",
+    "data_dim": [
+      200,
+      9
+    ],
+    "coordinates": []
+  },
+  "speed_tuning_bootstrap": {
+    "properties": {
+      "response_units": [],
+      "response_type": "mean"
+    },
+    "significance": {
+      "visual_response_anova_p": 0,
+      "across_stimuli_anova_p": 0
+    },
+    "point_estimate": {
+      "Priebe_fit_parameters": [
+        9.9994400471451961,
+        0.00044041499105697957,
+        -0.50000686124364435,
+        0.30010309869360141,
+        0.400005095007364,
+        0.200026299051663,
+        3.997272500699486
+      ],
+      "Priebe_fit_speed_tuning_index": -0.50000686124364435,
+      "Priebe_fit_spatial_frequency_preference": 0.200026299051663,
+      "Priebe_fit_temporal_frequency_preference": 3.997272500699486,
+      "sse": 0.036348900563991572,
+      "r_squared": 0.99986417142661221
+    },
+    "bootstrap": {
+      "numBootstrap": 200,
+      "numValid": 200,
+      "columns": [
+        "A",
+        "zeta",
+        "xi",
+        "sigma_sf",
+        "sigma_tf",
+        "sf0",
+        "tf0",
+        "sse",
+        "r_squared"
+      ],
+      "trials_per_condition_median": 5,
+      "stimulus_spatial_frequency_range": [
+        0.05,
+        1.2
+      ],
+      "stimulus_temporal_frequency_range": [
+        0.5,
+        32
+      ]
+    },
+    "indexes": {
+      "xi": {
+        "estimate": -0.50000686124364435,
+        "bootstrapMedian": -0.49998129369039623,
+        "se": 0.0001826771598952729,
+        "ci": [
+          -0.50045450865555952,
+          -0.49969885695666444
+        ],
+        "ci90": [
+          -0.50029222674035412,
+          -0.49972172054957031
+        ],
+        "ciWidth": 0.00075565169889507677,
+        "p0": 0.0099502487562189053,
+        "p1": 0.0099502487562189053,
+        "probPositive": 0,
+        "probNegative": 1,
+        "fracAtBound": 0
+      },
+      "tfShiftOctaves": {
+        "estimate": -1.1738007841192055,
+        "ci": [
+          -1.1748048806567069,
+          -1.1729143087228977
+        ],
+        "ci90": [
+          -1.174574981505152,
+          -1.1731052204297934
+        ]
+      },
+      "speedChangeOctaves": {
+        "estimate": -3.5213701378670006,
+        "ci": [
+          -3.5226528165919024,
+          -3.5197036472962937
+        ],
+        "ci90": [
+          -3.5224178287494059,
+          -3.5200070157968324
+        ]
+      },
+      "passbandOctaves": {
+        "estimate": 2.3475693537477951,
+        "ci": [
+          2.3466731072352585,
+          2.3482387983533721
+        ],
+        "ci90": [
+          2.3468157304110511,
+          2.3481480406976711
+        ]
+      },
+      "preferredSpeed": {
+        "estimate": 19.983734737136071,
+        "ci": [
+          19.975072786069052,
+          19.994590064174588
+        ],
+        "ci90": [
+          19.975971657332362,
+          19.992986075678466
+        ]
+      },
+      "inseparable": {
+        "differentFrom0": 1,
+        "minimumEffect": 1,
+        "passband": 1
+      },
+      "speedTuned": {
+        "priebe": 0,
+        "equivalence": 0,
+        "passband": 0,
+        "probNearOne": 0
+      },
+      "quality": {
+        "numBootstrap": 200,
+        "medianR2": 0.99986389326417713,
+        "fracSF0AtLowEdge": 0,
+        "fracSF0AtHighEdge": 0
+      },
+      "parameters": {
+        "alpha": 0.05,
+        "method": "percentile",
+        "deltaInseparable": 0.2,
+        "deltaSpeedTuned": 0.5,
+        "tfShiftOctaves": 1,
+        "speedConstancyOctaves": 1,
+        "min_xi": -4,
+        "max_xi": 4,
+        "sfRange": [
+          0.05,
+          1.2
+        ]
+      }
+    }
+  },
+  "speedtuning_bootstrap_calc": {
+    "input_parameters": {
+      "min_xi": -4,
+      "max_xi": 4,
+      "numBootstrap": 200,
+      "pointEstimateStartPoints": 40,
+      "numberStartPoints": 5,
+      "scaleResiduals": 1,
+      "bootstrapSeed": [],
+      "useParallel": 1,
+      "alpha": 0.05,
+      "method": "percentile",
+      "deltaInseparable": 0.2,
+      "deltaSpeedTuned": 0.5,
+      "tfShiftOctaves": 1,
+      "speedConstancyOctaves": 1
+    },
+    "depends_on": {
+      "name": "stimulus_tuningcurve_id",
+      "value": "412697941109c823_c0cd83a18dddad55"
+    }
+  }
+}

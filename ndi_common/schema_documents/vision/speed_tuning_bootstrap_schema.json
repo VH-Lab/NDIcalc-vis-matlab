@@ -1,0 +1,51 @@
+{
+	"classname": "speed_tuning_bootstrap",
+	"superclasses":  [ "base", "ngrid" ],
+	"depends_on": [
+		{ "name": "element_id", "mustbenotempty": 1},
+		{ "name": "stimulus_tuningcurve_id", "mustbenotempty": 1}
+	],
+	"file": [ ],
+	"speed_tuning_bootstrap": [
+		{
+			"name": "properties",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Response units and response type (e.g. mean, F1) of the input tuning curve."
+		},
+		{
+			"name": "significance",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Visual-response ANOVA p-values of the input tuning curve (visual_response_anova_p, across_stimuli_anova_p), as in speed_tuning."
+		},
+		{
+			"name": "point_estimate",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "The free Priebe fit to the observed condition means: Priebe_fit_parameters [A zeta xi sigma_sf sigma_tf sf0 tf0], the speed tuning index xi, SF and TF preferences, sse and r_squared."
+		},
+		{
+			"name": "bootstrap",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Description of the stored bootstrap fits (attached file speed_tuning_bootstrap_fits.ngrid, numBootstrap x 9 doubles): numBootstrap, numValid (successful fits), column names, median trials per condition, and the stimulus SF and TF ranges."
+		},
+		{
+			"name": "indexes",
+			"type": "structure",
+			"default_value": "",
+			"parameters": "",
+			"queryable": 1,
+			"documentation": "Indexes computed from the bootstrap fits by vis.speed.bootstrap.indexes: xi (estimate, intervals, p-values), inseparable and speedTuned classifications (0/1, one value per threshold), tfShiftOctaves, speedChangeOctaves, passbandOctaves, preferredSpeed, quality flags, and the thresholds used (parameters)."
+		}
+	]
+}
