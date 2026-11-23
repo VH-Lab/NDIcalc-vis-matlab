@@ -66,5 +66,15 @@ classdef test_fit < matlab.unittest.TestCase
                 ones(numel(testCase.SF), 5), 2), 'vis:speed:bootstrap:fit:sizeMismatch');
         end
 
+        function testNonFinitePointEstimateErrors(testCase)
+            % A point estimate with NaN parameters (a failed fit) cannot seed
+            % the bootstrap fits.
+            P = [10 0 0.5 0.25 0.4 0.2 4];
+            mu = vis.speed.tuningfunc(testCase.SF, testCase.TF, P);
+            testCase.verifyError(@() vis.speed.bootstrap.fit(testCase.SF, testCase.TF, ...
+                repmat(mu, 1, 5), 2, 'PointEstimate', nan(7, 1)), ...
+                'vis:speed:bootstrap:fit:badPointEstimate');
+        end
+
     end
 end

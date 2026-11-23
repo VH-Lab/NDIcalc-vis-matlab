@@ -90,10 +90,16 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
     if isempty(options.PointEstimate)
         [pe, peSSE, peR2] = vis.speed.fit(sf, tf, observedMean, options.min_xi, options.max_xi, ...
             'numberStartPoints', options.pointEstimateStartPoints);
+        if numel(pe) ~= 7 || any(~isfinite(pe(:)))
+            error('vis:speed:bootstrap:fit:pointEstimateFailed', ...
+                ['The fit to the observed means did not converge from any of its %d ' ...
+                'starting points, so there is no point estimate to bootstrap.'], ...
+                options.pointEstimateStartPoints);
+        end
     else
         pe = options.PointEstimate(:);
-        if numel(pe) ~= 7
-            error('vis:speed:bootstrap:fit:badPointEstimate', 'PointEstimate must have 7 elements.');
+        if numel(pe) ~= 7 || any(~isfinite(pe))
+            error('vis:speed:bootstrap:fit:badPointEstimate', 'PointEstimate must have 7 finite elements.');
         end
         R = vis.speed.tuningfunc(sf, tf, pe);
         peSSE = sum((observedMean - R).^2);
@@ -148,7 +154,11 @@ function row = localFitOne(sf, tf, r, min_xi, max_xi, nStarts, peStart)
     try
         [p, sse, r2] = vis.speed.fit(sf(ok), tf(ok), r(ok), min_xi, max_xi, ...
             'numberStartPoints', nStarts, 'SpecificStartPoint', peStart);
-        row = [p(:).' sse r2];
+        % A fit with no usable start returns no parameters (or NaN); keep
+        % the NaN row so one bad resample cannot stop the whole run.
+        if numel(p) == 7 && all(isfinite(p(:))) && isscalar(sse) && isscalar(r2)
+            row = [p(:).' sse r2];
+        end
     catch
         row = nan(1, 9);
     end

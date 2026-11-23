@@ -38,6 +38,8 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 %     P         - A 7x1 vector with the best-fit parameters.
 %     SSE       - The total sum of squared errors for the best fit.
 %     R_SQUARED - The R-squared value (coefficient of determination).
+%     If no starting point reaches a finite residual, P is NaN(7,1) and SSE
+%     and R_SQUARED are NaN.
 %
 %   Parameters (P):
 %     [A, zeta, xi, sigma_sf, sigma_tf, sf0, tf0]
@@ -117,10 +119,20 @@ function [P, sse, r_squared] = fit(SF, TF, R, min_xi, max_xi, options)
 
     for i = 1:size(StartPoint, 2)
         [P_current, error_current] = lsqcurvefit(@(P, SF) sqw .* vis.speed.tuningfunc(SF, TF, P), StartPoint(:, i), SF, sqw .* R, Lower, Upper, opts);
-        if (error_current < optimal_error)
+        % A start that ends in an undefined residual (NaN) is not a fit.
+        if isfinite(error_current) && (error_current < optimal_error)
             optimal_error = error_current;
             P_optimal = P_current;
         end
+    end
+
+    if isempty(P_optimal)
+        % No start point reached a finite residual: return NaN parameters
+        % (7x1, the usual shape) rather than an empty P.
+        P = nan(7, 1);
+        sse = NaN;
+        r_squared = NaN;
+        return;
     end
 
     P = P_optimal;
