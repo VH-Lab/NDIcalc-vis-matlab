@@ -8,10 +8,15 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
 %   means (vis.speed.bootstrap.resample), and returns every fit.
 %
 %   Each resample is exactly one call to vis.speed.fit, so the bootstrap fits
-%   are the same fit as the point estimate. Because a resample is close to
-%   the observed data, each bootstrap fit is started from the point estimate
-%   plus a few random starts ('numberStartPoints'), which is much faster than
-%   the 40 random starts used for a fit from scratch.
+%   are the same fit as the point estimate. Starting points follow
+%   vis.speed.fit_priebe_triplet (ndi.calc.vis.speed_tuning): the observed
+%   means are first fit with xi fixed at 0 (vis.speed.fit_nospeed) and at 1
+%   (vis.speed.fit_fullspeed), and those two fits are fixed starts of the
+%   point estimate, in addition to its 'pointEstimateStartPoints' random
+%   starts. Each bootstrap fit starts from the point estimate and the two
+%   nested fits, in addition to its 'numberStartPoints' random starts, so
+%   every resample tries the xi = 0 and xi = 1 solutions as well as the
+%   observed data's own.
 %
 %   All resamples are drawn first, serially, from one private random stream,
 %   so the result does not depend on whether the fits then run serially or in
@@ -30,10 +35,12 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
 %                         0 and 1, away from its edges)
 %     PointEstimate     - 7x1 parameters of the fit to the observed means. If
 %                         empty (default), it is computed here with
-%                         vis.speed.fit and 'pointEstimateStartPoints' starts.
+%                         vis.speed.fit, 'pointEstimateStartPoints' random
+%                         starts and the two nested fits as fixed starts.
 %     pointEstimateStartPoints - random starts for the point estimate. (40)
 %     numberStartPoints - random starts per bootstrap fit, in addition to the
-%                         point estimate. (Default: 5)
+%                         point estimate and the two nested fits. (Default: 5;
+%                         use 40 to match the point estimate)
 %     scaleResiduals    - passed to vis.speed.bootstrap.resample. (true)
 %     RandomSeed        - seed for the resampling stream (see
 %                         vis.randomstream). (Default: 'shuffle')
@@ -49,6 +56,9 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
 %              columns        - names of the 9 columns of B
 %              pointEstimate  - 7x1 parameters of the observed-data fit
 %              pointEstimateSSE, pointEstimateR2
+%              nestedStarts   - 7x2 fits of the observed means with xi = 0
+%                               and xi = 1 (fixed starts of every fit; a
+%                               column is dropped if that fit failed)
 %              resampledMeans - nCond x NUMBOOTSTRAP resampled condition means
 %              min_xi, max_xi, numberStartPoints, scaleResiduals
 %
@@ -86,14 +96,37 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
 
     observedMean = mean(trials, 2, 'omitnan');
 
+    % --- Nested fits (xi = 0 and xi = 1), as in vis.speed.fit_priebe_triplet;
+    % they are fixed starting points of the point estimate and of every
+    % bootstrap fit.
+    pNo = vis.speed.fit_nospeed(sf, tf, observedMean, ...
+        'numberStartPoints', options.pointEstimateStartPoints);
+    pFull = vis.speed.fit_fullspeed(sf, tf, observedMean, ...
+        'numberStartPoints', options.pointEstimateStartPoints);
+    nestedStarts = zeros(7, 0);
+    for p = {pNo, pFull}
+        if numel(p{1}) == 7 && all(isfinite(p{1}(:)))
+            nestedStarts(:, end+1) = p{1}(:); %#ok<AGROW>
+        end
+    end
+    % keep xi inside the bounds of the free fit
+    nestedStarts(3, :) = min(max(nestedStarts(3, :), options.min_xi), options.max_xi);
+
     % --- Point estimate (the regular fit to the observed means) -----------
     if isempty(options.PointEstimate)
         [pe, peSSE, peR2] = vis.speed.fit(sf, tf, observedMean, options.min_xi, options.max_xi, ...
-            'numberStartPoints', options.pointEstimateStartPoints);
+            'numberStartPoints', options.pointEstimateStartPoints, ...
+            'SpecificStartPoint', nestedStarts);
+        if numel(pe) ~= 7 || any(~isfinite(pe(:)))
+            error('vis:speed:bootstrap:fit:pointEstimateFailed', ...
+                ['The fit to the observed means did not converge from any of its %d ' ...
+                'starting points, so there is no point estimate to bootstrap.'], ...
+                options.pointEstimateStartPoints);
+        end
     else
         pe = options.PointEstimate(:);
-        if numel(pe) ~= 7
-            error('vis:speed:bootstrap:fit:badPointEstimate', 'PointEstimate must have 7 elements.');
+        if numel(pe) ~= 7 || any(~isfinite(pe))
+            error('vis:speed:bootstrap:fit:badPointEstimate', 'PointEstimate must have 7 finite elements.');
         end
         R = vis.speed.tuningfunc(sf, tf, pe);
         peSSE = sum((observedMean - R).^2);
@@ -103,6 +136,7 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
     % Keep the starting point inside the bounds of the bootstrap fits.
     peStart = pe;
     peStart(3) = min(max(peStart(3), options.min_xi), options.max_xi);
+    fixedStarts = [peStart nestedStarts];
 
     % --- Draw every resample first, serially, from one private stream ----
     stream = vis.randomstream(options.RandomSeed);
@@ -123,13 +157,14 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
         nWorkers = 0;
     end
     parfor (s = 1:numBootstrap, nWorkers)
-        B(s, :) = localFitOne(sf, tf, resampledMeans(:, s), min_xi, max_xi, nStarts, peStart);
+        B(s, :) = localFitOne(sf, tf, resampledMeans(:, s), min_xi, max_xi, nStarts, fixedStarts);
     end
 
     info.columns = {'A', 'zeta', 'xi', 'sigma_sf', 'sigma_tf', 'sf0', 'tf0', 'sse', 'r_squared'};
     info.pointEstimate = pe;
     info.pointEstimateSSE = peSSE;
     info.pointEstimateR2 = peR2;
+    info.nestedStarts = nestedStarts;
     info.resampledMeans = resampledMeans;
     info.min_xi = options.min_xi;
     info.max_xi = options.max_xi;
@@ -138,7 +173,7 @@ function [B, info] = fit(sf, tf, trials, numBootstrap, options)
 
 end
 
-function row = localFitOne(sf, tf, r, min_xi, max_xi, nStarts, peStart)
+function row = localFitOne(sf, tf, r, min_xi, max_xi, nStarts, fixedStarts)
 % One free fit of one resample; NaN row on failure.
     row = nan(1, 9);
     ok = ~isnan(r);
@@ -147,8 +182,12 @@ function row = localFitOne(sf, tf, r, min_xi, max_xi, nStarts, peStart)
     end
     try
         [p, sse, r2] = vis.speed.fit(sf(ok), tf(ok), r(ok), min_xi, max_xi, ...
-            'numberStartPoints', nStarts, 'SpecificStartPoint', peStart);
-        row = [p(:).' sse r2];
+            'numberStartPoints', nStarts, 'SpecificStartPoint', fixedStarts);
+        % A fit with no usable start returns no parameters (or NaN); keep
+        % the NaN row so one bad resample cannot stop the whole run.
+        if numel(p) == 7 && all(isfinite(p(:))) && isscalar(sse) && isscalar(r2)
+            row = [p(:).' sse r2];
+        end
     catch
         row = nan(1, 9);
     end
