@@ -9,8 +9,8 @@ input_parameters:
   Fitting:
 	min_xi: (double, default -4) Lower bound of the coupling index xi in every fit.
 	max_xi: (double, default 4) Upper bound of xi. The range must contain 0 and 1 away from its edges, or the tests of xi == 0 and xi == 1 are not meaningful (a warning is issued). Note that ndi.calc.vis.speed_tuning's default range is [0 1]; that range should not be used here.
-	pointEstimateStartPoints: (integer, default 40) Random starting points for the fit to the observed data.
-	numberStartPoints: (integer, default 5) Random starting points for each bootstrap fit, in addition to the point estimate, which is always used as a start.
+	pointEstimateStartPoints: (integer, default 40) Random starting points for the fit to the observed data, and for its two constrained fits (xi = 0 and xi = 1), which are also fixed starts of the free fit, as in ndi.calc.vis.speed_tuning.
+	numberStartPoints: (integer, default 5) Random starting points for each bootstrap fit, in addition to three fixed starts: the point estimate and the two constrained fits of the observed data. Larger values (e.g. 40, as for the point estimate) search more widely at proportionally greater cost.
 
   Bootstrap:
 	numBootstrap: (integer, default 200) Number of bootstrap resamples S. Each adds one fit. The smallest possible two-sided p-value is 2/(S+1), so S must be at least 2/alpha (40 for alpha = 0.05) for any test to be able to reject; a warning is issued otherwise. Percentile intervals at 95% are usable from about 200; use 1000 or more for p-values much smaller than 0.01 or for stable 99% intervals. The fits are stored in a binary file, so large values do not enlarge the document's JSON.

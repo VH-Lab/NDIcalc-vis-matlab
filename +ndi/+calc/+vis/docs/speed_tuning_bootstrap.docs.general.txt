@@ -24,11 +24,11 @@ The preferred temporal frequency varies with spatial frequency as SF^xi. xi = 0 
 
 THE CALCULATION
 
-1. Point estimate. The model is fit to the observed condition means with xi free in [min_xi, max_xi] (vis.speed.fit, pointEstimateStartPoints random starts). This is the same free fit as in ndi.calc.vis.speed_tuning; the constrained (xi = 0, xi = 1) fits and nested F tests of that calculator are not computed here.
+1. Point estimate. The observed condition means are first fit with xi fixed at 0 (vis.speed.fit_nospeed) and at 1 (vis.speed.fit_fullspeed), and then with xi free in [min_xi, max_xi] (vis.speed.fit), with pointEstimateStartPoints random starts plus the two constrained fits as fixed starts. This is the same free fit, with the same starts, as in ndi.calc.vis.speed_tuning (vis.speed.fit_priebe_triplet); the nested F tests of that calculator are not computed here.
 
 2. Bootstrap. numBootstrap resamples of the condition means are drawn from the single trials (vis.speed.bootstrap.resample). For each condition with n trials, the residuals about the condition mean are scaled by sqrt(n/(n-1)) and n of them are drawn with replacement; the resampled mean is the condition mean plus the mean of the draws. Resampling n trials with replacement underestimates the variance of a mean by the factor (n-1)/n (0.8 for 5 trials); the scaling removes that bias (set scaleResiduals = 0 for the classical bootstrap). All resamples are drawn first, serially, from one private random stream, so the result does not depend on whether the fits run in parallel.
 
-3. Bootstrap fits. Each resample is fit once with vis.speed.fit (the same free fit as the point estimate), started from the point estimate plus numberStartPoints random starts (vis.speed.bootstrap.fit). All numBootstrap fits (7 parameters, SSE, r^2) are stored in the attached binary file speed_tuning_bootstrap_fits.ngrid, so that any index can be recomputed later without refitting (see recompute_indexes).
+3. Bootstrap fits. Each resample is fit once with vis.speed.fit (the same free fit as the point estimate), started from the point estimate and the two constrained (xi = 0, xi = 1) fits of the observed means plus numberStartPoints random starts (vis.speed.bootstrap.fit). All numBootstrap fits (7 parameters, SSE, r^2) are stored in the attached binary file speed_tuning_bootstrap_fits.ngrid, so that any index can be recomputed later without refitting (see recompute_indexes).
 
 4. Indexes. vis.speed.bootstrap.indexes computes, from the stored fits:
 
@@ -58,7 +58,7 @@ In simulations of model cells with known xi, using the trial-to-trial noise of r
 
 RUN TIME
 
-The calculator performs 1 + numBootstrap fits per tuning curve, each with numberStartPoints + 1 starts (pointEstimateStartPoints for the point estimate). With the defaults (200 resamples, 6 starts each) a tuning curve took about 20 seconds on one processor core in our simulations (7 x 8 to 7 x 10 stimulus grids); run time grows in proportion to numBootstrap. If a parallel pool is already open and useParallel is 1, the bootstrap fits are spread across its workers; the calculator never opens a pool itself.
+The calculator performs 3 + numBootstrap fits per tuning curve: the two constrained fits and the point estimate (pointEstimateStartPoints random starts each), and one fit per resample with numberStartPoints + 3 starts. With the defaults (200 resamples, 8 starts each) a tuning curve takes on the order of 20-30 seconds on one processor core for 7 x 8 to 7 x 10 stimulus grids; run time grows in proportion to numBootstrap and to numberStartPoints. numberStartPoints = 40 (as many as the point estimate) takes about five times as long. If a parallel pool is already open and useParallel is 1, the bootstrap fits are spread across its workers; the calculator never opens a pool itself.
 
 REFERENCES
 
